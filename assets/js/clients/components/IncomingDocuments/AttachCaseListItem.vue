@@ -21,16 +21,20 @@
 					</b-col>
 				</b-row>
 
-				<p v-if="caseTypeName" class="small text-muted mb-0" title="Case Type">
+				<!-- <p v-if="caseTypeName" class="small text-muted mb-0" title="Case Type">
 					<span>{{ caseTypeName }}</span>
+				</p> -->
+				<p v-if="facilityName" class="small text-muted mb-0" title="Facility">
+					<font-awesome-icon icon="building" fixed-width />
+					<span>{{ facilityName }}</span>
 				</p>
 				<p v-if="clientEmployeeName" class="small text-muted mb-0" title="Physician">
 					<font-awesome-icon icon="user-md" fixed-width />
 					<span>{{ clientEmployeeName }}</span>
 				</p>
-				<p v-if="facilityName" class="small text-muted mb-0" title="Facility">
-					<font-awesome-icon icon="building" fixed-width />
-					<span>{{ facilityName }}</span>
+				<p v-if="insuranceProviderName" class="small text-muted mb-0" title="Insurance Provider">
+					<font-awesome-icon icon="file-medical" fixed-width/>
+					<span>{{ insuranceProviderName }}</span>
 				</p>
 			</b-col>
 			<b-col cols="7" md="12" lg="6" class="mb-4 mb-md-0 text-right">
@@ -437,6 +441,9 @@ export default {
 		},
 		facilityName() {
 			return this.caseEntity.facility?.name ?? "";
+		},
+		insuranceProviderName() {
+			return this.caseEntity.insurance_provider?.name ?? "";
 		},
 		hasAppeals() {
 			return this.appeals.length > 0;
