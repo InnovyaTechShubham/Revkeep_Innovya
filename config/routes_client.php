@@ -969,5 +969,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'index',
 		
     ]);
+	$builder->connect('/patientParsedInfo', [
+		'controller' => 'PatientParsedInfo',
+		'action' => 'index',
+		'_method' => 'POST'
+	]);
 
 });
