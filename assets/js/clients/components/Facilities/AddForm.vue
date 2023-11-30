@@ -201,7 +201,7 @@
 				</b-card-body>
 
 				<b-card-body>
-					<h6 class="text-muted">Optional</h6>
+					<!-- <h6 class="text-muted">Optional</h6> -->
 					<b-card no-body>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
