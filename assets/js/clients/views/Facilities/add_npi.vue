@@ -18,6 +18,19 @@
 				<b-card no-body class="shadow-sm mb-4">
 					<b-form @submit.prevent="npiLookup">
 						<b-card-body>
+
+							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
+								<b-input-group>
+								  <b-form-input
+								    name="name"
+								    type="text"
+								    v-model="query.name"
+								    :disabled="saving || searching"
+								    
+								  />
+								</b-input-group>
+							    </b-form-group>
+
 							<b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
 								<b-form-select
 									v-model="query.state"
@@ -31,18 +44,28 @@
 								/>
 							</b-form-group>
 
-							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
-								<b-input-group>
-									<b-form-input
-										name="name"
-										type="text"
-										v-model="query.name"
-										:disabled="saving || searching"
-										required
-										placeholder="Required"
-									/>
-								</b-input-group>
-							</b-form-group>
+							<b-form-group label="City" label-for="city" label-cols="4" label-cols-lg="12">
+								<b-form-input
+								  name="city"
+								  type="text"
+								  v-model="query.city"
+								  :disabled="saving || searching"
+								  
+								/>
+							    </b-form-group>
+							    
+							    <b-form-group label="Zip" label-for="zip" label-cols="4" label-cols-lg="12">
+								<b-form-input
+								  name="zip"
+								  type="text"
+								  v-model="query.zip"
+								  :disabled="saving || searching"
+								  
+								/>
+							    </b-form-group>
+							    
+							    
+
 						</b-card-body>
 						<b-card-footer class="text-right">
 							<b-button variant="primary" type="submit" :disabled="searching || formInvalid">
@@ -209,6 +232,8 @@ export default {
 			query: {
 				name: "",
 				state: "",
+				zip: "",  
+      			city: "",
 			},
 			results: [],
 			saving: false,
@@ -218,15 +243,8 @@ export default {
 	},
 	computed: {
 		formInvalid() {
-			if (this.query.name == "") {
-				return true;
-			}
-
-			if (this.query.state == "") {
-				return true;
-			}
-
-			return false;
+			const filledFields = Object.values(this.query).filter(value => value !== "").length;
+			return filledFields < 2;
 		},
 		hasError() {
 			return this.error && this.error !== "";
