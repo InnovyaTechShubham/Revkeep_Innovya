@@ -1,7 +1,7 @@
 <template>
 	<loading-indicator v-if="loading" class="my-5" />
 	<validation-observer v-else v-bind="$attrs" ref="observer" v-slot="{ invalid }">
-		<b-form @submit.prevent="save" onsubmit="setTimeout(function(){window.location.reload();},2000);">
+		<b-form @submit.prevent="save">
 			<b-card no-body>
 				<slot name="header"></slot>
 				<b-card-body>
@@ -77,7 +77,7 @@
 
 					 <div class="d-flex align-items-start">
     <validation-provider vid="default_insurance_type_id" name="Type" :rules="{ required: false }" v-slot="validationContext">
-      <b-form-group label="Audit Type(s)" label-for="default_insurance_type_id" label-cols-lg="4" label-cols-xl="4">
+      <b-form-group label="Audit Types(s)" label-for="default_insurance_type_id" label-cols-lg="4" label-cols-xl="4">
         <b-form-checkbox-group
           name="insurance_type_ids"
           v-model="audittype_data"
