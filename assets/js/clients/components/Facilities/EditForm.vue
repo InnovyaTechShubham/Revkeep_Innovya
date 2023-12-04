@@ -1,7 +1,7 @@
 <template>
 	<loading-indicator v-if="loading" class="my-5" />
 	<validation-observer v-else v-bind="$attrs" ref="observer" v-slot="{ invalid }">
-		<b-form @submit.prevent="save" onsubmit="setTimeout(function(){window.location.reload();},2000);">
+		<b-form @submit.prevent="save" >
 			<b-card no-body>
 				<slot name="header"></slot>
 
@@ -84,24 +84,22 @@
 					</empty-result>
 					<loading-indicator v-else-if="npiLookingUp" />
 				</b-card-body>
-
+                
 				<b-card-body>
+
 					<validation-provider
-						vid="facility_type_id"
-						name="Facility Type"
-						:rules="{ required: true }"
+						vid="disp_name"
+						name="display_name"
+						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Type" label-for="facility_type_id" label-cols-lg="4">
-							<b-form-select
-								name="facility_type_id"
-								v-model="entity.facility_type_id"
+						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
+							<b-form-input
+								name="disp_name"
+								type="text"
+								v-model="entity.disp_name"
 								:state="getValidationState(validationContext)"
-								:options="facilityTypes"
-								:disabled="saving || loadingFacilityTypes"
-								required="required"
-								value-field="id"
-								text-field="name"
+								:disabled="saving"
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -112,18 +110,21 @@
 					</validation-provider>
 
 					<validation-provider
-						vid="chain_name"
-						name="Chain"
-						:rules="{ required: false, max: 250 }"
+						vid="facility_type_id"
+						name="Facility Type"
+						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-							<b-form-input
-								name="chain_name"
-								type="text"
-								v-model="entity.chain_name"
+						<b-form-group label="Main Type" label-for="facility_type_id" label-cols-lg="4">
+							<b-form-select
+								name="facility_type_id"
+								v-model="entity.facility_type_id"
 								:state="getValidationState(validationContext)"
-								:disabled="saving"
+								:options="facilityTypes"
+								:disabled="saving || loadingFacilityTypes"
+								required="required"
+								value-field="id"
+								text-field="name"
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -243,6 +244,53 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+
+                    <validation-provider
+						vid="client_owned"
+						name="Owned"
+						:rules="{ required: false }"
+						v-slot="validationContext"
+					>
+						<b-form-group
+							label="Owned"
+							label-for="client_owned"
+							label-cols-lg="4"
+							description="Facilities is owned/provided by client."
+						>
+							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving"
+								>Owned</b-form-checkbox
+							>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+					
+					<validation-provider
+						vid="chain_name"
+						name="Chain"
+						:rules="{ required: false, max: 250 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+							<b-form-input
+								name="chain_name"
+								type="text"
+								v-model="entity.chain_name"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+
 				</b-card-body>
 
 				<b-card-body>
@@ -282,6 +330,7 @@
 											v-text="error"
 										/>
 									</validation-provider>
+									
 									<validation-provider
 										vid="street_address_2"
 										name="Street Address (Continued)"
@@ -716,6 +765,7 @@ export default {
 			entity: {
 				id: this.id,
 				name: "",
+				disp_name:null,
 				facility_type_id: null,
 				active: true,
 				phone: null,

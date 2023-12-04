@@ -33,14 +33,34 @@
 							</b-input-group>
 						</b-form-group>
 					</validation-provider>
-
+					<validation-provider
+						vid="disp_name"
+						name="display_name"
+						:rules="{ required: false, max: 60 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
+							<b-form-input
+								name="disp_name"
+								type="text"
+								v-model="entity.disp_name"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
 					<validation-provider
 						vid="facility_type_id"
 						name="Facility Type"
 						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Type" label-for="facility_type_id" label-cols-lg="4">
+						<b-form-group label="Main Type" label-for="facility_type_id" label-cols-lg="4">
 							<b-form-select
 								name="facility_type_id"
 								v-model="entity.facility_type_id"
@@ -81,7 +101,7 @@
 								v-text="error"
 							/>
 						</validation-provider>
-						<validation-provider
+					<!--	<validation-provider
 							vid="street_address_2"
 							name="Street Address (Continued)"
 							:rules="{ required: false, max: 50 }"
@@ -101,7 +121,7 @@
 								:key="error"
 								v-text="error"
 							/>
-						</validation-provider>
+						</validation-provider> -->
 					</b-form-group>
 
 					<validation-provider
@@ -198,6 +218,50 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+					<validation-provider
+						vid="client_owned"
+						name="Owned"
+						:rules="{ required: false }"
+						v-slot="validationContext"
+					>
+						<b-form-group
+							label="Owned"
+							label-for="client_owned"
+							label-cols-lg="4"
+							description="Facilities is owned/provided by client."
+						>
+							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving"
+								>Owned</b-form-checkbox
+							>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+					
+					<validation-provider
+						vid="chain_name"
+						name="Chain"
+						:rules="{ required: false, max: 250 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+							<b-form-input
+								name="chain_name"
+								type="text"
+								v-model="entity.chain_name"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
 				</b-card-body>
 
 				<b-card-body>
@@ -210,7 +274,7 @@
 								variant="light"
 								role="tab"
 								class="text-left px-4 py-3 m-0"
-								>Additional</b-button
+								>Details</b-button
 							>
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
