@@ -16,6 +16,7 @@
 				<case-assign :case-entity="caseEntity" />
 			</b-col>
 		</b-row>
+		<!-- test comment -->
 		<div>
 			<b-collapse v-model="showLoveMessage">
 				<template>
