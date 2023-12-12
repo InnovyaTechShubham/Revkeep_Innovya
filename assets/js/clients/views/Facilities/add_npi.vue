@@ -21,8 +21,14 @@
 
 							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
 								<b-input-group>
-									<b-form-input name="name" type="text" v-model="query.name"
-										:disabled="saving || searching" />
+
+								  <b-form-input
+								    name="name"
+								    type="text"
+								    v-model="query.name"
+								    
+								  />
+	
 								</b-input-group>
 							</b-form-group>
 
@@ -33,9 +39,8 @@
 									:options="states"
 									value-field="abbreviation"
 									text-field="name"
-									:disabled="saving || searching"
-									placeholder="Required"
-									required
+									
+								
 								/>
 							</b-form-group> -->
 
@@ -49,28 +54,30 @@
 
 
 							<b-form-group label="City" label-for="city" label-cols="4" label-cols-lg="12">
-								<b-form-input name="city" type="text" v-model="query.city"
-									:disabled="saving || searching" />
-							</b-form-group>
 
-							<b-form-group label="Zip" label-for="zip" label-cols="4" label-cols-lg="12">
-								<b-form-input name="zip" type="text" v-model="query.zip"
-									:disabled="saving || searching" />
-							</b-form-group>
-
-
+								<b-form-input
+								  name="city"
+								  type="text"
+								  v-model="query.city"
+								  
+								/>
+							    </b-form-group>
+							    
+							    <b-form-group label="Zip" label-for="zip" label-cols="4" label-cols-lg="12">
+								<b-form-input
+								  name="zip"
+								  type="text"
+								  v-model="query.zip"
+								  
+								/>
+							    </b-form-group>
+							    
+							    
 
 						</b-card-body>
+						<b-card-footer class="text-right">
+							<b-button variant="primary" type="submit">
 
-
-						<b-card-footer class="d-flex justify-content-between">
-							<!-- Add clear button  -->
-							<b-button variant="light" size="md" @click="clearForm"
-								:disabled="searching || saving">
-								<span class="mr-2 ml-2">Clear</span>
-							</b-button>
-
-							<b-button variant="primary" type="submit" :disabled="searching || formInvalid">
 								<font-awesome-icon v-if="searching" icon="circle-notch" spin fixed-width />
 								<span v-if="searching">Searching...</span>
 								<span v-else>Search</span>
@@ -86,8 +93,9 @@
 							<empty-result>
 								Search NPI
 								<template #content>
-									Enter a state and organization name to search facilities in the NPI
-									registry.
+
+									Enter state, city, zip code or organization name to search facilities in the NPI registry.
+
 								</template>
 							</empty-result>
 						</b-col>
@@ -286,6 +294,8 @@ export default {
 				const response = await this.$store.dispatch("facilities/npiLookup", {
 					name: this.query.name,
 					state: this.query.state,
+					city: this.query.city,
+					zip: this.query.zip,
 				});
 
 				this.results = response;
@@ -406,7 +416,7 @@ export default {
 				const newEntity = await this.$store.dispatch("facilities/create", result);
 
 				this.$router.push({
-					name: "facilities.view",
+					name: "facilities.add",
 					params: {
 						id: newEntity.id,
 					},
