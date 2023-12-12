@@ -79,7 +79,7 @@
 						</b-form-group>
 					</validation-provider>
 
-					<b-form-group label="Address" label-for="street_address_1" label-cols-lg="4">
+					<b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
 						<validation-provider
 							vid="street_address_1"
 							name="Street Address"
@@ -397,7 +397,7 @@
 								variant="light"
 								role="tab"
 								class="text-left px-4 py-3 m-0"
-								>Contact</b-button
+								>Contacts</b-button
 							>
 						</b-card-header>
 						<b-collapse id="collapseContact" role="tabpanel">
@@ -408,7 +408,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Phone" label-for="phone" label-cols-lg="4">
+									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
 										<b-form-input
 											name="phone"
 											type="text"
@@ -431,7 +431,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Fax" label-for="fax" label-cols-lg="4">
+									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
 										<b-form-input
 											name="fax"
 											type="text"
@@ -454,6 +454,207 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
+									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
+										<b-form-input
+											name="email"
+											type="email"
+											v-model="entity.email"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+								<validation-provider
+									vid="website"
+									name="Website"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
+										<b-form-input
+											name="website"
+											type="url"
+											v-model="entity.website"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+							
+							 <b-input-group-append>
+                                     <b-button variant="primary" class="mb-1"  v-b-toggle.collapseOpenForm>
+				                 	<font-awesome-icon icon="plus" fixed-width />
+				                 	<span>Add Contact</span>
+			                            	</b-button>
+                                    </b-input-group-append>
+               
+					
+						<b-collapse id="collapseOpenForm">
+					 <b-card body>
+					  <validation-provider
+									vid="f_name"
+									name="First_Name"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
+										<b-form-input
+											name="f_name"
+											type="text"
+											v-model="entity.f_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="l_name"
+									name="Last_Name"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
+										<b-form-input
+											name="l_name"
+											type="text"
+											v-model="entity.l_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+								vid="title_id"
+								name="Main_Title"
+								:rules="{ required: true, numeric: true }"
+								v-slot="validationContext"
+							>
+								<b-form-group
+									label="Title"
+									label-for="title_id"
+									label-cols-lg="4"
+								>
+									<b-input-group>
+										<b-form-select
+											name="title_id"
+											v-model="entity.title_id"
+											:options="titlename"
+											:disabled="saving || loadingtitlename"
+											:state="getValidationState(validationContext)"
+											value-field="id"
+											text-field="full_name"
+											required
+										>
+											<template #first>
+												<option disabled v-if="!hastitlename" :value="null">
+												   data not fetch from database
+												</option>
+											</template>
+										</b-form-select>
+										<template #append>
+											<b-button
+												variant="primary"
+												@click="openCustomTitle"
+											>
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button>
+										</template>
+									</b-input-group>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+							<template>
+  <div>
+    <!-- Add BootstrapVue grid classes to create a row -->
+    <b-row>
+      <!-- Column for the dropdown and input field -->
+      <b-col md="4">
+        <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+          <b-form-group label="Contact Type" label-for="type">
+            <!-- Wrapper for select and input fields -->
+            <div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
+              <!-- Dropdown (select) field -->
+              <label :for="'contacType' + index"></label>
+              <select v-model="field.selectedContactType" :name="'contactType' + index" class="form-control mb-3">
+                <option value="phone">Phone</option>
+                <option value="landline">Landline</option>
+              </select>
+			  </div>
+		  </b-form-group>
+		  </validation-provider>
+			</b-col>
+			<b-col md="8">
+        <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+          <b-form-group label="Contact Number" label-for="phone">
+            <b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
+              <b-form-input
+                :name="'phone' + index"
+                type="text"
+                v-model="inputField.phone"
+                v-mask="'(###) ###-####'"
+                :state="getValidationState(validationContext)"
+                :disabled="saving"
+              ></b-form-input>
+
+              <!-- Button inside the input group to remove the corresponding field -->
+              <b-input-group-append>
+                <b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+                  <font-awesome-icon icon="minus" fixed-width />
+                </b-button>
+				 <!-- Button to add a new input field -->
+				 <b-button variant="primary" @click="addInputField">
+            <font-awesome-icon icon="plus" fixed-width />
+          </b-button>
+              </b-input-group-append>
+            </b-input-group>
+
+            <b-form-invalid-feedback
+              v-for="error in validationContext.errors"
+              :key="error"
+              v-text="error"
+            ></b-form-invalid-feedback>
+          </b-form-group>
+         
+        </validation-provider>
+      </b-col>
+    </b-row>
+  </div>
+</template>
+               								
+
+								<validation-provider
+									vid="email"
+									name="Email"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
 									<b-form-group label="Email" label-for="email" label-cols-lg="4">
 										<b-form-input
 											name="email"
@@ -469,9 +670,21 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+					</b-card>
+				</b-collapse>
 							</b-card-body>
 						</b-collapse>
-
+			  
+  <b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
+    <b-form-input
+      id="newCustomName"
+      name="newCustomeTitleName"
+      type="text"
+      v-model="newAuditType"
+      placeholder="Add custom Title"
+      :disabled="saving"
+    />
+  </b-modal>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -703,8 +916,8 @@
 </template>
 
 <script type="text/javascript">
-import { mapGetters } from "vuex";
-import { formatErrors, getValidationState } from "@/validation";
+import { mapGetters } from 'vuex';
+import { getValidationState } from "@/validation";
 
 export default {
 	name: "FacilityAddForm",
@@ -726,6 +939,10 @@ export default {
 				phone: null,
 				fax: null,
 				email: null,
+				website: null,
+				f_name: null,
+				l_name: null,
+				title_id: null,
 				street_address_1: null,
 				street_address_2: null,
 				city: null,
@@ -748,8 +965,12 @@ export default {
 				services: {
 					_ids: [],
 				},
+				selectedContactType: 'phone',
 			},
+		
+	  inputFields: [{ selectedContactType: 'phone', phone: '' }],
 		};
+		
 	},
 	computed: mapGetters({
 		states: "states/states",
@@ -757,6 +978,10 @@ export default {
 		loadingFacilityTypes: "facilityTypes/loadingAll",
 		services: "services/all",
 		loadingServices: "services/loadingAll",
+		titlename: "titlename/all",
+		loadingtitlename: "titlename/loadingAll",
+
+
 	}),
 	mounted() {
 		this.getServices();
@@ -798,6 +1023,7 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
+	
 		async save() {
 			try {
 				this.saving = true;
@@ -823,6 +1049,50 @@ export default {
 				this.saving = false;
 			}
 		},
+		openCustomTitle() {
+      // Open the custom Title type modal when the "Add" button is clicked
+      this.$bvModal.show("customTitle");
+    },
+		async addCustomTitleName() {
+const newType = this.newCustomName;
+const insid = this.id;
+console.log(insid);
+// Check if the new type is not empty
+if (newType.trim() === '') {
+	return;
+}
+
+// Send a POST request to your controller to add the new type
+axios.post('/client/addtype', { newType , insid})
+	.then((response) => {
+		// Handle the response, e.g., update the insuranceTypes list
+		this.titlename.push(response.data);
+
+		// Close the modal
+		this.$bvModal.hide('customTitle');
+
+		// Clear the input field
+		this.newCustomName = '';
+		console.log("check",response);
+
+		window.location.reload();
+	})
+	.catch((error) => {
+		// Handle any errors, e.g., show an error message
+		console.error('Error adding new type:', error);
+	});
+},
+addInputField() {
+      this.inputFields.push({ selectedContactType: 'phone', phone: '' });
+    },
+    removeInputField(index) {
+      this.inputFields.splice(index, 1);
+    },
+    getValidationState(validationContext) {
+      // Implement your validation state logic if needed
+      return null;
+    },
+	
 	},
 };
 </script>
