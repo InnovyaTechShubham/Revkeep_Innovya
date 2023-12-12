@@ -15,7 +15,7 @@ export default [
 			{
 				path: "",
 				name: "incomingDocuments",
-				component: IndexHome,
+				component: null,
 			},
 			{
 				path: "view/:id",

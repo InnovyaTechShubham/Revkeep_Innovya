@@ -24,16 +24,17 @@
 		<page-header v-bind="{ loading, total }">
 		  <template #title>Facilities</template>
 		  <template #buttons>
-		    <b-dropdown right variant="primary">
-			<template #button-content>
-			  <font-awesome-icon icon="plus" fixed-width />
-			  <span>Add New</span>
-			</template>
-			<b-dropdown-item :to="{ name: 'facilities.add.npi' }" title="Add New Facility from NPI Registry">
-			  <font-awesome-icon icon="search" fixed-width />
-			  <span>Search NPI Registry</span>
-			</b-dropdown-item>
-		    </b-dropdown>
+			<b-dropdown right variant="primary" no-caret>
+				<template #button-content>
+				    <font-awesome-icon icon="plus" fixed-width />
+				    <span>Add New</span>
+				</template>
+				<b-dropdown-item :to="{ name: 'facilities.add.npi' }" title="Add New Facility from NPI Registry">
+				    <font-awesome-icon icon="search" fixed-width />
+				    <span>Search NPI Registry</span>
+				</b-dropdown-item>
+			  </b-dropdown>
+			  
 		  </template>
 		</page-header>
 
