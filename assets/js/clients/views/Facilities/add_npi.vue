@@ -21,35 +21,44 @@
 
 							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
 								<b-input-group>
+
 								  <b-form-input
 								    name="name"
 								    type="text"
 								    v-model="query.name"
-								    :disabled="saving || searching"
 								    
 								  />
+	
 								</b-input-group>
-							    </b-form-group>
+							</b-form-group>
 
-							<b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
+							<!-- <b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
 								<b-form-select
 									v-model="query.state"
 									name="state"
 									:options="states"
 									value-field="abbreviation"
 									text-field="name"
-									:disabled="saving || searching"
-									placeholder="Required"
-									required
+									
+								
 								/>
+							</b-form-group> -->
+
+							<!-- Removed the "required" attribute from the b-form-select -->
+							<b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
+								<b-form-select v-model="query.state" name="state" :options="states"
+									value-field="abbreviation" text-field="name"
+									:disabled="saving || searching"
+									:placeholder="query.state === '' ? 'Optional' : ''" />
 							</b-form-group>
 
+
 							<b-form-group label="City" label-for="city" label-cols="4" label-cols-lg="12">
+
 								<b-form-input
 								  name="city"
 								  type="text"
 								  v-model="query.city"
-								  :disabled="saving || searching"
 								  
 								/>
 							    </b-form-group>
@@ -59,7 +68,6 @@
 								  name="zip"
 								  type="text"
 								  v-model="query.zip"
-								  :disabled="saving || searching"
 								  
 								/>
 							    </b-form-group>
@@ -68,7 +76,8 @@
 
 						</b-card-body>
 						<b-card-footer class="text-right">
-							<b-button variant="primary" type="submit" :disabled="searching || formInvalid">
+							<b-button variant="primary" type="submit">
+
 								<font-awesome-icon v-if="searching" icon="circle-notch" spin fixed-width />
 								<span v-if="searching">Searching...</span>
 								<span v-else>Search</span>
@@ -79,27 +88,32 @@
 			</b-col>
 			<b-col cols="12" lg="8" xl="9">
 				<b-card no-body>
-					<b-row v-if="!searched">
+					<b-row v-if="!searched && showSearchForm">
 						<b-col cols="12">
 							<empty-result>
 								Search NPI
 								<template #content>
-									Enter a state and organization name to search facilities in the NPI registry.
+
+									Enter state, city, zip code or organization name to search facilities in the NPI registry.
+
 								</template>
 							</empty-result>
 						</b-col>
 					</b-row>
+
 					<b-row v-else-if="hasError">
 						<b-col cols="12">
 							<error-alert>
 								{{ error }}
 								<template #content>
 									<p class="mb-0">
-										The NPI registry is maintained by CMS and may be experiencing technical
+										The NPI registry is maintained by CMS and may be experiencing
+										technical
 										difficulties.
 									</p>
 									<p class="mb-0">
-										Please try again in a few moments, or report this issue to support if the
+										Please try again in a few moments, or report this issue to support
+										if the
 										problem persists.
 									</p>
 								</template>
@@ -115,77 +129,77 @@
 
 								<b-list-group flush>
 									<b-list-group-item v-for="npiResult in results" :key="npiResult.number">
-										<NPIOrganization
-											:value="npiResult"
-											v-slot="{
-												active,
-												contactFullName,
-												lastUpdated,
-												name,
-												number,
-												fullPrimaryAddress,
-												value,
-											}"
-										>
-											<div class="d-flex justify-content-between align-items-start">
-												<div class="d-flex justify-content-start align-items-top">
-													<b-avatar
-														icon
+										<NPIOrganization :value="npiResult" v-slot="{
+											active,
+											contactFullName,
+											lastUpdated,
+											name,
+											number,
+											fullPrimaryAddress,
+											value,
+										}">
+											<div
+												class="d-flex justify-content-between align-items-start">
+												<div
+													class="d-flex justify-content-start align-items-top">
+													<b-avatar icon
 														:variant="active ? 'primary' : 'light'"
-														class="mr-3 mt-2"
-													>
-														<font-awesome-icon icon="building" fixed-width />
+														class="mr-3 mt-2">
+														<font-awesome-icon icon="building"
+															fixed-width />
 													</b-avatar>
 													<div>
-														<p class="mb-1 small text-muted" title="NPI Number">
+														<p class="mb-1 small text-muted"
+															title="NPI Number">
 															#{{ number }}
 														</p>
-														<h6 class="h6 font-weight-bold mb-1">{{ name }}</h6>
+														<h6 class="h6 font-weight-bold mb-1">{{
+															name }}</h6>
 														<p class="mb-1" title="Primary Address">
-															<font-awesome-icon icon="location-dot" fixed-width />
-															<span>{{ fullPrimaryAddress }}</span>
+															<font-awesome-icon
+																icon="location-dot"
+																fixed-width />
+															<span>{{ fullPrimaryAddress
+															}}</span>
 														</p>
-														<p
-															v-if="contactFullName"
+														<p v-if="contactFullName"
 															class="mb-0 small text-muted"
-															title="Contact Person"
-														>
-															<font-awesome-icon icon="user" fixed-width />
+															title="Contact Person">
+															<font-awesome-icon icon="user"
+																fixed-width />
 															<span>{{ contactFullName }}</span>
 														</p>
 
-														<p
-															v-if="lastUpdated"
+														<p v-if="lastUpdated"
 															class="mt-1 mb-0 small text-muted"
-															title="Last Updated"
-														>
-															<span>Last updated {{ lastUpdated }}</span>
+															title="Last Updated">
+															<span>Last updated {{ lastUpdated
+															}}</span>
 														</p>
 
 														<div>
 															<b-badge
 																v-for="identifier in value.identifiers"
-																:key="identifier.code"
-																pill
-																variant="light"
-															>
-																{{ identifier.identifier }} - {{ identifier.desc }}
+																:key="identifier.code" pill
+																variant="light">
+																{{ identifier.identifier }} -
+																{{ identifier.desc }}
 															</b-badge>
 														</div>
 
 														<div>
 															<b-badge
 																v-for="taxonomy in value.taxonomies"
-																:key="taxonomy.code"
-																pill
-																variant="light"
-															>
-																{{ taxonomy.code }} - {{ taxonomy.desc }}
+																:key="taxonomy.code" pill
+																variant="light">
+																{{ taxonomy.code }} - {{
+																	taxonomy.desc }}
 															</b-badge>
 														</div>
 													</div>
 												</div>
-												<b-button @click="selectedNpiResult(value)" variant="primary">
+												<b-button @click="selectedNpiResult(value)"
+													variant="primary">
 													<font-awesome-icon icon="plus" fixed-width />
 													Add
 												</b-button>
@@ -201,7 +215,8 @@
 							<empty-result>
 								No Results
 								<template #content>
-									No organizations were found in the NPI Registry matching what you provided.
+									No organizations were found in the NPI Registry matching what you
+									provided.
 								</template>
 							</empty-result>
 						</b-col>
@@ -218,12 +233,15 @@
 </template>
 
 <script>
+import { BModal, BButton } from 'bootstrap-vue';
 import { mapGetters } from "vuex";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
 
 export default {
 	name: "ViewAddFacilityNPI",
 	components: {
+		BModal,
+		BButton,
 		NPIOrganization,
 	},
 	data() {
@@ -232,19 +250,19 @@ export default {
 			query: {
 				name: "",
 				state: "",
-				zip: "",  
-      			city: "",
+				zip: "",
+				city: "",
 			},
 			results: [],
 			saving: false,
 			searching: false,
 			searched: false,
+			showSearchForm: true,
 		};
 	},
 	computed: {
 		formInvalid() {
-			const filledFields = Object.values(this.query).filter(value => value !== "").length;
-			return filledFields < 2;
+			return Object.values(this.query).every(value => value === "");
 		},
 		hasError() {
 			return this.error && this.error !== "";
@@ -258,6 +276,15 @@ export default {
 		}),
 	},
 	methods: {
+
+		//method to clear the form
+		clearForm() {
+			this.query.name = "";
+			this.query.state = "";
+			this.query.zip = "";
+			this.query.city = "";
+		},
+
 		async npiLookup() {
 			try {
 				this.error = "";
@@ -267,15 +294,68 @@ export default {
 				const response = await this.$store.dispatch("facilities/npiLookup", {
 					name: this.query.name,
 					state: this.query.state,
+					city: this.query.city,
+					zip: this.query.zip,
 				});
 
 				this.results = response;
+
+				if (this.results.length > 20) {
+					// Clear the results array before showing the message box
+					this.results = [];
+
+					// this.$bvModal.msgBoxOk('There are more than 20 facilities for your search criteria. Please narrow your search.', {
+					// 	title: 'Too Many Results',
+					// 	size: 'md',
+					// 	buttonSize: 'md',
+					// 	centered: true,
+					// 	okVariant: 'primary',
+					// 	headerBgVariant: 'syne',
+					// 	bodyBgVariant: 'lightblue',
+					// 	footerBgVariant: 'light',
+					// 	okTitle: 'OK',
+					// 	cancelTitle: 'Cancel',
+					// 	bodyClass: 'text-primary',
+					// 	hideHeaderClose: true,
+					// 	buttonClass: 'custom-button-class',
+					// 	footerClass: 'd-flex justify-content-center', // Use flex utilities to center the buttons
+					// }).then(() => {
+					// 	this.clearForm();
+					// 	// The results array is already cleared, so no need to further manipulate it
+					// });
+
+
+					this.$bvModal.msgBoxOk('There are more than 20 facilities for your search criteria. Please narrow your search.', {
+						title: 'Too Many Results',
+						size: 'md',
+						buttonSize: 'md',
+						centered: true,
+						okVariant: 'primary',
+						headerBgVariant: 'syne',
+						bodyBgVariant: 'lightblue',
+						footerBgVariant: 'light',
+						okTitle: 'OK',
+						cancelTitle: 'Cancel',
+						bodyClass: 'text-primary body-layout',
+						hideHeaderClose: true,
+						//buttonClass: 'custom-button-class', // Add your custom class for buttons
+						footerClass: 'd-flex justify-content-center',
+					}).then(() => {
+						//this.clearForm();
+						// The results array is already cleared, so no need to further manipulate it
+					});
+
+
+					return;
+				}
 			} catch (e) {
 				this.error = e.response?.data?.message ?? "An error occurred";
 			} finally {
 				this.searching = false;
 			}
 		},
+
+
 		selectedNpiResult(result) {
 			if (!result) {
 				this.$store.dispatch("apiError", {
@@ -336,7 +416,7 @@ export default {
 				const newEntity = await this.$store.dispatch("facilities/create", result);
 
 				this.$router.push({
-					name: "facilities.view",
+					name: "facilities.add",
 					params: {
 						id: newEntity.id,
 					},
@@ -369,3 +449,4 @@ export default {
 	},
 };
 </script>
+
