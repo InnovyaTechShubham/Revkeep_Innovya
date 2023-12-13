@@ -570,7 +570,7 @@
 										>
 											<template #first>
 												<option disabled v-if="!hastitlename" :value="null">
-												   data not fetch from database
+												   Please Select Title 
 												</option>
 											</template>
 										</b-form-select>
@@ -595,21 +595,20 @@
     <!-- Add BootstrapVue grid classes to create a row -->
     <b-row>
       <!-- Column for the dropdown and input field -->
-      <b-col md="4">
-        <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-          <b-form-group label="Contact Type" label-for="type">
-            <!-- Wrapper for select and input fields -->
-            <div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
-              <!-- Dropdown (select) field -->
-              <label :for="'contacType' + index"></label>
-              <select v-model="field.selectedContactType" :name="'contactType' + index" class="form-control mb-3">
-                <option value="phone">Phone</option>
-                <option value="landline">Landline</option>
-              </select>
-			  </div>
-		  </b-form-group>
-		  </validation-provider>
-			</b-col>
+	  <b-col md="4">
+    <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+      <b-form-group label="Contact Type" label-for="type">
+        <!-- Wrapper for select and input fields -->
+        <div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
+          <!-- Dropdown (select) field -->
+          <label :for="'contactType' + index"></label>
+          <select v-model="field.selectedContactType" :name="'contactType' + index" class="form-control mb-3">
+            <option v-for="type in contactTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+          </select>
+        </div>
+      </b-form-group>
+    </validation-provider>
+  </b-col>
 			<b-col md="8">
         <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
           <b-form-group label="Contact Number" label-for="phone">
@@ -918,6 +917,7 @@
 <script type="text/javascript">
 import { mapGetters } from 'vuex';
 import { getValidationState } from "@/validation";
+import axios from 'axios';
 
 export default {
 	name: "FacilityAddForm",
@@ -967,6 +967,8 @@ export default {
 				},
 				selectedContactType: 'phone',
 			},
+			titlename: [],
+			contactTypes: [],
 		
 	  inputFields: [{ selectedContactType: 'phone', phone: '' }],
 		};
@@ -991,6 +993,8 @@ export default {
 		} else {
 			this.loading = false;
 		}
+		this.titlefetch();
+		this.fetchContactTypes();
 	},
 	methods: {
 		getValidationState,
@@ -1092,7 +1096,51 @@ addInputField() {
       // Implement your validation state logic if needed
       return null;
     },
-	
+	    async titlefetch(){
+		try{
+			const url = "/client/facilityTitle";
+				
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+				console.log("check =",response.data);
+
+				 if (response.data && Array.isArray(response.data)) {
+                     for (let i = 0; i < response.data.length; i++) {
+                     this.titlename.push(response.data[i].title);
+                    }
+                 }
+
+                       console.log("Titlename:", this.titlename);
+		}catch (error) {
+            console.error("Error fetching data:", error.message);
+             }
+		},
+		async fetchContactTypes() {
+			try{
+			const url = "/client/facilityTitle";
+				
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+
+				 if (response.data && Array.isArray(response.data)) {
+                     for (let i = 0; i < response.data.length; i++) {
+                     this.contactTypes.push(response.data[i].contact_type);
+                    }
+                 }
+
+                       console.log("contacttype:", this.contactTypes);
+		}catch (error) {
+            console.error("Error fetching data:", error.message);
+             }
+    },
 	},
 };
 </script>
