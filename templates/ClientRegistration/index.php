@@ -263,6 +263,82 @@ echo $this->Form->create($form, [
 			</div>
 		</div>
 
+		<!-- For adding custom organization creation -->
+		<div class="separator">
+				<span class="separator-line"></span>
+				<span class="separator-text">OR</span>
+				<span class="separator-line"></span>
+		</div>
+		
+
+		<div class="row mb-5">
+    <div class="col-lg-4 pr-lg-5 mb-2">
+        <h3 class="h3 text-dark"></h3>
+        <p class="text-muted">
+            Register Your Organization Manually
+        </p>
+    </div>
+    <div class="col-lg-8">
+        <div class="row">
+            <div class="col-12">
+				
+			
+
+                <label for="state">State</label>
+                <!-- State selection control -->
+                <?php
+                echo $this->Form->control(
+                    'state',
+                    [
+                        'id' => 'clientState',
+                        'label' => false,
+                        'class' => 'form-control state',
+                        'options' => $states
+                    ]
+                );
+                ?>
+            </div>
+        </div>
+        <!-- Organization Name input field -->
+        <div class="row">
+            <div class="col-12">
+                <label for="client_name">Organization Name</label>
+                <?php
+                echo $this->Form->control(
+                    'name',
+                    [
+                        'id' => 'clientName',
+                        'label' => false,
+                        'class' => 'form-control companyName',
+                        'placeholder' => 'Your company\'s name',
+                        'autocomplete' => 'off',
+                    ]
+                );
+                ?>
+                <div id="clientNameError" class="text-danger mb-2"></div>
+            </div>
+        </div>
+
+        <!-- Primary NPI number field -->
+		<div class="row">
+            <div class="col-md-12">
+                <?php
+                echo $this->Form->control(
+                    'npi_number',
+                    [
+                        'label' => ['text' => __('Primary NPI Number')],
+                        'class' => 'form-control npiNumber',
+                        'readonly' => false,
+                        'required' => false
+                    ]
+                );
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 		<div class="row mb-5">
 			<div class="col-lg-4 pr-lg-5 mb-2">
 				<h3 class="h3 text-dark">Contact</h3>
@@ -357,6 +433,25 @@ echo $this->Form->create($form, [
 		</div>
 	</div>
 </div>
+<style>
+	.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0; /* Adjust margin as needed */
+}
+
+.separator-line {
+    flex: 1;
+    border-top: 1px solid #000; /* Adjust line properties */
+    margin: 0 10px; /* Adjust spacing */
+}
+
+.separator-text {
+    padding: 0 10px; /* Adjust spacing around the text */
+}
+
+</style>
 <?php
 echo $this->Form->end();
 ?>
