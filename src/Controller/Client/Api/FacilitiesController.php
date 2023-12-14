@@ -92,7 +92,37 @@ class FacilitiesController extends ApiController
 	 */
 	public function add(): void
 	{
+		$npiNumber = $this->getRequest()->getData('npi_number');
+    
+    $existingEntity = $this->ClientEmployees
+        ->find()
+        ->where(['npi_number' => $npiNumber])
+        ->first();
+
+    if ($existingEntity) {
+        $this->setResponse([
+            'error' => 'NPI number already exists in the database',
+            'existing_entity' => $existingEntity
+        ]);
+        return;
+    }
+
 		$entity = $this->Facilities->newEntity($this->getRequest()->getData(), [
+			// 'fields' => [
+			// 	'active',
+			// 	'name',
+			// 	'facility_type_id',
+			// 	'npi_number',
+			// 	'city',
+			// 	'zip',
+			// 	'state',
+			// 	'phone',
+			// 	'enumeration_type',
+			// 	'street_address_1',
+			// 	'street_address_2',
+			// 	'primary_taxonomy'
+				
+			// ],
 			'associated' => [
 				'Services'
 			],

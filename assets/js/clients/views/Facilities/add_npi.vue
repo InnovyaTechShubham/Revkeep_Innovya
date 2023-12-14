@@ -8,7 +8,7 @@
 			<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'facilities.add' }" title="Add Facility">
 					<font-awesome-icon icon="pencil" fixed-width />
-					<span>Manual Create</span>
+					<span>Manual Createe</span>
 				</b-button>
 			</template>
 		</page-header>
@@ -26,6 +26,7 @@
 								    name="name"
 								    type="text"
 								    v-model="query.name"
+									:disabled="saving || searching"
 								    
 								  />
 	
@@ -76,9 +77,10 @@
 
 						</b-card-body>
 						<b-card-footer class="text-right">
-							<b-button variant="primary" type="submit">
-
+							<b-button variant="primary" type="submit"
+								:disabled="searching || saving || formInvalid">
 								<font-awesome-icon v-if="searching" icon="circle-notch" spin fixed-width />
+								
 								<span v-if="searching">Searching...</span>
 								<span v-else>Search</span>
 							</b-button>
@@ -128,7 +130,7 @@
 								</b-card-header>
 
 								<b-list-group flush>
-									<b-list-group-item v-for="npiResult in results" :key="npiResult.number">
+									<b-list-group-item v-for="(npiResult, index) in results" :key="index">
 										<NPIOrganization :value="npiResult" v-slot="{
 											active,
 											contactFullName,
@@ -262,8 +264,17 @@ export default {
 	},
 	computed: {
 		formInvalid() {
-			return Object.values(this.query).every(value => value === "");
+			if (
+				this.query.name === "" &&
+				// this.query.state === "" &&
+				this.query.city === "" &&
+				this.query.zip === ""
+			) {
+				return true;
+			}
+			return false;
 		},
+		
 		hasError() {
 			return this.error && this.error !== "";
 		},
@@ -284,7 +295,6 @@ export default {
 			this.query.zip = "";
 			this.query.city = "";
 		},
-
 		async npiLookup() {
 			try {
 				this.error = "";
@@ -296,11 +306,13 @@ export default {
 					state: this.query.state,
 					city: this.query.city,
 					zip: this.query.zip,
+					exact: true,
 				});
 
 				this.results = response;
+				console.log("Response=", response);
 
-				if (this.results.length > 20) {
+				if (this.results.length > 30) {
 					// Clear the results array before showing the message box
 					this.results = [];
 
@@ -325,7 +337,7 @@ export default {
 					// });
 
 
-					this.$bvModal.msgBoxOk('There are more than 20 facilities for your search criteria. Please narrow your search.', {
+					this.$bvModal.msgBoxOk('There are more than 30 facilities for your search criteria. Please narrow your search.', {
 						title: 'Too Many Results',
 						size: 'md',
 						buttonSize: 'md',
@@ -357,6 +369,7 @@ export default {
 
 
 		selectedNpiResult(result) {
+			console.log("NPI_result", result)
 			if (!result) {
 				this.$store.dispatch("apiError", {
 					error: e,
@@ -375,13 +388,26 @@ export default {
 			// Try to set facility type as 'Other'
 			// @todo Make this better
 			const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
-
+			// const Locaddress = result.addresses[0];
+			// const Locaddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
 			var entity = {
-				active: true,
+				id: this.id,
 				name: result.name,
 				facility_type_id: facilityTypeId,
+				// location_address: `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}, TEL Number ${Locaddress.telephone_number ?? ""}, Type ${Locaddress.address_type ?? ""}`,
+				active: result.active,
 				npi_number: result.number ?? "",
 				npi_manual: false,
+				state: result.addresses[0]?.state ?? "",
+				enumeration_type: result.enumeration_type,
+				client_owned: true,
+				// address_1: concatenatedAddress,
+				// address_2:LocconcatenatedAddress ,
+				// taxonomy_code: result.taxonomies[0]?.code ?? "",
+				// taxonomy_desc: result.taxonomies[0]?.desc ?? "",
+				// taxonomy_group: result.taxonomies[0]?.taxonomy_group ?? "",
+				// taxonomy_license: result.taxonomies[0]?.license ?? "",
+				// taxonomy_state: result.taxonomies[0]?.state ?? "",
 			};
 
 			const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
@@ -395,6 +421,7 @@ export default {
 				entity.city = locationAddress.city ?? "";
 				entity.state = locationAddress.state ?? "";
 				entity.zip = locationAddress.postal_code ?? "";
+				entity.location_address= `${locationAddress.address_1 ?? ""}, ${locationAddress.city ?? ""}, ${locationAddress.state ?? ""}, ${locationAddress.postal_code ?? ""}, ${locationAddress.country_name ?? ""}, TEL Number ${locationAddress.telephone_number ?? ""}, Type ${locationAddress.address_type ?? ""}`;
 			} else {
 				console.warn("Unable to parse location address", locationAddress);
 			}
@@ -405,18 +432,45 @@ export default {
 			} else {
 				console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
 			}
+			console.log("Entity=",entity)
 
 			this.createFromResult(entity);
-			this.reset();
+			// console.log("log=",this.createFromResult(entity))
+			// this.reset();
 		},
 		async createFromResult(result) {
 			try {
+				console.log("inside result:", result)
 				this.saving = true;
+				// const address = result.addresses[0];
+				// console.log("address", address)
+
+				// const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}, TEL Number ${address.telephone_number ?? ""}, Type ${address.address_type ?? ""}`;	
+				// const Locaddress = result.addresses[0];
+				// const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}, TEL Number ${Locaddress.telephone_number ?? ""}, Type ${Locaddress.address_type ?? ""}`;	
+				// console.log("Attempting to create facility from ", result);
+				// console.log("address",concatenatedAddress);
+				// const entity = {
+				// 	name: result.name,
+				// 	npi_number: result.number,
+				// 	active: result.active,
+				// 	state: result.addresses[0]?.state ?? "",
+				// 	enumeration_type: result.enumeration_type,
+				// 	address_1: concatenatedAddress,
+				// 	address_2:LocconcatenatedAddress ,
+				// 	taxonomy_code: result.taxonomies[0]?.code ?? "",
+				// 	taxonomy_desc: result.taxonomies[0]?.desc ?? "",
+				// 	taxonomy_group: result.taxonomies[0]?.taxonomy_group ?? "",
+				// 	taxonomy_license: result.taxonomies[0]?.license ?? "",
+				// 	taxonomy_state: result.taxonomies[0]?.state ?? "",
+				// };
 
 				const newEntity = await this.$store.dispatch("facilities/create", result);
-
+				// await this.$store.dispatch("facilities/add", result);
+				// await this.$store.dispatch("facilities/save", this.entity);
+				console.log("new=", newEntity)
 				this.$router.push({
-					name: "facilities.add",
+					name: "facilities.edit",
 					params: {
 						id: newEntity.id,
 					},
