@@ -80,21 +80,23 @@ class NpiLookupController extends AppController
 		// Get form values
 		$companyName = $this->getRequest()->getQuery('name');
 		$companyState = $this->getRequest()->getQuery('state');
+		$companyCity = $this->getRequest()->getQuery('city');
+		$companyZip = $this->getRequest()->getQuery('zip');
 
 		// Require a company name to search NPI API
-		if (empty($companyName)) {
-			$this->setResponse($this->getResponse()->withStatus(400));
-			$this->set('error', __('A company name must be provided.'));
+		// if (empty($companyName)) {
+		// 	$this->setResponse($this->getResponse()->withStatus(400));
+		// 	$this->set('error', __('A company name must be provided.'));
 
-			return;
-		}
+		// 	return;
+		// }
 
 		// Make a cache for this input
-		$cacheKey = $this->generateCacheKey($companyName, $companyState);
+		$cacheKey = $this->generateCacheKey($companyName, $companyState, $companyCity, $companyZip);
 		$results = Cache::read($cacheKey, 'npi');
 
 		if ($results === false || $results === null) {
-			$results = $this->searchOrganization($npiService, $companyName, $companyState);
+			$results = $this->searchOrganization($npiService, $companyName, $companyState, $companyCity, $companyZip);
 			Cache::write($cacheKey, $results, 'npi');
 		}
 
@@ -107,11 +109,14 @@ class NpiLookupController extends AppController
 	 * @param \App\Service\NpiServiceInterface $npiService
 	 * @param string $companyName
 	 * @param string $companyState
+	 * @param string $companyCity
+	 * @param string $companyZip
+	 * 
 	 * @return array
 	 */
-	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState): array
+	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState, string $companyCity, string $companyZip): array
 	{
-		return $npiService->searchOrganizationByNameAndState($companyName, $companyState);
+		return $npiService->searchOrganizationByNameAndStateAndCityAndZip($companyName, $companyState, $companyCity, $companyZip);
 	}
 
 	/**
@@ -119,13 +124,18 @@ class NpiLookupController extends AppController
 	 *
 	 * @param string $companyName
 	 * @param string $companyState
+	 * @param string $companyCity
+	 * @param string $companyZip
 	 * @return string
 	 */
-	private function generateCacheKey(string $companyName, string $companyState): string
+	private function generateCacheKey(string $companyName, string $companyState, string $companyCity, string $companyZip): string
 	{
 		$sanitizedName = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyName));
 		$sanitizedState = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyState));
+		$sanitizedCity = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyCity));
+		$sanitizedZip = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyZip));
 
-		return $sanitizedName . '_' . $sanitizedState;
+
+		return $sanitizedName . '_' . $sanitizedState. '_' .$sanitizedCity . '_' . $sanitizedZip;
 	}
 }

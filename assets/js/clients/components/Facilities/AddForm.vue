@@ -279,7 +279,7 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<validation-provider
+								<!-- <validation-provider
 									vid="chain_name"
 									name="Chain"
 									:rules="{ required: false, max: 250 }"
@@ -290,6 +290,72 @@
 											name="chain_name"
 											type="text"
 											v-model="entity.chain_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider> -->
+
+								<validation-provider
+									vid="division"
+									name="Division"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Division" label-for="division" label-cols-lg="4">
+										<b-form-input
+											name="divison"
+											type="text"
+											v-model="entity.divison"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="region"
+									name="Region"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Region" label-for="region" label-cols-lg="4">
+										<b-form-input
+											name="region"
+											type="text"
+											v-model="entity.region"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="territory"
+									name="Territory"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input
+											name="territory"
+											type="text"
+											v-model="entity.territory"
 											:state="getValidationState(validationContext)"
 											:disabled="saving"
 										/>
@@ -345,29 +411,7 @@
 									</b-form-group>
 								</validation-provider>
 
-								<validation-provider
-									vid="territory"
-									name="Territory"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-										<b-form-input
-											name="territory"
-											type="text"
-											v-model="entity.territory"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
+								<!-- <validation-provider
 									vid="rvp_name"
 									name="RVP"
 									:rules="{ required: false, max: 60 }"
@@ -387,7 +431,7 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
 							</b-card-body>
 						</b-collapse>
 						<b-card-header header-tag="header" role="tab" class="p-0">
@@ -976,6 +1020,8 @@ export default {
 				npi_manual: null,
 				primary_taxonomy: null,
 				client_owned: false,
+				divison: null,
+				region:null,
 				chain_name: null,
 				area_name: null,
 				ou_number: null,
