@@ -493,14 +493,14 @@
 
 							
 							 <b-input-group-append>
-                                     <b-button variant="primary" class="mb-1"  v-b-toggle.collapseOpenForm>
+                                     <b-button variant="primary" class="mb-1" @click="createNewForm">
 				                 	<font-awesome-icon icon="plus" fixed-width />
 				                 	<span>Add Contact</span>
 			                            	</b-button>
                                     </b-input-group-append>
                
 					
-						<b-collapse id="collapseOpenForm">
+									<form v-for="(form, index) in forms" :key="index" class="mb-2">
 					 <b-card body>
 					  <validation-provider
 									vid="f_name"
@@ -590,21 +590,36 @@
 									/>
 								</b-form-group>
 							</validation-provider>
-							<template>
+						
   <div>
     <!-- Add BootstrapVue grid classes to create a row -->
     <b-row>
       <!-- Column for the dropdown and input field -->
 	  <b-col md="4">
     <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-      <b-form-group label="Contact Type" label-for="type">
+      <b-form-group label="Contact Number Type" label-for="type">
         <!-- Wrapper for select and input fields -->
         <div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
           <!-- Dropdown (select) field -->
           <label :for="'contactType' + index"></label>
-          <select v-model="field.selectedContactType" :name="'contactType' + index" class="form-control mb-3">
-            <option v-for="type in contactTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
-          </select>
+          <b-input-group  class="mb-3">
+										<b-form-select
+											name="conatct_id"
+											v-model="entity.contact_id"
+											:options="contactTypes"
+											:disabled="saving || loadingcontactTypes"
+											:state="getValidationState(validationContext)"
+											value-field="id"
+											text-field="full_name"
+											required
+										>
+											<template #first>
+												<option disabled v-if="!hascontactTypes" :value="null">
+												   Please Select Contact Type
+												</option>
+											</template>
+										</b-form-select>
+										</b-input-group>
         </div>
       </b-form-group>
     </validation-provider>
@@ -616,7 +631,7 @@
               <b-form-input
                 :name="'phone' + index"
                 type="text"
-                v-model="inputField.phone"
+                v-model="entity.phone"
                 v-mask="'(###) ###-####'"
                 :state="getValidationState(validationContext)"
                 :disabled="saving"
@@ -645,7 +660,7 @@
       </b-col>
     </b-row>
   </div>
-</template>
+
                								
 
 								<validation-provider
@@ -669,21 +684,29 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-					</b-card>
-				</b-collapse>
-							</b-card-body>
+					 <b-card-footer>
+						<b-button type="button" variant="light" @click="removeForm(index)" >
+                                 <span>Cancel</span>
+                                </b-button>
+					 </b-card-footer>		
+								
+
+								<b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
+                                  <b-form-input
+                                   id="newCustomName"
+                                   name="newCustomeTitleName"
+                                   type="text"
+                                   v-model="entity.title_id"
+                                   placeholder="Add custom Title"
+                                   :disabled="saving"
+                                    />
+                              </b-modal>
+
+					    </b-card>
+				        </form>
+						</b-card-body>
 						</b-collapse>
-			  
-  <b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
-    <b-form-input
-      id="newCustomName"
-      name="newCustomeTitleName"
-      type="text"
-      v-model="newAuditType"
-      placeholder="Add custom Title"
-      :disabled="saving"
-    />
-  </b-modal>
+						
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -943,6 +966,7 @@ export default {
 				f_name: null,
 				l_name: null,
 				title_id: null,
+				contact_id: null,
 				street_address_1: null,
 				street_address_2: null,
 				city: null,
@@ -969,6 +993,7 @@ export default {
 			},
 			titlename: [],
 			contactTypes: [],
+			forms: [],
 		
 	  inputFields: [{ selectedContactType: 'phone', phone: '' }],
 		};
@@ -1035,7 +1060,7 @@ export default {
 
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
-
+				
 				this.$store.dispatch("facilities/getAll");
 				this.$store.dispatch("facilities/getActive");
 			} catch (e) {
@@ -1141,6 +1166,16 @@ addInputField() {
             console.error("Error fetching data:", error.message);
              }
     },
+	createNewForm() {
+        // Push an empty object to the forms array
+        this.forms.push({});
+      },
+      removeForm(index) {
+        // Remove the form at the specified index
+        this.forms.splice(index, 1);
+      },
+
+	  
 	},
 };
 </script>
