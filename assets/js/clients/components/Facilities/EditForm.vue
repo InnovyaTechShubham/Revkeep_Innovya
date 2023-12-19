@@ -22,8 +22,7 @@
 									v-model="entity.name"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
-									required
-									placeholder="Required"
+									:readonly=true
 								/>
 								<b-input-group-append>
 									<b-button
@@ -99,7 +98,7 @@
 								type="text"
 								v-model="entity.disp_name"
 								:state="getValidationState(validationContext)"
-								:disabled="saving"
+								
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -135,6 +134,106 @@
 					</validation-provider>
 
 					<validation-provider
+						vid="street_address_1"
+						name="Street Address"
+						:rules="{ required: false, max: 50 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
+							<b-form-input
+								name="street_address_1"
+								type="text"
+								v-model="entity.street_address_1"
+								placeholder=""
+								class="rounded-b-0"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="city"
+						name="City"
+						:rules="{ required: false, max: 50 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="City" label-for="city" label-cols-lg="4">
+							<b-form-input
+								name="city"
+								type="text"
+								v-model="entity.city"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="state"
+						name="State"
+						:rules="{ required: false, max: 2 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="State" label-for="state" label-cols-lg="4">
+							<b-form-select
+								name="state"
+								v-model="entity.state"
+								:options="states"
+								value-field="abbreviation"
+								text-field="name"
+								:state="getValidationState(validationContext)"
+								:disabled=true
+								
+							>
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="zip"
+						name="Zip"
+						:rules="{ required: false, max: 20, alpha_num: true }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
+							<b-form-input
+								name="zip"
+								type="text"
+								v-model="entity.zip"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<!-- <validation-provider
 						vid="area_name"
 						name="Area"
 						:rules="{ required: false, max: 60 }"
@@ -220,7 +319,7 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 
 					<validation-provider
 						vid="active"
@@ -390,7 +489,7 @@
 											value-field="abbreviation"
 											text-field="name"
 											:state="getValidationState(validationContext)"
-											:disabled="saving"
+											:disabled=true
 										>
 											<template #first>
 												<option :value="null" />
@@ -779,7 +878,7 @@ export default {
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
-				client_owned: false,
+				client_owned: true,
 				chain_name: null,
 				area_name: null,
 				ou_number: null,
