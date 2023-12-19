@@ -76,7 +76,8 @@
 
 						</b-card-body>
 						<b-card-footer class="text-right">
-							<b-button variant="primary" type="submit">
+							<b-button variant="primary" type="submit"
+							:disabled="searching || saving || formInvalid">
 
 								<font-awesome-icon v-if="searching" icon="circle-notch" spin fixed-width />
 								<span v-if="searching">Searching...</span>
@@ -300,7 +301,7 @@ export default {
 
 				this.results = response;
 
-				if (this.results.length > 20) {
+				if (this.results.length > 30) {
 					// Clear the results array before showing the message box
 					this.results = [];
 
@@ -325,7 +326,7 @@ export default {
 					// });
 
 
-					this.$bvModal.msgBoxOk('There are more than 20 facilities for your search criteria. Please narrow your search.', {
+					this.$bvModal.msgBoxOk('There are more than 30 facilities for your search criteria. Please narrow your search.', {
 						title: 'Too Many Results',
 						size: 'md',
 						buttonSize: 'md',
@@ -416,7 +417,7 @@ export default {
 				const newEntity = await this.$store.dispatch("facilities/create", result);
 
 				this.$router.push({
-					name: "facilities.add",
+					name: "facilities.edit",
 					params: {
 						id: newEntity.id,
 					},

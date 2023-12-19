@@ -274,7 +274,7 @@
 								variant="light"
 								role="tab"
 								class="text-left px-4 py-3 m-0"
-								>Details</b-button
+								>Detail</b-button
 							>
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
@@ -441,7 +441,7 @@
 								variant="light"
 								role="tab"
 								class="text-left px-4 py-3 m-0"
-								>Contacts</b-button
+								>Contact</b-button
 							>
 						</b-card-header>
 						<b-collapse id="collapseContact" role="tabpanel">
