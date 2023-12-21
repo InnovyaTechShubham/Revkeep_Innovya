@@ -69,3 +69,6 @@ copy-README.md
 # Node.js #
 ##########################
 node_modules/*
+
+# Config #
+config/app.php

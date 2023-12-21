@@ -53,32 +53,32 @@ class ParserPostRequestController extends AppController
                     $output_file_path = "../storage/$fileName.json";
                     file_put_contents($output_file_path, json_encode($item, JSON_PRETTY_PRINT));
                    
-                    $options = new Options();
-                    $options->set('isHtml5ParserEnabled', true);
-                    $options->set('isPhpEnabled', true);
+                    // $options = new Options();
+                    // $options->set('isHtml5ParserEnabled', true);
+                    // $options->set('isPhpEnabled', true);
  
-                    $dompdf = new Dompdf($options);
-                    $dompdf->loadHtml('<h1>' . print_r($item['AllNM1'], true) . '</h1>');
-                    $dompdf->setPaper('A4', 'portrait');
-                    $dompdf->render();
+                    // $dompdf = new Dompdf($options);
+                    // $dompdf->loadHtml('<h1>' . print_r($item['AllNM1'], true) . '</h1>');
+                    // $dompdf->setPaper('A4', 'portrait');
+                    // $dompdf->render();
                    
-                    $pdf_file_name = $item['Loop2110'][0]['DTM_ServiceDate'][0]['Date_02'].$item['AllNM1']['NM1_PatientName']['ResponseContactFirstName_04'].$item['AllNM1']['NM1_PatientName']['ResponseContactMiddleName_05'].$item['AllNM1']['NM1_PatientName']['ResponseContactLastorOrganizationName_03'];
-                    $pdf_final = $pdf_file_name.".pdf";
-                    $pdf_file_path = "../storage/incoming-documents/$pdf_final";
-                    file_put_contents($pdf_file_path, $dompdf->output());
+                    // $pdf_file_name = $item['Loop2110'][0]['DTM_ServiceDate'][0]['Date_02'].$item['AllNM1']['NM1_PatientName']['ResponseContactFirstName_04'].$item['AllNM1']['NM1_PatientName']['ResponseContactMiddleName_05'].$item['AllNM1']['NM1_PatientName']['ResponseContactLastorOrganizationName_03'];
+                    // $pdf_final = $pdf_file_name.".pdf";
+                    // $pdf_file_path = "../storage/incoming-documents/$pdf_final";
+                    // file_put_contents($pdf_file_path, $dompdf->output());
  
-                    // Save the PDF entry to the database
-                    $incomingDocument = new IncomingDocumentsTable();
-                    $newDocument = $incomingDocument->newEntity([
-                        'original_name' => $pdf_final,
-                        'file_name' => $pdf_final
-                    ]);
+                    // // Save the PDF entry to the database
+                    // $incomingDocument = new IncomingDocumentsTable();
+                    // $newDocument = $incomingDocument->newEntity([
+                    //     'original_name' => $pdf_final,
+                    //     'file_name' => $pdf_final
+                    // ]);
  
-                    if ($incomingDocument->save($newDocument)) {
-                        echo "PDF '$pdf_file_name' saved successfully.\n";
-                    } else {
-                        echo "Error saving PDF '$pdf_file_name' entry to the database.\n";
-                    }
+                    // if ($incomingDocument->save($newDocument)) {
+                    //     echo "PDF '$pdf_file_name' saved successfully.\n";
+                    // } else {
+                    //     echo "Error saving PDF '$pdf_file_name' entry to the database.\n";
+                    // }
  
                     $iteration++;
                 }

@@ -27,6 +27,7 @@ class FacilitiesAddContactController extends AppController
         // Query all the information from the case_requests table
         $Agency = $this->Agency->find()->toArray();
 
+
         // Create a response object with JSON data
         $response = $this->response->withType('application/json');
         $response = $response->withStringBody(json_encode($Agency));
@@ -34,3 +35,6 @@ class FacilitiesAddContactController extends AppController
         return $response;
     } 
     }
+
+        
+        

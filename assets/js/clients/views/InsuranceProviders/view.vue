@@ -202,9 +202,9 @@ export default {
 				console.log("working");
 				this.entity.appeal_levels.forEach((item,index)=>{
 					console.log("out=",item._joinData);
-					this.sortedAppealLevels.push({id:item._joinData.id , label:item._joinData.label , daysToRespond:item._joinData.days_to_respond});
+					this.sortedAppealLevels.push({id:item._joinData.id , label:item._joinData.label , daysToRespond:item._joinData.days_to_respond, appeal_level_id:item._joinData.appeal_level_id, order_number: item._joinData.order_number,});
 				});
-				this.sortedAppealLevels.sort((a, b) => a.id - b.id);
+				this.sortedAppealLevels.sort((a, b) => a.order_number - b.order_number);
 				console.log("sorted array=",this.sortedAppealLevels);
 			}
 		},
