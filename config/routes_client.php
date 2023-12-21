@@ -974,5 +974,15 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		'_method' => 'POST'
 	]);
+	$builder->connect('/facilityTitle', [
+		'controller' => 'FacilitiesAddContact',
+		'action' => 'index',
+	]);
+
+	$builder->connect('/facilityAddForms', [
+		'controller' => 'FacilityAddForm',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
 
 });

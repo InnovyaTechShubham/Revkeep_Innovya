@@ -80,22 +80,28 @@ class NpiLookupController extends AppController
 		// Get form values
 		$companyName = $this->getRequest()->getQuery('name');
 		$companyState = $this->getRequest()->getQuery('state');
+		$companyCity = $this->getRequest()->getQuery('city');
+		$companyZip = $this->getRequest()->getQuery('zip');
 
 		// Require a company name to search NPI API
-		if (empty($companyName)) {
-			$this->setResponse($this->getResponse()->withStatus(400));
-			$this->set('error', __('A company name must be provided.'));
+		// if (empty($companyName)) {
+		// 	$this->setResponse($this->getResponse()->withStatus(400));
+		// 	$this->set('error', __('A company name must be provided.'));
 
-			return;
-		}
+		// 	return;
+		// }
 
 		// Make a cache for this input
-		$cacheKey = $this->generateCacheKey($companyName, $companyState);
+		$cacheKey = $this->generateCacheKey($companyName, $companyState, $companyCity, $companyZip);
 		$results = Cache::read($cacheKey, 'npi');
 
 		if ($results === false || $results === null) {
-			$results = $this->searchOrganization($npiService, $companyName, $companyState);
+			$results = $this->searchOrganization($npiService, $companyName, $companyState , $companyCity , $companyZip);
 			Cache::write($cacheKey, $results, 'npi');
+			// $companyName='';
+			// $companyState='';
+			// $companyCity='';
+			// $companyZip='';
 		}
 
 		$this->set(compact('results'));
@@ -109,9 +115,10 @@ class NpiLookupController extends AppController
 	 * @param string $companyState
 	 * @return array
 	 */
-	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState): array
+	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState , string $companyCity , string $companyZip): array
 	{
-		return $npiService->searchOrganizationByNameAndState($companyName, $companyState);
+		// return $npiService->searchOrganizationByNameAndState($companyName, $companyState);
+		return $npiService->searchOrganizationByNameAndStateAndCityAndZip($companyName, $companyState , $companyCity , $companyZip);
 	}
 
 	/**
