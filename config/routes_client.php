@@ -974,5 +974,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		'_method' => 'POST'
 	]);
+	$builder->connect('/multiplefacility', [
+		'controller' => 'Multiplefacility',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
 
 });
