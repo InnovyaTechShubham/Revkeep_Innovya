@@ -936,9 +936,9 @@
 								>
 									<b-form-group label="Division" label-for="division" label-cols-lg="4">
 										<b-form-input
-											name="division"
+											name="divison"
 											type="text"
-											v-model="entity.division"
+											v-model="entity.divison"
 											:state="getValidationState(validationContext)"
 											:disabled="saving"
 										/>
@@ -1297,13 +1297,13 @@
 
               <!-- Button inside the input group to remove the corresponding field -->
               <b-input-group-append>
-                <b-button @click="removeInputField(index)" v-if="inputFields.length > 1">
-                  <font-awesome-icon icon="times" fixed-width />
+                <b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+                  <font-awesome-icon icon="minus" fixed-width />
                 </b-button>
 				 <!-- Button to add a new input field -->
-				<b-button variant="primary" @click="addInputField">
-            		<font-awesome-icon icon="plus" fixed-width />
-          		</b-button>
+				 <b-button variant="primary" @click="addInputField">
+            <font-awesome-icon icon="plus" fixed-width />
+          </b-button>
               </b-input-group-append>
             </b-input-group>
 
@@ -1576,55 +1576,12 @@
 											:disabled="saving"
 										/>
 									</b-form-group> -->
-
-									<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
-									<loading-indicator v-if="loadingServices && services.length <= 0" />
-									<b-input-group>
-										<b-form-input type="text" name="serviceSearch" v-model="searchQuery"
-											:disabled="saving || loadingServices || formDisabled"
-											placeholder="Search for a Service..." @input="filterServices" />
-										<b-input-group-append>
-											<b-input-group-text>
-												<font-awesome-icon icon="search" fixed-width />
-											</b-input-group-text>
-										</b-input-group-append>
-									</b-input-group>
-									<div>
-										<!-- <b-list-group v-if="selectedServices.length > 0">
-											<b-list-group-item v-for="service in selectedServices" :key="service.id">
-												{{ service.name }}
-												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
-											</b-list-group-item>
-										</b-list-group> -->
-										<b-list-group v-if="selectedServices.length > 0">
-											<b-list-group-item v-for="service in selectedServices" :key="service.id">
-												<div class="d-flex justify-content-between align-items-center">
-													<div>{{ service.name }}</div>
-													<b-btn @click="deselectService(service)" size="sm">
-														<!-- <b-icon icon="x"></b-icon> -->
-														<font-awesome-icon icon="fa-solid fa-xmark" />
-													</b-btn>
-												</div>
-											</b-list-group-item>
-										</b-list-group>
-
-									</div>
-									<div v-if="filteredServices.length > 0">
-										<b-list-group>
-											<b-list-group-item v-for="service in filteredServices" :key="service.id"
-												@click="selectService(service)">
-												{{ service.name }}
-											</b-list-group-item>
-										</b-list-group>
-									</div>
-								</b-form-group>
 								
-
 								<!-- Search and Add Services Section -->
-								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4"> -->
+								<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
 								<!-- Custom search input for services -->
-								<!-- <loading-indicator v-if="loadingServices && availableServices.length <= 0" /> -->
-								<!-- <b-input-group>
+								<loading-indicator v-if="loadingServices && availableServices.length <= 0" />
+								<b-input-group>
 									<b-form-input
 									
 									v-model="searchQuery"
@@ -1637,90 +1594,72 @@
 									<b-input-group-append>
 									<b-button @click="searchServices">Search</b-button>
 									</b-input-group-append>
-								</b-input-group> -->
+								</b-input-group>
 
 								 <!-- List of matching services -->
-								 <!-- <b-form-select
+								 <b-form-select
 									v-model="entity.services._ids"
 									:options="matchingServices"
 									:disabled="saving || loadingServices"
 									value-field="id"
 									text-field="name"
 									multiple
-								></b-form-select> -->
+								></b-form-select>
 
 
 								<!-- Button to add selected services -->
-								<!-- <b-button @click="addSelectedServices">Add Selected Services</b-button> -->
-							<!-- </b-form-group> -->
+								<b-button @click="addSelectedServices">Add Selected Services</b-button>
+							</b-form-group>
 							</b-card-body>
 						</b-collapse>
 						<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
 						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
 							class="text-left px-4 py-3 m-0">
-							NPI Information
+							NPI Data
 						</b-button>
 					</b-card-header>
 					<b-collapse id="collapseNpiInformation" role="tabpanel">
 						<b-card-body>
 							<div class="d-flex">
 								<div class="flex-grow-1 pr-3">
-									<!-- <h4 class="card-title">{{ entity.name }}</h4>
-									<h5 class="card-subtitle mb-4">{{ ` ${entity.state}, ${entity.city}` }}</h5> -->
-									<!-- <hr class="my-2"> -->
 									<div class="label-value-row">
-										<div class="label-text">NPI Number:</div>
-										<div class="text">{{ entity.npi_number }}</div>
+										<div class="label-text"> Name:</div>
+										<div class="text-primary">{{ entity.name }}</div>
 									</div>
-									<div class="label-value-row">
-										<div class="label-text">Doing Business As:</div>
-										<div class="text">{{ entity.othername }}</div>
-									</div>
-									<hr class="my-2">
 									<div class="label-value-row">
 										<div class="label-text">Enumeration Type:</div>
-										<div class="text">{{ ` ${entity.enumeration_type} Organization` }}</div>
+										<div class="text-primary">{{ entity.enumeration_type }}</div>
 									</div>
-									
+									<div class="label-value-row">
+										<div class="label-text">NPI Number:</div>
+										<div class="text-primary">{{ entity.npi_number }}</div>
+									</div>
 									<div class="label-value-row">
 										<div class="label-text">Status</div>
-										<div class="text">{{ entity.active ? 'Active' : 'Inactive' }}</div>
+										<div class="text-primary">{{ entity.active ? 'Active' : 'Inactive' }}</div>
 									</div>
-									<div class="label-value-row">
-										<div class="label-text">Organization Subpart ?	</div>
-										<div class="text">{{ entity.organizational_subpart }}</div>
-									</div>
+
 
 									<hr class="my-2">
 
-									<!-- <div class="d-flex">
+									<div class="d-flex">
 										<div class="flex-grow-1 pr-3">
 											<div class="label-value-row">
 												<div class="label-text">Location Address:</div>
 												<div class="text-primary">{{ `${entity.street_address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
-											</div> -->
-											<div class="d-flex">
-												<div class="flex-grow-1 pr-3">
-												<div class="label-value-row">
-													<div class="label-text">Location Address:</div>
-													<div class="text">{{ entity.address_2 }}</div>
 											</div>
 											<div class="label-value-row">
 												<div class="label-text">Phone Number:</div>
-												<div class="text">{{ entity.locationPhoneNumber }}</div>
+												<div class="text-primary">{{ entity.phone }}</div>
 											</div>
 											<hr class="my-1">
 											<div class="label-value-row">
 												<div class="label-text">Mailing Address:</div>
-												<div class="text">{{ `${entity.address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
+												<div class="text-primary">{{ entity.street_address_2 }}</div>
 											</div>
-											<!-- <div class="label-value-row">
-												<div class="label-text">Organization Subpart ?</div>
-												<div class="text-primary">{{ entity.organizational_subpart }}</div>
-											</div> -->
 											<div class="label-value-row">
-												<div class="label-text">Phone Number:</div>
-												<div class="text">{{ entity.mailingPhoneNumber }}</div>
+												<div class="label-text">Fax:</div>
+												<div class="text-primary">{{ entity.fax }}</div>
 											</div>
 										</div>
 									</div>
@@ -1732,12 +1671,12 @@
 										<div class="flex-grow-1 pr-3">
 											<div class="label-value-row">
 												<div class="label-text">Primary Taxonomy:</div>
-												<div class="text">{{ entity.primary_taxonomy }}</div>
+												<div class="text-primary">{{ entity.primary_taxonomy }}</div>
 											</div>
 											<hr class="my-2">
 											<div class="label-value-row">
 												<div class="label-text">Additional Taxonomies:</div>
-												<div class="text">{{ entity.additionalTaxonomies }}</div>
+												<div class="text-primary">{{ entity.additionalTaxonomies }}</div>
 											</div>
 										</div>
 									</div>
@@ -1867,11 +1806,9 @@ export default {
 			npiSearched: false,
 			npiResults: [],
 			searchQuery: '',            // The search query entered by the user
-        	// availableServices: [],               // The list of all available services
-        	// matchingServices: [],       // The list of services matching the search query
-        	filteredServices: [], 
-			selectedServices: [],		 // The list of services selected by the user
-			services: [],
+        	availableServices: [],               // The list of all available services
+        	matchingServices: [],       // The list of services matching the search query
+        	selectedServices: [], 		 // The list of services selected by the user
 			entity: {
 				id: this.id,
 				name: "",
@@ -1881,8 +1818,8 @@ export default {
 				phone: null,
 				fax: null,
 				email: null,
-				// street_address_1: null,
-				// street_address_2: null,
+				street_address_1: null,
+				street_address_2: null,
 				city: null,
 				state: null,
 				zip: null,
@@ -1897,7 +1834,7 @@ export default {
 				area_name: null,
 				ou_number: null,
 				territory: null,
-				// rvp_name: null,
+				rvp_name: null,
 				has_contract: false,
 				contract_start_date: null,
 				contract_end_date: null,
@@ -1905,14 +1842,13 @@ export default {
 				max_return_work_days: null,
 				address_1: null,
 				address_2: null,
-				// taxonomy_code: null,
-				// taxonomy_desc: null,
-				// taxonomy_group: null,
-				// taxonomy_license:  null,
-				// taxonomy_state: null,
-				othername: null,
+				taxonomy_code: null,
+				taxonomy_desc: null,
+				taxonomy_group: null,
+				taxonomy_license:  null,
+				taxonomy_state: null,
+				// othername: null,
 				enumeration_type: null,
-				organizational_subpart:null,
 				services: {
 					_ids: [],
 				},
@@ -1921,9 +1857,6 @@ export default {
 	},
 	computed: 
 	{
-		concatenatedStreetAddress() {
-        return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
-    	},
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -1949,78 +1882,27 @@ export default {
 	},
 	methods: {
 		// Method to search and filter services based on the search query
-			// searchServices() {
-			// 	if (this.searchQuery === '') {
-			// 		// Show all services when the search query is empty
-			// 		this.matchingServices = this.services;
-			// 	} else {
-			// 		// Filter services based on the search query
-			// 		this.matchingServices = this.services.filter(service => {
-			// 			return service.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-			// 		});
-   			// 	}
-			// },
+			searchServices() {
+				if (this.searchQuery === '') {
+					// Show all services when the search query is empty
+					this.matchingServices = this.services;
+				} else {
+					// Filter services based on the search query
+					this.matchingServices = this.services.filter(service => {
+						return service.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+					});
+   				}
+			},
 
 		// Method to add the selected services to the entity
-		// addSelectedServices() {
-		// 	// Add the selected services to entity.services._ids
-		// 	this.entity.services._ids = this.selectedServices.map(service => service.id);
+		addSelectedServices() {
+			// Add the selected services to entity.services._ids
+			this.entity.services._ids = this.selectedServices.map(service => service.id);
 
-		// 	// Clear the search and selected services
-		// 	this.searchQuery = '';
-		// 	this.selectedServices = [];
-		// 	},
-		
-		// filterServices() {
-		// 	// Implement the logic to filter Services based on the search term
-		// 	const searchTerm = this.searchQuery.toLowerCase();
-		// 	this.filteredServices = this.services.filter((service) =>
-		// 		service.name.toLowerCase().includes(searchTerm)
-		// 	);
-		// },
-		filterServices() {
-			// Implement the logic to filter services based on the search term
-			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
-			this.filteredServices = this.services.filter((service) =>
-				service.name.toLowerCase().includes(searchTerm)
-			);
-			},
-
-		selectService(selectedService) {
-			console.log('Selected Service:', selectedService);
-			// Check if the service ID is not already selected
-			if (!this.entity.services._ids.includes(selectedService.id)) {
-				// Push the selected service ID to the array
-				this.entity.services._ids.push(selectedService.id);
-			}
-
-			// Clear the search term and filtered services
+			// Clear the search and selected services
 			this.searchQuery = '';
-			this.filteredServices = [];
+			this.selectedServices = [];
 			},
-
-
-
-		// selectService(selectedService) {
-		// 	console.log('Selected Service:', selectedService);
-		// 	// Check if the facility is not already selected
-		// 	if (!this.selectedServices.some(service => service.id === selectedService.id)) {
-		// 		// Push the selected facility to the array
-		// 	this.selectedServices.push(selectedService);
-		// 	// console.log('Selected Services array:', this.selectedServices);
-		// 	this.entity.services._ids.push(selectedService);
-		// 	// console.log('check:', this.entity.services._ids);
-
-		// 	}
-
-		// 	// Clear the search term and filtered facilities
-		// 	this.searchQuery = '';
-		// 	this.filteredServices = [];
-		// },
-		deselectService(selectedService) {
-			// Remove the selected facility from the array
-			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
-		},
 
 		getValidationState,
 		async getServices() {
@@ -2067,92 +1949,11 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
-		// async save() {
-		// 	try {
-		// 		this.saving = true;
-
-		// 		// const response = await save({
-		// 		// ...this.entity,
-		// 		// services: {
-		// 		// 	_ids: this.selectedServices.map(service => service.id),
-		// 		// },
-		// 		// });
-		// 		console.log("services=", services)
-				
-		// 		// const response = await this.$store.dispatch("facilities/save", this.entity);
-		// 		const response = await save({
-		// 			...this.entity,
-		// 			services: {
-		// 				_ids: this.services_ids,
-		// 			},
-		// 		});
-		// 		console.log("response=",response);
-
-		// 		// this.entity.services = this.selectedServices.map(service => service.id);
-		// 		// this.entity.services = this.selectedServices.map(service => service.id);
-
-		// 		this.$emit("saved", response);
-		// 		this.$emit("update:id", response.id);
-
-		// 		this.$store.dispatch("facilities/getAll");
-		// 		this.$store.dispatch("facilities/getActive");
-		// 	} catch (e) {
-		// 		if (e.response.data.errors) {
-		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-		// 		}
-
-		// 		this.$store.dispatch("apiError", {
-		// 			error: e,
-		// 			title: "Save Failed",
-		// 			message: "Error saving facility details. Please check for errors.",
-		// 			variant: "warning",
-		// 		});
-		// 	} finally {
-		// 		this.saving = false;
-		// 	}
-		// },
-		// async save() {
-		// 	try {
-		// 		this.saving = true;
-		// 		// console.log("Before Response=", response);
-		// 		// const response = await save({
-		// 		// 	...this.entity,
-		// 		// 	services: {
-		// 		// 		_ids: this.services_ids,
-		// 		// 	},
-		// 		// });
-		// // 		console.log("response=",response);
-
-		// 		const response = await this.$store.dispatch("facilities/save",{ ...this.entity, 
-		// 		services: {
-		// 				_ids: this.services_ids,
-		// 			}},);
-		// 		console.log("Response=", response);
-		// 		this.$emit("saved", response);
-		// 		this.$emit("update:id", response.id);
-
-		// 		this.$store.dispatch("facilities/getAll");
-		// 		this.$store.dispatch("facilities/getActive");
-		// 	} catch (e) {
-		// 		if (e.response.data.errors) {
-		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-		// 		}
-
-		// 		this.$store.dispatch("apiError", {
-		// 			error: e,
-		// 			title: "Save Failed",
-		// 			message: "Error saving facility details. Please check for errors.",
-		// 			variant: "warning",
-		// 		});
-		// 	} finally {
-		// 		this.saving = false;
-		// 	}
-		// },
 		async save() {
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-
+				console.log("Response check",response)
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
 
@@ -2219,28 +2020,3 @@ export default {
 	},
 };
 </script>
-<style scoped>
-.compact-card {
-	margin-bottom: 0;
-}
-
-.label-value-row {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	margin-bottom: 0.2rem;
-}
-
-.label-text {
-	font-weight: bold;
-	display: inline-block;
-	width: 150px;
-	margin-right: 10px;
-}
-
-.text {
-	color: #101111d8;
-}
-</style>
-
-

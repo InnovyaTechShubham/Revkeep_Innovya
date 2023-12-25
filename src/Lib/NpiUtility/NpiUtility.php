@@ -181,6 +181,8 @@ class NpiUtility
 	 *
 	 * @param string $name
 	 * @param string $state
+	 * @param string $city
+	 * @param string $zip
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */

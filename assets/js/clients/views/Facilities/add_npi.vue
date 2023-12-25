@@ -340,50 +340,162 @@ export default {
 			if (!confirm(`Add facility '${result.name}'?`)) {
 				return;
 			}
+			console.log("Result=",result);
 
 			// Try to set facility type as 'Other'
 			// @todo Make this better
-			const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
+			// const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
 
-			var entity = {
-				active: true,
+			// const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
+			// if (locationAddress) {
+			// 	// Contact
+			// 	entity.phone = locationAddress.telephone_number ?? "";
+			// 	entity.fax = locationAddress.fax_number ?? "";
+			// 	// Address
+			// 	entity.street_address_1 = locationAddress.address_1 ?? "";
+			// 	entity.street_address_2 = locationAddress.address_2 ?? "";
+			// 	entity.city = locationAddress.city ?? "";
+			// 	entity.state = locationAddress.state ?? "";
+			// 	entity.zip = locationAddress.postal_code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse location address", locationAddress);
+			// }
+
+			// const mailingAddress = result.addresses.find((address) => address.address_purpose == "MAILING");
+			// if (mailingAddress) {
+			// 	// Contact
+			// 	entity.phone = mailingAddress.telephone_number ?? "";
+			// 	entity.fax = mailingAddress.fax_number ?? "";
+			// 	// Address
+			// 	entity.street_address_1 = mailingAddress.address_1 ?? "";
+			// 	entity.street_address_2 = mailingAddress.address_2 ?? "";
+			// 	entity.city = mailingAddress.city ?? "";
+			// 	entity.state = mailingAddress.state ?? "";
+			// 	entity.zip = mailingAddress.postal_code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse mailing address", locationAddress);
+			// }
+	
+		
+			// const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
+			// if (primaryTaxonomy) {
+			// 	entity.primary_taxonomy = primaryTaxonomy.code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
+			// }
+			
+			// var entity = {
+			// 	active: true,
+			// 	name: result.name,
+			// 	facility_type_id: facilityTypeId,
+			// 	npi_number: result.number ?? "",
+			// 	npi_manual: false,
+			// 	address_1:concatenatedAddress,
+			// 	address_2:locationAddress,
+
+			// };
+
+				// Try to set facility type as 'Other'
+				// @todo Make this better
+				const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
+				
+				const address = result.addresses[0];
+				const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}`;
+				const Locaddress = result.addresses[1];
+				const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}`;
+
+				const otherName = result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+				const subPart = result.organizational_subpart ? "YES" : "NO";
+
+				//Initialize primaryTaxonomy and additionalTaxonomies arrays
+				let primaryTaxonomy = "";
+				let additionalTaxonomies = [];
+
+				// Loop through the taxonomies array
+				for (const taxonomy of result.taxonomies) {
+					if (taxonomy.primary) {
+						// If primary taxonomy, concatenate code, desc, and license
+						primaryTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+					} else {
+						// If additional taxonomy, concatenate code, desc, and license, and add to additionalTaxonomies array
+						const additionalTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+						additionalTaxonomies.push(additionalTaxonomy);
+					}
+				}
+				var entity = {
+				active: result.active,
 				name: result.name,
 				facility_type_id: facilityTypeId,
 				npi_number: result.number ?? "",
 				npi_manual: false,
-			};
+				address_1:LocconcatenatedAddress,
+				address_2:concatenatedAddress,
+				state: result.addresses[1]?.state ?? "",
+				othername: otherName,
+				enumeration_type: result.enumeration_type,
+				locationPhoneNumber: result.addresses[1]?.telephone_number ?? "NONE",
+				mailingPhoneNumber: result.addresses[0]?.telephone_number ?? "NONE",
+				primaryTaxonomy: primaryTaxonomy,
+				additionalTaxonomies: additionalTaxonomies.join(', ') || "NONE",
+				organizational_subpart: subPart,
 
-			const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
-			if (locationAddress) {
-				// Contact
-				entity.phone = locationAddress.telephone_number ?? "";
-				entity.fax = locationAddress.fax_number ?? "";
-				// Address
-				entity.street_address_1 = locationAddress.address_1 ?? "";
-				entity.street_address_2 = locationAddress.address_2 ?? "";
-				entity.city = locationAddress.city ?? "";
-				entity.state = locationAddress.state ?? "";
-				entity.zip = locationAddress.postal_code ?? "";
-			} else {
-				console.warn("Unable to parse location address", locationAddress);
-			}
 
-			const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
-			if (primaryTaxonomy) {
-				entity.primary_taxonomy = primaryTaxonomy.code ?? "";
-			} else {
-				console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
-			}
-
+				};
+				console.log("entity=", entity);
 			this.createFromResult(entity);
-			this.reset();
+			// this.reset();
 		},
 		async createFromResult(result) {
 			try {
 				this.saving = true;
+				// // Try to set facility type as 'Other'
+				// // @todo Make this better
+				
+				// const address = result.addresses[0];
+				// const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}`;
+				// const Locaddress = result.addresses[1];
+				// const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}`;
+
+				// const otherName = result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+				// const subPart = result.organizational_subpart ? "YES" : "NO";
+
+				// //Initialize primaryTaxonomy and additionalTaxonomies arrays
+				// let primaryTaxonomy = "";
+				// let additionalTaxonomies = [];
+
+				// // Loop through the taxonomies array
+				// for (const taxonomy of result.taxonomies) {
+				// 	if (taxonomy.primary) {
+				// 		// If primary taxonomy, concatenate code, desc, and license
+				// 		primaryTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+				// 	} else {
+				// 		// If additional taxonomy, concatenate code, desc, and license, and add to additionalTaxonomies array
+				// 		const additionalTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+				// 		additionalTaxonomies.push(additionalTaxonomy);
+				// 	}
+				// }
+				// const entity = {
+				// active: result.active,
+				// name: result.name,
+				// facility_type_id: facilityTypeId,
+				// npi_number: result.number ?? "",
+				// npi_manual: false,
+				// address_1:LocconcatenatedAddress,
+				// address_2:concatenatedAddress,
+				// state: result.addresses[1]?.state ?? "",
+				// othername: otherName,
+				// enumeration_type: result.enumeration_type,
+				// locationPhoneNumber: result.addresses[1]?.telephone_number ?? "NONE",
+				// mailingPhoneNumber: result.addresses[0]?.telephone_number ?? "NONE",
+				// primaryTaxonomy: primaryTaxonomy,
+				// additionalTaxonomies: additionalTaxonomies.join(', ') || "NONE",
+				// organizational_subpart: subPart,
+
+
+				// };
 
 				const newEntity = await this.$store.dispatch("facilities/create", result);
-
+				console.log("New entity=", newEntity);
 				this.$router.push({
 					name: "facilities.edit",
 					params: {
