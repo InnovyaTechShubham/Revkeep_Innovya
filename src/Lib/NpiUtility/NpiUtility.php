@@ -83,25 +83,110 @@ class NpiUtility
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */
-	public static function searchOrganizationByName(string $name, bool $exact = false): array
-	{
-		$orgName = str_replace('*', '', $name);
+	// public static function searchOrganizationByName(string $name, bool $exact = false): array
+	// {
+	// 	$orgName = str_replace('*', '', $name);
 
-		return self::sendRequest([
-			'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
-			'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
-		]);
-	}
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
+	// 	]);
+	// }
+
+	// public static function searchOrganizationByName(string $name, bool $exact = false): array
+	// {
+	// 	$orgName = str_replace('*', '', $name);
+
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'organization_name' => $orgName,
+	// 	]);
+	// }
+
+	// public static function searchOrganizationByCity(string $city, bool $exact = false): array
+	// {
+
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'city' => $city,
+	// 	]);
+	// }
+
+	// public static function searchOrganizationByZip(string $zip, bool $exact = false): array
+	// {
+
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'zip' => $zip,
+	// 	]);
+	// }
+
+	// public static function searchOrganizationByCityAndZip(string $city, string $zip, bool $exact = false): array
+	// {
+
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'city' => $city,
+	// 		'zip' => $zip,
+	// 	]);
+	// }
+
+	// public static function searchOrganizationByStateAndZip(string $state, string $zip, bool $exact = false): array
+	// {
+
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+	// 		'state' => $state,
+	// 		'zip' => $zip,
+	// 	]);
+	// }
+	
+// 	public static function searchOrganizationByName(string $name, bool $exact = false): array
+// {
+//     $orgName = str_replace('*', '', $name);
+
+//     // Retrieve organizations from the API
+//     $allOrganizations = self::sendRequest([
+//         'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+//         'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
+//     ]);
+
+//     // Filter organizations locally based on your criteria
+//     $filteredOrganizations = array_filter($allOrganizations, function ($organization) use ($orgName) {
+//         // Perform additional local filtering
+//         return $this->isPartialMatch($organization['basic']['organization_name'], $orgName);
+//     });
+
+//     return array_values($filteredOrganizations);
+// }
+
+// /**
+//  * Check if the given string is a partial match for the target string.
+//  *
+//  * @param string $haystack
+//  * @param string $needle
+//  * @return bool
+//  */
+// private function isPartialMatch(string $haystack, string $needle): bool
+// {
+//     // Perform your custom partial matching logic here
+//     // For example, using stripos for case-insensitive partial matching
+//     return stripos($haystack, $needle) !== false;
+// }
+
+
 
 	/**
 	 * Lookup by organization name for organizations in the NPI Registry with state filter
 	 *
 	 * @param string $name
 	 * @param string $state
+	 * @param string $city
+	 * @param string $zip
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */
-	public static function searchOrganizationByNameAndState(string $name, string $state, bool $exact = false): array
+	public static function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
 	{
 		$orgName = str_replace('*', '', $name);
 
@@ -109,6 +194,8 @@ class NpiUtility
 			'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
 			'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
 			'state' => $state,
+			'city' => $city,
+			'postal_code' => $zip
 		]);
 
 		return $results;

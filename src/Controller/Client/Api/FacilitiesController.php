@@ -102,11 +102,90 @@ class FacilitiesController extends ApiController
 			$this->Facilities->saveOrFail($entity);
 			$entity = $this->Facilities->getFull($entity->id);
 			$this->set('data', $entity);
+			// Insert debugging code
+			$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+			// $demo = array
+			// (    
+			// 'name'
+			// =>
+			// 'John'
+			// ,    
+			// 'age'
+			// =>
+			// 30
+			// ,    
+			// 'city'
+			// =>
+			// 'New York'
+			// );
+			
+			$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+			$file = fopen($filePath, 'w');
+			fwrite($file, $jsonContent);
+			fclose($file);
+
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
 			$this->setResponse($this->ApiError->entity($e, $entity));
 		}
 	}
+	
+	/**
+ * Add method
+ *
+ * @return void
+ * @throws \Cake\ORM\Exception\PersistenceFailedException When not valid.
+ */
+// public function add(): void
+// {	
+	
+//     $requestData = $this->getRequest()->getData();
+
+	
+// 	// echo '<pre>';
+// 	// var_dump($requestData);
+// 	// echo '</pre>';
+
+//     // Extract selected services
+//     $selectedServices = $requestData['services'] ?? [];
+
+//     // Remove services from main data to prevent validation issues
+//     unset($requestData['services']);
+
+//     $entity = $this->Facilities->newEntity($requestData, [
+//         'associated' => [
+//             'Services',
+//         ],
+//     ]);
+
+//     // Begin a transaction
+//     $this->Facilities->getConnection()->begin();
+
+//     try {
+//         // Save the facility
+//         $this->Facilities->saveOrFail($entity);
+
+//         // Save selected services in facilities_services table
+//         foreach ($selectedServices as $serviceId) {
+//             $serviceEntity = $this->Facilities->Services->get($serviceId);
+//             $this->Facilities->link($entity, [$serviceEntity]);
+//         }
+
+//         // Commit the transaction
+//         $this->Facilities->getConnection()->commit();
+
+//         // Get the full entity
+//         $entity = $this->Facilities->getFull($entity->id);
+//         $this->set('data', $entity);
+//     } catch (PersistenceFailedException $e) {
+//         // Rollback the transaction on failure
+//         $this->Facilities->getConnection()->rollback();
+
+//         $this->Log->saveFailed($e, $entity);
+//         $this->setResponse($this->ApiError->entity($e, $entity));
+//     }
+// }
+
 
 	/**
 	 * View method
@@ -178,7 +257,7 @@ class FacilitiesController extends ApiController
 	public function edit($id): void
 	{
 		$entity = $this->Facilities->get($id);
-
+		
 		try {
 			$entity = $this->Facilities->patchEntity($entity, $this->getRequest()->getData(), [
 				'associated' => [
@@ -189,6 +268,31 @@ class FacilitiesController extends ApiController
 			$this->Facilities->saveOrFail($entity);
 			$entity = $this->Facilities->getFull($entity->id);
 			$this->set('data', $entity);
+
+			// Insert debugging code
+		$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+		// $demo = array
+		// (    
+		// 'name'
+		// =>
+		// 'John'
+		// ,    
+		// 'age'
+		// =>
+		// 30
+		// ,    
+		// 'city'
+		// =>
+		// 'New York'
+		// );
+		
+		$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+		$file = fopen($filePath, 'w');
+		fwrite($file, $jsonContent);
+		fclose($file);
+
+		
+
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
 			$this->setResponse($this->ApiError->entity($e, $entity));
@@ -228,16 +332,30 @@ class FacilitiesController extends ApiController
 
 		$name = (string) $this->request->getData('name');
 		$state = (string) $this->request->getData('state');
+		$city = (string) $this->request->getData('city');
+		$zip = (string) $this->request->getData('zip');
+
 
 		$cacheState = Text::slug(strtoupper($state), '_');
+		$cacheCity = Text::slug(strtoupper($city), '_');
+		$cacheZip = Text::slug(strtoupper($zip), '_');
 		$cacheName = Text::slug(strtolower($name));
-		$cacheKey = 'org_' . $cacheState . '__' . $cacheName;
+		$cacheKey = 'org_' . $cacheState . '__' . $cacheCity .'__' . $cacheZip .'__' . $cacheName;
+
+		// /** @var \App\Lib\NpiUtility\NpiOrganizationResult[] */
+		// $results = Cache::remember(
+		// 	$cacheKey,
+		// 	function () use ($npiService, $name, $state) {
+		// 		return $npiService->searchOrganizationByNameAndState($name, $state);
+		// 	},
+		// 	'npi'
+		// );
 
 		/** @var \App\Lib\NpiUtility\NpiOrganizationResult[] */
 		$results = Cache::remember(
 			$cacheKey,
-			function () use ($npiService, $name, $state) {
-				return $npiService->searchOrganizationByNameAndState($name, $state);
+			function () use ($npiService, $name, $state, $city, $zip) {
+				return $npiService->searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip);
 			},
 			'npi'
 		);

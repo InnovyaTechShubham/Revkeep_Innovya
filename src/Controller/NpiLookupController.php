@@ -113,6 +113,9 @@ class NpiLookupController extends AppController
 	 * @param \App\Service\NpiServiceInterface $npiService
 	 * @param string $companyName
 	 * @param string $companyState
+	 * @param string $companyCity
+	 * @param string $companyZip
+	 * 
 	 * @return array
 	 */
 	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState , string $companyCity , string $companyZip): array
@@ -126,13 +129,18 @@ class NpiLookupController extends AppController
 	 *
 	 * @param string $companyName
 	 * @param string $companyState
+	 * @param string $companyCity
+	 * @param string $companyZip
 	 * @return string
 	 */
-	private function generateCacheKey(string $companyName, string $companyState): string
+	private function generateCacheKey(string $companyName, string $companyState, string $companyCity, string $companyZip): string
 	{
 		$sanitizedName = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyName));
 		$sanitizedState = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyState));
+		$sanitizedCity = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyCity));
+		$sanitizedZip = preg_replace('/[^a-zA-Z0-9_-]+/', '_', strtolower($companyZip));
 
-		return $sanitizedName . '_' . $sanitizedState;
+
+		return $sanitizedName . '_' . $sanitizedState. '_' .$sanitizedCity . '_' . $sanitizedZip;
 	}
 }
