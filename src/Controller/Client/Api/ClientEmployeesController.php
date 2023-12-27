@@ -110,7 +110,18 @@ class ClientEmployeesController extends ApiController
             'title',
             'email',
             'mobile_phone',
-            'work_phone'
+            'work_phone',
+			'gender',
+			'enumeration_type',
+			'address_1',
+			'address_2',
+			'locationPhoneNumber',
+			'mailingPhoneNumber',
+			'primaryTaxonomy',
+			'additionalTaxonomies',
+			'othername',
+			'enumeration_type',
+			'proprietor',
         ],
         'associated' => [],
     ]);
@@ -232,27 +243,38 @@ class ClientEmployeesController extends ApiController
 	 * @throws \Cake\ORM\Exception\PersistenceFailedException When rules check fails.
 	 */
 	public function lookup(NpiServiceInterface $npiService): void
-	{
-		$this->getRequest()->allowMethod('post');
+{
+    $this->getRequest()->allowMethod('post');
 
-		$firstName = $this->getRequest()->getData('first_name', '');
-		$lastName = $this->getRequest()->getData('last_name', '');
-		$state = $this->getRequest()->getData('state', '');
-		$exact = $this->getRequest()->getData('exact', false);
+    $firstName = $this->getRequest()->getData('first_name', '');
+    $lastName = $this->getRequest()->getData('last_name', '');
+    $state = $this->getRequest()->getData('state', '');
+    $city = $this->getRequest()->getData('city', '');
+    $postalCode = $this->getRequest()->getData('zip', '');
+    $exact = $this->getRequest()->getData('exact', false);
 
-		$cacheState = Text::slug(strtoupper($state));
-		$cacheName = Text::slug(strtolower($lastName)) . '__' . Text::slug(strtolower($firstName));
-		$cacheKey = 'ind_' . $cacheState . '__' . $cacheName;
+    // Generating cache key based on state, city, zip, and name
+    $cacheKey = 'ind_' .
+        Text::slug(strtoupper($state)) . '__' .
+        Text::slug(strtoupper($city)) . '__' .
+        Text::slug(strtoupper($postalCode)) . '__' .
+        Text::slug(strtolower($lastName)) . '__' .
+        Text::slug(strtolower($firstName));
 
-		/** @var \App\Lib\NpiUtility\NpiOrganizationResult[] */
-		$results = Cache::remember(
-			$cacheKey,
-			function () use ($npiService, $firstName, $lastName, $state, $exact) {
-				return $npiService->searchIndividualByNameAndState($firstName, $lastName, $state, $exact);
-			},
-			'npi'
-		);
+    // Including city and zip in the cache key
+    $cacheKey .= '__' . Text::slug(strtoupper($city)) . '__' . Text::slug(strtoupper($postalCode));
 
-		$this->set('data', $results);
-	}
+    // Fetching or caching results
+    $results = Cache::remember(
+        $cacheKey,
+        function () use ($npiService, $firstName, $lastName, $state, $city, $postalCode, $exact) {
+            return $npiService->searchIndividualByNameAndState($firstName, $lastName, $state, $city, $postalCode, $exact);
+        },
+        'npi'
+    );
+
+    // Setting data for view
+    $this->set('data', $results);
+}
+
 }

@@ -79,10 +79,12 @@ interface NpiServiceInterface
 	 * @param string $firstName
 	 * @param string $lastName
 	 * @param string $state
+	 * @param string $city
+	 * @param string $postalCode
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
 	 */
-	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, bool $exact = true): array;
+	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, string $city, string $postalCode, bool $exact = true): array;
 
 	/**
 	 * Lookup by NPI number for individual person matches in the NPI Registry

@@ -564,8 +564,6 @@ echo $this->Form->create($form, [
 			</div>
 		</div>
 
-		
-
 		<div class="row mb-5">
 			<div class="col-lg-4 pr-lg-5 mb-2">
 				<h3 class="h3 text-dark">Contact</h3>
@@ -686,6 +684,7 @@ echo $this->Form->create($form, [
 		</div>
 	</div>
 </div>
+
 <?php
 echo $this->Form->end();
 ?>

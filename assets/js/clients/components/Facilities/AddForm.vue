@@ -946,6 +946,10 @@ export default {
 				phone: null,
 				fax: null,
 				email: null,
+				website: null,
+				f_name: null,
+				l_name: null,
+				title_id: null,
 				street_address_1: null,
 				street_address_2: null,
 				city: null,
@@ -968,6 +972,7 @@ export default {
 				services: {
 					_ids: [],
 				},
+				selectedContactType: 'phone',
 			},
 			forms: [],
 			titlename: [],
@@ -1087,95 +1092,24 @@ export default {
 				this.newCustomName = '';
 				console.log("check",response);
 
-				window.location.reload();
-			})
-			.catch((error) => {
-				// Handle any errors, e.g., show an error message
-				console.error('Error adding new type:', error);
-			});
-	},
-	async TitleShow (){
-		try {
-				const url = "/client/facilityTitle";
-					
-					const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-						// You can add other headers here if needed
-					},
-					
-					});
-					console.log("check =",response.data);
-				
-				if (response.data && Array.isArray(response.data)) {
-						for (let i = 0; i < response.data.length; i++) {
-						this.titlename.push(response.data[i].title);
-						}
-					}
-						console.log("Titlename:", this.titlename);
-			}catch (error) {
-				console.error("Error fetching data:", error.message);
-				}
-
-
-	},
-
-	async fetchContactTypes() {
-				try{
-				const url = "/client/facilityTitle";
-					
-					const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-						// You can add other headers here if needed
-					},
-					});
-					if (response.data && Array.isArray(response.data)) {
-						for (let i = 0; i < response.data.length; i++) {
-						this.contactTypes.push(response.data[i].contact_type);
-						}
-					}
-					console.log("contacttype:", this.contactTypes);
-			}catch (error) {
-				console.error("Error fetching data:", error.message);
-				}
-	},
-
-		    addInputField() {
-                this.inputFields.push({ selectedContactType: 'phone', phone: '' });
-        },
-            removeInputField(index) {
-                this.inputFields.splice(index, 1);
-        },
-            getValidationState(validationContext) {
-                // Implement your validation state logic if needed
-                 return null;
-        },
-
-        createNewForm() {
-			const newForm = {
-			
-			f_name: null,
-			l_name: null,
-			title_id: null,
-			contact_id: null,
-			phone_no: null,
-			facility_name:this.entity.name
-			// ... other form fields ...
-			
-			// ... other form-specific data ...
-			};
-			// Push an empty object to the forms array
-			this.forms.push(newForm);
-			console.log("my form :",this.forms);
-        },
-      removeForm(index) {
-        // Remove the form at the specified index
-        this.forms.splice(index, 1);
-      },
+		window.location.reload();
+	})
+	.catch((error) => {
+		// Handle any errors, e.g., show an error message
+		console.error('Error adding new type:', error);
+	});
+},
+addInputField() {
+      this.inputFields.push({ selectedContactType: 'phone', phone: '' });
+    },
+    removeInputField(index) {
+      this.inputFields.splice(index, 1);
+    },
+    getValidationState(validationContext) {
+      // Implement your validation state logic if needed
+      return null;
+    },
 	
-
-
 	},
 };
 </script>
