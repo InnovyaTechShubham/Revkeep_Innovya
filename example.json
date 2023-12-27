@@ -1,12 +1,20 @@
-{
-    "state": "",
-    "city": "",
-    "zip": "",
-    "name": "BEAUMONT ASHN, LLC",
-    "npi_number": "1851865786",
-    "first_name": "Shubham",
-    "last_name": "Upadhyay",
-    "email": "upadhyay.shubham13347@gmail.com",
-    "phone": "(567) 654-3456",
-    "accept_terms": "1"
-}
+[
+    {
+        "f_name": "sachin",
+        "l_name": "ted",
+        "title_id": null,
+        "contact_id": null,
+        "phone_no": "(045) 632-3456",
+        "facility_name": "Shubham asc Upadhyay faciddbbdaffgg",
+        "email": "shubham.testing@gmail.com"
+    },
+    {
+        "f_name": "sehwag",
+        "l_name": "bat",
+        "title_id": null,
+        "contact_id": null,
+        "phone_no": "(012) 345-6789",
+        "facility_name": "Shubham asc Upadhyay faciddbbdaffgg",
+        "email": "abc@gmail.com"
+    }
+]
