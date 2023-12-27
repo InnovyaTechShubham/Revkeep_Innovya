@@ -972,7 +972,7 @@ export default {
 			forms: [],
 			titlename: [],
 			contactTypes: [],
-	  inputFields: [{ selectedContactType: 'phone', phone: '' }],
+			inputFields: [{ selectedContactType: 'phone', phone: '' }],
 		};
 	},
 	computed: mapGetters({
@@ -1023,6 +1023,7 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
+
 		async save() {
 
 		
@@ -1037,10 +1038,13 @@ export default {
 				this.$store.dispatch("facilities/getActive");
                   
 				console.log("post data :", this.forms);
-				await axios.post('/client/facilityAddForms', this.forms );
+				// await axios.post('/client/facilityAddForms', this.forms );
+				const responsed = await axios.post('/client/facilityAddForms', this.forms);
+        		console.log('saving Response:', responsed);
 				
                 console.log('Data saved successfully');
-			} catch (e) {
+			} 
+			catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
 					
@@ -1052,89 +1056,90 @@ export default {
 					message: "Error saving facility details. Please check for errors.",
 					variant: "warning",
 				});
-			} finally {
+			} 
+			finally {
 				this.saving = false;
 			}
 		},
 		openCustomTitle() {
-      // Open the custom Title type modal when the "Add" button is clicked
-      this.$bvModal.show("customTitle");
-    },
-		async addCustomTitleName() {
-const newType = this.newCustomName;
-const insid = this.id;
-console.log(insid);
-// Check if the new type is not empty
-if (newType.trim() === '') {
-	return;
-}
+			// Open the custom Title type modal when the "Add" button is clicked
+			this.$bvModal.show("customTitle");
+		},
+	async addCustomTitleName() {
+		const newType = this.newCustomName;
+		const insid = this.id;
+		console.log(insid);
+		// Check if the new type is not empty
+		if (newType.trim() === '') {
+			return;
+		}
 
-// Send a POST request to your controller to add the new type
-axios.post('/client/addtype', { newType , insid})
-	.then((response) => {
-		// Handle the response, e.g., update the insuranceTypes list
-		this.titlename.push(response.data);
+		// Send a POST request to your controller to add the new type
+		axios.post('/client/addtype', { newType , insid})
+			.then((response) => {
+				// Handle the response, e.g., update the insuranceTypes list
+				this.titlename.push(response.data);
 
-		// Close the modal
-		this.$bvModal.hide('customTitle');
+				// Close the modal
+				this.$bvModal.hide('customTitle');
 
-		// Clear the input field
-		this.newCustomName = '';
-		console.log("check",response);
+				// Clear the input field
+				this.newCustomName = '';
+				console.log("check",response);
 
-		window.location.reload();
-	})
-	.catch((error) => {
-		// Handle any errors, e.g., show an error message
-		console.error('Error adding new type:', error);
-	});
-},
-async TitleShow (){
-	try {
-		       const url = "/client/facilityTitle";
+				window.location.reload();
+			})
+			.catch((error) => {
+				// Handle any errors, e.g., show an error message
+				console.error('Error adding new type:', error);
+			});
+	},
+	async TitleShow (){
+		try {
+				const url = "/client/facilityTitle";
+					
+					const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
+					
+					});
+					console.log("check =",response.data);
 				
-				const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
-				},
-				
-				});
-				console.log("check =",response.data);
-			
-			if (response.data && Array.isArray(response.data)) {
-                     for (let i = 0; i < response.data.length; i++) {
-                     this.titlename.push(response.data[i].title);
-                    }
-                 }
-                       console.log("Titlename:", this.titlename);
-		}catch (error) {
-            console.error("Error fetching data:", error.message);
-             }
+				if (response.data && Array.isArray(response.data)) {
+						for (let i = 0; i < response.data.length; i++) {
+						this.titlename.push(response.data[i].title);
+						}
+					}
+						console.log("Titlename:", this.titlename);
+			}catch (error) {
+				console.error("Error fetching data:", error.message);
+				}
 
 
-},
+	},
 
-async fetchContactTypes() {
-			try{
-			const url = "/client/facilityTitle";
-				
-				const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
-				},
-				});
-				 if (response.data && Array.isArray(response.data)) {
-                     for (let i = 0; i < response.data.length; i++) {
-                     this.contactTypes.push(response.data[i].contact_type);
-                    }
-                 }
-                console.log("contacttype:", this.contactTypes);
-		}catch (error) {
-            console.error("Error fetching data:", error.message);
-             }
-    },
+	async fetchContactTypes() {
+				try{
+				const url = "/client/facilityTitle";
+					
+					const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
+					});
+					if (response.data && Array.isArray(response.data)) {
+						for (let i = 0; i < response.data.length; i++) {
+						this.contactTypes.push(response.data[i].contact_type);
+						}
+					}
+					console.log("contacttype:", this.contactTypes);
+			}catch (error) {
+				console.error("Error fetching data:", error.message);
+				}
+	},
 
 		    addInputField() {
                 this.inputFields.push({ selectedContactType: 'phone', phone: '' });
@@ -1148,21 +1153,22 @@ async fetchContactTypes() {
         },
 
         createNewForm() {
-		const newForm = {
-        
-          f_name: null,
-          l_name: null,
-          title_id: null,
-          contact_id: null,
-          phone_no: null,
-          // ... other form fields ...
-        
-        // ... other form-specific data ...
-      };
-        // Push an empty object to the forms array
-        this.forms.push(newForm);
-		console.log("my form :",this.forms);
-      },
+			const newForm = {
+			
+			f_name: null,
+			l_name: null,
+			title_id: null,
+			contact_id: null,
+			phone_no: null,
+			facility_name:this.entity.name
+			// ... other form fields ...
+			
+			// ... other form-specific data ...
+			};
+			// Push an empty object to the forms array
+			this.forms.push(newForm);
+			console.log("my form :",this.forms);
+        },
       removeForm(index) {
         // Remove the form at the specified index
         this.forms.splice(index, 1);
