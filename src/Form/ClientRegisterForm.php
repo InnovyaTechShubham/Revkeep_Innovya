@@ -94,49 +94,49 @@ class ClientRegisterForm extends Form
 			->maxLength('phone', 50)
 			->allowEmptyString('phone');
 
-		$validator
-			->notEmptyString('npi_number', __('NPI number is required'))
-			->lengthBetween('npi_number', [10, 10], __('NPI number must be 10 digits'))
-			->add('npi_number', 'numeric', [
-				'rule' => 'numeric',
-			])
-			->add('npi_number', 'unique', [
-				'rule' => function ($data, $provider) {
-					$clients = $this->fetchTable('Clients');
+		// $validator
+		// 	->notEmptyString('npi_number', __('NPI number is required'))
+		// 	->lengthBetween('npi_number', [10, 10], __('NPI number must be 10 digits'))
+		// 	->add('npi_number', 'numeric', [
+		// 		'rule' => 'numeric',
+		// 	])
+		// 	->add('npi_number', 'unique', [
+		// 		'rule' => function ($data, $provider) {
+		// 			$clients = $this->fetchTable('Clients');
 
-					$client = $clients->find('all', [
-						'fields' => ['id', 'npi_number'],
-						'skipTenantCheck' => true,
-						'skipVendorCheck' => true
-					])->where([
-						'npi_number' => $data,
-					])
-						->first();
+		// 			$client = $clients->find('all', [
+		// 				'fields' => ['id', 'npi_number'],
+		// 				'skipTenantCheck' => true,
+		// 				'skipVendorCheck' => true
+		// 			])->where([
+		// 				'npi_number' => $data,
+		// 			])
+		// 				->first();
 
-					if (!empty($client)) {
-						return __('This NPI number is already registered');
-					}
+		// 			if (!empty($client)) {
+		// 				return __('This NPI number is already registered');
+		// 			}
 
-					return true;
-				},
-			])
-			->add('npi_number', 'valid', [
-				'rule' => function ($data, $provider) {
-					// Allow configuration to control whether NPI API is validated
-					$validate = Configure::read('NPI.validateClients', true);
-					if (empty($validate)) {
-						return true;
-					}
+		// 			return true;
+		// 		},
+		// 	])
+		// 	->add('npi_number', 'valid', [
+		// 		'rule' => function ($data, $provider) {
+		// 			// Allow configuration to control whether NPI API is validated
+		// 			$validate = Configure::read('NPI.validateClients', true);
+		// 			if (empty($validate)) {
+		// 				return true;
+		// 			}
 
-					// Validate NPI number exists in database
-					try {
-						return NpiUtility::isValidOrganization(intval($data));
-					} catch (NpiServiceRequestException $e) {
-						return $e->getMessage();
-					}
-				},
-				'message' => __('This NPI number is invalid in the NPI database'),
-			]);
+		// 			// Validate NPI number exists in database
+		// 			try {
+		// 				return NpiUtility::isValidOrganization(intval($data));
+		// 			} catch (NpiServiceRequestException $e) {
+		// 				return $e->getMessage();
+		// 			}
+		// 		},
+		// 		'message' => __('This NPI number is invalid in the NPI database'),
+		// 	]);
 
 		$validator
 			->boolean('accept_terms')

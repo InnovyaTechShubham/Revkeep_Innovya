@@ -978,5 +978,22 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'controller' => 'FacilitiesAddContact',
 		'action' => 'index',
 	]);
-	
+
+
+	$builder->connect('/facilityAddForms', [
+		'controller' => 'FacilityAddForm',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+
+	$builder->connect('/facilityContactList', [
+		'controller' => 'FacilityContactList',
+		'action' => 'index',
+	]);
+	$builder->connect('/multiplefacility', [
+		'controller' => 'Multiplefacility',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+
 });

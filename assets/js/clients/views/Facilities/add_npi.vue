@@ -21,7 +21,6 @@
 
 							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
 								<b-input-group>
-
 								  <b-form-input
 								    name="name"
 								    type="text"
@@ -29,11 +28,10 @@
 									:disabled="saving || searching"
 								    
 								  />
-	
 								</b-input-group>
-							</b-form-group>
+							    </b-form-group>
 
-							<!-- <b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
+							<b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
 								<b-form-select
 									v-model="query.state"
 									name="state"
@@ -43,19 +41,9 @@
 									
 								
 								/>
-							</b-form-group> -->
-
-							<!-- Removed the "required" attribute from the b-form-select -->
-							<b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
-								<b-form-select v-model="query.state" name="state" :options="states"
-									value-field="abbreviation" text-field="name"
-									:disabled="saving || searching"
-									:placeholder="query.state === '' ? 'Optional' : ''" />
 							</b-form-group>
 
-
 							<b-form-group label="City" label-for="city" label-cols="4" label-cols-lg="12">
-
 								<b-form-input
 								  name="city"
 								  type="text"
@@ -90,32 +78,27 @@
 			</b-col>
 			<b-col cols="12" lg="8" xl="9">
 				<b-card no-body>
-					<b-row v-if="!searched && showSearchForm">
+					<b-row v-if="!searched">
 						<b-col cols="12">
 							<empty-result>
 								Search NPI
 								<template #content>
-
 									Enter state, city, zip code or organization name to search facilities in the NPI registry.
-
 								</template>
 							</empty-result>
 						</b-col>
 					</b-row>
-
 					<b-row v-else-if="hasError">
 						<b-col cols="12">
 							<error-alert>
 								{{ error }}
 								<template #content>
 									<p class="mb-0">
-										The NPI registry is maintained by CMS and may be experiencing
-										technical
+										The NPI registry is maintained by CMS and may be experiencing technical
 										difficulties.
 									</p>
 									<p class="mb-0">
-										Please try again in a few moments, or report this issue to support
-										if the
+										Please try again in a few moments, or report this issue to support if the
 										problem persists.
 									</p>
 								</template>
@@ -130,78 +113,78 @@
 								</b-card-header>
 
 								<b-list-group flush>
-									<b-list-group-item v-for="(npiResult, index) in results" :key="index">
-										<NPIOrganization :value="npiResult" v-slot="{
-											active,
-											contactFullName,
-											lastUpdated,
-											name,
-											number,
-											fullPrimaryAddress,
-											value,
-										}">
-											<div
-												class="d-flex justify-content-between align-items-start">
-												<div
-													class="d-flex justify-content-start align-items-top">
-													<b-avatar icon
+									<b-list-group-item v-for="npiResult in results" :key="npiResult.number">
+										<NPIOrganization
+											:value="npiResult"
+											v-slot="{
+												active,
+												contactFullName,
+												lastUpdated,
+												name,
+												number,
+												fullPrimaryAddress,
+												value,
+											}"
+										>
+											<div class="d-flex justify-content-between align-items-start">
+												<div class="d-flex justify-content-start align-items-top">
+													<b-avatar
+														icon
 														:variant="active ? 'primary' : 'light'"
-														class="mr-3 mt-2">
-														<font-awesome-icon icon="building"
-															fixed-width />
+														class="mr-3 mt-2"
+													>
+														<font-awesome-icon icon="building" fixed-width />
 													</b-avatar>
 													<div>
-														<p class="mb-1 small text-muted"
-															title="NPI Number">
+														<p class="mb-1 small text-muted" title="NPI Number">
 															#{{ number }}
 														</p>
-														<h6 class="h6 font-weight-bold mb-1">{{
-															name }}</h6>
+														<h6 class="h6 font-weight-bold mb-1">{{ name }}</h6>
 														<p class="mb-1" title="Primary Address">
-															<font-awesome-icon
-																icon="location-dot"
-																fixed-width />
-															<span>{{ fullPrimaryAddress
-															}}</span>
+															<font-awesome-icon icon="location-dot" fixed-width />
+															<span>{{ fullPrimaryAddress }}</span>
 														</p>
-														<p v-if="contactFullName"
+														<p
+															v-if="contactFullName"
 															class="mb-0 small text-muted"
-															title="Contact Person">
-															<font-awesome-icon icon="user"
-																fixed-width />
+															title="Contact Person"
+														>
+															<font-awesome-icon icon="user" fixed-width />
 															<span>{{ contactFullName }}</span>
 														</p>
 
-														<p v-if="lastUpdated"
+														<p
+															v-if="lastUpdated"
 															class="mt-1 mb-0 small text-muted"
-															title="Last Updated">
-															<span>Last updated {{ lastUpdated
-															}}</span>
+															title="Last Updated"
+														>
+															<span>Last updated {{ lastUpdated }}</span>
 														</p>
 
 														<div>
 															<b-badge
 																v-for="identifier in value.identifiers"
-																:key="identifier.code" pill
-																variant="light">
-																{{ identifier.identifier }} -
-																{{ identifier.desc }}
+																:key="identifier.code"
+																pill
+																variant="light"
+															>
+																{{ identifier.identifier }} - {{ identifier.desc }}
 															</b-badge>
 														</div>
 
 														<div>
 															<b-badge
 																v-for="taxonomy in value.taxonomies"
-																:key="taxonomy.code" pill
-																variant="light">
-																{{ taxonomy.code }} - {{
-																	taxonomy.desc }}
+																:key="taxonomy.code"
+																pill
+																variant="light"
+															>
+																{{ taxonomy.code }} - {{ taxonomy.desc }}
 															</b-badge>
 														</div>
 													</div>
 												</div>
-												<b-button @click="selectedNpiResult(value)"
-													variant="primary">
+												<b-button @click="selectedNpiResult(value)" variant="primary">
 													<font-awesome-icon icon="plus" fixed-width />
 													Add
 												</b-button>
@@ -217,8 +200,7 @@
 							<empty-result>
 								No Results
 								<template #content>
-									No organizations were found in the NPI Registry matching what you
-									provided.
+									No organizations were found in the NPI Registry matching what you provided.
 								</template>
 							</empty-result>
 						</b-col>
@@ -235,15 +217,12 @@
 </template>
 
 <script>
-import { BModal, BButton } from 'bootstrap-vue';
 import { mapGetters } from "vuex";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
 
 export default {
 	name: "ViewAddFacilityNPI",
 	components: {
-		BModal,
-		BButton,
 		NPIOrganization,
 	},
 	data() {
@@ -252,27 +231,19 @@ export default {
 			query: {
 				name: "",
 				state: "",
-				zip: "",
-				city: "",
+				zip: "",  
+      			city: "",
 			},
 			results: [],
 			saving: false,
 			searching: false,
 			searched: false,
-			showSearchForm: true,
 		};
 	},
 	computed: {
 		formInvalid() {
-			if (
-				this.query.name === "" &&
-				// this.query.state === "" &&
-				this.query.city === "" &&
-				this.query.zip === ""
-			) {
-				return true;
-			}
-			return false;
+			const filledFields = Object.values(this.query).filter(value => value !== "").length;
+			return filledFields < 2;
 		},
 		
 		hasError() {
@@ -287,14 +258,6 @@ export default {
 		}),
 	},
 	methods: {
-
-		//method to clear the form
-		clearForm() {
-			this.query.name = "";
-			this.query.state = "";
-			this.query.zip = "";
-			this.query.city = "";
-		},
 		async npiLookup() {
 			try {
 				this.error = "";
@@ -366,8 +329,6 @@ export default {
 				this.searching = false;
 			}
 		},
-
-
 		selectedNpiResult(result) {
 			console.log("NPI_result", result)
 			if (!result) {
@@ -384,91 +345,165 @@ export default {
 			if (!confirm(`Add facility '${result.name}'?`)) {
 				return;
 			}
+			console.log("Result=",result);
 
 			// Try to set facility type as 'Other'
 			// @todo Make this better
-			const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
-			// const Locaddress = result.addresses[0];
-			// const Locaddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
-			var entity = {
-				id: this.id,
+			// const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
+
+			// const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
+			// if (locationAddress) {
+			// 	// Contact
+			// 	entity.phone = locationAddress.telephone_number ?? "";
+			// 	entity.fax = locationAddress.fax_number ?? "";
+			// 	// Address
+			// 	entity.street_address_1 = locationAddress.address_1 ?? "";
+			// 	entity.street_address_2 = locationAddress.address_2 ?? "";
+			// 	entity.city = locationAddress.city ?? "";
+			// 	entity.state = locationAddress.state ?? "";
+			// 	entity.zip = locationAddress.postal_code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse location address", locationAddress);
+			// }
+
+			// const mailingAddress = result.addresses.find((address) => address.address_purpose == "MAILING");
+			// if (mailingAddress) {
+			// 	// Contact
+			// 	entity.phone = mailingAddress.telephone_number ?? "";
+			// 	entity.fax = mailingAddress.fax_number ?? "";
+			// 	// Address
+			// 	entity.street_address_1 = mailingAddress.address_1 ?? "";
+			// 	entity.street_address_2 = mailingAddress.address_2 ?? "";
+			// 	entity.city = mailingAddress.city ?? "";
+			// 	entity.state = mailingAddress.state ?? "";
+			// 	entity.zip = mailingAddress.postal_code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse mailing address", locationAddress);
+			// }
+	
+		
+			// const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
+			// if (primaryTaxonomy) {
+			// 	entity.primary_taxonomy = primaryTaxonomy.code ?? "";
+			// } else {
+			// 	console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
+			// }
+			
+			// var entity = {
+			// 	active: true,
+			// 	name: result.name,
+			// 	facility_type_id: facilityTypeId,
+			// 	npi_number: result.number ?? "",
+			// 	npi_manual: false,
+			// 	address_1:concatenatedAddress,
+			// 	address_2:locationAddress,
+
+			// };
+
+				// Try to set facility type as 'Other'
+				// @todo Make this better
+				const facilityTypeId = this.facilityTypes.find((facilityType) => facilityType.name == "Other")?.id ?? 1;
+				
+				const address = result.addresses[0];
+				const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}`;
+				const Locaddress = result.addresses[1];
+				const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}`;
+
+				const otherName = result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+				const subPart = result.organizational_subpart ? "YES" : "NO";
+
+				//Initialize primaryTaxonomy and additionalTaxonomies arrays
+				let primaryTaxonomy = "";
+				let additionalTaxonomies = [];
+
+				// Loop through the taxonomies array
+				for (const taxonomy of result.taxonomies) {
+					if (taxonomy.primary) {
+						// If primary taxonomy, concatenate code, desc, and license
+						primaryTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+					} else {
+						// If additional taxonomy, concatenate code, desc, and license, and add to additionalTaxonomies array
+						const additionalTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+						additionalTaxonomies.push(additionalTaxonomy);
+					}
+				}
+				var entity = {
+				active: result.active,
 				name: result.name,
 				facility_type_id: facilityTypeId,
 				// location_address: `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}, TEL Number ${Locaddress.telephone_number ?? ""}, Type ${Locaddress.address_type ?? ""}`,
 				active: result.active,
 				npi_number: result.number ?? "",
 				npi_manual: false,
-				state: result.addresses[0]?.state ?? "",
+				address_1:LocconcatenatedAddress,
+				address_2:concatenatedAddress,
+				state: result.addresses[1]?.state ?? "",
+				othername: otherName,
 				enumeration_type: result.enumeration_type,
-				client_owned: true,
-				// address_1: concatenatedAddress,
-				// address_2:LocconcatenatedAddress ,
-				// taxonomy_code: result.taxonomies[0]?.code ?? "",
-				// taxonomy_desc: result.taxonomies[0]?.desc ?? "",
-				// taxonomy_group: result.taxonomies[0]?.taxonomy_group ?? "",
-				// taxonomy_license: result.taxonomies[0]?.license ?? "",
-				// taxonomy_state: result.taxonomies[0]?.state ?? "",
-			};
+				locationPhoneNumber: result.addresses[1]?.telephone_number ?? "NONE",
+				mailingPhoneNumber: result.addresses[0]?.telephone_number ?? "NONE",
+				primaryTaxonomy: primaryTaxonomy,
+				additionalTaxonomies: additionalTaxonomies.join(', ') || "NONE",
+				organizational_subpart: subPart,
 
-			const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
-			if (locationAddress) {
-				// Contact
-				entity.phone = locationAddress.telephone_number ?? "";
-				entity.fax = locationAddress.fax_number ?? "";
-				// Address
-				entity.street_address_1 = locationAddress.address_1 ?? "";
-				entity.street_address_2 = locationAddress.address_2 ?? "";
-				entity.city = locationAddress.city ?? "";
-				entity.state = locationAddress.state ?? "";
-				entity.zip = locationAddress.postal_code ?? "";
-				entity.location_address= `${locationAddress.address_1 ?? ""}, ${locationAddress.city ?? ""}, ${locationAddress.state ?? ""}, ${locationAddress.postal_code ?? ""}, ${locationAddress.country_name ?? ""}, TEL Number ${locationAddress.telephone_number ?? ""}, Type ${locationAddress.address_type ?? ""}`;
-			} else {
-				console.warn("Unable to parse location address", locationAddress);
-			}
 
-			const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
-			if (primaryTaxonomy) {
-				entity.primary_taxonomy = primaryTaxonomy.code ?? "";
-			} else {
-				console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
-			}
-			console.log("Entity=",entity)
-
+				};
+				console.log("entity=", entity);
 			this.createFromResult(entity);
-			// console.log("log=",this.createFromResult(entity))
 			// this.reset();
 		},
 		async createFromResult(result) {
 			try {
 				console.log("inside result:", result)
 				this.saving = true;
+				// // Try to set facility type as 'Other'
+				// // @todo Make this better
+				
 				// const address = result.addresses[0];
-				// console.log("address", address)
+				// const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}`;
+				// const Locaddress = result.addresses[1];
+				// const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}`;
 
-				// const concatenatedAddress = `${address.address_1 ?? ""}, ${address.city ?? ""}, ${address.state ?? ""}, ${address.postal_code ?? ""}, ${address.country_name ?? ""}, TEL Number ${address.telephone_number ?? ""}, Type ${address.address_type ?? ""}`;	
-				// const Locaddress = result.addresses[0];
-				// const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}, TEL Number ${Locaddress.telephone_number ?? ""}, Type ${Locaddress.address_type ?? ""}`;	
-				// console.log("Attempting to create facility from ", result);
-				// console.log("address",concatenatedAddress);
+				// const otherName = result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+				// const subPart = result.organizational_subpart ? "YES" : "NO";
+
+				// //Initialize primaryTaxonomy and additionalTaxonomies arrays
+				// let primaryTaxonomy = "";
+				// let additionalTaxonomies = [];
+
+				// // Loop through the taxonomies array
+				// for (const taxonomy of result.taxonomies) {
+				// 	if (taxonomy.primary) {
+				// 		// If primary taxonomy, concatenate code, desc, and license
+				// 		primaryTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+				// 	} else {
+				// 		// If additional taxonomy, concatenate code, desc, and license, and add to additionalTaxonomies array
+				// 		const additionalTaxonomy = `${taxonomy.code ?? ""} - ${taxonomy.desc ?? ""}, (License: ${taxonomy.license ?? ""})`;
+				// 		additionalTaxonomies.push(additionalTaxonomy);
+				// 	}
+				// }
 				// const entity = {
-				// 	name: result.name,
-				// 	npi_number: result.number,
-				// 	active: result.active,
-				// 	state: result.addresses[0]?.state ?? "",
-				// 	enumeration_type: result.enumeration_type,
-				// 	address_1: concatenatedAddress,
-				// 	address_2:LocconcatenatedAddress ,
-				// 	taxonomy_code: result.taxonomies[0]?.code ?? "",
-				// 	taxonomy_desc: result.taxonomies[0]?.desc ?? "",
-				// 	taxonomy_group: result.taxonomies[0]?.taxonomy_group ?? "",
-				// 	taxonomy_license: result.taxonomies[0]?.license ?? "",
-				// 	taxonomy_state: result.taxonomies[0]?.state ?? "",
+				// active: result.active,
+				// name: result.name,
+				// facility_type_id: facilityTypeId,
+				// npi_number: result.number ?? "",
+				// npi_manual: false,
+				// address_1:LocconcatenatedAddress,
+				// address_2:concatenatedAddress,
+				// state: result.addresses[1]?.state ?? "",
+				// othername: otherName,
+				// enumeration_type: result.enumeration_type,
+				// locationPhoneNumber: result.addresses[1]?.telephone_number ?? "NONE",
+				// mailingPhoneNumber: result.addresses[0]?.telephone_number ?? "NONE",
+				// primaryTaxonomy: primaryTaxonomy,
+				// additionalTaxonomies: additionalTaxonomies.join(', ') || "NONE",
+				// organizational_subpart: subPart,
+
+
 				// };
 
 				const newEntity = await this.$store.dispatch("facilities/create", result);
-				// await this.$store.dispatch("facilities/add", result);
-				// await this.$store.dispatch("facilities/save", this.entity);
-				console.log("new=", newEntity)
+				console.log("New entity=", newEntity);
 				this.$router.push({
 					name: "facilities.edit",
 					params: {
@@ -503,4 +538,3 @@ export default {
 	},
 };
 </script>
-

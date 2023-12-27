@@ -132,11 +132,90 @@ class FacilitiesController extends ApiController
 			$this->Facilities->saveOrFail($entity);
 			$entity = $this->Facilities->getFull($entity->id);
 			$this->set('data', $entity);
+			// Insert debugging code
+			$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+			// $demo = array
+			// (    
+			// 'name'
+			// =>
+			// 'John'
+			// ,    
+			// 'age'
+			// =>
+			// 30
+			// ,    
+			// 'city'
+			// =>
+			// 'New York'
+			// );
+			
+			$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+			$file = fopen($filePath, 'w');
+			fwrite($file, $jsonContent);
+			fclose($file);
+
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
 			$this->setResponse($this->ApiError->entity($e, $entity));
 		}
 	}
+	
+	/**
+ * Add method
+ *
+ * @return void
+ * @throws \Cake\ORM\Exception\PersistenceFailedException When not valid.
+ */
+// public function add(): void
+// {	
+	
+//     $requestData = $this->getRequest()->getData();
+
+	
+// 	// echo '<pre>';
+// 	// var_dump($requestData);
+// 	// echo '</pre>';
+
+//     // Extract selected services
+//     $selectedServices = $requestData['services'] ?? [];
+
+//     // Remove services from main data to prevent validation issues
+//     unset($requestData['services']);
+
+//     $entity = $this->Facilities->newEntity($requestData, [
+//         'associated' => [
+//             'Services',
+//         ],
+//     ]);
+
+//     // Begin a transaction
+//     $this->Facilities->getConnection()->begin();
+
+//     try {
+//         // Save the facility
+//         $this->Facilities->saveOrFail($entity);
+
+//         // Save selected services in facilities_services table
+//         foreach ($selectedServices as $serviceId) {
+//             $serviceEntity = $this->Facilities->Services->get($serviceId);
+//             $this->Facilities->link($entity, [$serviceEntity]);
+//         }
+
+//         // Commit the transaction
+//         $this->Facilities->getConnection()->commit();
+
+//         // Get the full entity
+//         $entity = $this->Facilities->getFull($entity->id);
+//         $this->set('data', $entity);
+//     } catch (PersistenceFailedException $e) {
+//         // Rollback the transaction on failure
+//         $this->Facilities->getConnection()->rollback();
+
+//         $this->Log->saveFailed($e, $entity);
+//         $this->setResponse($this->ApiError->entity($e, $entity));
+//     }
+// }
+
 
 	/**
 	 * View method
@@ -208,7 +287,7 @@ class FacilitiesController extends ApiController
 	public function edit($id): void
 	{
 		$entity = $this->Facilities->get($id);
-
+		
 		try {
 			$entity = $this->Facilities->patchEntity($entity, $this->getRequest()->getData(), [
 				'associated' => [
@@ -219,6 +298,31 @@ class FacilitiesController extends ApiController
 			$this->Facilities->saveOrFail($entity);
 			$entity = $this->Facilities->getFull($entity->id);
 			$this->set('data', $entity);
+
+			// Insert debugging code
+		$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+		// $demo = array
+		// (    
+		// 'name'
+		// =>
+		// 'John'
+		// ,    
+		// 'age'
+		// =>
+		// 30
+		// ,    
+		// 'city'
+		// =>
+		// 'New York'
+		// );
+		
+		$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+		$file = fopen($filePath, 'w');
+		fwrite($file, $jsonContent);
+		fclose($file);
+
+		
+
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
 			$this->setResponse($this->ApiError->entity($e, $entity));

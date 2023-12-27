@@ -24,14 +24,14 @@
 									:disabled="saving"
 									:readonly=true
 								/>
-								<b-input-group-append>
+								<!-- <b-input-group-append>
 									<b-button
 										variant="primary"
 										@click="npiLookup"
 										:disabled="npiLookingUp || !entity.name"
 										>NPI Search</b-button
 									>
-								</b-input-group-append>
+								</b-input-group-append> -->
 								<b-form-invalid-feedback
 									v-for="error in validationContext.errors"
 									:key="error"
@@ -41,7 +41,7 @@
 						</b-form-group>
 					</validation-provider>
 
-					<b-list-group v-if="npiResults.length > 0">
+					<!-- <b-list-group v-if="npiResults.length > 0">
 						<div v-for="npiResult in npiResults" :key="npiResult.number">
 							<NPIOrganization :value="npiResult" v-slot="{ name, number, primaryAddress, value }">
 								<b-list-group-item>
@@ -74,14 +74,14 @@
 								</b-list-group-item>
 							</NPIOrganization>
 						</div>
-					</b-list-group>
-					<empty-result v-else-if="npiSearched && npiResults.length <= 0">
+					</b-list-group> -->
+					<!-- <empty-result v-else-if="npiSearched && npiResults.length <= 0">
 						No Results
 						<template #content>
 							No organizations were found in the NPI Registry matching what you provided.
 						</template>
 					</empty-result>
-					<loading-indicator v-else-if="npiLookingUp" />
+					<loading-indicator v-else-if="npiLookingUp" /> -->
 				</b-card-body>
                 
 				<b-card-body>
@@ -92,7 +92,7 @@
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
+						<b-form-group label="Display Name1" label-for="disp_name" label-cols-lg="4">
 							<b-form-input
 								name="display_name"
 								type="text"
@@ -936,9 +936,9 @@
 								>
 									<b-form-group label="Division" label-for="division" label-cols-lg="4">
 										<b-form-input
-											name="divison"
+											name="division"
 											type="text"
-											v-model="entity.divison"
+											v-model="entity.division"
 											:state="getValidationState(validationContext)"
 											:disabled="saving"
 										/>
@@ -1061,302 +1061,8 @@
 								</validation-provider> -->
 							</b-card-body>
 						</b-collapse>
-						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseContact
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Contacts</b-button
-							>
-						</b-card-header>
-						<b-collapse id="collapseContact" role="tabpanel">
-							<b-card-body>
-								<validation-provider
-									vid="phone"
-									name="Phone"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
-										<b-form-input
-											name="phone"
-											type="text"
-											v-model="entity.phone"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+						<!-- end -->
 
-								<validation-provider
-									vid="fax"
-									name="Fax"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
-										<b-form-input
-											name="fax"
-											type="text"
-											v-model="entity.fax"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="email"
-									name="Email"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
-										<b-form-input
-											name="email"
-											type="email"
-											v-model="entity.email"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								<validation-provider
-									vid="website"
-									name="Website"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
-										<b-form-input
-											name="website"
-											type="url"
-											v-model="entity.website"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-							
-							 <b-input-group-append>
-                                     <b-button variant="primary" class="mb-1"  v-b-toggle.collapseOpenForm>
-				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contact</span>
-			                            	</b-button>
-                                    </b-input-group-append>
-               
-					
-						<b-collapse id="collapseOpenForm">
-					 <b-card body>
-					  <validation-provider
-									vid="f_name"
-									name="First_Name"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
-										<b-form-input
-											name="f_name"
-											type="text"
-											v-model="entity.f_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="l_name"
-									name="Last_Name"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
-										<b-form-input
-											name="l_name"
-											type="text"
-											v-model="entity.l_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-								vid="title_id"
-								name="Main_Title"
-								:rules="{ required: false, numeric: true }"
-								v-slot="validationContext"
-							>
-								<b-form-group
-									label="Title"
-									label-for="title_id"
-									label-cols-lg="4"
-								>
-									<b-input-group>
-										<b-form-select
-											name="title_id"
-											v-model="entity.title_id"
-											:options="titlename"
-											:disabled="saving || loadingtitlename"
-											:state="getValidationState(validationContext)"
-											value-field="id"
-											text-field="full_name"
-											
-										>
-											<!-- <template #first>
-												<option disabled v-if="!hastitlename" :value="null">
-												   data not fetch from 
-												   base
-												</option>
-											</template> -->
-										</b-form-select>
-										<template #append>
-											<b-button
-												variant="primary"
-												@click="openCustomTitle"
-											>
-												<font-awesome-icon icon="plus" fixed-width />
-											</b-button>
-										</template>
-									</b-input-group>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
-								</b-form-group>
-							</validation-provider>
-							<template>
-  <div>
-    <!-- Add BootstrapVue grid classes to create a row -->
-    <b-row>
-      <!-- Column for the dropdown and input field -->
-      <b-col md="4">
-        <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-          <b-form-group label="Contact Type" label-for="type">
-            <!-- Wrapper for select and input fields -->
-            <div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
-              <!-- Dropdown (select) field -->
-              <label :for="'contacType' + index"></label>
-              <select v-model="field.selectedContactType" :name="'contactType' + index" class="form-control mb-3">
-                <option value="phone">Phone</option>
-                <option value="landline">Landline</option>
-              </select>
-			  </div>
-		  </b-form-group>
-		  </validation-provider>
-			</b-col>
-			<b-col md="8">
-        <validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-          <b-form-group label="Contact Number" label-for="phone">
-            <b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
-              <b-form-input
-                :name="'phone' + index"
-                type="text"
-                v-model="inputField.phone"
-                v-mask="'(###) ###-####'"
-                :state="getValidationState(validationContext)"
-                :disabled="saving"
-              ></b-form-input>
-
-              <!-- Button inside the input group to remove the corresponding field -->
-              <b-input-group-append>
-                <b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
-                  <font-awesome-icon icon="minus" fixed-width />
-                </b-button>
-				 <!-- Button to add a new input field -->
-				 <b-button variant="primary" @click="addInputField">
-            <font-awesome-icon icon="plus" fixed-width />
-          </b-button>
-              </b-input-group-append>
-            </b-input-group>
-
-            <b-form-invalid-feedback
-              v-for="error in validationContext.errors"
-              :key="error"
-              v-text="error"
-            ></b-form-invalid-feedback>
-          </b-form-group>
-         
-        </validation-provider>
-      </b-col>
-    </b-row>
-  </div>
-</template>
-               								
-
-								<validation-provider
-									vid="email"
-									name="Email"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Email" label-for="email" label-cols-lg="4">
-										<b-form-input
-											name="email"
-											type="email"
-											v-model="entity.email"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-					</b-card>
-				</b-collapse>
-							</b-card-body>
-						</b-collapse>
-			  
-  <b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
-    <b-form-input
-      id="newCustomName"
-      name="newCustomeTitleName"
-      type="text"
-      v-model="newAuditType"
-      placeholder="Add custom Title"
-      :disabled="saving"
-    />
-  </b-modal>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1545,7 +1251,7 @@
 						</b-card-header>
 						<b-collapse id="collapseServices" role="tabpanel">
 							<b-card-body>
-								<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
 									<loading-indicator v-if="loadingServices && services.length <= 0" />
 									<b-form-checkbox-group
 										v-else-if="services.length > 0"
@@ -1561,11 +1267,268 @@
 										No services added
 										<template #content> Create services to assign to this facility. </template>
 									</empty-result>
+								</b-form-group> -->
+
+								<!-- <b-form-group
+										label="Assigned Services"
+										label-for="entity.services._ids"
+										label-cols-lg="4"
+										
+									>
+										<services-search-multi
+											name="denial_reasons"
+											v-model="currentDenialReasons"
+											@add="addingDenialReason = true"
+											:disabled="saving"
+										/>
+									</b-form-group> -->
+
+									<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-input-group>
+										<b-form-input type="text" name="serviceSearch" v-model="searchQuery"
+											:disabled="saving || loadingServices || formDisabled"
+											placeholder="Search for a Service..." @input="filterServices" />
+										<b-input-group-append>
+											<b-input-group-text>
+												<font-awesome-icon icon="search" fixed-width />
+											</b-input-group-text>
+										</b-input-group-append>
+									</b-input-group>
+									<div>
+										<!-- <b-list-group v-if="selectedServices.length > 0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id">
+												{{ service.name }}
+												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
+											</b-list-group-item>
+										</b-list-group> -->
+										<b-list-group v-if="selectedServices.length > 0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id">
+												<div class="d-flex justify-content-between align-items-center">
+													<div>{{ service.name }}</div>
+													<b-btn @click="deselectService(service)" size="sm">
+														<!-- <b-icon icon="x"></b-icon> -->
+														<font-awesome-icon icon="fa-solid fa-xmark" />
+													</b-btn>
+												</div>
+											</b-list-group-item>
+										</b-list-group>
+
+									</div>
+									<div v-if="filteredServices.length > 0">
+										<b-list-group>
+											<b-list-group-item v-for="service in filteredServices" :key="service.id"
+												@click="selectService(service)">
+												{{ service.name }}
+											</b-list-group-item>
+										</b-list-group>
+									</div>
 								</b-form-group>
+								
+
+								<!-- Search and Add Services Section -->
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4"> -->
+								<!-- Custom search input for services -->
+								<!-- <loading-indicator v-if="loadingServices && availableServices.length <= 0" /> -->
+								<!-- <b-input-group>
+									<b-form-input
+									
+									v-model="searchQuery"
+									
+									:disabled="saving || loadingServices"
+									value-field="id"
+									text-field="name"
+									:placeholder="loadingServices ? 'Loading services...' : 'Search services...'"
+									></b-form-input>
+									<b-input-group-append>
+									<b-button @click="searchServices">Search</b-button>
+									</b-input-group-append>
+								</b-input-group> -->
+
+								 <!-- List of matching services -->
+								 <!-- <b-form-select
+									v-model="entity.services._ids"
+									:options="matchingServices"
+									:disabled="saving || loadingServices"
+									value-field="id"
+									text-field="name"
+									multiple
+								></b-form-select> -->
+
+
+								<!-- Button to add selected services -->
+								<!-- <b-button @click="addSelectedServices">Add Selected Services</b-button> -->
+							<!-- </b-form-group> -->
 							</b-card-body>
 						</b-collapse>
+						<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
+						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
+							class="text-left px-4 py-3 m-0">
+							NPI Information
+						</b-button>
+					</b-card-header>
+					<b-collapse id="collapseNpiInformation" role="tabpanel">
+						<b-card-body>
+							<div class="d-flex">
+								<div class="flex-grow-1 pr-3">
+									<!-- <h4 class="card-title">{{ entity.name }}</h4>
+									<h5 class="card-subtitle mb-4">{{ ` ${entity.state}, ${entity.city}` }}</h5> -->
+									<!-- <hr class="my-2"> -->
+									<div class="label-value-row">
+										<div class="label-text">NPI Number:</div>
+										<div class="text">{{ entity.npi_number }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Doing Business As:</div>
+										<div class="text">{{ entity.othername }}</div>
+									</div>
+									<hr class="my-2">
+									<div class="label-value-row">
+										<div class="label-text">Enumeration Type:</div>
+										<div class="text">{{ ` ${entity.enumeration_type} Organization` }}</div>
+									</div>
+									
+									<div class="label-value-row">
+										<div class="label-text">Status</div>
+										<div class="text">{{ entity.active ? 'Active' : 'Inactive' }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Organization Subpart ?	</div>
+										<div class="text">{{ entity.organizational_subpart }}</div>
+									</div>
+
+									<hr class="my-2">
+
+									<!-- <div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Location Address:</div>
+												<div class="text-primary">{{ `${entity.street_address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
+											</div> -->
+											<div class="d-flex">
+												<div class="flex-grow-1 pr-3">
+												<div class="label-value-row">
+													<div class="label-text">Location Address:</div>
+													<div class="text">{{ entity.address_2 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text">{{ entity.locationPhoneNumber }}</div>
+											</div>
+											<hr class="my-1">
+											<div class="label-value-row">
+												<div class="label-text">Mailing Address:</div>
+												<div class="text">{{ `${entity.address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
+											</div>
+											<!-- <div class="label-value-row">
+												<div class="label-text">Organization Subpart ?</div>
+												<div class="text-primary">{{ entity.organizational_subpart }}</div>
+											</div> -->
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text">{{ entity.mailingPhoneNumber }}</div>
+											</div>
+										</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Primary Taxonomy:</div>
+												<div class="text">{{ entity.primary_taxonomy }}</div>
+											</div>
+											<hr class="my-2">
+											<div class="label-value-row">
+												<div class="label-text">Additional Taxonomies:</div>
+												<div class="text">{{ entity.additionalTaxonomies }}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</b-card-body>
+					</b-collapse>
 					</b-card>
 				</b-card-body>
+				
+
+				<!-- <b-card v-if="fromNPI" no-body> -->
+					<!-- <b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
+						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
+							class="text-left px-4 py-3 m-0">
+							<h6 class="mb-0">NPI Data</h6>
+						</b-button>
+					</b-card-header>
+					<b-collapse id="collapseNpiInformation" role="tabpanel">
+						<b-card-body>
+							<div class="d-flex">
+								<div class="flex-grow-1 pr-3">
+									<div class="label-value-row">
+										<div class="label-text">Other Name:</div>
+										<div class="text-primary">{{ entity.othername }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Enumeration Type:</div>
+										<div class="text-primary">{{ entity.enumeration_type }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Gender:</div>
+										<div class="text-primary">{{ entity.gender }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Sole Proprietor ?</div>
+										<div class="text-primary">{{ entity.proprietor }}</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Location Address:</div>
+												<div class="text-primary">{{ entity.address_2 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text-primary">{{ entity.locationPhoneNumber }}</div>
+											</div>
+											<hr class="my-1">
+											<div class="label-value-row">
+												<div class="label-text">Mailing Address:</div>
+												<div class="text-primary">{{ entity.address_1 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text-primary">{{ entity.mailingPhoneNumber }}</div>
+											</div>
+										</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Primary Taxonomy:</div>
+												<div class="text-primary">{{ entity.primaryTaxonomy }}</div>
+											</div>
+											<hr class="my-2">
+											<div class="label-value-row">
+												<div class="label-text">Additional Taxonomies:</div>
+												<div class="text-primary">{{ entity.additionalTaxonomies }}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</b-card-body>
+					</b-collapse> -->
+				<!-- </b-card> -->
 
 				<b-card-footer>
 					<b-row>
@@ -1591,6 +1554,7 @@
 import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
+import axios from "axios";
 
 export default {
 	name: "FacilityForm",
@@ -1609,6 +1573,12 @@ export default {
 			npiLookingUp: false,
 			npiSearched: false,
 			npiResults: [],
+			searchQuery: '',            // The search query entered by the user
+        	// availableServices: [],               // The list of all available services
+        	// matchingServices: [],       // The list of services matching the search query
+        	filteredServices: [], 
+			selectedServices: [],		 // The list of services selected by the user
+			services: [],
 			entity: {
 				id: this.id,
 				name: "",
@@ -1618,20 +1588,23 @@ export default {
 				phone: null,
 				fax: null,
 				email: null,
-				street_address_1: null,
-				street_address_2: null,
+				// street_address_1: null,
+				// street_address_2: null,
 				city: null,
 				state: null,
 				zip: null,
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
+				locationPhoneNumber: null,
+				mailingPhoneNumber: null,
+				additionalTaxonomies: null,
 				client_owned: true,
 				chain_name: null,
 				area_name: null,
 				ou_number: null,
 				territory: null,
-				rvp_name: null,
+				// rvp_name: null,
 				has_contract: false,
 				contract_start_date: null,
 				contract_end_date: null,
@@ -1639,20 +1612,30 @@ export default {
 				max_return_work_days: null,
 				address_1: null,
 				address_2: null,
-				taxonomy_code: null,
-				taxonomy_desc: null,
-				taxonomy_group: null,
-				taxonomy_license:  null,
-				taxonomy_state: null,
+				// taxonomy_code: null,
+				// taxonomy_desc: null,
+				// taxonomy_group: null,
+				// taxonomy_license:  null,
+				// taxonomy_state: null,
+				othername: null,
+				enumeration_type: null,
+				organizational_subpart:null,
 				services: {
 					_ids: [],
 				},
 			},
+			forms: [],
+			titlename: [],
+			contactTypes: [],
+			inputFields: [{ selectedContactType: 'phone', phone: '' }],
 		};
 	},
 	computed: 
 	{
-		fromnNPI() {
+		concatenatedStreetAddress() {
+        return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
+    	},
+		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
 				}
@@ -1668,7 +1651,9 @@ export default {
 	},
 	mounted() {
 		this.getServices();
-
+		this.TitleShow();
+        this.fetchContactTypes();
+		this.listFacilityContacts();
 		if (this.id) {
 			this.refresh();
 		} else {
@@ -1676,9 +1661,84 @@ export default {
 		}
 	},
 	methods: {
+		// Method to search and filter services based on the search query
+			// searchServices() {
+			// 	if (this.searchQuery === '') {
+			// 		// Show all services when the search query is empty
+			// 		this.matchingServices = this.services;
+			// 	} else {
+			// 		// Filter services based on the search query
+			// 		this.matchingServices = this.services.filter(service => {
+			// 			return service.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+			// 		});
+   			// 	}
+			// },
+
+		// Method to add the selected services to the entity
+		// addSelectedServices() {
+		// 	// Add the selected services to entity.services._ids
+		// 	this.entity.services._ids = this.selectedServices.map(service => service.id);
+
+		// 	// Clear the search and selected services
+		// 	this.searchQuery = '';
+		// 	this.selectedServices = [];
+		// 	},
+		
+		// filterServices() {
+		// 	// Implement the logic to filter Services based on the search term
+		// 	const searchTerm = this.searchQuery.toLowerCase();
+		// 	this.filteredServices = this.services.filter((service) =>
+		// 		service.name.toLowerCase().includes(searchTerm)
+		// 	);
+		// },
+		filterServices() {
+			// Implement the logic to filter services based on the search term
+			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
+			this.filteredServices = this.services.filter((service) =>
+				service.name.toLowerCase().includes(searchTerm)
+			);
+			},
+
+		selectService(selectedService) {
+			console.log('Selected Service:', selectedService);
+			// Check if the service ID is not already selected
+			if (!this.entity.services._ids.includes(selectedService.id)) {
+				// Push the selected service ID to the array
+				this.entity.services._ids.push(selectedService.id);
+			}
+
+			// Clear the search term and filtered services
+			this.searchQuery = '';
+			this.filteredServices = [];
+			},
+
+
+
+		// selectService(selectedService) {
+		// 	console.log('Selected Service:', selectedService);
+		// 	// Check if the facility is not already selected
+		// 	if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+		// 		// Push the selected facility to the array
+		// 	this.selectedServices.push(selectedService);
+		// 	// console.log('Selected Services array:', this.selectedServices);
+		// 	this.entity.services._ids.push(selectedService);
+		// 	// console.log('check:', this.entity.services._ids);
+
+		// 	}
+
+		// 	// Clear the search term and filtered facilities
+		// 	this.searchQuery = '';
+		// 	this.filteredServices = [];
+		// },
+		deselectService(selectedService) {
+			// Remove the selected facility from the array
+			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
+		},
+
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
+			 this.availableServices = this.services; // Initialize availableServices with all services
 		},
 		cancel() {
 			this.$emit("cancel");
@@ -1720,6 +1780,87 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
+		// async save() {
+		// 	try {
+		// 		this.saving = true;
+
+		// 		// const response = await save({
+		// 		// ...this.entity,
+		// 		// services: {
+		// 		// 	_ids: this.selectedServices.map(service => service.id),
+		// 		// },
+		// 		// });
+		// 		console.log("services=", services)
+				
+		// 		// const response = await this.$store.dispatch("facilities/save", this.entity);
+		// 		const response = await save({
+		// 			...this.entity,
+		// 			services: {
+		// 				_ids: this.services_ids,
+		// 			},
+		// 		});
+		// 		console.log("response=",response);
+
+		// 		// this.entity.services = this.selectedServices.map(service => service.id);
+		// 		// this.entity.services = this.selectedServices.map(service => service.id);
+
+		// 		this.$emit("saved", response);
+		// 		this.$emit("update:id", response.id);
+
+		// 		this.$store.dispatch("facilities/getAll");
+		// 		this.$store.dispatch("facilities/getActive");
+		// 	} catch (e) {
+		// 		if (e.response.data.errors) {
+		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+		// 		}
+
+		// 		this.$store.dispatch("apiError", {
+		// 			error: e,
+		// 			title: "Save Failed",
+		// 			message: "Error saving facility details. Please check for errors.",
+		// 			variant: "warning",
+		// 		});
+		// 	} finally {
+		// 		this.saving = false;
+		// 	}
+		// },
+		// async save() {
+		// 	try {
+		// 		this.saving = true;
+		// 		// console.log("Before Response=", response);
+		// 		// const response = await save({
+		// 		// 	...this.entity,
+		// 		// 	services: {
+		// 		// 		_ids: this.services_ids,
+		// 		// 	},
+		// 		// });
+		// // 		console.log("response=",response);
+
+		// 		const response = await this.$store.dispatch("facilities/save",{ ...this.entity, 
+		// 		services: {
+		// 				_ids: this.services_ids,
+		// 			}},);
+		// 		console.log("Response=", response);
+		// 		this.$emit("saved", response);
+		// 		this.$emit("update:id", response.id);
+
+		// 		this.$store.dispatch("facilities/getAll");
+		// 		this.$store.dispatch("facilities/getActive");
+		// 	} catch (e) {
+		// 		if (e.response.data.errors) {
+		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+		// 		}
+
+		// 		this.$store.dispatch("apiError", {
+		// 			error: e,
+		// 			title: "Save Failed",
+		// 			message: "Error saving facility details. Please check for errors.",
+		// 			variant: "warning",
+		// 		});
+		// 	} finally {
+		// 		this.saving = false;
+		// 	}
+		// },
 		async save() {
 			try {
 				this.saving = true;
@@ -1788,6 +1929,118 @@ export default {
 			this.npiResults = [];
 			this.npiSearched = false;
 		},
-	},
+		createNewForm() {
+			const newForm = {
+			
+			f_name: null,
+			l_name: null,
+			title_id: null,
+			contact_id: null,
+			phone_no: null,
+			// ... other form fields ...
+			
+			// ... other form-specific data ...
+			};
+			// Push an empty object to the forms array
+			this.forms.push(newForm);
+			console.log("my form :",this.forms);
+        },
+		async TitleShow (){
+			try {
+					const url = "/client/facilityTitle";
+						
+						const response = await axios.get(url, {
+						headers: {
+							"Accept": "application/json",
+							// You can add other headers here if needed
+						},
+						
+						});
+						console.log("check =",response.data);
+					
+					if (response.data && Array.isArray(response.data)) {
+							for (let i = 0; i < response.data.length; i++) {
+							this.titlename.push(response.data[i].title);
+							}
+						}
+							console.log("Titlename:", this.titlename);
+				}catch (error) {
+					console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchContactTypes(){
+				try
+					{
+						const url = "/client/facilityTitle";
+							
+							const response = await axios.get(url, {
+							headers: {
+								"Accept": "application/json",
+								// You can add other headers here if needed
+							},
+							});
+							if (response.data && Array.isArray(response.data)) {
+								for (let i = 0; i < response.data.length; i++) {
+								this.contactTypes.push(response.data[i].contact_type);
+								}
+							}
+							console.log("contacttype:", this.contactTypes);
+					}
+				catch (error) 
+				{
+					console.error("Error fetching data:", error.message);
+				}
+			},
+	
+		async listFacilityContacts(){
+			try
+						{
+							const url = "/client/facilityContactList";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								if (response.data && Array.isArray(response.data)) {
+									// for (let i = 0; i < response.data.length; i++) {
+									// this.contactTypes.push(response.data[i].contact_type);
+									// }
+									this.forms = response.data;
+								}
+							console.log("contact listed:", this.forms);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+},
 };
 </script>
+<style scoped>
+.compact-card {
+	margin-bottom: 0;
+}
+
+.label-value-row {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 0.2rem;
+}
+
+.label-text {
+	font-weight: bold;
+	display: inline-block;
+	width: 150px;
+	margin-right: 10px;
+}
+
+.text {
+	color: #101111d8;
+}
+</style>
+
+
