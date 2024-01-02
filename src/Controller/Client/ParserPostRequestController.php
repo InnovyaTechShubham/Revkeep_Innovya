@@ -31,20 +31,20 @@ class ParserPostRequestController extends AppController
                     'content' => file_get_contents($file_path),
                 ],
             ];
-            $context = stream_context_create($headers);
-            $response = file_get_contents($url, false, $context);
-            
-            // $fileContents = file_get_contents('../storage/835_1700465736_sample.json'); // Read the JSON file
-            // $json_data = json_decode($fileContents, true); // Decode JSON data into PHP array
+            // $context = stream_context_create($headers);
+            // $response = file_get_contents($url, false, $context);
+            $response= true;
+            $fileContents = file_get_contents('../storage/835_1700465736_sample.json'); // Read the JSON file
+            $json_data = json_decode($fileContents, true); // Decode JSON data into PHP array
             if ($response === FALSE) {
                 echo 'Error reading the file or making the request';
             } else {
-                $json_data = json_decode($response, true);
+                // $json_data = json_decode($response, true);
  
-                $output_file_path = "../storage/$originalNameBase.json";
-                file_put_contents($output_file_path, json_encode($json_data, JSON_PRETTY_PRINT));
+                // $output_file_path = "../storage/$originalNameBase.json";
+                // file_put_contents($output_file_path, json_encode($json_data, JSON_PRETTY_PRINT));
  
-                echo json_encode($json_data, JSON_PRETTY_PRINT);
+                // echo json_encode($json_data, JSON_PRETTY_PRINT);
                
                 $iteration = 1; // Initialize iteration counter
  

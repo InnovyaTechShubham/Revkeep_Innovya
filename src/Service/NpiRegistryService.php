@@ -81,6 +81,14 @@ class NpiRegistryService implements NpiServiceInterface
 	/**
 	 * @inheritDoc
 	 */
+	public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+	{
+		return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function searchIndividualByNumber(int $npiNumber): array
 	{
 		return NpiUtility::searchIndividualByNumber($npiNumber);

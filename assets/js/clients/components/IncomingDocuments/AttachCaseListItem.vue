@@ -241,11 +241,11 @@
 							<!-- use appeal_level_id for rendering -->
 							
 							<b-card no-body>
-								<b-card-header>Requests{{ checkRequest() }} </b-card-header>
-							 <div v-for="request,j in request_list" :key="request.id" class="shadow-sm">
+								<b-card-header v-for="r,ji in request_list" :key="r.id" v-if="r.case_id===appeal.case_id && r.appeal_level == i">Requests{{ checkRequest() }} </b-card-header>
+							 <div v-for="request,j in request_list" :key="request.id" v-if="showRequest" class="shadow-sm upper-space">
 								
 								<!-- <b-row v-if="request.case_id===appeal.case_id && request.appeal_level == appeal.appeal_level_id " > -->
-									<b-row v-if="request.case_id===appeal.case_id && request.appeal_level == i" class="mt-3">
+									<b-row v-if="request.case_id===appeal.case_id && request.appeal_level == i">
 									<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
 										<p  class="font-weight-bold mb-0 custom-padding" >
 											<span>

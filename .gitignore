@@ -72,3 +72,7 @@ node_modules/*
 
 # Config #
 config/app.php
+webroot/js/clients.js
+webroot/js/vendors.js
+webroot/js/vendors.min.js
+webroot/js/clients.min.js

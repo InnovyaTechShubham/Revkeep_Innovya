@@ -181,6 +181,8 @@ class NpiUtility
 	 *
 	 * @param string $name
 	 * @param string $state
+	 * @param string $city
+	 * @param string $zip
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */
@@ -198,6 +200,21 @@ class NpiUtility
 
 		return $results;
 	}
+
+	public static function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+    {
+        $orgName = str_replace('*', '', $name);
+ 
+        $results = self::sendRequest([
+            'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+            'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
+            'state' => $state,
+            'city' => $city,
+            'postal_code' => $zip
+        ]);
+ 
+        return $results;
+    }
 
 	/**
 	 * Lookup by individual name for people in the NPI Registry
