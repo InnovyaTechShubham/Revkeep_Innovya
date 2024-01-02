@@ -144,6 +144,7 @@ import { get as GetClientEmployee, destroy as DeleteClientEmployee } from "@/cli
 
 import CaseForm from "@/clients/components/Cases/Form.vue";
 import CaseIndex from "@/clients/components/Cases/Index.vue";
+import axios from "axios";
 
 export default {
 	name: "ClientEmployeeView",
@@ -154,6 +155,7 @@ export default {
 	data() {
 		return {
 			loading: true,
+			clientFacilities: [],
 			entity: {
 				id: null,
 				created: null,
@@ -186,6 +188,7 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		this.fetchClientFacilities();
 	},
 	methods: {
 		async refresh() {
@@ -193,6 +196,7 @@ export default {
 				this.loading = true;
 				const response = await GetClientEmployee(this.$route.params.id);
 				this.entity = response;
+				console.log("requirement", response);
 				this.$emit("loaded", response);
 			} catch (e) {
 				this.$router.push({ name: "clientEmployees" });
@@ -200,6 +204,29 @@ export default {
 				this.loading = false;
 			}
 		},
+	// 	async fetchClientFacilities() {
+    //   try {
+	// 	console.log("sending")
+    //     const response = await axios.post(`/client/fetchmultiplefacility/${this.$route.params.id}`);
+    //     console.log("sent")
+	// 	this.clientFacilities = response.data.facilities;
+	// 	console.log(response.data.facilities);
+    //   } catch (error) {
+    //     console.error('Error fetching client facilities:', error);
+    //   }
+    // },
+	async fetchClientFacilities() {
+    try {
+        console.log("sending");
+        const response = await axios.post(`/client/multiplefacility`,{data: this.$route.params.id});
+		console.log(this.$route.params.id,"checking ");
+        console.log("sent");
+        this.clientFacilities = response.data.facilityIds;
+        console.log(this.clientFacilities);
+    } catch (error) {
+        console.error('Error fetching client facilities:', error);
+    }
+},
 		async destroy() {
 			if (!confirm("Are you sure you want to delete this physician?")) {
 				return;

@@ -21,10 +21,11 @@
 			perPage,
 		}"
 	>
+
 		<page-header v-bind="{ loading, total }">
 			<template #title>Physicians</template>
 			<template #buttons>
-				<b-dropdown right variant="primary">
+				<b-dropdown right variant="primary" no-caret>
 					<template #button-content>
 						<font-awesome-icon icon="plus" fixed-width />
 						<span>Add New</span>

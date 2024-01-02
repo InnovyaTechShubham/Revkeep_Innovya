@@ -41,7 +41,8 @@
 							</b-col>
 						</b-row>
 					</b-alert>
-				</div> -->
+				</div> 
+			-->
 
 				<b-card-body class="mb-0">
 					<validation-provider vid="first_name" name="First Name" :rules="{ required: true, alpha_dash: true }"
@@ -71,7 +72,7 @@
 							:disabled="saving || formDisabled || fromNPI" />
 					</b-form-group>
 
-					<b-form-group label="Facility" label-for="facility_id" label-cols-lg="4">
+					<!-- <b-form-group label="Facility" label-for="facility_id" label-cols-lg="4">
 						<b-input-group>
 							<b-form-input type="text" name="facilitySearch" v-model="facilitySearchTerm"
 								:disabled="saving || loadingFacilities || formDisabled"
@@ -98,7 +99,37 @@
 								</b-list-group-item>
 							</b-list-group>
 						</div>
-					</b-form-group>
+					</b-form-group> -->
+
+					<b-form-group label="Facility" label-for="facility_id" label-cols-lg="4">
+    <b-input-group>
+        <b-form-input type="text" name="facilitySearch" v-model="facilitySearchTerm"
+            :disabled="saving || loadingFacilities || formDisabled"
+            placeholder="Search for a facility..." @input="filterFacilities" />
+        <b-input-group-append>
+            <b-input-group-text>
+                <font-awesome-icon icon="search" fixed-width />
+            </b-input-group-text>
+        </b-input-group-append>
+    </b-input-group>
+    <div>
+        <!-- Display selected facilities as pills with a cross -->
+        <b-badge v-for="facility in selectedFacilities" :key="facility.id" variant="primary" class="mr-1 mb-1">
+            {{ facility.name }}
+            <span @click="deselectFacility(facility)" style="cursor: pointer; margin-left: 4px; color: red;">x</span>
+        </b-badge>
+    </div>
+    <div v-if="filteredFacilities.length > 0">
+        <!-- Display filtered facilities for selection -->
+        <b-list-group>
+            <b-list-group-item v-for="facility in filteredFacilities" :key="facility.id"
+                @click="selectFacility(facility)">
+                {{ facility.name }}
+            </b-list-group-item>
+        </b-list-group>
+    </div>
+</b-form-group>
+
 
 					<b-form-group label="State" label-for="state" label-cols-lg="4">
 						<b-form-select name="state" v-model="entity.state" :options="states"
@@ -254,6 +285,7 @@
 <script type="text/javascript">
 import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
+import axios from 'axios';
 
 export default {
 	name: "ClientEmployeeForm",
@@ -297,6 +329,7 @@ export default {
 				mailingPhoneNumber: null,
 				primaryTaxonomy: null,
 				additionalTaxonomies: null,
+				selectedFacilityIds: [],
 
 			},
 			populated: false,
@@ -368,11 +401,18 @@ export default {
 			if (!this.selectedFacilities.some(facility => facility.id === selectedFacility.id)) {
 				// Push the selected facility to the array
 				this.selectedFacilities.push(selectedFacility);
+
+				// Update selectedFacilityIds in the entity
+				this.entity.selectedFacilityIds = this.selectedFacilities.map(facility => facility.id);
+
+				// Log the IDs of the selected facilities
+				console.log('Selected Facility IDs:', this.entity.selectedFacilityIds);
 			}
 
 			// Clear the search term and filtered facilities
 			this.facilitySearchTerm = '';
 			this.filteredFacilities = [];
+
 		},
 		deselectFacility(selectedFacility) {
 			// Remove the selected facility from the array
@@ -408,11 +448,14 @@ export default {
 			try {
 				this.saving = true;
 
+				console.log('Selected Facility IDs:', this.entity.selectedFacilityIds);
 
 				const response = await this.$store.dispatch("clientEmployees/save", this.entity);
 
+				await this.saveWithFacilities(response.id);
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
+
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -428,6 +471,35 @@ export default {
 				this.saving = false;
 			}
 		},
+		async saveWithFacilities() {
+			try {
+				// Prepare the data to be sent
+				const data = {
+					id: this.entity.id,
+					selectedFacilityIds: this.entity.selectedFacilityIds,
+				};
+				console.log("data", data);
+				// Make the axios post request to your CakePHP controller
+				const response = await axios.post('/client/multiplefacility', data);
+				console.log("request sent")
+				// Handle the response as needed
+				console.log(response.data);
+
+				this.$emit("savedWithFacilities", response.data); // Emit event for successful saveWithFacilities
+
+			} catch (e) {
+				// Handle errors
+				console.error('Error:', e);
+				this.$store.dispatch("apiError", {
+					error: e,
+					title: "Save With Facilities Failed",
+					message: "Error saving facilities details. Please check for errors.",
+					variant: "warning",
+				});
+
+			}
+		},
+
 	},
 };
 </script>

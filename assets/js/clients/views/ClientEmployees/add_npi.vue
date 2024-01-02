@@ -5,12 +5,17 @@
 				<router-link :to="{ name: 'clientEmployees' }" v-text="`Physicians /`" />
 				<span>Add From NPI Registry</span>
 			</template>
-			<template #buttons>
+			
+			<!-- current requirement does not allow manually addition of physician if in future requirement changes uncomment the below code 
+				rest all the functionalities are untouched
+				
+				<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'clientEmployees.add' }" title="Add Physician">
 					<font-awesome-icon icon="pencil" fixed-width />
 					<span>Manual Create</span>
 				</b-button>
-			</template>
+			</template> -->
+
 		</page-header>
 
 		<b-row class="my-4">
@@ -18,6 +23,13 @@
 				<b-card no-body class="shadow-sm mb-4">
 					<b-form @submit.prevent="npiLookup">
 						<b-card-body>
+							<b-form-group label="Npi Number" label-for="npi_number" label-cols="4" label-cols-lg="12">
+								<b-input-group>
+									<b-form-input name="npi_number" type="number" v-model="query.npi_number"
+										:disabled="saving || searching" />
+								</b-input-group>
+							</b-form-group>
+
 							<b-form-group label="First Name" label-for="first_name" label-cols="4" label-cols-lg="12">
 								<b-input-group>
 									<b-form-input name="first_name" type="text" v-model="query.first_name"
@@ -31,6 +43,7 @@
 										:disabled="saving || searching" />
 								</b-input-group>
 							</b-form-group>
+
 							<!-- <b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
 								<b-input-group>
 								  <b-form-input
@@ -56,6 +69,7 @@
 							<b-form-group label="Zip Code" label-for="zip" label-cols="4" label-cols-lg="12">
 								<b-form-input name="zip" type="text" v-model="query.zip" :disabled="saving || searching" />
 							</b-form-group>
+
 							<!-- <b-form-group label="State" label-for="state" label-cols="4" label-cols-lg="12">
 								<b-form-select
 									autofocus
@@ -96,6 +110,7 @@
 									/>
 								</b-input-group>
 							</b-form-group> -->
+
 						</b-card-body>
 						<b-card-footer class="text-right">
 							<b-row>
@@ -104,7 +119,7 @@
 										Clear
 									</b-button>
 								</b-col>
-								<b-col cols="12" md="6" offset-xl="4" xl="4">
+								<b-col cols="11" md="4" offset-xl="3" xl="2">
 									<b-button variant="primary" type="submit"
 										:disabled="searching || saving || formInvalid">
 										<span v-if="searching">Searching...</span>
@@ -219,6 +234,7 @@ export default {
 		return {
 			error: "",
 			query: {
+				npi_number: "",
 				first_name: "",
 				last_name: "",
 				state: "",
@@ -234,6 +250,7 @@ export default {
 	computed: {
 		formInvalid() {
 			if (
+				this.query.npi_number === "" &&
 				this.query.first_name === "" &&
 				this.query.last_name === "" &&
 				// this.query.state === "" &&
@@ -257,6 +274,7 @@ export default {
 	},
 	methods: {
 		clearFields() {
+			this.query.npi_number = "";
 			this.query.first_name = "";
 			this.query.last_name = "";
 			this.query.state = "";
@@ -271,6 +289,7 @@ export default {
 				this.searched = true;
 				console.log("zip:", this.query.zip);
 				const response = await this.$store.dispatch("clientEmployees/lookup", {
+					npi_number: this.query.npi_number,
 					first_name: this.query.first_name,
 					last_name: this.query.last_name,
 					state: this.query.state,
@@ -282,7 +301,7 @@ export default {
 
 				this.results = response;
 				console.log("check", response);
-				console.log("City:", this.query.zip);
+				console.log("zip:", this.query.zip);
 
 			} catch (e) {
 				this.error = e.response?.data?.message ?? "An error occurred";

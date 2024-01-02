@@ -993,6 +993,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	$builder->connect('/multiplefacility', [
 		'controller' => 'Multiplefacility',
 		'action' => 'index',
+	    
+	]);
+	$builder->connect('/fetchmultiplefacility', [
+		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
 	    '_method' => 'POST'
 	]);
 
