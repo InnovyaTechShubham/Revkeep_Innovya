@@ -1,6 +1,6 @@
 <template>
 	<b-container fluid class="mb-4">
-		<b-row class="my-4">
+		<b-row class="my-4" >
 		<!--	<b-col cols="4" xl="8" class="text-left">
 				<b-button @click="showDetails = !showDetails" variant="secondary">
 					<span v-if="showDetails">Hide Details</span>

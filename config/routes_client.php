@@ -978,5 +978,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'controller' => 'FacilitiesAddContact',
 		'action' => 'index',
 	]);
+	$builder->connect('/hearing', [
+		'controller' => 'HearingCase',
+		'action' => 'index',
+		'_method' => 'POST'
+	]);
+
 	
 });

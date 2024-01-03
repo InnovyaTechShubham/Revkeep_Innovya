@@ -836,7 +836,7 @@
 				</b-nav>
 			</b-card-header>
 			<b-card-header header-tag="nav" class="mt-2">
-			<b-nav card-header tabs >
+			<b-nav card-header tabs > 
                  
 				<b-nav-item
 						v-for="appeal in caseEntity.appeals"

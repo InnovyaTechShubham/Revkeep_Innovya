@@ -365,6 +365,7 @@
 											</empty-result>
 										</b-card-body>
 									</b-tab> 
+									</b-tab> 
 									<b-tab no-body lazy>
 										<template #title>Forms</template>
 										<b-card-body>
@@ -380,6 +381,7 @@
 										</b-card-body>
 									</b-tab>
 								</b-tabs>
+							</b-tab> 
 							</b-tab> -->
 							<b-tab no-body>
 								<template #title>
@@ -431,6 +433,7 @@
 								</empty-result>
 							</b-tab>
 						<!--	<b-tab >
+							<b-tab >
 								<template #title>Notes</template>
 								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
 
@@ -453,6 +456,7 @@
 										</div>
 									</transition-group>
 								</div>
+						</b-tab> 
 						</b-tab> -->
 							<b-tab no-body>
 								<template #title>Collaborate</template>
@@ -495,7 +499,7 @@
 										<b-form-input
 											name="hearing_date"
 											type="date"
-											v-model="entity.hearing_date"
+											v-model="hearing_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -517,7 +521,7 @@
 										<b-form-input
 											name="hearing_time"
 											type="time"
-											v-model="entity.hearing_time"
+											v-model="hearing_time"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -532,7 +536,7 @@
 								<b-form-group label="Meeting Type" label-for="meeting_type" label-cols-lg="4">
 									<b-form-select
 										id="meeting_type"
-										v-model="entity.meeting_type"
+										v-model="meeting_type"
 										:disabled="saving"
 									>
 										<option value="Location">Location</option>
@@ -584,6 +588,7 @@
 								type="submit"
 								:disabled="saving"
 								:title="invalid ? 'Please fix any validation errors' : 'Save'"
+								@click="save"
 							>
 								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
 								<span>Save</span>
@@ -661,6 +666,7 @@ import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabe
 import CaseRequestAssign from "@/clients/components/CaseRequests/Assign.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
 import { formatErrors, getValidationState } from "@/validation";
+import axios from "axios";
 
 export default {
 	name: "ViewAppeal",
