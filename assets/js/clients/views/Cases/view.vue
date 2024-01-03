@@ -197,7 +197,7 @@
 						<span >Case</span>
 					</b-nav-item>
 
-					<b-nav-item
+			<!--		<b-nav-item
 						v-for="caseRequest in caseEntity.case_requests"
 						:key="'request_' + caseRequest.id"
 						:to="{
@@ -212,7 +212,13 @@
 						<span v-else>{{ caseRequest.type_label }}</span>
 					</b-nav-item>
 
-					<b-nav-item
+				-->
+				</b-nav>
+			</b-card-header>
+			<b-card-header header-tag="nav" class="mt-2">
+			<b-nav card-header tabs >
+                 
+				<b-nav-item
 						v-for="appeal in caseEntity.appeals"
 						:key="'appeal_' + appeal.id"
 						:to="{ name: 'appeals.view', params: { id: caseEntity.id, appeal_id: appeal.id } }"
@@ -233,9 +239,10 @@
 							v-text="checkAppealName(caseEntity , appeal)"
 						/>
 					</b-nav-item>
-				</b-nav>
-			</b-card-header>
+                
 
+				</b-nav>
+          </b-card-header>
 			<router-view
 				ref="routerView"
 				:key="routerKey"
