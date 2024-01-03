@@ -497,7 +497,7 @@
 										<b-form-input
 											name="hearing_date"
 											type="date"
-											v-model="entity.hearing_date"
+											v-model="hearing_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -519,7 +519,7 @@
 										<b-form-input
 											name="hearing_time"
 											type="time"
-											v-model="entity.hearing_time"
+											v-model="hearing_time"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -534,7 +534,7 @@
 								<b-form-group label="Meeting Type" label-for="meeting_type" label-cols-lg="4">
 									<b-form-select
 										id="meeting_type"
-										v-model="entity.meeting_type"
+										v-model="meeting_type"
 										:disabled="saving"
 									>
 										<option value="Location">Location</option>
@@ -586,6 +586,7 @@
 								type="submit"
 								:disabled="saving"
 								:title="invalid ? 'Please fix any validation errors' : 'Save'"
+								@click="save"
 							>
 								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
 								<span>Save</span>
@@ -663,6 +664,7 @@ import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabe
 import CaseRequestAssign from "@/clients/components/CaseRequests/Assign.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
 import { formatErrors, getValidationState } from "@/validation";
+import axios from "axios";
 
 export default {
 	name: "ViewAppeal",
@@ -1264,32 +1266,26 @@ export default {
 		async save(e) {
 			try {
 				this.saving = true;
-				console.log("saving appeal =", this.entity.appeal_level_id)
-				const response = await this.$store.dispatch("appeals/save", {
-					hearing_date: this.entity.hearing_date,
-					hearing_time: this.entity.hearing_time,
-					meeting_type: this.entity.meeting_type,
-				    address: this.entity.address,
-				    phone_number: this.entity.phone_number,
-				    conference_url: this.entity.conference_url,
+				console.log("saving =", this.entity)
+				const data = {
+					appealLevelId : this.entity.id,
+					hearingDate : this.hearing_date,
+					hearingTime : this.hearing_time,
+					meetingType : this.meeting_type
+				}
+				axios.post('/client/hearing', data)
+				.then((response) => {				
+					console.log("check",response);
+				})
+				.catch((error) => {
+					// Handle any errors, e.g., show an error message
+					console.error('Error adding new type:', error);
 				});
-
-				this.saving = false;
-				this.$emit("saved", response);
+				
 			} catch (e) {
 				console.log('error =',e);
-				if (e.response.data.errors) {
-					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-				}
-
-				this.$store.dispatch("apiError", {
-					error: e,
-					title: "Save Failed",
-					message: "Failed to save appeal",
-				});
-			} finally {
-				this.saving = false;
-			}
+				
+			} 
 		},
 		reset() {
 			this.entity = {
