@@ -238,6 +238,7 @@ export default {
 			saving: false,
 			searching: false,
 			searched: false,
+			//null
 		};
 	},
 	computed: {
