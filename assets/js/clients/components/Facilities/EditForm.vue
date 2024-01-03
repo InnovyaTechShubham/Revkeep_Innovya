@@ -92,7 +92,7 @@
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Display Name1" label-for="disp_name" label-cols-lg="4">
+						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
 							<b-form-input
 								name="display_name"
 								type="text"
@@ -1577,10 +1577,10 @@
 										/>
 									</b-form-group> -->
 
-									<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
-									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4">
+									<!-- <loading-indicator v-if="loadingServices && services.length <= 0" /> -->
 									<b-input-group>
-										<b-form-input type="text" name="serviceSearch" v-model="searchQuery"
+										<b-form-input type="text" name="service_ids" v-model="searchQuery"
 											:disabled="saving || loadingServices || formDisabled"
 											placeholder="Search for a Service..." @input="filterServices" />
 										<b-input-group-append>
@@ -1871,7 +1871,7 @@ export default {
         	// matchingServices: [],       // The list of services matching the search query
         	filteredServices: [], 
 			selectedServices: [],		 // The list of services selected by the user
-			services: [],
+			// services: [],
 			entity: {
 				id: this.id,
 				name: "",
@@ -1913,17 +1913,16 @@ export default {
 				othername: null,
 				enumeration_type: null,
 				organizational_subpart:null,
-				services: {
-					_ids: [],
-				},
+				services: [],
 			},
+			service_ids: [],
 		};
 	},
 	computed: 
 	{
-		concatenatedStreetAddress() {
-        return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
-    	},
+		// concatenatedStreetAddress() {
+        // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
+    	// },
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -1981,17 +1980,30 @@ export default {
 		filterServices() {
 			// Implement the logic to filter services based on the search term
 			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("services:",this.services);
+
 			this.filteredServices = this.services.filter((service) =>
 				service.name.toLowerCase().includes(searchTerm)
 			);
+			console.log("Filtered:",this.filteredServices);
+
 			},
 
 		selectService(selectedService) {
 			console.log('Selected Service:', selectedService);
 			// Check if the service ID is not already selected
-			if (!this.entity.services._ids.includes(selectedService.id)) {
-				// Push the selected service ID to the array
-				this.entity.services._ids.push(selectedService.id);
+			// if (!this.entity.services._ids.includes(selectedService.id)) {
+			// 	// Push the selected service ID to the array
+			// 	this.entity.services._ids.push(selectedService.id);
+			// }
+
+			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+				// Push the selected facility to the array
+				this.selectedServices.push(selectedService);
+				console.log("selected array:",this.selectedServices);
+				this.entity.services.push(selectedService);
+				console.log("pushed:",this.entity.services);
 			}
 
 			// Clear the search term and filtered services
@@ -2025,7 +2037,7 @@ export default {
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
-			 this.availableServices = this.services; // Initialize availableServices with all services
+			//  this.availableServices = this.services; // Initialize availableServices with all services
 		},
 		cancel() {
 			this.$emit("cancel");
@@ -2053,9 +2065,10 @@ export default {
 				});
 
 				this.entity = response;
-				this.entity.services = {
-					_ids: response.services.map((service) => service.id),
-				};
+				// this.entity.services = {
+				// 	_ids: response.services.map((service) => service.id),
+				// };
+				this.service_ids = response.services.map((service) => service.id);
 				this.$emit("loaded", response);
 			} catch (e) {
 				this.$store.dispatch("apiError", {
@@ -2152,6 +2165,15 @@ export default {
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
+
+				// const response = await save({
+				// 	...this.entity,
+				// 	services: {
+				// 		_ids: this.service_ids,
+				// 	},
+				// });
+				console.log("saved:", response);
+
 
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
