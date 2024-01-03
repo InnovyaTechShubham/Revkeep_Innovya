@@ -175,23 +175,24 @@
 						<b-tab>
 							<template #title>Request</template>
 							<b-card>
-								<b-nav card-header tabs >
-									<b-nav-item
-						v-for="caseRequest in caseEntity.case_requests"
-						:key="'request_' + caseRequest.id"
-						:to="{
-						
-							params: { id: caseEntity.id, case_request_id: caseRequest.id },
-						}"
-						:title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
-						active-class="active font-weight-bold"
-						@click="handleTabClick(caseRequest)"
-					>
-						<case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
-						<span v-if="!caseRequest.type_label">Request</span>
-						<span v-else>{{ caseRequest.type_label }}</span>
-					</b-nav-item>
-									</b-nav>
+								<b-nav card-header tabs class="d-flex mb-2">
+                                 <b-nav-item
+                                 v-for="caseRequest in caseEntity.case_requests"
+        :key="'request_' + caseRequest.id"
+        :to="{
+            params: { id: caseEntity.id, case_request_id: caseRequest.id },
+        }"
+        :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
+        active-class="active font-weight-bold"
+        @click="handleTabClick(caseRequest)"
+		class="m-1"
+    >
+        <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
+        <span v-if="!caseRequest.type_label">Request</span>
+        <span v-else>{{ caseRequest.type_label }}</span>
+    </b-nav-item>
+</b-nav>
+
 
 							</b-card>	
 							<b-row class="mt-2">
@@ -482,6 +483,118 @@
 									</b-tab>
 								</b-tabs>
 							</b-tab>
+							<!--Hearing tab-->
+							<b-tab no-body>
+                                <template #title>Hearing</template>
+                              <b-card-body>
+								<validation-provider
+									vid="hearing_date"
+									name="Hearing Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Hearing Date" label-for="hearing_date" label-cols-lg="4">
+										<b-form-input
+											name="hearing_date"
+											type="date"
+											v-model="entity.hearing_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="hearing_time"
+									name="Hearing Time"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Hearing Time" label-for="hearing_time" label-cols-lg="4">
+										<b-form-input
+											name="hearing_time"
+											type="time"
+											v-model="entity.hearing_time"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<b-form-group label="Meeting Type" label-for="meeting_type" label-cols-lg="4">
+									<b-form-select
+										id="meeting_type"
+										v-model="entity.meeting_type"
+										:disabled="saving"
+									>
+										<option value="Location">Location</option>
+										<option value="Telephonic">Telephonic</option>
+										<option value="Video Conference">Video Conference</option>
+									</b-form-select>
+								</b-form-group>
+
+								<!-- Render input based on selected Meeting Type -->
+								<template v-if="entity.meeting_type === 'Location'">
+									<b-form-group label="Address" label-for="address" label-cols-lg="4">
+										<b-form-input
+											id="address"
+											v-model="entity.address"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+								<template v-else-if="entity.meeting_type === 'Telephonic'">
+									<b-form-group label="Phone Number" label-for="phone_number" label-cols-lg="4">
+										<b-form-input
+											id="phone_number"
+											v-model="entity.phone_number"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+								<template v-else-if="entity.meeting_type === 'Video Conference'">
+									<b-form-group label="Conference URL" label-for="conference_url" label-cols-lg="4">
+										<b-form-input
+											id="conference_url"
+											v-model="entity.conference_url"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+
+								</b-card-body>
+								
+				<b-card-footer>
+					<b-row>
+						<b-col cols="12" md="6" xl="4" class="mb-4 mb-md-0">
+							<b-button v-if="!disableCancel" block variant="light" @click="cancel">Cancel</b-button>
+						</b-col>
+						<b-col cols="12" md="6" offset-xl="4" xl="4">
+							<b-button
+								block
+								variant="primary"
+								type="submit"
+								:disabled="saving"
+								:title="invalid ? 'Please fix any validation errors' : 'Save'"
+							>
+								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
+								<span>Save</span>
+							</b-button>
+						</b-col>
+					</b-row>
+				</b-card-footer>
+                              </b-tab>
+
 						</b-tabs>
 					</b-card>
 				</b-col>
@@ -549,7 +662,7 @@ import PdfFrame from "@/shared/components/PdfFrame.vue";
 import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabel.vue";
 import CaseRequestAssign from "@/clients/components/CaseRequests/Assign.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
-
+import { formatErrors, getValidationState } from "@/validation";
 
 export default {
 	name: "ViewAppeal",
@@ -618,6 +731,10 @@ export default {
 		enableVendorService: {
 			type: Boolean,
 			default: true,
+		},
+		disableCancel: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	components: {
@@ -699,10 +816,18 @@ export default {
 			selectedAppealFiles: [],
 			toggele:false,
 			entity: this.value,
+			hearing_date: null,
+			hearing_time: null,
+			meeting_type: null,
+			address: null,
+			phone_number: null,
+			conference_url: null,
 		};
 	},
+	
 	mounted() {
 		this.refresh();
+		this.hearing();
 	},
 	methods: {
 		/**
@@ -1109,8 +1234,9 @@ export default {
 				
 			}
 		},
+		// request tabs 
 		handleTabClick(caseRequest) {
-      this.entity = {
+        this.entity = {
         name: caseRequest.name,
         type_label: caseRequest.type_label,
 		status_label: caseRequest.status_label,
@@ -1125,6 +1251,72 @@ export default {
 		created: caseRequest.created,
 		unable_to_complete: caseRequest.unable_to_complete,
       };
+    }, 
+
+	
+
+	getValidationState,
+		cancel() {
+			this.$emit("cancel");
+			this.reset();
+		},
+	// hearing save 
+		async save(e) {
+			try {
+				this.saving = true;
+				console.log("saving appeal =", this.entity.appeal_level_id)
+				const response = await this.$store.dispatch("appeals/save", {
+					hearing_date: this.entity.hearing_date,
+					hearing_time: this.entity.hearing_time,
+					meeting_type: this.entity.meeting_type,
+				    address: this.entity.address,
+				    phone_number: this.entity.phone_number,
+				    conference_url: this.entity.conference_url,
+				});
+
+				this.saving = false;
+				this.$emit("saved", response);
+			} catch (e) {
+				console.log('error =',e);
+				if (e.response.data.errors) {
+					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+				}
+
+				this.$store.dispatch("apiError", {
+					error: e,
+					title: "Save Failed",
+					message: "Failed to save appeal",
+				});
+			} finally {
+				this.saving = false;
+			}
+		},
+		reset() {
+			this.entity = {
+			
+				hearing_date: null,
+				hearing_time: null,
+				meeting_type: null,
+				address: null,
+				phone_number: null,
+				conference_url: null,
+			};
+		},
+		//post request
+		async hearing() {
+			try{
+			const url = "/client/hearing";
+				
+				const response = await axios.post(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+
+		}catch (error) {
+            console.error("Error fetching data:", error.message);
+             }
     },
 
 	},
