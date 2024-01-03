@@ -85,15 +85,18 @@
 					<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
 							<b-tab>
-								<template #title>Case Documents </template>
+								<template #title>Files</template>
+								<b-tabs card pills>
+								<b-tab no-body lazy>
+                                <template #title>Case Documents </template>
 								<CaseFiles
 									ref="caseFiles"
 									:id="$route.params.id"
 									:flush="false"
 									:selected.sync="selectedCaseFiles"
 								/>
-							</b-tab>
-							<b-tab active>
+							    </b-tab>
+								<b-tab no-body lazy active>
 								<template #title>Appeal Documents</template>
 								<AppealFiles
 									ref="appealFiles"
@@ -102,23 +105,13 @@
 									:selected.sync="selectedAppealFiles"
 								/>
 							</b-tab>
-						</b-tabs>
-					</b-card>
-				</b-col>
-							
-				<b-col cols="12" md="12" lg="6" >
-					<b-card no-body active>
-						<b-tabs card active-nav-item-class="font-weight-bold">
-							<b-tab no-body>
-								<template #title>Build</template>
-								<appeal-response
-									:value="appeal"
-									:appeal-files="selectedAppealFiles"
-									:case-files="selectedCaseFiles"
-									show-case-files
-									@submitted="appealPacketSubmitted"
-									@remove="unselectFile"
-								/>
+							<b-tab no-body lazy>
+								<template #title> Created Documents</template>
+								
+							</b-tab>
+
+								</b-tabs>
+								
 							</b-tab>
 							<b-tab no-body>
 								<template #title>
@@ -153,8 +146,241 @@
 											</b-list-group>
 										</b-card-body>
 									</b-tab>
-								</b-tabs>
+							</b-tabs>
 							</b-tab>
+							<b-tab >
+								<template #title>Notes</template>
+								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
+
+								<div v-if="hasNotes" style="max-height:17rem" class="mt-2 overflow-y-auto">
+									<transition-group name="fade">
+										<div
+											v-for="note in appeal.appeal_notes"
+											:key="note.id"
+											class="px-2 py-2 my-4 shadow-sm rounded border"
+										>
+											<user-note
+												:note-id="note.id"
+												:user="note.created_by_user"
+												:body="note.notes"
+												:timestamp="note.created"
+												:deletable="canDeleteNote(note)"
+												:deleting="deletingNote == note.id"
+												@delete="deleteNote"
+											/>
+										</div>
+									</transition-group>
+								</div>
+						</b-tab>
+						<b-tab>
+							<template #title>Request</template>
+							<b-card>
+								<b-nav card-header tabs class="d-flex mb-2">
+                                 <b-nav-item
+                                 v-for="caseRequest in caseEntity.case_requests"
+                                 :key="'request_' + caseRequest.id"
+                                 :to="{
+                                 params: { id: caseEntity.id, case_request_id: caseRequest.id },
+                                 }"
+                                  :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
+                                  active-class="active font-weight-bold"
+                                 @click="handleTabClick(caseRequest)"
+		                         class="m-1"
+                                >
+                                <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
+                                <span v-if="!caseRequest.type_label">Request</span>
+                                <span v-else>{{ caseRequest.type_label }}</span>
+                                </b-nav-item>
+                                </b-nav>
+							</b-card>	
+							<b-row class="mt-2">
+								<b-col cols="12" lg="6" class="mb-2">
+									<b-card>
+										<dl class="mb-0">
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Name</dt>
+												<dd class="col-7">
+													{{ entity.name }}
+												</dd>
+											</div>
+
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Status</dt>
+												<dd class="col-7">
+													<case-request-status-label :value="entity" />
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Type</dt>
+												<dd class="col-7">
+													{{ entity.type_label }}
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Insurance Provider</dt>
+												<dd class="col-7">
+													<router-link
+														v-if="entity.insurance_provider"
+														:to="{
+															name: 'insuranceProviders.view',
+															params: { id: entity.insurance_provider_id },
+														}"
+													>
+														{{ entity.insurance_provider.name }}
+													</router-link>
+													<div v-else class="text-muted">&mdash;</div>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Agency</dt>
+												<dd class="col-7">
+													<router-link
+														v-if="entity.agency"
+														:to="{
+															name: 'agencies.view',
+															params: { id: entity.agency_id },
+														}"
+													>
+														{{ entity.agency.name }}
+													</router-link>
+													<div v-else class="text-muted">&mdash;</div>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Priority</dt>
+												<dd class="col-7">
+													<div v-if="entity.priority" class="text-primary font-weight-bold">
+														Yes
+													</div>
+													<div v-else class="text-muted">No</div>
+												</dd>
+											</div>
+										</dl>
+									</b-card>
+								</b-col>
+								<b-col cols="12" lg="6" class="mb-2">
+									<b-card>
+										<dl class="mb-0">
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Created</dt>
+												<dd class="col-7">
+													<p :title="$filters.formatTimestamp(entity.created)" class="mb-0">
+														{{ $filters.fromNow(entity.created) }}
+													</p>
+													<p
+														v-if="entity.created_by && entity.created_by_user"
+														class="small text-muted mb-0"
+													>
+														by {{ entity.created_by_user.full_name }}
+													</p>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Last Updated</dt>
+												<dd class="col-7">
+													<p :title="$filters.formatTimestamp(entity.modified)" class="mb-0">
+														{{ $filters.fromNow(entity.modified) }}
+													</p>
+													<p
+														v-if="entity.modified_by && entity.modified_by_user"
+														class="small text-muted mb-0"
+													>
+														by {{ entity.modified_by_user.full_name }}
+													</p>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Due</dt>
+												<dd class="col-7">
+													<span v-if="entity.due_date">
+														{{ $filters.fromNow(entity.due_date) }} on
+														{{ $filters.formatDate(entity.due_date) }}
+													</span>
+													<span v-else class="text-muted"> &mdash; </span>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small" title="Unable To Complete">
+													UTC
+												</dt>
+												<dd class="col-7">
+													<div v-if="entity.unable_to_complete" class="text-warning">
+														Unable To Complete
+													</div>
+													<div v-else class="text-muted">No</div>
+												</dd>
+											</div>
+											<div class="row">
+												<dt class="col-5 text-muted h6 small">Completed</dt>
+												<dd class="col-7">
+													<span v-if="entity.completed" class="text-success">
+														Completed {{ $filters.fromNow(entity.completed_at) }}
+														<span v-if="entity.completed_by && entity.completed_by_user">
+															by {{ entity.completed_by_user.full_name }}
+														</span>
+													</span>
+													<span v-else class="text-muted"> &mdash; </span>
+												</dd>
+											</div>
+										</dl>
+									</b-card>
+								</b-col>
+							</b-row>
+						</b-tab>
+						
+						</b-tabs>
+					</b-card>
+				</b-col>
+							
+				<b-col cols="12" md="12" lg="6" >
+					<b-card no-body active>
+						<b-tabs card active-nav-item-class="font-weight-bold">
+							<b-tab no-body>
+								<template #title>Build</template>
+								<appeal-response
+									:value="appeal"
+									:appeal-files="selectedAppealFiles"
+									:case-files="selectedCaseFiles"
+									show-case-files
+									@submitted="appealPacketSubmitted"
+									@remove="unselectFile"
+								/>
+							</b-tab>
+							<!--<b-tab no-body>
+								<template #title>
+									<span>Create</span>
+								</template>
+								<b-tabs card pills>
+									<b-tab no-body lazy>
+										<template #title>Cover Page</template>
+										<appeal-cover-page :appeal="appeal" @saved="savedCoverPage" />
+									</b-tab>
+
+									<b-tab no-body lazy>
+										<template #title>Template</template>
+										<b-card-body>
+											<empty-result>
+												No templates
+												<template #content> No appeal response templates created. </template>
+											</empty-result>
+										</b-card-body>
+									</b-tab> 
+									<b-tab no-body lazy>
+										<template #title>Forms</template>
+										<b-card-body>
+											<b-list-group>
+												<b-list-group-item
+													href="https://www.hhs.gov/sites/default/files/omha-100.pdf"
+													target="_blank"
+												>
+													<font-awesome-icon icon="file-pdf" fixed-width />
+													OMHA-100
+												</b-list-group-item>
+											</b-list-group>
+										</b-card-body>
+									</b-tab>
+								</b-tabs>
+							</b-tab> -->
 							<b-tab no-body>
 								<template #title>
 									<span>Defendable</span>
@@ -204,7 +430,7 @@
 									</template>
 								</empty-result>
 							</b-tab>
-							<b-tab >
+						<!--	<b-tab >
 								<template #title>Notes</template>
 								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
 
@@ -227,7 +453,7 @@
 										</div>
 									</transition-group>
 								</div>
-						</b-tab>
+						</b-tab> -->
 							<b-tab no-body>
 								<template #title>Collaborate</template>
 
@@ -255,6 +481,118 @@
 									</b-tab>
 								</b-tabs>
 							</b-tab>
+							<!--Hearing tab-->
+							<b-tab no-body>
+                                <template #title>Hearing</template>
+                              <b-card-body>
+								<validation-provider
+									vid="hearing_date"
+									name="Hearing Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Hearing Date" label-for="hearing_date" label-cols-lg="4">
+										<b-form-input
+											name="hearing_date"
+											type="date"
+											v-model="entity.hearing_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="hearing_time"
+									name="Hearing Time"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Hearing Time" label-for="hearing_time" label-cols-lg="4">
+										<b-form-input
+											name="hearing_time"
+											type="time"
+											v-model="entity.hearing_time"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<b-form-group label="Meeting Type" label-for="meeting_type" label-cols-lg="4">
+									<b-form-select
+										id="meeting_type"
+										v-model="entity.meeting_type"
+										:disabled="saving"
+									>
+										<option value="Location">Location</option>
+										<option value="Telephonic">Telephonic</option>
+										<option value="Video Conference">Video Conference</option>
+									</b-form-select>
+								</b-form-group>
+
+								<!-- Render input based on selected Meeting Type -->
+								<template v-if="entity.meeting_type === 'Location'">
+									<b-form-group label="Address" label-for="address" label-cols-lg="4">
+										<b-form-input
+											id="address"
+											v-model="entity.address"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+								<template v-else-if="entity.meeting_type === 'Telephonic'">
+									<b-form-group label="Phone Number" label-for="phone_number" label-cols-lg="4">
+										<b-form-input
+											id="phone_number"
+											v-model="entity.phone_number"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+								<template v-else-if="entity.meeting_type === 'Video Conference'">
+									<b-form-group label="Conference URL" label-for="conference_url" label-cols-lg="4">
+										<b-form-input
+											id="conference_url"
+											v-model="entity.conference_url"
+											:disabled="saving"
+										/>
+									</b-form-group>
+								</template>
+
+								</b-card-body>
+								
+				<b-card-footer>
+					<b-row>
+						<b-col cols="12" md="6" xl="4" class="mb-4 mb-md-0">
+							<b-button v-if="!disableCancel" block variant="light" @click="cancel">Cancel</b-button>
+						</b-col>
+						<b-col cols="12" md="6" offset-xl="4" xl="4">
+							<b-button
+								block
+								variant="primary"
+								type="submit"
+								:disabled="saving"
+								:title="invalid ? 'Please fix any validation errors' : 'Save'"
+							>
+								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
+								<span>Save</span>
+							</b-button>
+						</b-col>
+					</b-row>
+				</b-card-footer>
+                              </b-tab>
+
 						</b-tabs>
 					</b-card>
 				</b-col>
@@ -319,10 +657,10 @@ import CaseFiles from "@/clients/components/Cases/Files.vue";
 import AddNoteForm from "@/shared/components/AddNoteForm.vue";
 import UserNote from "@/shared/components/UserNote.vue";
 import PdfFrame from "@/shared/components/PdfFrame.vue";
-
-
-
-
+import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabel.vue";
+import CaseRequestAssign from "@/clients/components/CaseRequests/Assign.vue";
+import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
+import { formatErrors, getValidationState } from "@/validation";
 
 export default {
 	name: "ViewAppeal",
@@ -343,6 +681,33 @@ export default {
 					unable_to_complete: null,
 					can_cancel: false,
 					can_delete: false,
+					id : null,
+					client_id: null,
+					created: null,
+					created_by: null,
+					modified: null,
+					modified_by: null,
+					deleted: null,
+					deleted_by: null,
+					case_id: null,
+					request_type: null,
+					name: null,
+					unable_to_complete: null,
+					due_date: null,
+					completed: null,
+					completed_at: null,
+					completed_by: null,
+					assigned: null,
+					assigned_to: null,
+					assigned_to_user: null,
+					insurance_provider_id: null,
+					insurance_provider: null,
+					agency_id: null,
+					agency: null,
+					// Virtual
+					days_due_left: null,
+					status_label: "",
+					type_label: "",
 				};
 			},
 		},
@@ -351,6 +716,10 @@ export default {
 			default: () => {
 				return {
 					id: null,
+					patient: {
+						id: null,
+						full_name: null,
+					},
 					closed: null,
 					insurance_provider: null,
 					insurance_type: null,
@@ -360,6 +729,10 @@ export default {
 		enableVendorService: {
 			type: Boolean,
 			default: true,
+		},
+		disableCancel: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	components: {
@@ -379,6 +752,9 @@ export default {
 		AddNoteForm,
 		UserNote,
 		PdfFrame,
+		CaseRequestStatusLabel,
+		CaseRequestAssign,
+		CaseRequestForm,
 	},
 	computed: {
 		caseClosed() {
@@ -425,10 +801,11 @@ export default {
 		return {
 			appeal: this.value,
 			loading: true,
-			error: null,
+			error: false,
 			editing: false,
 			cancelling: false,
 			deleting: false,
+			updating: false,
 			reopening: false,
 			addingNote: null,
 			deletingNote: null,
@@ -436,15 +813,45 @@ export default {
 			selectedCaseFiles: [],
 			selectedAppealFiles: [],
 			toggele:false,
+			entity: this.value,
+			hearing_date: null,
+			hearing_time: null,
+			meeting_type: null,
+			address: null,
+			phone_number: null,
+			conference_url: null,
 		};
 	},
+	
 	mounted() {
 		this.refresh();
+		this.hearing();
 	},
 	methods: {
 		/**
 		 * Get Details
 		 */
+		 async refresh() {
+			try {
+				this.loading = true;
+				this.error = false;
+
+				const response = await this.$store.dispatch("caseRequests/get", {
+					case_id: this.$route.params.id,
+					id: this.$route.params.case_request_id,
+				});
+
+				this.entity = response;
+			} catch (e) {
+				this.error = true;
+				this.$store.dispatch("apiError", {
+					error: e,
+					message: "Failed to find request",
+				});
+			} finally {
+				this.loading = false;
+			}
+		},
 		async refresh() {
 			try {
 				this.loading = true;
@@ -465,6 +872,38 @@ export default {
 			} finally {
 				this.loading = false;
 			}
+		},
+		async setUTC() {
+			try {
+				this.updating = true;
+				const newValue = !this.entity.unable_to_complete;
+
+				const response = await this.$store.dispatch("caseRequests/setUtc", {
+					case_id: this.$route.params.id,
+					id: this.$route.params.case_request_id,
+					unable_to_complete: newValue,
+				});
+
+				this.$emit("updated-request", response);
+
+				this.$store.dispatch("notify", {
+					variant: "primary",
+					title: "Request Marked UTC",
+					message: "Case request UTC status updated",
+					data: response,
+				});
+			} catch (e) {
+				this.$store.dispatch("apiError", {
+					error: e,
+					message: "Failed to update request UTC status",
+				});
+			} finally {
+				this.updating = false;
+			}
+		},
+		async updatedRequest(entity) {
+			this.$emit("updated-request", entity);
+			this.editing = false;
 		},
 		updatedAppeal(appeal, action = "") {
 			if (appeal && appeal.id) {
@@ -793,6 +1232,92 @@ export default {
 				
 			}
 		},
+		// request tabs 
+		handleTabClick(caseRequest) {
+			if (appeal.id === caseRequest.id) {
+        this.entity = {
+        name: caseRequest.name,
+        type_label: caseRequest.type_label,
+		status_label: caseRequest.status_label,
+		insurance_provider: caseRequest.insurance_provider,
+		agency: caseRequest.agency,
+		insurance_provider_id: caseRequest.insurance_provider_id,
+		agency_id: caseRequest.agency_id,
+        days_due_left: caseRequest.days_due_left,
+		due_date: caseRequest.due_date,
+		completed: caseRequest.completed,
+		completed_at: caseRequest.completed_at,
+		created: caseRequest.created,
+		unable_to_complete: caseRequest.unable_to_complete,
+		};
+      };
+    }, 
+
+	
+
+	getValidationState,
+		cancel() {
+			this.$emit("cancel");
+			this.reset();
+		},
+	// hearing save 
+		async save(e) {
+			try {
+				this.saving = true;
+				console.log("saving appeal =", this.entity.appeal_level_id)
+				const response = await this.$store.dispatch("appeals/save", {
+					hearing_date: this.entity.hearing_date,
+					hearing_time: this.entity.hearing_time,
+					meeting_type: this.entity.meeting_type,
+				    address: this.entity.address,
+				    phone_number: this.entity.phone_number,
+				    conference_url: this.entity.conference_url,
+				});
+
+				this.saving = false;
+				this.$emit("saved", response);
+			} catch (e) {
+				console.log('error =',e);
+				if (e.response.data.errors) {
+					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+				}
+
+				this.$store.dispatch("apiError", {
+					error: e,
+					title: "Save Failed",
+					message: "Failed to save appeal",
+				});
+			} finally {
+				this.saving = false;
+			}
+		},
+		reset() {
+			this.entity = {
+			
+				hearing_date: null,
+				hearing_time: null,
+				meeting_type: null,
+				address: null,
+				phone_number: null,
+				conference_url: null,
+			};
+		},
+		//post request
+		async hearing() {
+			try{
+			const url = "/client/hearing";
+				
+				const response = await axios.post(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+
+		}catch (error) {
+            console.error("Error fetching data:", error.message);
+             }
+    },
 
 	},
 };

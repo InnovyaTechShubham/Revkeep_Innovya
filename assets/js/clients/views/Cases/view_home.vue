@@ -1,7 +1,7 @@
 <template>
 	<b-container fluid class="mb-4">
 		<b-row class="my-4">
-			<b-col cols="4" xl="8" class="text-left">
+		<!--	<b-col cols="4" xl="8" class="text-left">
 				<b-button @click="showDetails = !showDetails" variant="secondary">
 					<span v-if="showDetails">Hide Details</span>
 					<span v-else>Show Details</span>
@@ -14,10 +14,10 @@
 					<span v-if="isFormattedData">Hide Formatted Data</span>
 					<span v-else>Show Formatted Data</span>
 				</b-button>
-				<!-- <b-button v-b-toggle.formattedData>
-					<span >Formatted Data</span>
-				</b-button> -->
-			</b-col>
+				// <b-button v-b-toggle.formattedData>
+				//	<span >Formatted Data</span>
+				//</b-button>
+			</b-col> -->
 		
 			<b-col cols="8" xl="4" class="text-right">
 				<case-assign :case-entity="caseEntity" />
@@ -338,7 +338,7 @@
 
 				</b-row>
 			  </b-container>
-			</b-collapse>
+		    </b-collapse>
 		<div>
 
 		</div>
