@@ -175,23 +175,23 @@
 						<b-tab>
 							<template #title>Request</template>
 							<b-card>
-								<b-nav card-header tabs class="d-flex mb-2">
-                                 <b-nav-item
-                                 v-for="caseRequest in caseEntity.case_requests"
-                                 :key="'request_' + caseRequest.id"
-                                 :to="{
-                                 params: { id: caseEntity.id, case_request_id: caseRequest.id },
-                                 }"
-                                  :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
-                                  active-class="active font-weight-bold"
-                                 @click="handleTabClick(caseRequest)"
-		                         class="m-1"
-                                >
-                                <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
-                                <span v-if="!caseRequest.type_label">Request</span>
-                                <span v-else>{{ caseRequest.type_label }}</span>
-                                </b-nav-item>
-                                </b-nav>
+								<b-nav-item
+  v-for="caseRequest in caseEntity.case_requests"
+  :key="'request_' + caseRequest.id"
+  :to="{
+    params: { id: caseEntity.id, case_request_id: caseRequest.id },
+  }"
+  :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
+  active-class="active font-weight-bold"
+  @click="handleTabClick(caseRequest)"
+  class="m-1"
+  v-if="appeal.id === caseEntity.appeal_id" 
+>
+  <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
+  <span v-if="!caseRequest.type_label">Request</span>
+  <span v-else>{{ caseRequest.type_label }}</span>
+</b-nav-item>
+
 							</b-card>	
 							<b-row class="mt-2">
 								<b-col cols="12" lg="6" class="mb-2">
@@ -326,6 +326,15 @@
 									</b-card>
 								</b-col>
 							</b-row>
+							<b-button variant="primary" @click="openForm" class="mb-2" >
+					               <font-awesome-icon icon="plus" fixed-width />
+					               <span>Add New</span>
+				            </b-button>
+								<case-request-form disable-cancel flush :case-entity="caseEntity"
+									@saved="createdRequest"  @cancel="cancelForm"  v-if="isFormVisible"/>
+									
+				
+			
 						</b-tab>
 						
 						</b-tabs>
@@ -534,47 +543,46 @@
 								</validation-provider>
 
 								<b-form-group label="Meeting Type" label-for="meeting_type" label-cols-lg="4">
-									<b-form-select
-										id="meeting_type"
-										v-model="meeting_type"
-										:disabled="saving"
-									>
-										<option value="Location">Location</option>
-										<option value="Telephonic">Telephonic</option>
-										<option value="Video Conference">Video Conference</option>
-									</b-form-select>
-								</b-form-group>
+      <b-form-select
+        id="meeting_type"
+        v-model="entity.meeting_type"
+        :disabled="saving"
+      >
+        <option value="Location">Location</option>
+        <option value="Telephonic">Telephonic</option>
+        <option value="Video Conference">Video Conference</option>
+      </b-form-select>
+    </b-form-group>
 
-								<!-- Render input based on selected Meeting Type -->
-								<template v-if="entity.meeting_type === 'Location'">
-									<b-form-group label="Address" label-for="address" label-cols-lg="4">
-										<b-form-input
-											id="address"
-											v-model="entity.address"
-											:disabled="saving"
-										/>
-									</b-form-group>
-								</template>
-								<template v-else-if="entity.meeting_type === 'Telephonic'">
-									<b-form-group label="Phone Number" label-for="phone_number" label-cols-lg="4">
-										<b-form-input
-											id="phone_number"
-											v-model="entity.phone_number"
-											:disabled="saving"
-										/>
-									</b-form-group>
-								</template>
-								<template v-else-if="entity.meeting_type === 'Video Conference'">
-									<b-form-group label="Conference URL" label-for="conference_url" label-cols-lg="4">
-										<b-form-input
-											id="conference_url"
-											v-model="entity.conference_url"
-											:disabled="saving"
-										/>
-									</b-form-group>
-								</template>
-
-								</b-card-body>
+    <!-- Render input based on selected Meeting Type -->
+    <template v-if="entity.meeting_type === 'Location'">
+      <b-form-group label="Address" label-for="address" label-cols-lg="4">
+        <b-form-input
+          id="address"
+          v-model="entity.address"
+          :disabled="saving"
+        />
+      </b-form-group>
+    </template>
+    <template v-else-if="entity.meeting_type === 'Telephonic'">
+      <b-form-group label="Phone Number" label-for="phone_number" label-cols-lg="4">
+        <b-form-input
+          id="phone_number"
+          v-model="entity.phone_number"
+          :disabled="saving"
+        />
+      </b-form-group>
+    </template>
+    <template v-else-if="entity.meeting_type === 'Video Conference'">
+      <b-form-group label="Conference URL" label-for="conference_url" label-cols-lg="4">
+        <b-form-input
+          id="conference_url"
+          v-model="entity.conference_url"
+          :disabled="saving"
+        />
+      </b-form-group>
+    </template>
+  </b-card-body>
 								
 				<b-card-footer>
 					<b-row>
@@ -826,6 +834,7 @@ export default {
 			address: null,
 			phone_number: null,
 			conference_url: null,
+			isFormVisible: false,
 		};
 	},
 	
@@ -1240,7 +1249,8 @@ export default {
 		},
 		// request tabs 
 		handleTabClick(caseRequest) {
-			if (appeal.id === caseRequest.id) {
+			console.log('Appeal ID:', this.appeal.id);
+            console.log('Case Request Appeal ID:', caseRequest.appeal_id);
         this.entity = {
         name: caseRequest.name,
         type_label: caseRequest.type_label,
@@ -1255,7 +1265,7 @@ export default {
 		completed_at: caseRequest.completed_at,
 		created: caseRequest.created,
 		unable_to_complete: caseRequest.unable_to_complete,
-		};
+		
       };
     }, 
 
@@ -1324,6 +1334,13 @@ export default {
             console.error("Error fetching data:", error.message);
              }
     },
+	openForm() {
+      this.isFormVisible = true;
+    },
+    createdRequest() {
+      this.isFormVisible = false;
+    },
+	
 
 	},
 };
