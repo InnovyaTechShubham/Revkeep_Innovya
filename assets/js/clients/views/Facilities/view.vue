@@ -65,12 +65,12 @@
 					<b-tab no-body active lazy>
 						<template #title>Details</template>
 						<b-row>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Details</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
 										<tr>
-											<th>Type</th>
+											<th>Main Type</th>
 											<td>
 												<span v-if="entity.facility_type && entity.facility_type.name">
 													{{ entity.facility_type.name }}
@@ -115,10 +115,28 @@
 											</td>
 										</tr>
 										<tr>
-											<th>RVP</th>
+											<th>Division</th>
 											<td>
-												<span v-if="entity.rvp_name">
-													{{ entity.rvp_name }}
+												<span v-if="entity.division">
+													{{ entity.division }}
+												</span>
+												<span v-else class="text-muted">&mdash;</span>
+											</td>
+										</tr>
+										<tr>
+											<th>Region</th>
+											<td>
+												<span v-if="entity.region">
+													{{ entity.region }}
+												</span>
+												<span v-else class="text-muted">&mdash;</span>
+											</td>
+										</tr>
+										<tr>
+											<th>Display Name</th>
+											<td>
+												<span v-if="entity.display_name">
+													{{ entity.display_name }}
 												</span>
 												<span v-else class="text-muted">&mdash;</span>
 											</td>
@@ -126,7 +144,8 @@
 									</table>
 								</div>
 							</b-col>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
+								<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Contact</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
@@ -170,7 +189,8 @@
 									</table>
 								</div>
 							</b-col>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
+								<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Contract</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
@@ -231,7 +251,8 @@
 								</div>
 							</b-col>
 
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<!-- <b-col cols="10" sm="6" lg="6" class="mb-4"> -->
+								<b-col cols="10" sm="5" lg="5" class="mb-0 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Services</h6>
 
 								<b-list-group v-if="entity.services && entity.services.length > 0">

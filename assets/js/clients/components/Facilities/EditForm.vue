@@ -9,7 +9,7 @@
 					<validation-provider
 						vid="name"
 						name="Name"
-						:rules="{ required: true, min: 2, max: 50 }"
+						:rules="{ required: true, min: 2, max: 170 }"
 						v-slot="validationContext"
 					>
 						<b-form-group label="Name" label-for="name" label-cols-lg="4">
@@ -94,7 +94,7 @@
 					>
 						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
 							<b-form-input
-								name="display_name"
+								name="disp_name"
 								type="text"
 								v-model="entity.display_name"
 								:state="getValidationState(validationContext)"
@@ -1577,39 +1577,43 @@
 										/>
 									</b-form-group> -->
 
-									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4">
-									<!-- <loading-indicator v-if="loadingServices && services.length <= 0" /> -->
+									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4" class="mb-0" style="margin: 0;">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
 									<b-input-group>
 										<b-form-input type="text" name="service_ids" v-model="searchQuery"
 											:disabled="saving || loadingServices || formDisabled"
-											placeholder="Search for a Service..." @input="filterServices" />
+											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
 										<b-input-group-append>
 											<b-input-group-text>
 												<font-awesome-icon icon="search" fixed-width />
 											</b-input-group-text>
 										</b-input-group-append>
 									</b-input-group>
-									<div>
+									<div class="mb-0" style="margin: 0;">
 										<!-- <b-list-group v-if="selectedServices.length > 0">
 											<b-list-group-item v-for="service in selectedServices" :key="service.id">
 												{{ service.name }}
 												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
 											</b-list-group-item>
 										</b-list-group> -->
-										<b-list-group v-if="selectedServices.length > 0">
-											<b-list-group-item v-for="service in selectedServices" :key="service.id">
-												<div class="d-flex justify-content-between align-items-center">
-													<div>{{ service.name }}</div>
-													<b-btn @click="deselectService(service)" size="sm">
+										<b-list-group v-if="selectedServices.length > 0" class="mb-0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id" class="mb-0">
+												<div class="d-flex justify-content-between align-items-center mb-0">
+													<div class="mb-0">{{ service.name }}</div>
+													<b-btn variant="danger" @click="deselectService(service)" size="sm">
 														<!-- <b-icon icon="x"></b-icon> -->
-														<font-awesome-icon icon="fa-solid fa-xmark" />
+														<!-- <font-awesome-icon icon="fa-xmark"  style="color:red"/> -->
+														<font-awesome-icon
+															icon="times"
+															fixed-width
+														/>
 													</b-btn>
 												</div>
 											</b-list-group-item>
 										</b-list-group>
 
 									</div>
-									<div v-if="filteredServices.length > 0">
+									<div v-if="filteredServices.length > 0" class="mb-0">
 										<b-list-group>
 											<b-list-group-item v-for="service in filteredServices" :key="service.id"
 												@click="selectService(service)">
@@ -1672,10 +1676,10 @@
 										<div class="label-text">NPI Number:</div>
 										<div class="text">{{ entity.npi_number }}</div>
 									</div>
-									<div class="label-value-row">
+									<!-- <div class="label-value-row">
 										<div class="label-text">Doing Business As:</div>
 										<div class="text">{{ entity.othername }}</div>
-									</div>
+									</div> -->
 									<hr class="my-2">
 									<div class="label-value-row">
 										<div class="label-text">Enumeration Type:</div>
@@ -1686,10 +1690,10 @@
 										<div class="label-text">Status</div>
 										<div class="text">{{ entity.active ? 'Active' : 'Inactive' }}</div>
 									</div>
-									<div class="label-value-row">
+									<!-- <div class="label-value-row">
 										<div class="label-text">Organization Subpart ?	</div>
 										<div class="text">{{ entity.organizational_subpart }}</div>
-									</div>
+									</div> -->
 
 									<hr class="my-2">
 
@@ -1707,12 +1711,12 @@
 											</div>
 											<div class="label-value-row">
 												<div class="label-text">Phone Number:</div>
-												<div class="text">{{ entity.locationPhoneNumber }}</div>
+												<div class="text">{{ entity.location_phone }}</div>
 											</div>
 											<hr class="my-1">
 											<div class="label-value-row">
 												<div class="label-text">Mailing Address:</div>
-												<div class="text">{{ `${entity.address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
+												<div class="text">{{entity.address_1}}</div>
 											</div>
 											<!-- <div class="label-value-row">
 												<div class="label-text">Organization Subpart ?</div>
@@ -1720,7 +1724,7 @@
 											</div> -->
 											<div class="label-value-row">
 												<div class="label-text">Phone Number:</div>
-												<div class="text">{{ entity.mailingPhoneNumber }}</div>
+												<div class="text">{{ entity.mailing_phone }}</div>
 											</div>
 										</div>
 									</div>
@@ -1737,7 +1741,7 @@
 											<hr class="my-2">
 											<div class="label-value-row">
 												<div class="label-text">Additional Taxonomies:</div>
-												<div class="text">{{ entity.additionalTaxonomies }}</div>
+												<div class="text">{{ entity.additional_taxonomies }}</div>
 											</div>
 										</div>
 									</div>
@@ -1889,9 +1893,9 @@ export default {
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
-				locationPhoneNumber: null,
-				mailingPhoneNumber: null,
-				additionalTaxonomies: null,
+				location_phone: null,
+				mailing_phone: null,
+				additional_taxonomies: null,
 				client_owned: true,
 				chain_name: null,
 				area_name: null,
@@ -1946,6 +1950,18 @@ export default {
 			this.loading = false;
 		}
 	},
+	// Load selected services from localStorage on component initialization
+	created() {
+		// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
+		const facilityId = this.entity.id;
+
+		// Retrieve previously selected services for the specific facility from localStorage
+		const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
+
+		// Initialize selectedServices array with the retrieved values or an empty array if none
+		this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
+		},
+		
 	methods: {
 		// Method to search and filter services based on the search query
 			// searchServices() {
@@ -1983,8 +1999,13 @@ export default {
 			console.log("Search:",searchTerm);
 			console.log("services:",this.services);
 
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm)
+			// );
+
+			// Filter services, excluding the ones already selected
 			this.filteredServices = this.services.filter((service) =>
-				service.name.toLowerCase().includes(searchTerm)
+				service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
 			);
 			console.log("Filtered:",this.filteredServices);
 
@@ -2001,6 +2022,11 @@ export default {
 			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
 				// Push the selected facility to the array
 				this.selectedServices.push(selectedService);
+
+				// Save the updated selected services for the specific facility to localStorage
+				const facilityId = this.entity.id;
+    			localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				
 				console.log("selected array:",this.selectedServices);
 				this.entity.services.push(selectedService);
 				console.log("pushed:",this.entity.services);
@@ -2008,7 +2034,9 @@ export default {
 
 			// Clear the search term and filtered services
 			this.searchQuery = '';
-			this.filteredServices = [];
+			// this.filteredServices = [];
+			 // Update the filtered services, excluding the selected service
+  			this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
 			},
 
 
@@ -2230,7 +2258,7 @@ export default {
 
 			const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
 			if (primaryTaxonomy) {
-				this.entity.primary_taxonomy = primaryTaxonomy.code ?? "";
+				this.entity.primaryTaxonomy = primaryTaxonomy.code ?? "";
 			} else {
 				console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
 			}

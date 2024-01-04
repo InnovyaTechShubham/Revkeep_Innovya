@@ -101,9 +101,12 @@ class FacilitiesController extends ApiController
 		try {
 			$this->Facilities->saveOrFail($entity);
 			$entity = $this->Facilities->getFull($entity->id);
+
 			$this->set('data', $entity);
+			// $data = $this->request->getData();
+
 			// Insert debugging code
-			$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+			// $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
 			// $demo = array
 			// (    
 			// 'name'
@@ -119,10 +122,10 @@ class FacilitiesController extends ApiController
 			// 'New York'
 			// );
 			
-			$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
-			$file = fopen($filePath, 'w');
-			fwrite($file, $jsonContent);
-			fclose($file);
+			// $jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+			// $file = fopen($filePath, 'w');
+			// fwrite($file, $jsonContent);
+			// fclose($file);
 
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
@@ -270,7 +273,7 @@ class FacilitiesController extends ApiController
 			$this->set('data', $entity);
 
 			// Insert debugging code
-		$filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+			// $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
 		// $demo = array
 		// (    
 		// 'name'
@@ -286,10 +289,10 @@ class FacilitiesController extends ApiController
 		// 'New York'
 		// );
 		
-		$jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
-		$file = fopen($filePath, 'w');
-		fwrite($file, $jsonContent);
-		fclose($file);
+		// $jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
+		// $file = fopen($filePath, 'w');
+		// fwrite($file, $jsonContent);
+		// fclose($file);
 
 		
 

@@ -43,7 +43,7 @@
 							<b-form-input
 								name="disp_name"
 								type="text"
-								v-model="entity.disp_name"
+								v-model="entity.display_name"
 								:state="getValidationState(validationContext)"
 								:disabled="saving"
 							/>
@@ -309,9 +309,9 @@
 								>
 									<b-form-group label="Division" label-for="division" label-cols-lg="4">
 										<b-form-input
-											name="divison"
+											name="division"
 											type="text"
-											v-model="entity.divison"
+											v-model="entity.division"
 											:state="getValidationState(validationContext)"
 											:disabled="saving"
 										/>
@@ -765,6 +765,7 @@ export default {
 			entity: {
 				id: this.id,
 				name: "",
+				display_name:null,
 				facility_type_id: null,
 				active: true,
 				phone: null,
@@ -779,7 +780,7 @@ export default {
 				npi_manual: null,
 				primary_taxonomy: null,
 				client_owned: false,
-				divison: null,
+				division: null,
 				region:null,
 				chain_name: null,
 				area_name: null,

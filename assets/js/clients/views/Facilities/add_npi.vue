@@ -340,7 +340,7 @@ export default {
 			if (!confirm(`Add facility '${result.name}'?`)) {
 				return;
 			}
-			console.log("Result=",result);
+			console.log("From API=",result);
 
 			// Try to set facility type as 'Other'
 			// @todo Make this better
@@ -405,7 +405,7 @@ export default {
 				const LocconcatenatedAddress = `${Locaddress.address_1 ?? ""}, ${Locaddress.city ?? ""}, ${Locaddress.state ?? ""}, ${Locaddress.postal_code ?? ""}, ${Locaddress.country_name ?? ""}`;
 
 				const otherName = result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
-				const subPart = result.organizational_subpart ? "YES" : "NO";
+				// const subPart = result.organizational_subpart ? "YES" : "NO";
 
 				//Initialize primaryTaxonomy and additionalTaxonomies arrays
 				let primaryTaxonomy = "";
@@ -433,11 +433,11 @@ export default {
 				state: result.addresses[1]?.state ?? "",
 				othername: otherName,
 				enumeration_type: result.enumeration_type,
-				locationPhoneNumber: result.addresses[1]?.telephone_number ?? "NONE",
-				mailingPhoneNumber: result.addresses[0]?.telephone_number ?? "NONE",
-				primaryTaxonomy: primaryTaxonomy,
-				additionalTaxonomies: additionalTaxonomies.join(', ') || "NONE",
-				organizational_subpart: subPart,
+				location_phone: result.addresses[1]?.telephone_number ?? "NONE",
+				mailing_phone: result.addresses[0]?.telephone_number ?? "NONE",
+				primary_taxonomy: primaryTaxonomy,
+				additional_taxonomies: additionalTaxonomies.join(', ') || "NONE",
+				organizational_subpart: result.organizational_subpart,
 
 
 				};
@@ -493,7 +493,7 @@ export default {
 
 
 				// };
-
+				console.log("Inside:", result);
 				const newEntity = await this.$store.dispatch("facilities/create", result);
 				console.log("New entity=", newEntity);
 				this.$router.push({
