@@ -175,24 +175,24 @@
 						<b-tab>
 							<template #title>Request</template>
 							<b-card>
-								<b-nav-item
-  v-for="caseRequest in caseEntity.case_requests"
-  :key="'request_' + caseRequest.id"
-  :to="{
-    params: { id: caseEntity.id, case_request_id: caseRequest.id },
-  }"
-  :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
-  active-class="active font-weight-bold"
-  @click="handleTabClick(caseRequest)"
-  class="m-1"
-  v-if="appeal.id === caseEntity.appeal_id" 
->
-  <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
-  <span v-if="!caseRequest.type_label">Request</span>
-  <span v-else>{{ caseRequest.type_label }}</span>
-</b-nav-item>
-
-							</b-card>	
+								<b-nav card-header tabs class="d-flex mb-2">
+                                 <b-nav-item
+                                 v-for="caseRequest in caseEntity.case_requests"
+                                 :key="'request_' + caseRequest.id"
+                                 :to="{
+                                 params: { id: caseEntity.id, case_request_id: caseRequest.id },
+                                 }"
+                                  :title="caseRequest.name ? caseRequest.name : '(Missing Name)'"
+                                  active-class="active font-weight-bold"
+                                 @click="handleTabClick(caseRequest)"
+		                         class="m-1"
+                                >
+                                <case-request-status-label icon :value="caseRequest" class="d-none d-lg-inline mr-2" />
+                                <span v-if="!caseRequest.type_label">Request</span>
+                                <span v-else>{{ caseRequest.type_label }}</span>
+                                </b-nav-item>
+                                </b-nav>
+							</b-card>
 							<b-row class="mt-2">
 								<b-col cols="12" lg="6" class="mb-2">
 									<b-card>
@@ -326,15 +326,33 @@
 									</b-card>
 								</b-col>
 							</b-row>
+							
 							<b-button variant="primary" @click="openForm" class="mb-2" >
 					               <font-awesome-icon icon="plus" fixed-width />
 					               <span>Add New</span>
 				            </b-button>
-								<case-request-form disable-cancel flush :case-entity="caseEntity"
-									@saved="createdRequest"  @cancel="cancelForm"  v-if="isFormVisible"/>
-									
-				
-			
+							<b-row v-if="addingRequest" class="my-2">
+			<b-col cols="12">
+				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
+					<template #header>
+						<b-card-header>
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="font-weight-bold">Add New Request</span>
+								<b-button
+									variant="secondary"
+									size="sm"
+									@click="addingRequest = false"
+									title="Cancel"
+									class="mb-0"
+								>
+									<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+								</b-button>
+							</div>
+						</b-card-header>
+					</template>
+				</case-request-form>
+			</b-col>
+		</b-row>
 						</b-tab>
 						
 						</b-tabs>
@@ -673,6 +691,7 @@ import PdfFrame from "@/shared/components/PdfFrame.vue";
 import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabel.vue";
 import CaseRequestAssign from "@/clients/components/CaseRequests/Assign.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
+import AttachCaseListItem from "@/clients/components/IncomingDocuments/AttachCaseListItem.vue";
 import { formatErrors, getValidationState } from "@/validation";
 import axios from "axios";
 
@@ -769,6 +788,7 @@ export default {
 		CaseRequestStatusLabel,
 		CaseRequestAssign,
 		CaseRequestForm,
+		AttachCaseListItem,
 	},
 	computed: {
 		caseClosed() {
@@ -834,7 +854,8 @@ export default {
 			address: null,
 			phone_number: null,
 			conference_url: null,
-			isFormVisible: false,
+			saving: false,
+			addingRequest: false,
 		};
 	},
 	
@@ -846,6 +867,13 @@ export default {
 		/**
 		 * Get Details
 		 */
+		 cancel(e) {
+			if (e) {
+				e.preventDefault();
+			}
+
+			this.$emit("cancel");
+		},
 		 async refresh() {
 			try {
 				this.loading = true;
@@ -1250,7 +1278,10 @@ export default {
 		// request tabs 
 		handleTabClick(caseRequest) {
 			console.log('Appeal ID:', this.appeal.id);
-            console.log('Case Request Appeal ID:', caseRequest.appeal_id);
+			const appealId = caseRequest.id;
+
+// Now you can use the appealId as needed
+console.log('Clicked on nav item with appeal_id:', appealId);
         this.entity = {
         name: caseRequest.name,
         type_label: caseRequest.type_label,
@@ -1265,7 +1296,9 @@ export default {
 		completed_at: caseRequest.completed_at,
 		created: caseRequest.created,
 		unable_to_complete: caseRequest.unable_to_complete,
-		
+		assigned_to_user: caseRequest.assigned_to_user,
+		assigned_to: caseRequest.assigned_to,
+		completed_by: caseRequest.completed_by,
       };
     }, 
 
@@ -1334,13 +1367,12 @@ export default {
             console.error("Error fetching data:", error.message);
              }
     },
-	openForm() {
-      this.isFormVisible = true;
-    },
-    createdRequest() {
-      this.isFormVisible = false;
-    },
 	
+    openForm() {
+      this.addingRequest=true;
+    },
+  
+   
 
 	},
 };
