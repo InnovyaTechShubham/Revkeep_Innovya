@@ -1,7 +1,7 @@
 <template>
 	<b-container fluid class="mb-4">
-		<b-row class="my-4">
-			<b-col cols="4" xl="8" class="text-left">
+		<b-row class="my-4" >
+		<!--	<b-col cols="4" xl="8" class="text-left">
 				<b-button @click="showDetails = !showDetails" variant="secondary">
 					<span v-if="showDetails">Hide Details</span>
 					<span v-else>Show Details</span>
@@ -10,20 +10,21 @@
 					<span v-if="showLoveMessage">Hide Data</span>
 					<span v-else>Show Data</span>
 				</b-button>
-			</b-col>
+				<b-button @click="showFormattedData" variant="secondary">
+					<span v-if="isFormattedData">Hide Formatted Data</span>
+					<span v-else>Show Formatted Data</span>
+				</b-button>
+				// <b-button v-b-toggle.formattedData>
+				//	<span >Formatted Data</span>
+				//</b-button>
+			</b-col> -->
 		
 			<b-col cols="8" xl="4" class="text-right">
 				<case-assign :case-entity="caseEntity" />
 			</b-col>
 		</b-row>
-		<div>
-			<b-collapse v-model="showLoveMessage">
-				<template>
-					<div >
-						<pre>{{ formattedData }}</pre>
-					</div>
-				</template>
-			  <!-- <b-container fluid class="bv-example-row">
+		<b-collapse v-model="isFormattedData" id="collapse1" class="mt-2">
+			<b-container fluid class="bv-example-row">
 				
 				<template>
 					<div >
@@ -50,7 +51,7 @@
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >First Name  &nbsp;  &nbsp;</b-col> 
-						    <b-col cols="5.5" ><p class="value-box">{{ response !== null ? response.NM1_PatientName.ResponseContactFirstName_04 : ' ' }}</p></b-col>
+						    <b-col cols="5.5" ><p class="value-box">Sakshi</p></b-col>
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Middle Name  &nbsp;  &nbsp;</b-col> 
@@ -58,7 +59,7 @@
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Last Name  &nbsp;  &nbsp;</b-col> 
-						    <b-col cols="5.5" ><p class="value-box">{{ response !== null ? response.NM1_PatientName.ResponseContactLastorOrganizationName_03 : ' '}}</p></b-col>
+						    <b-col cols="5.5" ><p class="value-box">Mittal</p></b-col>
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Contact Number  &nbsp;  &nbsp;</b-col> 
@@ -335,14 +336,21 @@
 				    </div>
 				</b-col>
 
-
-				  
-
-
 				</b-row>
-			  </b-container> -->
+			  </b-container>
+		    </b-collapse>
+		<div>
+
+		</div>
+		<div>
+			<b-collapse v-model="showLoveMessage">
+				<template>
+					<div >
+						<pre>{{ formattedData }}</pre>
+					</div>
+				</template>
 			</b-collapse>
-		    </div>
+		</div>
 		    
 		<b-collapse v-model="showDetails">
 			<b-row>
@@ -722,6 +730,7 @@ export default {
 	},
 	data() {
 		return {
+			isFormattedData: false,
 			showDetails: false,
 			showLoveMessage: false,
 			items: [
@@ -736,6 +745,10 @@ export default {
 		};
 	},
 	methods: {
+		// show formatted data(hard-coded data for 835 files)
+		showFormattedData(){
+			this.isFormattedData = !this.isFormattedData;
+		},
 		createdAppeal(appeal) {
 			this.$router.push({
 				name: "appeals.view",
