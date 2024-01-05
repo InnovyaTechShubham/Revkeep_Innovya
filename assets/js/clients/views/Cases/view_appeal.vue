@@ -1371,7 +1371,9 @@ console.log('Clicked on nav item with appeal_id:', appealId);
     openForm() {
       this.addingRequest=true;
     },
-  
+	addedRequest() {
+      this.addingRequest = false;
+    },
    
 
 	},
