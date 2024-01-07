@@ -90,8 +90,8 @@ class ClientemployeesFacilityTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
-        $rules->add($rules->existsIn('client_id', 'Clients'), ['errorField' => 'client_id']);
+       // $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
+       // $rules->add($rules->existsIn('client_id', 'Clients'), ['errorField' => 'client_id']);
 
         return $rules;
     }
