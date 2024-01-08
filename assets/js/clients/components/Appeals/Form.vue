@@ -612,7 +612,7 @@
 				<b-card-body>
 					<h6 class="text-muted">Optional</h6>
 					<b-card no-body>
-						<b-card-header header-tag="header" role="tab" class="p-0">
+					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseHearing
@@ -680,7 +680,7 @@
 									</b-form-select>
 								</b-form-group>
 
-								<!-- Render input based on selected Meeting Type -->
+								// Render input based on selected Meeting Type 
 								<template v-if="entity.meeting_type === 'Location'">
 									<b-form-group label="Address" label-for="address" label-cols-lg="4">
 										<b-form-input
@@ -710,7 +710,7 @@
 								</template>
 								</b-card-body>
 								</b-collapse>
-
+							-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block

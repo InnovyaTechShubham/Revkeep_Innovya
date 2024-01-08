@@ -33,6 +33,16 @@
 						<span v-if="showDetails">Hide Details</span>
 						<span v-else>Show Details</span>
 					</b-button>
+					<b-button
+                        variant="primary"
+                        @click="openForm"
+                        :disabled="isRequest || addingRequest"
+                        >
+                        <span v-if="isRequest || addingRequest">Hide Request</span>
+                        <span v-else>Add Request</span>
+                    </b-button>
+
+						
 				</b-col>
 				<b-col cols="12" md="5" lg="4" xl="3" order="3" order-md="2" class="text-left mb-4">
 					<appeal-assign :appeal="appeal" />
@@ -80,99 +90,34 @@
 			<b-collapse v-model="showDetails">
 				<appeal-summary :appeal="appeal" class="mb-4" />
 			</b-collapse>
-			<b-row>
-				<b-col cols="12" md="12" lg="6" >
-					<b-card no-body>
+		<b-row v-if="addingRequest" class="my-2">
+			<b-col cols="6">
+				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
+					<template #header>
+						<b-card-header>
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="font-weight-bold">Add New Request</span>
+								<b-button
+									variant="secondary"
+									size="sm"
+									@click="addingRequest = false"
+									title="Cancel"
+									class="mb-0"
+								>
+									<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+								</b-button>
+							</div>
+						</b-card-header>
+					</template>
+				</case-request-form>
+			</b-col>
+		</b-row>
+		<!--request section start here-->
+		<b-row v-if="isRequest" >
+			<b-col cols="6"  class="mb-2">
+				<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
-							<b-tab>
-								<template #title>Files</template>
-								<b-tabs card pills>
-								<b-tab no-body lazy>
-                                <template #title>Case Documents </template>
-								<CaseFiles
-									ref="caseFiles"
-									:id="$route.params.id"
-									:flush="false"
-									:selected.sync="selectedCaseFiles"
-								/>
-							    </b-tab>
-								<b-tab no-body lazy active>
-								<template #title>Appeal Documents</template>
-								<AppealFiles
-									ref="appealFiles"
-									:id="$route.params.appeal_id"
-									:flush="false"
-									:selected.sync="selectedAppealFiles"
-								/>
-							</b-tab>
-							<b-tab no-body lazy>
-								<template #title> Created Documents</template>
-								
-							</b-tab>
-
-								</b-tabs>
-								
-							</b-tab>
-							<b-tab no-body>
-								<template #title>
-									<span>Create</span>
-								</template>
-								<b-tabs card pills>
-									<b-tab no-body lazy>
-										<template #title>Cover Page</template>
-										<appeal-cover-page :appeal="appeal" @saved="savedCoverPage" />
-									</b-tab>
-
-									<b-tab no-body lazy>
-										<template #title>Template</template>
-										<b-card-body>
-											<empty-result>
-												No templates
-												<template #content> No appeal response templates created. </template>
-											</empty-result>
-										</b-card-body>
-									</b-tab>
-									<b-tab no-body lazy>
-										<template #title>Forms</template>
-										<b-card-body>
-											<b-list-group>
-												<b-list-group-item
-													href="https://www.hhs.gov/sites/default/files/omha-100.pdf"
-													target="_blank"
-												>
-													<font-awesome-icon icon="file-pdf" fixed-width />
-													OMHA-100
-												</b-list-group-item>
-											</b-list-group>
-										</b-card-body>
-									</b-tab>
-							</b-tabs>
-							</b-tab>
-							<b-tab >
-								<template #title>Notes</template>
-								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
-
-								<div v-if="hasNotes" style="max-height:17rem" class="mt-2 overflow-y-auto">
-									<transition-group name="fade">
-										<div
-											v-for="note in appeal.appeal_notes"
-											:key="note.id"
-											class="px-2 py-2 my-4 shadow-sm rounded border"
-										>
-											<user-note
-												:note-id="note.id"
-												:user="note.created_by_user"
-												:body="note.notes"
-												:timestamp="note.created"
-												:deletable="canDeleteNote(note)"
-												:deleting="deletingNote == note.id"
-												@delete="deleteNote"
-											/>
-										</div>
-									</transition-group>
-								</div>
-						</b-tab>
-						<b-tab>
+                           <b-tab>
 							<template #title>Request</template>
 							<b-card>
 								<b-nav card-header tabs class="d-flex mb-2">
@@ -323,39 +268,296 @@
 												</dd>
 											</div>
 										</dl>
-									</b-card>
-								</b-col>
-							</b-row>
-							
-							<b-button variant="primary" @click="openForm" class="mb-2" >
-					               <font-awesome-icon icon="plus" fixed-width />
-					               <span>Add New</span>
-				            </b-button>
-							<b-row v-if="addingRequest" class="my-2">
-			<b-col cols="12">
-				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
-					<template #header>
-						<b-card-header>
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="font-weight-bold">Add New Request</span>
-								<b-button
-									variant="secondary"
-									size="sm"
-									@click="addingRequest = false"
-									title="Cancel"
-									class="mb-0"
-								>
-									<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
-								</b-button>
-							</div>
-						</b-card-header>
-					</template>
-				</case-request-form>
-			</b-col>
-		</b-row>
+										</b-card>
+										</b-col>
+										</b-row>
+                                         </b-tab>
+                                 <b-tab>
+								<template #title>Files</template>
+								<b-tabs card pills>
+								<b-tab no-body lazy>
+                                <template #title>Case Documents </template>
+								<CaseFiles
+									ref="caseFiles"
+									:id="$route.params.id"
+									:flush="false"
+									:selected.sync="selectedCaseFiles"
+								/>
+							    </b-tab>
+								<b-tab no-body lazy active>
+								<template #title>Appeal Documents</template>
+								<AppealFiles
+									ref="appealFiles"
+									:id="$route.params.appeal_id"
+									:flush="false"
+									:selected.sync="selectedAppealFiles"
+								/>
+							</b-tab>
+							<b-tab no-body lazy>
+								<template #title> Created Documents</template>
+								
+							</b-tab>
+
+								</b-tabs>
+								
+							</b-tab>
+							<b-tab no-body>
+								<template #title>
+									<span>Create</span>
+								</template>
+								<b-tabs card pills>
+									<b-tab no-body lazy>
+										<template #title>Cover Page</template>
+										<appeal-cover-page :appeal="appeal" @saved="savedCoverPage" />
+									</b-tab>
+
+									<b-tab no-body lazy>
+										<template #title>Template</template>
+										<b-card-body>
+											<empty-result>
+												No templates
+												<template #content> No appeal response templates created. </template>
+											</empty-result>
+										</b-card-body>
+									</b-tab>
+									<b-tab no-body lazy>
+										<template #title>Forms</template>
+										<b-card-body>
+											<b-list-group>
+												<b-list-group-item
+													href="https://www.hhs.gov/sites/default/files/omha-100.pdf"
+													target="_blank"
+												>
+													<font-awesome-icon icon="file-pdf" fixed-width />
+													OMHA-100
+												</b-list-group-item>
+											</b-list-group>
+										</b-card-body>
+									</b-tab>
+							</b-tabs>
+							</b-tab>
+							<b-tab >
+								<template #title>Notes</template>
+								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
+
+								<div v-if="hasNotes" style="max-height:17rem" class="mt-2 overflow-y-auto">
+									<transition-group name="fade">
+										<div
+											v-for="note in appeal.appeal_notes"
+											:key="note.id"
+											class="px-2 py-2 my-4 shadow-sm rounded border"
+										>
+											<user-note
+												:note-id="note.id"
+												:user="note.created_by_user"
+												:body="note.notes"
+												:timestamp="note.created"
+												:deletable="canDeleteNote(note)"
+												:deleting="deletingNote == note.id"
+												@delete="deleteNote"
+											/>
+										</div>
+									</transition-group>
+								</div>
 						</b-tab>
+
+						<b-card-footer>
+					<b-row>
+						<b-col cols="12" md="6" xl="4" class="mb-4 mb-md-0">
+							<b-button v-if="!disableCancel" block variant="light" @click="remove">Cancel</b-button>
+						</b-col>
+						<b-col cols="12" md="6" offset-xl="4" xl="4">
+							<b-button
+								block
+								variant="primary"
+								@click="ispacket = !ispacket"
+							>
+							<font-awesome-icon :icon="ispacket ? 'minus' : 'plus'" fixed-width />
+                            <span>Packet</span>
+							</b-button>
+						</b-col>
+					</b-row>
+				</b-card-footer>
+										</b-tabs>	
+			    </b-card>
+            </b-col>
+			<b-col cols="6" v-if="ispacket" >
+					<b-card no-body active>
+						<b-tabs card active-nav-item-class="font-weight-bold">
+							<b-tab no-body>
+								<template #title>Build</template>
+								<appeal-response
+									:value="appeal"
+									:appeal-files="selectedAppealFiles"
+									:case-files="selectedCaseFiles"
+									show-case-files
+									@submitted="appealPacketSubmitted"
+									@remove="unselectFile"
+								/>
+							</b-tab>
+							
+							
+							<b-tab no-body>
+								<template #title>
+									<span>UTC</span>
+
+									<b-badge variant="warning" v-if="appeal.unable_to_complete === true" pill>
+										<font-awesome-icon icon="exclamation-triangle" class="mx-0 px-0" />
+									</b-badge>
+								</template>
+								<appeal-utc :appeal="appeal" @saved="updatedUtc" disable-cancel />
+							</b-tab>
+
+							<b-tab v-if="hasIncomingDocuments" no-body lazy>
+								<template #title>Incoming</template>
+								<b-alert show variant="info" class="rounded-0 mb-0">
+									<font-awesome-icon icon="info-circle" fixed-width />
+									Incoming documents are copied to this appeal's files when attaching.
+								</b-alert>
+								<b-tabs v-if="appeal.incoming_documents.length > 0" card pills lazy vertical>
+									<b-tab v-for="document in appeal.incoming_documents" :key="document.id" no-body>
+										<template #title>
+											<span>{{ $filters.formatTimestamp(document.created) }}</span>
+										</template>
+										<pdf-frame v-if="document.preview_url" :url="document.preview_url" />
+									</b-tab>
+								</b-tabs>
+								<empty-result v-else>
+									No attached documents
+									<template #content>
+										<p>Documents can be attached from Incoming Documents.</p>
+									</template>
+								</empty-result>
+							</b-tab>
 						
+						
+							<b-tab no-body>
+								<template #title>Collaborate</template>
+
+								<b-tabs card pills active-nav-item-class="font-weight-bold">
+									<b-tab title="Guest Portal" no-body>
+										<appeal-guest-portal
+											:appeal="appeal"
+											:case-entity="caseEntity"
+											@saved="addedPortal"
+										/>
+									</b-tab>
+									<b-tab v-if="enableVendorService">
+										<template #title>
+											{{ serviceName }}
+											<b-badge variant="light">Pro</b-badge>
+										</template>
+										<appeal-vendor-stages
+											:appeal="appeal"
+											:case-entity="caseEntity"
+											@saved="updatedAppeal"
+											@submitted="submittedAppeal"
+											@reopened="reopenedAppeal"
+											@closed="closedAppeal"
+										/>
+									</b-tab>
+								</b-tabs>
+							</b-tab>
+							
 						</b-tabs>
+					</b-card>
+				</b-col>
+			
+		</b-row>
+		<!--appeal section start here-->
+			<b-row>
+				<b-col cols="12" md="12" lg="6" >
+					<b-card no-body>
+						<b-tabs card active-nav-item-class="font-weight-bold">
+							<b-tab>
+								<template #title>Files</template>
+								<b-tabs card pills>
+								<b-tab no-body lazy>
+                                <template #title>Case Documents </template>
+								<CaseFiles
+									ref="caseFiles"
+									:id="$route.params.id"
+									:flush="false"
+									:selected.sync="selectedCaseFiles"
+								/>
+							    </b-tab>
+								<b-tab no-body lazy active>
+								<template #title>Appeal Documents</template>
+								<AppealFiles
+									ref="appealFiles"
+									:id="$route.params.appeal_id"
+									:flush="false"
+									:selected.sync="selectedAppealFiles"
+								/>
+							</b-tab>
+							<b-tab no-body lazy>
+								<template #title> Created Documents</template>
+								
+							</b-tab>
+
+								</b-tabs>
+								
+							</b-tab>
+							<b-tab no-body>
+								<template #title>
+									<span>Create</span>
+								</template>
+								<b-tabs card pills>
+									<b-tab no-body lazy>
+										<template #title>Cover Page</template>
+										<appeal-cover-page :appeal="appeal" @saved="savedCoverPage" />
+									</b-tab>
+
+									<b-tab no-body lazy>
+										<template #title>Template</template>
+										<b-card-body>
+											<empty-result>
+												No templates
+												<template #content> No appeal response templates created. </template>
+											</empty-result>
+										</b-card-body>
+									</b-tab>
+									<b-tab no-body lazy>
+										<template #title>Forms</template>
+										<b-card-body>
+											<b-list-group>
+												<b-list-group-item
+													href="https://www.hhs.gov/sites/default/files/omha-100.pdf"
+													target="_blank"
+												>
+													<font-awesome-icon icon="file-pdf" fixed-width />
+													OMHA-100
+												</b-list-group-item>
+											</b-list-group>
+										</b-card-body>
+									</b-tab>
+							</b-tabs>
+							</b-tab>
+							<b-tab >
+								<template #title>Notes</template>
+								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
+
+								<div v-if="hasNotes" style="max-height:17rem" class="mt-2 overflow-y-auto">
+									<transition-group name="fade">
+										<div
+											v-for="note in appeal.appeal_notes"
+											:key="note.id"
+											class="px-2 py-2 my-4 shadow-sm rounded border"
+										>
+											<user-note
+												:note-id="note.id"
+												:user="note.created_by_user"
+												:body="note.notes"
+												:timestamp="note.created"
+												:deletable="canDeleteNote(note)"
+												:deleting="deletingNote == note.id"
+												@delete="deleteNote"
+											/>
+										</div>
+									</transition-group>
+								</div>
+						</b-tab>
+					</b-tabs>
 					</b-card>
 				</b-col>
 							
@@ -364,7 +566,7 @@
 						<b-tabs card active-nav-item-class="font-weight-bold">
 							<b-tab no-body>
 								<template #title>Build</template>
-								<appeal-response
+									<appeal-response
 									:value="appeal"
 									:appeal-files="selectedAppealFiles"
 									:case-files="selectedCaseFiles"
@@ -856,6 +1058,8 @@ export default {
 			conference_url: null,
 			saving: false,
 			addingRequest: false,
+			isRequest: false,
+			ispacket: false,
 		};
 	},
 	
@@ -1367,14 +1571,18 @@ console.log('Clicked on nav item with appeal_id:', appealId);
             console.error("Error fetching data:", error.message);
              }
     },
-	
     openForm() {
       this.addingRequest=true;
     },
 	addedRequest() {
       this.addingRequest = false;
+	  this.isRequest= true;
+	  this.ispacket = false;
     },
-   
+    remove(){
+       this.isRequest = false;
+	   this.ispacket = false;
+    },
 
 	},
 };
