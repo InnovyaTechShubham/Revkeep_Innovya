@@ -190,6 +190,21 @@
 							<span>Services</span>
 						</b-dropdown-item>
 					</router-link>
+
+					<!-- Chains -->
+					<router-link
+						:to="{ name: 'chains' }"
+						title="Chains"
+						exact
+						custom
+						v-slot="{ href, navigate, isActive }"
+						
+					>
+						<b-dropdown-item :href="href" @click="navigate" :active="isActive">
+							<span>Chains</span>
+						</b-dropdown-item>
+					</router-link>
+
 				</b-nav-item-dropdown>
 
 				<!-- More -->
