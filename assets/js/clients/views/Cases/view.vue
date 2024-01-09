@@ -18,7 +18,7 @@
 				<span>
 					
 					<font-awesome-icon icon="birthday-cake" />
-					{{ caseEntity.patient?.date_of_birth ?? "View Case"  }}
+					{{ $filters.formatDate(caseEntity.patient.date_of_birth) ?? "View Case"  }}
 					&mdash;
 					{{ caseEntity.patient?.age ?? "View Case" }}
 				</span>
@@ -691,7 +691,7 @@
 									}}
 								</dd>
 							</div>
-							<div v-if="hasReadmissions" class="row">
+							<div  class="row">
 								<dt class="col-5 text-muted h6 small">Readmissions</dt>
 								<dd class="col-7">
 									<b-list-group class="mb-0">
@@ -961,6 +961,15 @@ export default {
 			outgoingList:null,
 			appealList:null,
 			name:null,
+			items: [
+				{ ProcDate: '03/24/2019', ProcCode: '55669', Billed: '$46.00' , Allowed: '$25.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$21.00' , ProvPaid: '$25.00' },
+				{ ProcDate: '03/24/2019', ProcCode: '55670', Billed: '$25.00' , Allowed: '$14.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$11.00' , ProvPaid: '$14.00' },
+				{ ProcDate: '03/24/2019', ProcCode: '55671', Billed: '$22.00' , Allowed: '$10.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$12.00' , ProvPaid: '$10.00' },
+				{ ProcDate: '03/24/2019', ProcCode: '55672', Billed: '$60.00' , Allowed: '$34.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$26.00' , ProvPaid: '$34.00' },
+				{ ProcDate: '03/24/2019', ProcCode: '55673', Billed: '$73.00' , Allowed: '$49.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$24.00' , ProvPaid: '$49.00' },
+				{ ProcDate: 'Totals', ProcCode: '', Billed: '$226.00' , Allowed: '$132.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: '' , Adjustment: '$94.00' , ProvPaid: '$132.00' },
+			],
+			response:null,
 		};
 	},
 	computed: {

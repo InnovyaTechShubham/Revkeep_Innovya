@@ -32,22 +32,35 @@
 		<b-container v-else-if="error" fluid class="my-4">
 			<error-alert> Error </error-alert>
 		</b-container>
-		<div v-else-if="editingRequest" class="d-flex align-items-center justify-content-center vh-50">
-			<case-request-form
+
+			<b-row v-else-if="editingRequest" class="my-2 justify-content-center text-center">
+			<b-col cols="6">
+				<case-request-form 
 				flush
 				size="sm"
 				:id="entity.id"
 				:case-entity="caseEntity"
-				@cancel="editingRequest = false"
-				@saved="updatedRequest"
-			/>
-		</div>
+				 @saved="updatedRequest" 
+				 @cancel="editingRequest = false">
+					<template #header>
+						<b-card-header>
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="font-weight-bold">Edit Your Request</span>
+							</div>
+						</b-card-header>
+					</template>
+				</case-request-form>
+			</b-col>
+		</b-row>
 		<div v-else>
 			<b-row>
 				<b-col cols="6" md="3" lg="4" xl="6" order="1" order-md="1" class="text-left mb-4">
 					<b-button @click="showDetails = !showDetails" variant="secondary">
 						<span v-if="showDetails">Hide Details</span>
 						<span v-else>Show Details</span>
+					</b-button>
+					<b-button @click="openRequest" v-if="isButton" variant="secondary">
+						<span >Show Request</span>
 					</b-button>
 					<b-button
                         variant="primary"
@@ -154,9 +167,9 @@
                                 </b-nav-item>
                                 </b-nav>
 							</b-card>
-							<b-row>
+							<b-row v-if="isEditing">
 								<b-col cols="12" sm="6" md="4" lg="6" xl="9" class="mt-2 order-last">
-									<b-button @click="editingRequest = !editingRequest" :disabled="deleting">
+									<b-button @click="editingRequest = !editingRequest"  :disabled="deleting">
 									<font-awesome-icon icon="edit" fixed-width />
 									Edit Request
 								</b-button>
@@ -855,7 +868,7 @@
 				</b-col>
 			</b-row>
 			<b-row> 
-			<b-col  md="12" lg="6" class="mt-2 col" >
+		<!--	<b-col  md="12" lg="6" class="mt-2 col" >
 				<b-card  no-body>
 				    <div >
 						<nav class="d-flex justify-content-between align-item-center p-2 " style="background-color:#eeeeee;">
@@ -888,7 +901,7 @@
 								</div>
 					</div>		
 				</b-card>
-			</b-col>
+			</b-col> -->
 		</b-row>
 		</div>
 	</b-container>
@@ -1061,6 +1074,7 @@ export default {
 		return {
 			appeal: this.value,
 			loading: true,
+			invalid: false,
 			error: false,
 			editing: false,
 			editingRequest: false,
@@ -1086,6 +1100,8 @@ export default {
 			isRequest: false,
 			ispacket: false,
 			isAppeal: true,
+			isButton:true,
+			isEditing:false,
 		};
 	},
 	
@@ -1526,6 +1542,7 @@ export default {
 		completed_by: caseRequest.completed_by,
 		id : caseRequest.id,
       };
+	  this.isEditing = true;
     }, 
 
 	
@@ -1601,13 +1618,19 @@ export default {
 	  this.isRequest= true;
 	  this.ispacket = false;
 	  this.isAppeal = false;
+	  this.isButton = false;
     },
     remove(){
        this.isRequest = false;
 	   this.ispacket = false;
 	   this.isAppeal = true;
+	   this.isButton = true;
     },
-
+     openRequest(){
+		this.isButton = false;
+		this.isRequest = true;
+		this.isAppeal = false;
+	 }
 	},
 };
 
