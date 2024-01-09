@@ -27,8 +27,8 @@ class AddFacilitiesFields extends AbstractMigration
 			'null' => true,
 		]);
 
-		$table->addColumn('primary_taxonomy', 'string', [
-			'limit' => 255,
+		$table->addColumn('primary_taxonomy', 'json', [
+			'default' => null,
 			'null' => true,
 		]);
 

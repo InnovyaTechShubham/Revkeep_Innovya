@@ -2350,6 +2350,8 @@ export default {
 			this.entity.name = result.name;
 			this.entity.npi_number = result.number ?? "";
 			this.entity.npi_manual = false;
+			this.entity.othername=result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+			this.entity.organizational_subpart= result.organizational_subpart;
 
 			const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
 			if (locationAddress) {
@@ -2368,7 +2370,7 @@ export default {
 
 			const primaryTaxonomy = result.taxonomies.find((taxonomy) => taxonomy.primary == true);
 			if (primaryTaxonomy) {
-				this.entity.primaryTaxonomy = primaryTaxonomy.code ?? "";
+				this.entity.primary_taxonomy = primaryTaxonomy.code ?? "";
 			} else {
 				console.warn("Unable to parse primary taxonomy", primaryTaxonomy);
 			}

@@ -8,7 +8,7 @@
 			<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'facilities.add' }" title="Add Facility">
 					<font-awesome-icon icon="pencil" fixed-width />
-					<span>Manual Create4</span>
+					<span>Manual Create9</span>
 				</b-button>
 			</template>
 		</page-header>
@@ -175,8 +175,27 @@
 															<!-- <b-badge pill variant="light" v-if="primaryTaxonomy">
 															{{ primaryTaxonomy.code }} - {{ primaryTaxonomy.desc }}
 															</b-badge> -->
-															<b-badge pill variant="light">
-															{{ this.entity.primary_taxonomy }}
+															<!-- <b-badge pill variant="light">
+															{{ entity.primary_taxonomy }}
+															</b-badge> -->
+															<b-badge
+																v-for="taxonomy in value.taxonomies"
+																:key="`${taxonomy.code}-primary`"
+																pill
+																variant="light"
+																v-if="taxonomy.primary"
+															>
+																{{ taxonomy.code }} - {{ taxonomy.desc }}
+																<!-- {{ value }} -->
+															</b-badge>
+															<b-badge
+																:key="`${taxonomy.code}-secondary`"
+																pill
+																variant="light"
+																v-else
+															>
+																{{ taxonomy.code }} - {{ taxonomy.desc }}
+																<!-- {{ value }} -->
 															</b-badge>
 
 															<!-- Display badges for additional taxonomies -->
@@ -253,7 +272,7 @@ export default {
 			saving: false,
 			searching: false,
 			searched: false,
-			entity: {},
+			// entity: {},
 		};
 	},
 	computed: {
@@ -351,6 +370,7 @@ export default {
 			}
 		},
 		selectedNpiResult(result) {
+			console.log("selectedNpiResult method called with result:", result);
 			if (!result) {
 				this.$store.dispatch("apiError", {
 					error: e,
@@ -456,6 +476,8 @@ export default {
 				address_1:LocconcatenatedAddress,
 				address_2:concatenatedAddress,
 				state: result.addresses[1]?.state ?? "",
+				city: result.addresses[1]?.city ?? "",
+				zip: result.addresses[1]?.zip ?? "",
 				othername: otherName,
 				enumeration_type: result.enumeration_type,
 				location_phone: result.addresses[1]?.telephone_number ?? "NONE",
@@ -467,10 +489,12 @@ export default {
 				organizational_subpart: result.organizational_subpart,
 
 
+
+
 				};
 				console.log("entity=", entity);
-				this.entity = entity;
-				console.log("this.entity",this.entity);
+				// this.entity = entity;
+				// console.log("this.entity",this.entity);
 				
 			this.createFromResult(entity);
 			// this.reset();
@@ -558,5 +582,10 @@ export default {
 			this.searched = false;
 		},
 	},
+
+// 	mounted() {
+//   	// Call selectedNpiResult when the component is mounted
+//   	this.selectedNpiResult(this.entity);
+// },
 };
 </script>
