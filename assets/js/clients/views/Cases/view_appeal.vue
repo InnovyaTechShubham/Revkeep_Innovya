@@ -26,32 +26,6 @@
 				</b-col>
 			</b-row>
 		</b-container>
-		<b-container v-if="loading && !entity.id" fluid class="my-4">
-			<loading-indicator class="my-5" />
-		</b-container>
-		<b-container v-else-if="error" fluid class="my-4">
-			<error-alert> Error </error-alert>
-		</b-container>
-
-			<b-row v-else-if="editingRequest" class="my-2 justify-content-center text-center">
-			<b-col cols="6">
-				<case-request-form 
-				flush
-				size="sm"
-				:id="entity.id"
-				:case-entity="caseEntity"
-				 @saved="updatedRequest" 
-				 @cancel="editingRequest = false">
-					<template #header>
-						<b-card-header>
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="font-weight-bold">Edit Your Request</span>
-							</div>
-						</b-card-header>
-					</template>
-				</case-request-form>
-			</b-col>
-		</b-row>
 		<div v-else>
 			<b-row>
 				<b-col cols="6" md="3" lg="4" xl="6" order="1" order-md="1" class="text-left mb-4">
@@ -119,6 +93,25 @@
 			<b-collapse v-model="showDetails">
 				<appeal-summary :appeal="appeal" class="mb-4" />
 			</b-collapse>
+			<!--For Editing Request-->
+			<b-row v-if="editingRequest"  class="my-2">
+			<b-col cols="6">
+				<case-request-form 
+				:id="entity.id"
+				:case-entity="caseEntity"
+				 @saved="updatedRequest"
+				 @cancel="editingRequest = false">
+					<template #header>
+						<b-card-header>
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="font-weight-bold">Edit Your Request</span>
+							</div>
+						</b-card-header>
+					</template>
+				</case-request-form>
+			</b-col>
+		</b-row>
+		<!--for add request -->
 		<b-row v-if="addingRequest" class="my-2">
 			<b-col cols="6">
 				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
