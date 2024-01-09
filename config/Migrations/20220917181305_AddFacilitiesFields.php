@@ -28,7 +28,7 @@ class AddFacilitiesFields extends AbstractMigration
 		]);
 
 		$table->addColumn('primary_taxonomy', 'string', [
-			'limit' => 50,
+			'limit' => 255,
 			'null' => true,
 		]);
 

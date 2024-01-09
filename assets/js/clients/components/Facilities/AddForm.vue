@@ -266,7 +266,7 @@
 
 				<b-card-body>
 					<!-- <h6 class="text-muted">Optional</h6> -->
-					<b-card no-body>
+					<!-- <b-card no-body> -->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -279,27 +279,7 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<!-- <validation-provider
-									vid="chain_name"
-									name="Chain"
-									:rules="{ required: false, max: 250 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-										<b-form-input
-											name="chain_name"
-											type="text"
-											v-model="entity.chain_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider> -->
+								
 
 								<validation-provider
 									vid="division"
@@ -410,28 +390,6 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
-								<!-- <validation-provider
-									vid="rvp_name"
-									name="RVP"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="RVP" label-for="rvp_name" label-cols-lg="4">
-										<b-form-input
-											name="rvp_name"
-											type="text"
-											v-model="entity.rvp_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider> -->
 							</b-card-body>
 						</b-collapse>
 						<b-card-header header-tag="header" role="tab" class="p-0">
@@ -692,7 +650,7 @@
 							</b-card-body>
 						</b-collapse>
 
-						<b-card-header header-tag="header" role="tab" class="p-0">
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseServices
@@ -722,9 +680,101 @@
 									</empty-result>
 								</b-form-group>
 							</b-card-body>
-						</b-collapse>
+						</b-collapse> -->
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseServices
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Services</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseServices" role="tabpanel">
+							<b-card-body>
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-form-checkbox-group
+										v-else-if="services.length > 0"
+										stacked
+										name="services_ids"
+										v-model="entity.services._ids"
+										:options="services"
+										:disabled="saving || loadingServices"
+										value-field="id"
+										text-field="name"
+									/>
+									<empty-result v-else>
+										No services added
+										<template #content> Create services to assign to this facility. </template>
+									</empty-result>
+								</b-form-group> -->
+
+								<!-- <b-form-group
+										label="Assigned Services"
+										label-for="entity.services._ids"
+										label-cols-lg="4"
+										
+									>
+										<services-search-multi
+											name="denial_reasons"
+											v-model="currentDenialReasons"
+											@add="addingDenialReason = true"
+											:disabled="saving"
+										/>
+									</b-form-group> -->
+
+									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4" class="mb-0" style="margin: 0;">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-input-group>
+										<b-form-input type="text" name="service_ids" v-model="searchQuery"
+											:disabled="saving || loadingServices || formDisabled"
+											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
+										<b-input-group-append>
+											<b-input-group-text>
+												<font-awesome-icon icon="search" fixed-width />
+											</b-input-group-text>
+										</b-input-group-append>
+									</b-input-group>
+									<div class="mb-0" style="margin: 0;">
+										<!-- <b-list-group v-if="selectedServices.length > 0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id">
+												{{ service.name }}
+												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
+											</b-list-group-item>
+										</b-list-group> -->
+										<b-list-group v-if="selectedServices.length > 0" class="mb-0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id" class="mb-0">
+												<div class="d-flex justify-content-between align-items-center mb-0">
+													<div class="mb-0">{{ service.name }}</div>
+													<b-btn variant="danger" @click="deselectService(service)" size="sm">
+														<!-- <b-icon icon="x"></b-icon> -->
+														<!-- <font-awesome-icon icon="fa-xmark"  style="color:red"/> -->
+														<font-awesome-icon
+															icon="times"
+															fixed-width
+														/>
+													</b-btn>
+												</div>
+											</b-list-group-item>
+										</b-list-group>
+
+									</div>
+									<div v-if="filteredServices.length > 0" class="mb-0">
+										<b-list-group>
+											<b-list-group-item v-for="service in filteredServices" :key="service.id"
+												@click="selectService(service)">
+												{{ service.name }}
+											</b-list-group-item>
+										</b-list-group>
+									</div>
+								</b-form-group>
+							</b-card-body>
+			</b-collapse>
+			</b-card-body>
 					</b-card>
-				</b-card-body>
+				
 
 				<b-card-footer>
 					<b-row>
@@ -762,6 +812,9 @@ export default {
 		return {
 			loading: true,
 			saving: false,
+			searchQuery: '',            // The search query entered by the user
+			filteredServices: [], 
+			selectedServices: [],		 // The list of services selected by the user
 			entity: {
 				id: this.id,
 				name: "",
@@ -792,10 +845,12 @@ export default {
 				contract_end_date: null,
 				indemnification_days: null,
 				max_return_work_days: null,
-				services: {
-					_ids: [],
-				},
+				// services: {
+				// 	_ids: [],
+				// },
+				services: [],
 			},
+			service_ids: [],
 		};
 	},
 	computed: mapGetters({
@@ -814,7 +869,69 @@ export default {
 			this.loading = false;
 		}
 	},
+
+	created() {
+		// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
+		const facilityId = this.entity.id;
+
+		// Retrieve previously selected services for the specific facility from localStorage
+		const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
+
+		// Initialize selectedServices array with the retrieved values or an empty array if none
+		this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
+		},
+
 	methods: {
+		filterServices() {
+			// Implement the logic to filter services based on the search term
+			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("services:",this.services);
+
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm)
+			// );
+
+			// Filter services, excluding the ones already selected
+			this.filteredServices = this.services.filter((service) =>
+				service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
+			);
+			console.log("Filtered:",this.filteredServices);
+
+			},
+
+		selectService(selectedService) {
+			console.log('Selected Service:', selectedService);
+			// Check if the service ID is not already selected
+			// if (!this.entity.services._ids.includes(selectedService.id)) {
+			// 	// Push the selected service ID to the array
+			// 	this.entity.services._ids.push(selectedService.id);
+			// }
+
+			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+				// Push the selected facility to the array
+				this.selectedServices.push(selectedService);
+
+				// Save the updated selected services for the specific facility to localStorage
+				const facilityId = this.entity.id;
+    			localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				
+				console.log("selected array:",this.selectedServices);
+				this.entity.services.push(selectedService);
+				console.log("pushed:",this.entity.services);
+			}
+
+			// Clear the search term and filtered services
+			this.searchQuery = '';
+			// this.filteredServices = [];
+			 // Update the filtered services, excluding the selected service
+  			this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+			},
+		deselectService(selectedService) {
+			// Remove the selected facility from the array
+			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
+		},
+
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");

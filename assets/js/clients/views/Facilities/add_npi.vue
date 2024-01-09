@@ -8,7 +8,7 @@
 			<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'facilities.add' }" title="Add Facility">
 					<font-awesome-icon icon="pencil" fixed-width />
-					<span>Manual Create</span>
+					<span>Manual Create4</span>
 				</b-button>
 			</template>
 		</page-header>
@@ -172,14 +172,30 @@
 														</div>
 
 														<div>
-															<b-badge
+															<!-- <b-badge pill variant="light" v-if="primaryTaxonomy">
+															{{ primaryTaxonomy.code }} - {{ primaryTaxonomy.desc }}
+															</b-badge> -->
+															<b-badge pill variant="light">
+															{{ this.entity.primary_taxonomy }}
+															</b-badge>
+
+															<!-- Display badges for additional taxonomies -->
+															<!-- <b-badge
+																v-for="taxonomy in additionalTaxonomies"
+																:key="taxonomy.code"
+																pill
+																variant="light"
+															>
+																{{ taxonomy.code }} - {{ taxonomy.desc }}
+															</b-badge> -->
+															<!-- <b-badge
 																v-for="taxonomy in value.taxonomies"
 																:key="taxonomy.code"
 																pill
 																variant="light"
 															>
 																{{ taxonomy.code }} - {{ taxonomy.desc }}
-															</b-badge>
+															</b-badge> -->
 														</div>
 													</div>
 												</div>
@@ -237,9 +253,18 @@ export default {
 			saving: false,
 			searching: false,
 			searched: false,
+			entity: {},
 		};
 	},
 	computed: {
+		// primaryTaxonomy() {
+		// 	console.log("ResultsPri:", this.results);
+		// 	return this.results.taxonomies.find((taxonomy) => taxonomy.primary) || null;
+		// 	},
+		// 	additionalTaxonomies() {
+		// 	return this.value.taxonomies.filter((taxonomy) => !taxonomy.primary);
+		// 	},
+		
 		formInvalid() {
 			const filledFields = Object.values(this.query).filter(value => value !== "").length;
 			return filledFields < 2;
@@ -436,12 +461,17 @@ export default {
 				location_phone: result.addresses[1]?.telephone_number ?? "NONE",
 				mailing_phone: result.addresses[0]?.telephone_number ?? "NONE",
 				primary_taxonomy: primaryTaxonomy,
-				additional_taxonomies: additionalTaxonomies.join(', ') || "NONE",
+				// additional_taxonomies: additionalTaxonomies.join(', ') || "NONE",
+				// additional_taxonomies: JSON.stringify(additionalTaxonomies) || "NONE",
+				additional_taxonomies: additionalTaxonomies.length > 0 ? JSON.stringify(additionalTaxonomies) : "NONE",
 				organizational_subpart: result.organizational_subpart,
 
 
 				};
 				console.log("entity=", entity);
+				this.entity = entity;
+				console.log("this.entity",this.entity);
+				
 			this.createFromResult(entity);
 			// this.reset();
 		},

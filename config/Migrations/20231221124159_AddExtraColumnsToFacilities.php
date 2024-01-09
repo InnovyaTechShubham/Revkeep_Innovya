@@ -21,7 +21,7 @@ class AddExtraColumnsToFacilities extends AbstractMigration
             ->addColumn('mailing_address', 'text', ['default' => null, 'null' => true])
             ->addColumn('mailing_phone', 'string', ['default' => null, 'limit' => 20, 'null' => true])
             ->addColumn('location_phone', 'string', ['default' => null, 'limit' => 20, 'null' => true])
-            ->addColumn('additional_taxonomies', 'text', ['default' => null, 'null' => true])
+            ->addColumn('additional_taxonomies', 'json', ['default' => null, 'null' => true])
             ->update();
     }
 }

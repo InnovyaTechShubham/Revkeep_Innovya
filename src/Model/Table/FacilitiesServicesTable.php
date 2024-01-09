@@ -42,4 +42,15 @@ class FacilitiesServicesTable extends Table
 
 		return $rules;
 	}
-}
+
+// 	public function getServicesForFacility($facilityId)
+//     {
+//         return $this->find()
+//             ->contain([
+//                 'FacilitiesServices' => function ($q) use ($facilityId) {
+//                     return $q->where(['FacilitiesServices.facility_id' => $facilityId]);
+//                 }
+//             ])
+//             ->toList();
+//     }
+// }

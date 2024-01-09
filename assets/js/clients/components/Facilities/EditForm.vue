@@ -92,7 +92,7 @@
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
+						<b-form-group label="Display Name3" label-for="disp_name" label-cols-lg="4">
 							<b-form-input
 								name="disp_name"
 								type="text"
@@ -143,7 +143,7 @@
 							<b-form-input
 								name="street_address_1"
 								type="text"
-								v-model="entity.street_address_1"
+								v-model="entity.address_2"
 								placeholder=""
 								class="rounded-b-0"
 								:state="getValidationState(validationContext)"
@@ -1852,6 +1852,7 @@
 import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
+import axios from "axios";
 
 export default {
 	name: "FacilityForm",
@@ -1950,17 +1951,41 @@ export default {
 			this.loading = false;
 		}
 	},
-	// Load selected services from localStorage on component initialization
-	created() {
-		// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
-		const facilityId = this.entity.id;
+	// // Load selected services from database on component initialization
+	// created() {
+	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
+	// 	const facilityId = this.entity.id;
 
-		// Retrieve previously selected services for the specific facility from localStorage
-		const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
+	// 	// Retrieve previously selected services for the specific facility from localStorage
+	// 	const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
 
-		// Initialize selectedServices array with the retrieved values or an empty array if none
-		this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
-		},
+	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
+	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
+	// 	},
+// 	async created() {
+//     const facilityId = this.entity.id;
+
+//     try {
+//       const url = "/client/api/serviceList";
+//       const response = await axios.get(url, {
+//         headers: {
+//           "Accept": "application/json",
+//         },
+//       });
+
+//       console.log("Response from API:", response);
+
+//       // Filter services for the specific facility
+//       const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
+
+//       // Set the filtered services to the selectedServices array
+//       this.selectedServices = servicesForFacility;
+
+//       console.log("Services for Facility:", this.selectedServices);
+//     } catch (error) {
+//       console.error("Error fetching services:", error);
+//     }
+//   },
 		
 	methods: {
 		// Method to search and filter services based on the search query
@@ -1998,45 +2023,130 @@ export default {
 			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
 			console.log("Search:",searchTerm);
 			console.log("services:",this.services);
+			console.log("Check", this.entity.services);
 
 			// this.filteredServices = this.services.filter((service) =>
 			// 	service.name.toLowerCase().includes(searchTerm)
 			// );
 
+			// // Filter services, excluding the ones already selected
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
+			// );
 			// Filter services, excluding the ones already selected
 			this.filteredServices = this.services.filter((service) =>
-				service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
-			);
+			service.name.toLowerCase().includes(searchTerm) &&
+			!this.selectedServices.some(selected => selected.id === service.id) &&
+			!this.filteredServices.some(filtered => filtered.id === service.id)
+    );
 			console.log("Filtered:",this.filteredServices);
 
 			},
 
-		selectService(selectedService) {
-			console.log('Selected Service:', selectedService);
+		async selectService(selectedService) {
+			// console.log('Selected Service:', selectedService);
 			// Check if the service ID is not already selected
 			// if (!this.entity.services._ids.includes(selectedService.id)) {
 			// 	// Push the selected service ID to the array
 			// 	this.entity.services._ids.push(selectedService.id);
 			// }
 
+			// const url = "/client/api/serviceList";
+				
+			// 	const response = await axios.get(url, {
+			// 	headers: {
+			// 		"Accept": "application/json",
+			// 		// You can add other headers here if needed
+			// 	},
+			// 	});
+
+			// console.log("Response from API:", response);
+			// // Check if the selected service is not already in the response data
+			// const serviceInResponse = response.data.find(service => service.service_id === selectedService.id);
+
 			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+			// if (serviceInResponse && !this.selectedServices.some(service => service.id === selectedService.id)) {
 				// Push the selected facility to the array
 				this.selectedServices.push(selectedService);
 
-				// Save the updated selected services for the specific facility to localStorage
-				const facilityId = this.entity.id;
-    			localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				// // Save the updated selected services for the specific facility to localStorage
+				// const facilityId = this.entity.id;
+    			// localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
 				
 				console.log("selected array:",this.selectedServices);
 				this.entity.services.push(selectedService);
 				console.log("pushed:",this.entity.services);
+			}
+			const facilityId = this.entity.id;
+
+			try {
+			const url = "/client/api/serviceList";
+			const response = await axios.get(url, {
+				headers: {
+				"Accept": "application/json",
+				},
+			});
+
+			console.log("Response from API:", response.data);
+
+			response.data.facilityservices.forEach((item, index) => {
+    		console.log(`Element at index ${index}:`, item);
+
+			if (item.facility_id == facilityId) {
+				console.log("match found =", item.service_id);
+
+				response.data.services.forEach((i, index) => {
+					console.log(`service at index ${index}:`, i);
+					if (i.id == item.service_id) {
+						console.log("service found =", i.name);
+						// Check if the service is not already in selectedServices before pushing
+						if (!this.selectedServices.some(service => service.id === i.id)) {
+							this.selectedServices.push(i);
+							console.log("output", this.selectedServices);
+                }
+					}
+				});
+			}
+		});
+
+			// response.data.facilityservices.forEach((item, index) => {
+			// 	console.log(`Element at index ${index}:`, item);
+			// 	if(item.facility_id == facilityId){
+			// 		console.log("match found = ", item.service_id);
+			// 		response.data.services.foreach((i,index)=> {
+			// 			if(i.service_id == item.service_id){
+			// 				this.selectedServices.push(i.name);
+			// 				console.log("output", this.selectedServices);
+			// 			}
+			// 		});
+
+			// 		// this.selectedServices.push(item.service_id);
+			// 		// console.log("output", this.selectedServices);
+			// 	}
+			// 	});
+				// console.log("thiss insurance provider id", insid);
+
+			// Filter services for the specific facility
+			// const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
+			// const servicesForFacility = response.data.filter(entry => entry.facility_id === facilityId).map(entry => entry.service_id);
+			// console.log("from db:",servicesForFacility)
+
+			// // Set the filtered services to the selectedServices array
+			// this.selectedServices = servicesForFacility;
+
+			// console.log("Services for Facility:", this.selectedServices);
+			} catch (error) {
+			console.error("Error fetching services:", error);
 			}
 
 			// Clear the search term and filtered services
 			this.searchQuery = '';
 			// this.filteredServices = [];
 			 // Update the filtered services, excluding the selected service
-  			this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+  			// this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+			// Update the filtered services, excluding all selected services
+			this.filteredServices = this.filteredServices.filter(service => !this.selectedServices.some(selected => selected.id === service.id));
+
 			},
 
 

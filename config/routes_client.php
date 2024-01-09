@@ -975,4 +975,15 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'_method' => 'POST'
 	]);
 
+	$builder->connect('/serviceList', [
+		'controller' => 'ServiceList',
+		'action' => 'index',
+		
+	]);
+// 	$builder->connect('/serviceList/:facilityId', [
+//     'controller' => 'ServiceList',
+//     'action' => 'index',
+// ])->setPatterns(['facilityId' => '\d+'])->setPass(['facilityId']);
+
+
 });
