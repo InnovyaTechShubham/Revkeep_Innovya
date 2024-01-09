@@ -26,6 +26,22 @@
 				</b-col>
 			</b-row>
 		</b-container>
+		<b-container v-if="loading && !entity.id" fluid class="my-4">
+			<loading-indicator class="my-5" />
+		</b-container>
+		<b-container v-else-if="error" fluid class="my-4">
+			<error-alert> Error </error-alert>
+		</b-container>
+		<div v-else-if="editingRequest" class="d-flex align-items-center justify-content-center vh-50">
+			<case-request-form
+				flush
+				size="sm"
+				:id="entity.id"
+				:case-entity="caseEntity"
+				@cancel="editingRequest = false"
+				@saved="updatedRequest"
+			/>
+		</div>
 		<div v-else>
 			<b-row>
 				<b-col cols="6" md="3" lg="4" xl="6" order="1" order-md="1" class="text-left mb-4">
@@ -113,7 +129,7 @@
 			</b-col>
 		</b-row>
 		<!--request section start here-->
-		<b-row v-if="isRequest" >
+		<b-row v-if="isRequest">
 			<b-col cols="6"  class="mb-2">
 				<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
@@ -138,6 +154,14 @@
                                 </b-nav-item>
                                 </b-nav>
 							</b-card>
+							<b-row>
+								<b-col cols="12" sm="6" md="4" lg="6" xl="9" class="mt-2 order-last">
+									<b-button @click="editingRequest = !editingRequest" :disabled="deleting">
+									<font-awesome-icon icon="edit" fixed-width />
+									Edit Request
+								</b-button>
+								</b-col>
+							</b-row>
 							<b-row class="mt-2">
 								<b-col cols="12" lg="6" class="mb-2">
 									<b-card>
@@ -465,7 +489,7 @@
 			
 		</b-row>
 		<!--appeal section start here-->
-			<b-row>
+			<b-row v-if="isAppeal">
 				<b-col cols="12" md="12" lg="6" >
 					<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
@@ -1039,6 +1063,7 @@ export default {
 			loading: true,
 			error: false,
 			editing: false,
+			editingRequest: false,
 			cancelling: false,
 			deleting: false,
 			updating: false,
@@ -1060,6 +1085,7 @@ export default {
 			addingRequest: false,
 			isRequest: false,
 			ispacket: false,
+			isAppeal: true,
 		};
 	},
 	
@@ -1150,7 +1176,7 @@ export default {
 		},
 		async updatedRequest(entity) {
 			this.$emit("updated-request", entity);
-			this.editing = false;
+			this.editingRequest = false;
 		},
 		updatedAppeal(appeal, action = "") {
 			if (appeal && appeal.id) {
@@ -1481,11 +1507,6 @@ export default {
 		},
 		// request tabs 
 		handleTabClick(caseRequest) {
-			console.log('Appeal ID:', this.appeal.id);
-			const appealId = caseRequest.id;
-
-// Now you can use the appealId as needed
-console.log('Clicked on nav item with appeal_id:', appealId);
         this.entity = {
         name: caseRequest.name,
         type_label: caseRequest.type_label,
@@ -1503,6 +1524,7 @@ console.log('Clicked on nav item with appeal_id:', appealId);
 		assigned_to_user: caseRequest.assigned_to_user,
 		assigned_to: caseRequest.assigned_to,
 		completed_by: caseRequest.completed_by,
+		id : caseRequest.id,
       };
     }, 
 
@@ -1578,10 +1600,12 @@ console.log('Clicked on nav item with appeal_id:', appealId);
       this.addingRequest = false;
 	  this.isRequest= true;
 	  this.ispacket = false;
+	  this.isAppeal = false;
     },
     remove(){
        this.isRequest = false;
 	   this.ispacket = false;
+	   this.isAppeal = true;
     },
 
 	},
