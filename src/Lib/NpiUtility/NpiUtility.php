@@ -201,6 +201,21 @@ class NpiUtility
 		return $results;
 	}
 
+	public static function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+    {
+        $orgName = str_replace('*', '', $name);
+ 
+        $results = self::sendRequest([
+            'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+            'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
+            'state' => $state,
+            'city' => $city,
+            'postal_code' => $zip
+        ]);
+ 
+        return $results;
+    }
+
 	/**
 	 * Lookup by individual name for people in the NPI Registry
 	 *
@@ -225,19 +240,73 @@ class NpiUtility
 	 * @param string $firstName
 	 * @param string $lastName
 	 * @param string $state
+	 * @param string $city
+	 * @param string $postalCode
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
 	 */
-	public static function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, bool $exact = true): array
+	public static function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, string $city, string $postalCode, bool $exact = true): array
 	{
 		return self::sendRequest([
 			'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
 			'first_name' => $firstName,
 			'last_name' => $lastName,
 			'state' => $state,
+			'city' => $city,
+			'postal_code' => $postalCode,
 			'use_first_name_alias' => $exact ? 'False' : 'True',
 		]);
 	}
+
+	// /**
+	//  * Lookup by individual city for people in the NPI Registry
+	//  *
+	//  * @param string $city
+	//  * @param bool $exact
+	//  * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
+	//  */
+	// public static function searchIndividualByCity(string $city, bool $exact = true): array
+	// {
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
+	// 		'city' => $city,
+	// 		'use_first_name_alias' => $exact ? 'False' : 'True',
+	// 	]);
+	// }
+
+	// /**
+	//  * Lookup by individual zip for people in the NPI Registry
+	//  *
+	//  * @param string $postalCode
+	//  * @param bool $exact
+	//  * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
+	//  */
+	// public static function searchIndividualByZip(string $postalCode, bool $exact = true): array
+	// {
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
+	// 		'zip' => $postalCode,
+	// 		'use_first_name_alias' => $exact ? 'False' : 'True',
+	// 	]);
+	// }
+
+
+	// /**
+	//  * Lookup by individual zip for people in the NPI Registry
+	//  *
+	//  * @param string $state
+	//  * @param bool $exact
+	//  * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
+	//  */
+	// public static function searchIndividualByState(string $state, bool $exact = true): array
+	// {
+	// 	return self::sendRequest([
+	// 		'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
+	// 		'zip' => $state,
+	// 		'use_first_name_alias' => $exact ? 'False' : 'True',
+	// 	]);
+	// }
+
 
 	/**
 	 * Lookup by individual npi number for people in the NPI Registry
@@ -340,7 +409,7 @@ class NpiUtility
 	 * @throws \App\Lib\NpiUtility\InvalidArgumentException
 	 * @throws \App\Lib\NpiUtility\GlobalInvalidArgumentException
 	 */
-	private static function sendRequest(array $parameters, int $page = 1, int $limit = 25): array
+	private static function sendRequest(array $parameters, int $page = 1, int $limit = 30): array
 	{
 		$enumerationType = $parameters['enumeration_type'] ?? self::ENUMERATION_TYPE_ORGANIZATION;
 

@@ -96,8 +96,12 @@ class NpiLookupController extends AppController
 		$results = Cache::read($cacheKey, 'npi');
 
 		if ($results === false || $results === null) {
-			$results = $this->searchOrganization($npiService, $companyName, $companyState, $companyCity, $companyZip);
+			$results = $this->searchOrganization($npiService, $companyName, $companyState , $companyCity , $companyZip);
 			Cache::write($cacheKey, $results, 'npi');
+			// $companyName='';
+			// $companyState='';
+			// $companyCity='';
+			// $companyZip='';
 		}
 
 		$this->set(compact('results'));
@@ -114,9 +118,10 @@ class NpiLookupController extends AppController
 	 * 
 	 * @return array
 	 */
-	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState, string $companyCity, string $companyZip): array
+	private function searchOrganization(NpiServiceInterface $npiService, string $companyName, string $companyState , string $companyCity , string $companyZip): array
 	{
-		return $npiService->searchOrganizationByNameAndStateAndCityAndZip($companyName, $companyState, $companyCity, $companyZip);
+		// return $npiService->searchOrganizationByNameAndState($companyName, $companyState);
+		return $npiService->searchOrganizationByNameAndStateAndCityAndZip($companyName, $companyState , $companyCity , $companyZip);
 	}
 
 	/**

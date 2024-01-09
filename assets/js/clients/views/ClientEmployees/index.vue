@@ -29,10 +29,7 @@
 						<font-awesome-icon icon="plus" fixed-width />
 						<span>Add New</span>
 					</template>
-					<b-dropdown-item :to="{ name: 'clientEmployees.add' }" title="Create New Physician">
-						<font-awesome-icon icon="pencil" fixed-width />
-						<span>Create New Physician</span>
-					</b-dropdown-item>
+					
 					<b-dropdown-item
 						:to="{ name: 'clientEmployees.add.npi' }"
 						title="Add New Physician from NPI Registry"

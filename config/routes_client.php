@@ -974,6 +974,34 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		'_method' => 'POST'
 	]);
+	$builder->connect('/facilityTitle', [
+		'controller' => 'FacilitiesAddContact',
+		'action' => 'index',
+	]);
+
+
+	$builder->connect('/facilityAddForms', [
+		'controller' => 'FacilityAddForm',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+
+	$builder->connect('/facilityContactList', [
+		'controller' => 'FacilityContactList',
+		'action' => 'index',
+	]);
+	$builder->connect('/multiplefacility', [
+		'controller' => 'Multiplefacility',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+	
+	$builder->connect('/hearing', [
+		'controller' => 'HearingCase',
+		'action' => 'index',
+		'_method' => 'POST'
+	]);
+
 
 	$builder->connect('/serviceList', [
 		'controller' => 'ServiceList',
@@ -984,6 +1012,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 //     'controller' => 'ServiceList',
 //     'action' => 'index',
 // ])->setPatterns(['facilityId' => '\d+'])->setPass(['facilityId']);
+
 
 
 });
