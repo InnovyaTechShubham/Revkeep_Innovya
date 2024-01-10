@@ -21,7 +21,6 @@
 			perPage,
 		}"
 	>
-
 		<page-header v-bind="{ loading, total }">
 			<template #title>Physicians</template>
 			<template #buttons>

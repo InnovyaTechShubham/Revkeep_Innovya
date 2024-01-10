@@ -1005,5 +1005,4 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 	    
 	]);
-
 });

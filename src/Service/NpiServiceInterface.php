@@ -25,24 +25,35 @@ interface NpiServiceInterface
 	 */
 	public function isValidIndividual(int $npiNumber): bool;
 
-	/**
-	 * Lookup by name for organization matches in the NPI Registry
-	 *
-	 * @param string $name
-	 * @param bool $exact
-	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
-	 */
-	public function searchOrganizationByName(string $name, bool $exact = false): array;
+	// /**
+	//  * Lookup by name for organization matches in the NPI Registry
+	//  *
+	//  * @param string $name
+	//  * @param bool $exact
+	//  * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
+	//  */
+	// public function searchOrganizationByName(string $name, bool $exact = false): array;
 
+	// /**
+	//  * Lookup by name for organization matches in the NPI Registry with state filter
+	//  *
+	//  * @param string $name
+	//  * @param string $state
+	//  * @param string $city
+	//  * @param string $zip
+	//  * @param bool $exact
+	//  * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
+	//  */
+	// public function searchOrganizationByNameAndState(string $name, string $state, bool $exact = false): array;
 	/**
-	 * Lookup by name for organization matches in the NPI Registry with state filter
+	 * Lookup organization in the NPI Registry with name or state or city or zip 
 	 *
 	 * @param string $name
 	 * @param string $state
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */
-	public function searchOrganizationByNameAndState(string $name, string $state, bool $exact = false): array;
+	public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array;
 
 	/**
 	 * Lookup by NPI number for organization matches in the NPI Registry
@@ -68,10 +79,12 @@ interface NpiServiceInterface
 	 * @param string $firstName
 	 * @param string $lastName
 	 * @param string $state
+	 * @param string $city
+	 * @param string $postalCode
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiIndividualResult>
 	 */
-	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, bool $exact = true): array;
+	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, string $city, string $postalCode, bool $exact = true): array;
 
 	/**
 	 * Lookup by NPI number for individual person matches in the NPI Registry

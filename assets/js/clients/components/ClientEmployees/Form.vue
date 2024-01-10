@@ -300,6 +300,8 @@ export default {
 	},
 	data() {
 		return {
+			MatchingFacility: [],
+			selectedFacilityNames: [],
 			selectedFacilities: [],
 			facilitySearchTerm: '',
 			filteredFacilities: [],
@@ -375,7 +377,9 @@ export default {
 			this.loading = false;
 		} else {
 			this.refresh();
+			this.fetchClientFacilities();
 		}
+		
 	},
 	methods: {
 		filterFacilities() {
@@ -396,6 +400,7 @@ export default {
 		// working for adding only one physician
 
 		selectFacility(selectedFacility) {
+			
 			console.log('Selected Facility:', selectedFacility);
 			// Check if the facility is not already selected
 			if (!this.selectedFacilities.some(facility => facility.id === selectedFacility.id)) {
@@ -444,6 +449,38 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
+		async fetchClientFacilities() {
+    try {
+        const url = "/client/fetchmultiplefacility";
+
+        // Fetch data from the server
+        const response = await axios.get(url, {
+            headers: {
+                "Accept": "application/json",
+            },
+        });
+
+        console.log("RESPONSE = ", response.data);
+
+        // Filter client facilities based on the route parameter
+        this.clientFacilities = response.data.filter(item => item.client_id === this.id);
+
+        // Extract facility IDs directly without cleaning the array
+        const matchingFacilityIds = this.clientFacilities.map(item => item.facility_id);
+
+        // Display the matching facility IDs
+        console.log("Matching Facility IDs:", matchingFacilityIds);
+
+        // Update MatchingFacility array elements individually to maintain reactivity
+        this.MatchingFacility.splice(0, this.MatchingFacility.length, ...matchingFacilityIds);
+		console.log(this.MatchingFacility);
+		this.selectedFacilities = this.facilities.filter(facility => matchingFacilityIds.includes(facility.id));
+    } catch (error) {
+        console.error("Error fetching client facilities:", error);
+    }
+},
+
+
 		async save(e) {
 			try {
 				this.saving = true;
@@ -477,6 +514,8 @@ export default {
 				const data = {
 					id: this.entity.id,
 					selectedFacilityIds: this.entity.selectedFacilityIds,
+					selectedFacilityNames: this.selectedFacilities.map(facility => facility.name),
+					//selectedFacilities: this.selectedFacilities.map(facility => ({ id: facility.id, name: facility.name })),
 				};
 				console.log("data", data);
 				// Make the axios post request to your CakePHP controller

@@ -37,20 +37,53 @@ class NpiRegistryService implements NpiServiceInterface
 		return NpiUtility::searchOrganizationByNumber($npiNumber);
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function searchOrganizationByName(string $name, bool $exact = false): array
-	{
-		return NpiUtility::searchOrganizationByName($name, $exact);
-	}
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByName(string $name, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByName($name, $exact);
+	// }
 
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByState(string $state, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByState($state, $exact);
+	// }
+
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByCity(string $city, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByCity($city, $exact);
+	// }
+
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByZip(string $zip, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByZip($zip, $exact);
+	// }
+
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
+	// }
+
+	
 	/**
 	 * @inheritDoc
 	 */
-	public function searchOrganizationByNameAndState(string $name, string $state, bool $exact = false): array
+	public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
 	{
-		return NpiUtility::searchOrganizationByNameAndState($name, $state, $exact);
+		return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
 	}
 
 	/**
@@ -72,8 +105,8 @@ class NpiRegistryService implements NpiServiceInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, bool $exact = false): array
+	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, string $city, string $postalCode, bool $exact = false): array
 	{
-		return NpiUtility::searchIndividualByNameAndState($firstName, $lastName, $state, $exact);
+		return NpiUtility::searchIndividualByNameAndState($firstName, $lastName, $state, $city, $postalCode, $exact);
 	}
 }

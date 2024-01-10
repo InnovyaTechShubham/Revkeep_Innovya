@@ -6,8 +6,11 @@
 				<span>{{ entity.full_name }}</span>
 			</template>
 			<template #buttons>
-				<b-button variant="primary" :to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
-					title="Edit">
+				<b-button
+					variant="primary"
+					:to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
+					title="Edit"
+				>
 					<font-awesome-icon icon="edit" fixed-width />
 					<span>Edit</span>
 				</b-button>
@@ -51,14 +54,33 @@
 
 			<b-card no-body class="shadow-sm">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab no-body active lazy>
+					<b-tab  no-body active lazy>
 						<template #title>Details</template>
+
 						<!-- <div class="row mt-4">
 							<dt class="col text-muted h6 small ml-3">Facility</dt>
 							<dd class="col-8">
-								<template v-if="MatchingFacility.length > 0">
-									<div v-for="(facilityName, index) in MatchingFacility" :key="index">
+								<span v-if="entity.facility && entity.facility.name">
+									<router-link
+										:to="{
+											name: 'facilities.view',
+											params: {
+												id: entity.facility_id,
+											},
+										}"
+									>
+										{{ entity.facility.name }}
+									</router-link>
+								</span>
+								<span v-else class="text-muted"> &mdash; </span>
+							</dd>
+						</div>  -->
 
+						<div class="row mt-4">
+							<dt class="col text-muted h6 small ml-3">Facility</dt>
+							<dd class="col-8 d-flex flex-wrap align-items-center">
+								<template v-if="MatchingFacility.length > 0">
+									<div v-for="(facilityName, index) in MatchingFacility" :key="index" class="mb-1">
 										<b-badge pill variant="primary" class="ml-1">{{ facilityName }}</b-badge>
 									</div>
 								</template>
@@ -66,42 +88,10 @@
 									<span class="text-muted">No matching facilities found.</span>
 								</template>
 							</dd>
-						</div> -->
+						</div>
 
-						<div class="row mt-4">
-                <dt class="col text-muted h6 small ml-3">Facility</dt>
-                <dd class="col-8 d-flex flex-wrap align-items-center">
-                    <template v-if="MatchingFacility.length > 0">
-                        <div v-for="(facilityName, index) in MatchingFacility" :key="index" class="mb-1">
-                            <b-badge pill variant="primary" class="ml-1">{{ facilityName }}</b-badge>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <span class="text-muted">No matching facilities found.</span>
-                    </template>
-                </dd>
-            </div>
-
-						<!-- 
-						<div class="row mt-4">
-							<dt class="col text-muted h6 small ml-3">Facility</dt> 
-						 <dd class="col-8">
-								<span v-if="entity.facility && entity.facility.name">
-									<router-link :to="{
-										name: 'facilities.view',
-										params: {
-											id: entity.facility_id,
-										},
-									}">
-										{{ entity.facility.name }}
-									</router-link>
-								</span>
-								<span v-else class="text-muted"> &mdash; </span>
-							</dd> 
-						</div> -->
-
-						<div class="row">
-							<dt class="col-4 text-muted h6 small">NPI Number</dt>
+						<div class="row ">
+							<dt class="col text-muted h6 small ml-3">NPI Number</dt>
 							<dd class="col-8">
 								<span v-if="entity.npi_number"> {{ entity.npi_number }} </span>
 								<span v-else class="text-muted"> &mdash; </span>
@@ -109,7 +99,7 @@
 						</div>
 
 						<div class="row">
-							<dt class="col-4 text-muted h6 small">Work Phone</dt>
+							<dt class="col text-muted h6 small ml-3">Work Phone</dt>
 							<dd class="col-8">
 								<span v-if="entity.work_phone"> {{ entity.work_phone }} </span>
 								<span v-else class="text-muted"> &mdash; </span>
@@ -117,7 +107,7 @@
 						</div>
 
 						<div class="row">
-							<dt class="col-4 text-muted h6 small">Mobile Phone</dt>
+							<dt class="col text-muted h6 small ml-3">Mobile Phone</dt>
 							<dd class="col-8">
 								<span v-if="entity.mobile_phone"> {{ entity.mobile_phone }} </span>
 								<span v-else class="text-muted"> &mdash; </span>
@@ -125,15 +115,15 @@
 						</div>
 
 						<div class="row">
-							<dt class="col-4 text-muted h6 small">Email</dt>
+							<dt class="col text-muted h6 small ml-3">Email</dt>
 							<dd class="col-8">
 								<span v-if="entity.email"> {{ entity.email }} </span>
 								<span v-else class="text-muted"> &mdash; </span>
 							</dd>
 						</div>
 
-						<div class="row">
-							<dt class="col-4 text-muted h6 small">Added</dt>
+						<div class="row pb-3">
+							<dt class="col text-muted h6 small ml-3">Added</dt>
 							<dd class="col-8">
 								<span v-if="entity.created">
 									{{ $filters.fromNow(entity.created) }} on
@@ -143,10 +133,15 @@
 							</dd>
 						</div>
 					</b-tab>
-					<b-tab no-body lazy>
+					<b-tab no-body  lazy>
 						<template #title>Cases</template>
-						<case-index ref="caseList" hide-client-employee :filters="caseFilters" @clicked="viewCase"
-							empty-description="No cases have been created for this physician." />
+						<case-index
+							ref="caseList"
+							hide-client-employee
+							:filters="caseFilters"
+							@clicked="viewCase"
+							empty-description="No cases have been created for this physician."
+						/>
 					</b-tab>
 					<b-tab no-body lazy>
 						<template #title>Add Case</template>
@@ -163,6 +158,7 @@ import { get as GetClientEmployee, destroy as DeleteClientEmployee } from "@/cli
 
 import CaseForm from "@/clients/components/Cases/Form.vue";
 import CaseIndex from "@/clients/components/Cases/Index.vue";
+import axios from "axios";
 
 export default {
 	name: "ClientEmployeeView",
