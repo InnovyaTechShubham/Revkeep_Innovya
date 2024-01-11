@@ -62,7 +62,7 @@
 
 			<b-card no-body class="shadow-sm">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab no-body active lazy>
+					<b-tab>
 						<template #title>Details</template>
 						<b-row>
 							<b-col cols="12" sm="6" lg="6" class="mb-4">
@@ -247,7 +247,7 @@
 							</b-col>
 						</b-row>
 					</b-tab>
-					<b-tab no-body  lazy>
+					<b-tab no-body active lazy>
 						<template #title>Cases</template>
 						<case-index
 							ref="caseList"

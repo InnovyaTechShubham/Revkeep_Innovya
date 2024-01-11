@@ -81,7 +81,7 @@
 				<appeal-summary :appeal="appeal" class="mb-4" />
 			</b-collapse>
 			<b-row>
-				<b-col cols="12" md="12" lg="6" >
+				<b-col cols="12" md="12" lg="6" class="mb-2">
 					<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
 							<b-tab>
@@ -105,9 +105,8 @@
 						</b-tabs>
 					</b-card>
 				</b-col>
-							
-				<b-col cols="12" md="12" lg="6" >
-					<b-card no-body active>
+				<b-col cols="12" md="12" lg="6" class="mb-2">
+					<b-card no-body>
 						<b-tabs card active-nav-item-class="font-weight-bold">
 							<b-tab no-body>
 								<template #title>Build</template>
@@ -204,11 +203,12 @@
 									</template>
 								</empty-result>
 							</b-tab>
-							<b-tab >
+							<b-tab>
 								<template #title>Notes</template>
+
 								<add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" />
 
-								<div v-if="hasNotes" style="max-height:17rem" class="mt-2 overflow-y-auto">
+								<div v-if="hasNotes" style="max-height: 40rem" class="mt-2 overflow-y-auto">
 									<transition-group name="fade">
 										<div
 											v-for="note in appeal.appeal_notes"
@@ -227,7 +227,7 @@
 										</div>
 									</transition-group>
 								</div>
-						</b-tab>
+							</b-tab>
 							<b-tab no-body>
 								<template #title>Collaborate</template>
 
@@ -259,42 +259,6 @@
 					</b-card>
 				</b-col>
 			</b-row>
-			<b-row> 
-			<b-col  md="12" lg="6" class="mt-2 col" >
-				<b-card  no-body>
-				    <div >
-						<nav class="d-flex justify-content-between align-item-center p-2 " style="background-color:#eeeeee;">
-							<p class=" font-weight-bold h5 ml-4 align-item-center text-center" >Notes</p>
-								<b-button @click="notesToggele();" class="bg-primary mr-3 "> 
-									 
-									<font-awesome-icon icon="plus" fixed-width />
-							
-						        </b-button>
-						</nav>
-                                <add-note-form ref="addNoteForm" @submit="addNote" :saving="addingNote" v-if="toggele" class="m-4"/>
-								<div v-if="hasNotes"  style="max-height: 20rem" class="m-4  overflow-y-auto">
-									<transition-group name="fade">
-										<div
-											v-for="note in appeal.appeal_notes"
-											:key="note.id"
-											class="px-2 py-2 my-4 shadow-sm rounded border"
-										>
-											<user-note
-												:note-id="note.id"
-												:user="note.created_by_user"
-												:body="note.notes"
-												:timestamp="note.created"
-												:deletable="canDeleteNote(note)"
-												:deleting="deletingNote == note.id"
-												@delete="deleteNote"
-											/>
-										</div>
-									</transition-group>
-								</div>
-					</div>		
-				</b-card>
-			</b-col>
-		</b-row>
 		</div>
 	</b-container>
 </template>
@@ -319,10 +283,6 @@ import CaseFiles from "@/clients/components/Cases/Files.vue";
 import AddNoteForm from "@/shared/components/AddNoteForm.vue";
 import UserNote from "@/shared/components/UserNote.vue";
 import PdfFrame from "@/shared/components/PdfFrame.vue";
-
-
-
-
 
 export default {
 	name: "ViewAppeal",
@@ -435,7 +395,6 @@ export default {
 			showDetails: false,
 			selectedCaseFiles: [],
 			selectedAppealFiles: [],
-			toggele:false,
 		};
 	},
 	mounted() {
@@ -688,16 +647,6 @@ export default {
 				if (this.$refs.addNoteForm) {
 					this.$refs.addNoteForm.reset();
 				}
-                
-				if(this.toggele==true){
-				this.toggele = false;
-				
-			    }else{
-				this.toggele=true;
-				
-			}
-                
-
 			} catch (e) {
 				this.$store.dispatch("apiError", {
 					error: e,
@@ -709,7 +658,6 @@ export default {
 				this.refresh();
 			}
 		},
-		
 		canDeleteNote(note) {
 			if (!note || !note.id) return false;
 			if (this.user.admin) return true;
@@ -783,20 +731,6 @@ export default {
 			this.$refs.appealFiles.refresh();
 			this.refresh();
 		},
-        
-		notesToggele(){
-            if(this.toggele==false){
-				this.toggele = true;
-				
-			}else{
-				this.toggele=false;
-				
-			}
-		},
-
 	},
 };
-
-
-
 </script>

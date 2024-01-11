@@ -990,5 +990,19 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'controller' => 'FacilityContactList',
 		'action' => 'index',
 	]);
-
+	$builder->connect('/multiplefacility', [
+		'controller' => 'Multiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/fetchmultiplefacility', [
+		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/facilityList', [
+		'controller' => 'FacilityList',
+		'action' => 'index',
+	    
+	]);
 });

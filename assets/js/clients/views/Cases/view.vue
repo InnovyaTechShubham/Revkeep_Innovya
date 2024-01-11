@@ -182,8 +182,8 @@
 					</b-col>
 				</b-row>
 
-				<b-nav card-header tabs >
-					<b-nav-item 
+				<b-nav card-header tabs>
+					<b-nav-item
 						title="Case Details"
 						exact
 						active-class="active font-weight-bold"
@@ -194,7 +194,7 @@
 						<b-badge v-if="caseEntity.unable_to_complete" pill variant="warning" title="Unable To Complete">
 							<font-awesome-icon icon="exclamation-triangle" class="mx-0 px-0" />
 						</b-badge>
-						<span >Case</span>
+						<span>Case</span>
 					</b-nav-item>
 
 					<b-nav-item

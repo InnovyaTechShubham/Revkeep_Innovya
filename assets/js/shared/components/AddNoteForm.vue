@@ -69,7 +69,6 @@ export default {
 	data() {
 		return {
 			notes: "",
-			
 		};
 	},
 	computed: {
@@ -87,17 +86,14 @@ export default {
 			this.$emit("submit", {
 				notes: this.notes,
 			});
-			
+
 			if (this.resetAfterSubmit) {
 				this.reset();
 			}
-
-		
 		},
 		reset() {
 			this.notes = "";
 		},
-		
 	},
 };
 </script>

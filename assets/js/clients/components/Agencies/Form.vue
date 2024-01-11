@@ -1,7 +1,7 @@
 <template>
 	<loading-indicator v-if="loading" class="my-5" title="Fetching agency..." />
 	<validation-observer v-else v-bind="$attrs" ref="observer" v-slot="{ invalid }">
-		<b-form @submit.prevent="save" onsubmit="setTimeout(function(){window.location.reload();},2000);" >
+		<b-form @submit.prevent="save">
 			<b-card no-body>
 				<slot name="header"></slot>
 
@@ -55,6 +55,7 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+
 					<validation-provider
 						vid="third_party_contractor"
 						name="Third Party Contractor"
@@ -861,7 +862,7 @@
 							<b-button block variant="light" type="button" @click.prevent="cancel">Cancel</b-button>
 						</b-col>
 						<b-col cols="12" md="6" offset-lg="4" lg="4" class="mb-2 mb-md-0">
-							<b-button block variant="primary" type="submit" :disabled="saving" >
+							<b-button block variant="primary" type="submit" :disabled="saving">
 								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
 								<span>Save</span>
 							</b-button>

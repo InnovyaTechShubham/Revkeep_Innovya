@@ -1,7 +1,7 @@
 <template>
 	<loading-indicator v-if="loading" class="my-5" title="Fetching service..." />
 	<validation-observer v-else v-bind="$attrs" ref="observer" v-slot="{ invalid }">
-		<b-form @submit.prevent="save" onsubmit="setTimeout(function(){window.location.reload();},2000);">
+		<b-form @submit.prevent="save">
 			<b-card no-body>
 				<slot name="header"></slot>
 
@@ -103,9 +103,9 @@
 				</b-card-body>
 
 				<b-card-body>
-					<!-- <h6 class="text-muted">Optional</h6> -->
+					<h6 class="text-muted">Optional</h6>
 					<b-card no-body>
-				<!--		<b-card-header header-tag="header" role="tab" class="p-0">
+						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseFacilities
@@ -114,10 +114,9 @@
 								class="text-left px-4 py-3 m-0"
 								>Facilities</b-button
 							>
-						</b-card-header>  -->
-					<!-- 	<b-collapse id="collapseFacilities" role="tabpanel"> -->
+						</b-card-header>
+						<b-collapse id="collapseFacilities" role="tabpanel">
 							<b-card-body>
-								<h5 class="h5 mb-4 text-uppercase font-weight-bold">Facilities</h5>
 								<b-form-group label="Facilities" label-for="facility_ids" label-cols-lg="4">
 									<b-form-checkbox-group
 										stacked
@@ -130,7 +129,7 @@
 									/>
 								</b-form-group>
 							</b-card-body>
-						<!-- </b-collapse> -->
+						</b-collapse>
 					</b-card>
 				</b-card-body>
 

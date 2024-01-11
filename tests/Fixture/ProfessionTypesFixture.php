@@ -20,9 +20,9 @@ class ProfessionTypesFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'created' => '2023-11-22 04:22:11',
-                'modified' => '2023-11-22 04:22:11',
-                'deleted' => '2023-11-22 04:22:11',
+                'created' => '2023-11-16 06:36:52',
+                'modified' => '2023-11-16 06:36:52',
+                'deleted' => '2023-11-16 06:36:52',
                 'name' => 'Lorem ipsum dolor sit amet',
                 'audit_reviewer_id' => 1,
             ],
