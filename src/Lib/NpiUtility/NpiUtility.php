@@ -201,20 +201,20 @@ class NpiUtility
 		return $results;
 	}
 
-	public static function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
-    {
-        $orgName = str_replace('*', '', $name);
+	// public static function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+    // {
+    //     $orgName = str_replace('*', '', $name);
  
-        $results = self::sendRequest([
-            'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
-            'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
-            'state' => $state,
-            'city' => $city,
-            'postal_code' => $zip
-        ]);
+    //     $results = self::sendRequest([
+    //         'enumeration_type' => self::ENUMERATION_TYPE_ORGANIZATION,
+    //         'organization_name' => $orgName . (!$exact && strlen($orgName) >= 2 ? '*' : ''),
+    //         'state' => $state,
+    //         'city' => $city,
+    //         'postal_code' => $zip
+    //     ]);
  
-        return $results;
-    }
+    //     return $results;
+    // }
 
 	/**
 	 * Lookup by individual name for people in the NPI Registry
@@ -237,6 +237,7 @@ class NpiUtility
 	/**
 	 * Lookup by individual name for people in the NPI Registry
 	 *
+	 * @param string $Npinumber
 	 * @param string $firstName
 	 * @param string $lastName
 	 * @param string $state
@@ -249,6 +250,7 @@ class NpiUtility
 	{
 		return self::sendRequest([
 			'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
+			//'Npi_number' => $npiNumber,
 			'first_name' => $firstName,
 			'last_name' => $lastName,
 			'state' => $state,

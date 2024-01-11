@@ -57,7 +57,7 @@
 					<b-tab  no-body active lazy>
 						<template #title>Details</template>
 
-						<div class="row mt-4">
+						<!-- <div class="row mt-4">
 							<dt class="col text-muted h6 small ml-3">Facility</dt>
 							<dd class="col-8">
 								<span v-if="entity.facility && entity.facility.name">
@@ -73,6 +73,20 @@
 									</router-link>
 								</span>
 								<span v-else class="text-muted"> &mdash; </span>
+							</dd>
+						</div>  -->
+
+						<div class="row mt-4">
+							<dt class="col text-muted h6 small ml-3">Facility</dt>
+							<dd class="col-8 d-flex flex-wrap align-items-center">
+								<template v-if="MatchingFacility.length > 0">
+									<div v-for="(facilityName, index) in MatchingFacility" :key="index" class="mb-1">
+										<b-badge pill variant="primary" class="ml-1">{{ facilityName }}</b-badge>
+									</div>
+								</template>
+								<template v-else>
+									<span class="text-muted">No matching facilities found.</span>
+								</template>
 							</dd>
 						</div>
 
@@ -144,6 +158,7 @@ import { get as GetClientEmployee, destroy as DeleteClientEmployee } from "@/cli
 
 import CaseForm from "@/clients/components/Cases/Form.vue";
 import CaseIndex from "@/clients/components/Cases/Index.vue";
+import axios from "axios";
 
 export default {
 	name: "ClientEmployeeView",
@@ -154,6 +169,8 @@ export default {
 	data() {
 		return {
 			loading: true,
+			MatchingFacility: [],
+			clientFacilities: [],
 			entity: {
 				id: null,
 				created: null,
@@ -186,18 +203,79 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		this.fetchClientFacilities();
+		this.FacilitiesList();
 	},
 	methods: {
 		async refresh() {
 			try {
 				this.loading = true;
-				const response = await GetClientEmployee(this.$route.params.id);
-				this.entity = response;
-				this.$emit("loaded", response);
+				const responses = await GetClientEmployee(this.$route.params.id);
+				this.entity = responses;
+				console.log("requirement", responses);
+				this.$emit("loaded", responses);
 			} catch (e) {
 				this.$router.push({ name: "clientEmployees" });
 			} finally {
 				this.loading = false;
+			}
+		},
+		async fetchClientFacilities() {
+			try {
+				const url = "/client/fetchmultiplefacility";
+
+				
+				const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+					},
+				});
+
+				console.log("RESPONSE = ", response.data);
+
+				
+				this.clientFacilities = response.data.filter(item => item.client_id === this.$route.params.id);
+
+				// Extract facility IDs directly without cleaning the array
+				let matchingFacilityIds = this.clientFacilities.map(item => item.facility_id);
+
+				// Display the matching facility IDs
+				console.log("Matching Facility IDs:", matchingFacilityIds);
+
+				this.MatchingFacility = [...this.MatchingFacility, ...matchingFacilityIds];
+				console.log(this.MatchingFacility);
+			} catch (error) {
+				console.error("Error fetching client facilities:", error);
+			}
+		},
+		
+		async FacilitiesList() {
+			try {
+				const url = "/client/facilityList";
+
+				// Fetch data from the server
+				const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+					},
+				});
+
+				console.log("RESPONSE = ", response.data);
+
+				// Extract facility names based on their IDs
+				let facilityNames = this.MatchingFacility.map(facilityId => {
+					const facility = response.data.find(item => item.id === facilityId);
+					return facility ? facility.name : null;
+				});
+
+				// Display the facility names
+				console.log("Facility names", facilityNames);
+
+				// Update MatchingFacility array with facility names
+				this.MatchingFacility = facilityNames.filter(name => name !== null);
+				console.log("final", this.MatchingFacility);
+			} catch (error) {
+				console.error("Error fetching client facilities:", error);
 			}
 		},
 		async destroy() {

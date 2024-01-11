@@ -122,11 +122,14 @@ class ClientEmployeesController extends ApiController
 			'othername',
 			'enumeration_type',
 			'proprietor',
+			'selectedFacilityIds',
+
         ],
         'associated' => [],
     ]);
 
     try {
+		
         $this->ClientEmployees->saveOrFail($entity);
         $entity = $this->ClientEmployees->getFull($entity->id);
         $this->set('data', $entity);
@@ -246,14 +249,22 @@ class ClientEmployeesController extends ApiController
 {
     $this->getRequest()->allowMethod('post');
 
+
+	$npiNumber = $this->getRequest()->getData('npi_number', '');
     $firstName = $this->getRequest()->getData('first_name', '');
     $lastName = $this->getRequest()->getData('last_name', '');
     $state = $this->getRequest()->getData('state', '');
     $city = $this->getRequest()->getData('city', '');
     $postalCode = $this->getRequest()->getData('zip', '');
     $exact = $this->getRequest()->getData('exact', false);
+	
+	$npiNumber = !empty($npiNumber) ? intval($npiNumber) : null;
+	// Check if NPI number is provided
+    if (!empty($npiNumber)) {
+        // Search by NPI number
+        $results = $npiService->searchIndividualByNumber($npiNumber);
+    } else{
 
-    // Generating cache key based on state, city, zip, and name
     $cacheKey = 'ind_' .
         Text::slug(strtoupper($state)) . '__' .
         Text::slug(strtoupper($city)) . '__' .
@@ -272,6 +283,8 @@ class ClientEmployeesController extends ApiController
         },
         'npi'
     );
+
+}
 
     // Setting data for view
     $this->set('data', $results);

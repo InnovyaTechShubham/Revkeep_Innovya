@@ -1012,7 +1012,17 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 //     'controller' => 'ServiceList',
 //     'action' => 'index',
 // ])->setPatterns(['facilityId' => '\d+'])->setPass(['facilityId']);
-
-
+	    
+	]);
+	$builder->connect('/fetchmultiplefacility', [
+		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/facilityList', [
+		'controller' => 'FacilityList',
+		'action' => 'index',
+	    
+	]);
 
 });

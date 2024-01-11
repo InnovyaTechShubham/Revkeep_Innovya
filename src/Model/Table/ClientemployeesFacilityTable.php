@@ -79,6 +79,13 @@ class ClientemployeesFacilityTable extends Table
             ->notEmptyString('client_id');
 
         return $validator;
+
+         // Add the 'name' column to the validation rules
+         $validator
+          ->maxLength('name', 255)
+          ->allowEmptyString('name');
+
+     return $validator;
     }
 
     /**
@@ -90,9 +97,10 @@ class ClientemployeesFacilityTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
-        $rules->add($rules->existsIn('client_id', 'Clients'), ['errorField' => 'client_id']);
+       // $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
+       // $rules->add($rules->existsIn('client_id', 'Clients'), ['errorField' => 'client_id']);
 
         return $rules;
     }
 }
+

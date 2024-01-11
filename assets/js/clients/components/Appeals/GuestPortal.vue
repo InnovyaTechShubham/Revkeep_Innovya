@@ -6,7 +6,7 @@
 					<div class="bg-white text-muted rounded text-center p-5 shadow-sm mb-0">
 						<div class="d-flex justify-content-center align-items-center mb-4">
 							<font-awesome-icon icon="users" size="4x" class="text-muted mr-4" />
-							<img src="/img/logos/Miller_Johnson_Logo_for_PRN_Logo-removebg-preview.png" style="height: 80px; width: auto" /> 
+							<!-- <img src="/img/logos/phoenix_medical_management.png" style="height: 80px; width: auto" /> -->
 						</div>
 						<h4 class="text-uppercase font-weight-bold text-muted">Guest Access</h4>
 						<p>

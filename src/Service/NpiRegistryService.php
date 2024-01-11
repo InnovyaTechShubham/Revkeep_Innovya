@@ -69,13 +69,13 @@ class NpiRegistryService implements NpiServiceInterface
 	// 	return NpiUtility::searchOrganizationByZip($zip, $exact);
 	// }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
-	{
-		return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
-	}
+	// /**
+	//  * @inheritDoc
+	//  */
+	// public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+	// {
+	// 	return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
+	// }
 
 	
 	/**
