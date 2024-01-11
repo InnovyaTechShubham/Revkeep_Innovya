@@ -49,11 +49,21 @@ class ChainOrganizationsTable extends Table
             'foreignKey' => 'chain_id',
             'joinType' => 'INNER',
         ]);
+        // $this->belongsTo('Facilities', [
+        //     'foreignKey' => 'facility_id',
+        // ]);
+        // $this->belongsTo('Services', [
+        //     'foreignKey' => 'service_id',
+        // ]);
+        // In ChainOrganizationsTable.php
         $this->belongsTo('Facilities', [
-            'foreignKey' => 'facility_id',
+            'foreignKey' => 'org_id',
+            'conditions' => ['desc' => 'Facility'],
         ]);
+
         $this->belongsTo('Services', [
-            'foreignKey' => 'service_id',
+            'foreignKey' => 'org_id',
+            'conditions' => ['desc' => 'Service'],
         ]);
     }
 
@@ -70,15 +80,16 @@ class ChainOrganizationsTable extends Table
             ->maxLength('chain_id', 255)
             ->notEmptyString('chain_id');
 
-        $validator
-            ->scalar('facility_id')
-            ->maxLength('facility_id', 255)
-            ->allowEmptyString('facility_id');
+            $validator
+            ->scalar('org_id')   // Updated from 'facility_id' to 'org_id'
+            ->maxLength('org_id', 255)
+            ->allowEmptyString('org_id'); // Updated from 'facility_id' to 'org_id'
 
-        $validator
-            ->scalar('service_id')
-            ->maxLength('service_id', 255)
-            ->allowEmptyString('service_id');
+            $validator
+            ->scalar('desc')   // Updated from 'service_id' to 'desc'
+            ->maxLength('desc', 255)
+            ->allowEmptyString('desc'); // Updated from 'service_id' to 'desc'
+
 
         return $validator;
     }
@@ -93,8 +104,8 @@ class ChainOrganizationsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn('chain_id', 'Chains'), ['errorField' => 'chain_id']);
-        $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
-        $rules->add($rules->existsIn('service_id', 'Services'), ['errorField' => 'service_id']);
+        // $rules->add($rules->existsIn('facility_id', 'Facilities'), ['errorField' => 'facility_id']);
+        // $rules->add($rules->existsIn('service_id', 'Services'), ['errorField' => 'service_id']);
 
         return $rules;
     }

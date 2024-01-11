@@ -60,7 +60,7 @@
 										<template #content> No facilities have been assigned this Chain. </template>
 									</empty-result>
 								</div>
-								<template>
+								<template v-if="facility_data.length">
 									<b-table :items="facility_data" :fields="fields" class="mt-3">
 										<template v-slot:cell(id)="data">
 										{{ data.value }}
@@ -85,7 +85,7 @@
 										<template #content> No services have been assigned this Chain. </template>
 									</empty-result>
 								</div>
-								<template>
+								<template v-if="services_data.length">
 									<b-table :items="services_data" :fields="fields" class="mt-3">
 										<template v-slot:cell(id)="data">
 										{{ data.value }}
@@ -156,19 +156,50 @@ export default {
 
             await axios.get(`/client/viewChain/${this.id}`)
             .then(response => {
-				// alert(JSON.stringify(response.data))
+				//alert(JSON.stringify(response.data))
                 this.result.push(response.data);
-                console.log('result',this.result);
+                console.log('result',JSON.stringify(this.result));
 				
-				// Assuming facility data is present in response.data.facilities
-				const facilities = response.data.chain_organizations.map(item => item.facility);
-				const services_data = response.data.chain_organizations.map(item1 => item1.service);
-				// alert(services_data)
-				// remove duplicate values from services_data: TODO: FIX IT
-				const distinct_services_data = this.eliminateDuplicates(services_data, 'id');
-				this.facility_data.push(...facilities);
-				this.services_data.push(...distinct_services_data);
+				// // Assuming facility data is present in response.data.facilities
+				// const facilities = response.data.chain_organizations.map(item => item.Facilities);
+				// const services_data = response.data.chain_organizations.map(item1 => item1.Services);
+				// // alert(services_data)
+				// // remove duplicate values from services_data: TODO: FIX IT
+				// const distinct_services_data = this.eliminateDuplicates(services_data, 'id');
+				// this.facility_data.push(...facilities);
+				// this.services_data.push(...distinct_services_data);
 
+				// Assuming facility data is present in response.data.chain_organizations
+				const chainOrganizations = response.data['chain_organizations'];
+				console.log('chainOrganizations',chainOrganizations);
+
+				// Extracting facilities and services data
+				const facilities = [];
+				const services = [];
+
+				chainOrganizations.forEach(chainOrg => {
+					if (chainOrg.desc == 'Facility') {
+						// Check if it's a facility and add it to the facilities array
+						this.facility_data.push(chainOrg['facility']);
+					}
+
+					if (chainOrg.desc == 'Service') {
+						// Check if it's a service and add it to the services array
+						this.services_data.push(chainOrg['service']);
+					}
+				});
+
+				console.log('facility_data',JSON.stringify(this.facility_data));
+				console.log('services_data',JSON.stringify(this.services_data));
+
+				// Remove duplicate values from services data
+				// const distinctServices = this.eliminateDuplicates(services, 'id');
+
+				// Push the data to your Vue.js data arrays
+				// this.facility_data.push(...facilities);
+				// this.services_data.push(...services);
+				// alert(JSON.stringify(this.facility_data));
+				// alert(JSON.stringify(this.services_data));
                 // nesting 
             })
             .catch(error => {
