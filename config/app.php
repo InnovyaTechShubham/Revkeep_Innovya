@@ -33,7 +33,7 @@ return [
 	 * Development Mode:
 	 * true: Errors and warnings shown.
 	 */
-	'debug' => filter_var(env('DEBUG', true), FILTER_VALIDATE_BOOLEAN),
+	'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
 
 	/**
 	 * Configure basic information about the application.
@@ -390,7 +390,7 @@ return [
 			'port' => env('DATABASE_PORT', null),
 			'username' => env('DATABASE_USER', 'sa'),
 			'password' => env('DATABASE_PASS', 'sa'),
-			'database' => env('DATABASE_NAME', 'revkeep_1'),
+			'database' => env('DATABASE_NAME', 'revkeep_3'),
 
 			/*
 			 * SQL Server Configuration
