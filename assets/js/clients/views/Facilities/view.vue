@@ -12,7 +12,7 @@
 					title="Edit"
 				>
 					<font-awesome-icon icon="edit" fixed-width />
-					<span>Edit1</span>
+					<span>Edit</span>
 				</b-button>
 
 				<b-dropdown variant="secondary" right title="More Options">

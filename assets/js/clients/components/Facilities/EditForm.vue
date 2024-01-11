@@ -92,7 +92,7 @@
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Display Name1" label-for="disp_name" label-cols-lg="4">
+						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
 							<b-form-input
 								name="disp_name"
 								type="text"
@@ -1632,7 +1632,7 @@ import { mapGetters} from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
 import axios from "axios";
-import { ref, reactive, onMounted } from "vue";
+import { ref} from "vue";
 // get All record
 const records = ref([]);
 
@@ -1837,7 +1837,7 @@ export default {
 			// Wait for chains to be loaded
   			// await this.getChains();
 			// Implement the logic to filter chains based on the search term
-
+			// .trim().replace(/"/g,'')
 			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
 			console.log("Search:",searchTerm);
 			console.log("chains:",records);
@@ -1845,130 +1845,19 @@ export default {
 
 			// Filter chains, excluding the ones already selected
 			this.filteredChains = records.value.filter((chain) =>
-			chain.chain_name.toLowerCase().includes(searchTerm) 
+			chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+			// && chain.chain_name.length <= maxLength
 			// !this.selectedChains.some(selected => selected.id === chain.id) &&
 			// !this.filteredChains.some(filtered => filtered.id === chain.id)
     		);
 			console.log("Filtered:",this.filteredChains);
 
 			},
-
-		// async selectChain(selectedChain) {
-		// 	if (!this.selectedChains.some(chain => chain.id === selectedChain.id)) {
-		// 		// Push the selected chain to the array
-		// 		this.selectedChains.push(selectedChain);
-
-		// 		// // Save the updated selected services for the specific facility to localStorage
-		// 		// const facilityId = this.entity.id;
-    	// 		// localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
-				
-		// 		console.log("selected array:",this.selectedChains);
-		// 		this.entity.chains.push(selectedChain);
-		// 		console.log("pushed:",this.entity.chains);
-		// 	}
-		// 	const facilityId = this.entity.id;
-
-		// 	try {
-		// 	const url = "/client/api/chainList";
-		// 	const response = await axios.get(url, {
-		// 		headers: {
-		// 		"Accept": "application/json",
-		// 		},
-		// 	});
-
-		// 	console.log("Response from API:", response.data);
-
-		// 	response.data.facilitychains.forEach((item, index) => {
-    	// 	console.log(`Element at index ${index}:`, item);
-
-		// 	if (item.facility_id == facilityId) {
-		// 		console.log("match found =", item.chain_id);
-
-		// 		response.data.chains.forEach((i, index) => {
-		// 			console.log(`chain at index ${index}:`, i);
-		// 			if (i.id == item.chain_id) {
-		// 				console.log("chain found =", i.name);
-		// 				// Check if the service is not already in selectedServices before pushing
-		// 				if (!this.selectedChains.some(chain => chain.id === i.id)) {
-		// 					this.selectedChains.push(i);
-		// 					console.log("output", this.selectedChains);
-        //         }
-		// 			}
-		// 		});
-		// 	}
-		// 		});
-		// 	} catch (error) {
-		// 			console.error("Error fetching chains:", error);
-		// 			}
-
-		// 	// Clear the search term and filtered services
-		// 	this.searchChain = '';
-		// 	// this.filteredServices = [];
-		// 	 // Update the filtered services, excluding the selected service
-  		// 	// this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
-		// 	// Update the filtered services, excluding all selected services
-		// 	this.filteredChains = this.filteredChains.filter(chain => !this.selectedChains.some(selected => selected.id === chain.id));
-
-		// 	},
-		// async selectChain(selectedChain) {
-		// 	const facilityId = this.entity.id;
-
-		// 	// Check if the selectedChain is already in the selectedChains array
-		// 	const isSelected = this.selectedChains.some(chain => chain.id === selectedChain.id);
-
-		// 	if (isSelected) {
-		// 		// If selectedChain is already in the array, remove it (deselect)
-		// 		this.selectedChains = this.selectedChains.filter(chain => chain.id !== selectedChain.id);
-		// 		console.log("Deselected:", this.selectedChains);
-		// 	} else {
-		// 		// If selectedChain is not in the array, add it (select)
-		// 		this.selectedChains.push(selectedChain);
-		// 		console.log("Selected:", this.selectedChains);
-		// 	}
-
-		// 	// Clear the search term and filtered chains
-		// 	this.searchChain = '';
-		// 	this.filteredChains = this.filteredChains.filter(chain => !this.selectedChains.some(selected => selected.id === chain.id));
-
-		// 	// Fetch chains from the API
-		// 	try {
-		// 		const url = "/client/api/chainList";
-		// 		const response = await axios.get(url, {
-		// 			headers: {
-		// 				"Accept": "application/json",
-		// 			},
-		// 		});
-
-		// 		console.log("Response from API:", response.data);
-
-		// 		response.data.facilitychains.forEach((item, index) => {
-		// 			console.log(`Element at index ${index}:`, item);
-
-		// 			if (item.facility_id == facilityId) {
-		// 				console.log("match found =", item.chain_id);
-
-		// 				response.data.chains.forEach((i, index) => {
-		// 					console.log(`chain at index ${index}:`, i);
-		// 					if (i.id == item.chain_id) {
-		// 						console.log("chain found =", i.name);
-		// 						// Check if the chain is selected
-		// 						if (this.selectedChains.some(chain => chain.id === i.id)) {
-		// 							console.log("chain is selected");
-		// 							// Handle the case where the chain is selected (you may want to update UI accordingly)
-		// 						}
-		// 					}
-		// 				});
-		// 			}
-		// 		});
-		// 	} catch (error) {
-		// 		console.error("Error fetching chains:", error);
-		// 	}
-		// },
-		selectChain(selectedChain) {
+			selectChain(selectedChain) {
 			// Set the selected chain
 			this.selectedChain = selectedChain;
 			console.log("Selected Chain:",this.selectedChain);
-			this.entity.chain_name = selectedChain;
+			this.entity.chain_name = selectedChain.chain_name;
 			console.log(" Chain:",this.entity.chain_name);
 
 			// Clear the search term and filtered chains
@@ -2000,6 +1889,13 @@ export default {
 			console.log("Filtered:",this.filteredServices);
 
 			},
+			deselectChain() {
+			// Clear the selected chain
+			this.selectedChain = null;
+
+			// Clear or update this.entity.chain_name as needed
+			this.entity.chain_name = '';
+		},
 
 		async selectService(selectedService) {
 			// console.log('Selected Service:', selectedService);
@@ -2129,11 +2025,7 @@ export default {
 			// Remove the selected facility from the array
 			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
 		},
-		deselectChain(selectedChain) {
-			// Remove the selected facility from the array
-			this.selectedChains = this.selectedChains.filter(chain => chain.id !== selectedChain.id);
-		},
-
+		
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
