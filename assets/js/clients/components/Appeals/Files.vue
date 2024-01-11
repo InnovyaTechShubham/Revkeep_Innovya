@@ -37,7 +37,7 @@
 						@click="browse"
 						:disabled="loading || uploading"
 						title="Upload"
-						class="px-2 px-lg-4"
+						class="px-2 px-lg-4 mt-2"
 					>
 						<font-awesome-icon icon="cloud-upload-alt" fixed-width class="mr-2" />
 						<span>Upload</span>

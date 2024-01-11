@@ -228,16 +228,30 @@ class FacilitiesController extends ApiController
 
 		$name = (string) $this->request->getData('name');
 		$state = (string) $this->request->getData('state');
+		$city = (string) $this->request->getData('city');
+		$zip = (string) $this->request->getData('zip');
+
 
 		$cacheState = Text::slug(strtoupper($state), '_');
+		$cacheCity = Text::slug(strtoupper($city), '_');
+		$cacheZip = Text::slug(strtoupper($zip), '_');
 		$cacheName = Text::slug(strtolower($name));
-		$cacheKey = 'org_' . $cacheState . '__' . $cacheName;
+		$cacheKey = 'org_' . $cacheState . '__' . $cacheCity .'__' . $cacheZip .'__' . $cacheName;
+
+		// /** @var \App\Lib\NpiUtility\NpiOrganizationResult[] */
+		// $results = Cache::remember(
+		// 	$cacheKey,
+		// 	function () use ($npiService, $name, $state) {
+		// 		return $npiService->searchOrganizationByNameAndState($name, $state);
+		// 	},
+		// 	'npi'
+		// );
 
 		/** @var \App\Lib\NpiUtility\NpiOrganizationResult[] */
 		$results = Cache::remember(
 			$cacheKey,
-			function () use ($npiService, $name, $state) {
-				return $npiService->searchOrganizationByNameAndState($name, $state);
+			function () use ($npiService, $name, $state, $city, $zip) {
+				return $npiService->searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip);
 			},
 			'npi'
 		);

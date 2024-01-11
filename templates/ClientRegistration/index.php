@@ -686,6 +686,25 @@ echo $this->Form->create($form, [
 		</div>
 	</div>
 </div>
+<style>
+	.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0; /* Adjust margin as needed */
+}
+
+.separator-line {
+    flex: 1;
+    border-top: 1px solid #000; /* Adjust line properties */
+    margin: 0 10px; /* Adjust spacing */
+}
+
+.separator-text {
+    padding: 0 10px; /* Adjust spacing around the text */
+}
+
+</style>
 <?php
 echo $this->Form->end();
 ?>

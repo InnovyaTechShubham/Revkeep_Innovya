@@ -86,6 +86,7 @@ class NpiRegistryService implements NpiServiceInterface
 		return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
 	}
 
+	
 	/**
 	 * @inheritDoc
 	 */
