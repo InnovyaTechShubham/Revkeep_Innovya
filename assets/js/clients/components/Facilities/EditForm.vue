@@ -1739,7 +1739,7 @@ export default {
 		this.getServices();
 		this.getChains();
 		this.TitleShow();
-        this.fetchContactTypes();
+    this.fetchContactTypes();
 		this.listFacilityContacts();
 		if (this.id) {
 			this.refresh();

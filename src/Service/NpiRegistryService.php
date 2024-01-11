@@ -81,6 +81,14 @@ class NpiRegistryService implements NpiServiceInterface
 	/**
 	 * @inheritDoc
 	 */
+	public function searchOrganizationByNameAndStateAndCityAndZip(string $name, string $state, string $city, string $zip, bool $exact = false): array
+	{
+		return NpiUtility::searchOrganizationByNameAndStateAndCityAndZip($name, $state, $city, $zip, $exact);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function searchIndividualByNumber(int $npiNumber): array
 	{
 		return NpiUtility::searchIndividualByNumber($npiNumber);
@@ -97,8 +105,8 @@ class NpiRegistryService implements NpiServiceInterface
 	/**
 	 * @inheritDoc
 	 */
-	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, bool $exact = false): array
+	public function searchIndividualByNameAndState(string $firstName, string $lastName, string $state, string $city, string $postalCode, bool $exact = false): array
 	{
-		return NpiUtility::searchIndividualByNameAndState($firstName, $lastName, $state, $exact);
+		return NpiUtility::searchIndividualByNameAndState($firstName, $lastName, $state, $city, $postalCode, $exact);
 	}
 }

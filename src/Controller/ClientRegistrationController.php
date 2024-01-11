@@ -154,6 +154,7 @@ class ClientRegistrationController extends AppController
 	 */
 	private function registerClient(array $data, NpiServiceInterface $npiService): Client
 	{
+		
 		// Load models needed
 		$users = $this->fetchTable('Users');
 		$clients = $this->fetchTable('Clients');
@@ -165,19 +166,26 @@ class ClientRegistrationController extends AppController
 		$user = $identity->getOriginalData();
 
 		/** @var \App\Lib\NpiUtility\NpiOrganizationResult */
-		$npiResult = $this->NpiLookupByNumber($npiService, $data['npi_number']);
+		if($data['npi_number']!=''){
+			$npiResult = $this->NpiLookupByNumber($npiService, $data['npi_number']);
 
-		/** @var array */
-		$locationAddress = $this->NpiGetPrimaryLocationAddress($npiResult->addresses);
-
-		// Get Primary Taxonomy
-		$primaryTaxonomy = null;
-		foreach ($npiResult->taxonomies as $taxonomy) {
-			if ($taxonomy['primary'] == true) {
-				$primaryTaxonomy = $taxonomy;
-				break;
+			/** @var array */
+			$locationAddress = $this->NpiGetPrimaryLocationAddress($npiResult->addresses);
+		
+			// Get Primary Taxonomy
+			$primaryTaxonomy = null;
+			foreach ($npiResult->taxonomies as $taxonomy) {
+				if ($taxonomy['primary'] == true) {
+					$primaryTaxonomy = $taxonomy;
+					break;
+				}
 			}
 		}
+		else{
+			$npiResult=null;
+			$locationAddress=null;
+		}
+		
 
 		// Terms of Service Date
 		$tosDate = Configure::read('TermsOfService.clientDate');
@@ -206,13 +214,19 @@ class ClientRegistrationController extends AppController
 			'zip' => $locationAddress['postal_code'] ?? null,
 
 			// Contact Info
-			'contact_first_name' => $npiResult->authorized_official_first_name ?? null,
-			'contact_last_name' => $npiResult->authorized_official_last_name ?? null,
+			// 'contact_first_name' => $npiResult->authorized_official_first_name ?? null,
+			// 'contact_first_name' => $npiResult->authorized_official_first_name ?? ($npiResult->authorized_official_first_name !== null ? $npiResult->authorized_official_first_name : $data['first_name']),
+			// 'contact_first_name' => ($npiResult !== null ? $npiResult->authorized_official_first_name : $data['first_name']),
+			'contact_first_name' =>  $data['first_name'],
+			// 'contact_last_name' => $npiResult->authorized_official_last_name ?? null,
+			// 'contact_last_name' => ($npiResult !== null ? $npiResult->authorized_official_last_name : $data['last_name']),
+			'contact_last_name' =>  $data['last_name'],
 			'contact_email' => $data['email'],
 			'contact_phone' => $locationAddress['telephone_number'] ?? null,
 			'contact_fax' => $locationAddress['fax_number'] ?? null,
 
 			// Additional
+			
 			'npi_number' => $data['npi_number'],
 			'licenses' => $data['licenses'] ?? 1,
 			'status' => 'Active',

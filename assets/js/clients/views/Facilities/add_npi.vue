@@ -8,7 +8,10 @@
 			<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'facilities.add' }" title="Add Facility">
 					<font-awesome-icon icon="pencil" fixed-width />
+
 					<span>Manual Create</span>
+
+
 				</b-button>
 			</template>
 		</page-header>
