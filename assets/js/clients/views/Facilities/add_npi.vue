@@ -8,7 +8,10 @@
 			<template #buttons>
 				<b-button variant="secondary" :to="{ name: 'facilities.add' }" title="Add Facility">
 					<font-awesome-icon icon="pencil" fixed-width />
-					<span>Manual Create9</span>
+
+					<span>Manual Create</span>
+
+
 				</b-button>
 			</template>
 		</page-header>
@@ -477,7 +480,7 @@ export default {
 				address_2:concatenatedAddress,
 				state: result.addresses[1]?.state ?? "",
 				city: result.addresses[1]?.city ?? "",
-				zip: result.addresses[1]?.zip ?? "",
+				zip: result.addresses[1]?.postal_code ?? "",
 				othername: otherName,
 				enumeration_type: result.enumeration_type,
 				location_phone: result.addresses[1]?.telephone_number ?? "NONE",

@@ -30,6 +30,7 @@ class AddFacilitiesFields extends AbstractMigration
 		$table->addColumn('primary_taxonomy', 'json', [
 			'default' => null,
 			'null' => true,
+			'limit' => \Phinx\Db\Adapter\SqlServerAdapter::TEXT_LONG, 
 		]);
 
 		$table->addColumn('client_owned', 'boolean', [

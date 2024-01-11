@@ -1027,7 +1027,7 @@
 						</b-col>
 					</b-row>
 				</b-card-footer>
-			</b-card>
+			<!-- </b-card> -->
 		</b-form>
 	</validation-observer>
 </template>
