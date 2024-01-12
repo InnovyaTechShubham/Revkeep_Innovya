@@ -36,7 +36,7 @@
         </b-button>
     </b-col>
 
-	<b-col class="text-left mb-4 ">
+	<b-col class="text-right mb-4  ">
         <b-button @click="openRequest" v-if="isButton" variant="secondary">
             <span>Show Request</span>
         </b-button>
