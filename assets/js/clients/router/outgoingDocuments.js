@@ -1,9 +1,9 @@
 import Index from "@/clients/views/OutgoingDocuments/index.vue";
-import IndexPending from "@/clients/views/OutgoingDocuments/index_pending.vue";
+import IndexHome from "@/clients/views/OutgoingDocuments/index_home.vue";
 import IndexDelivered from "@/clients/views/OutgoingDocuments/index_delivered.vue";
 import IndexFailed from "@/clients/views/OutgoingDocuments/index_failed.vue";
 import IndexCancelled from "@/clients/views/OutgoingDocuments/index_cancelled.vue";
-
+import IndexPending from "@/clients/views/OutgoingDocuments/index_pending.vue";
 const baseUrl = "/outgoing";
 
 export default [
@@ -17,6 +17,11 @@ export default [
 			{
 				path: "",
 				name: "outgoingDocuments",
+				component: IndexHome,
+			},
+			{
+				path: "pending",
+				name: "outgoingDocuments.pending",
 				component: IndexPending,
 			},
 			{

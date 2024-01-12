@@ -4,7 +4,7 @@
 		v-bind="{
 			action,
 			filters: {
-				status: 'NEW',
+				status:[ 'NEW','DELIVERED','FAILED','CANCELLED'],
 			},
 			search: newSearch,
 			perPage,
@@ -38,7 +38,7 @@
             </thead>
         </table>
 					<outgoing-document-list-item
-					v-for="(result, index) in results"
+					    v-for="(result, index) in results"
 						:key="result.id"
 						:value="result"
 						@updated="
@@ -49,9 +49,9 @@
 						class="mb-2 shadow-sm"
 					/>
 				</div>
-				<empty-result v-else icon="envelope">
-					No delivered documents
-					<template #content> Audits marked as delivered will appear here. </template>
+				<empty-result v-else icon="envelope-open">
+					No new documents
+					<template #content> Completed packets from appeals will appear here. </template>
 				</empty-result>
 			</b-col>
 		</b-row>
