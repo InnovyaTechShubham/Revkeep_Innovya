@@ -514,7 +514,7 @@
 						<b-list-group v-if="selectedChain">
 							<b-list-group-item class="mb-0">
 								<div class="d-flex justify-content-between align-items-center mb-0">
-								<div class="mb-0">{{ selectedChain.chain_name }}</div>
+								<div class="mb-0">{{ selectedChain }}</div>
 								<b-btn variant="danger" @click="deselectChain" size="sm">
 									<font-awesome-icon icon="times" fixed-width />
 								</b-btn>
@@ -1438,12 +1438,116 @@
 							<!-- </b-form-group> -->
 							</b-card-body>
 						</b-collapse>
-						<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
-						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
-							class="text-left px-4 py-3 m-0">
-							NPI Information
-						</b-button>
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseReceivingMethods
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>Receiving Methods</b-button>
+						</b-card-header>
+						<b-collapse id="collapseReceivingMethods" role="tabpanel">
+							<b-card-body>
+								<validation-provider
+									vid="r_email"
+									name="Email"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Email"
+												type="text"
+												v-model="entity.receiving_email"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Email"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingEmail">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<!-- Display entered emails -->
+										<div v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(email, index) in entity.receiving_emails" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ email }}</span>
+														<!-- X button to remove the email -->
+														<b-button variant="danger" @click="removeReceivingEmail(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="r_fax"
+									name="Fax"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Fax" label-for="r_fax" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Fax"
+												type="text"
+												v-model="entity.receiving_fax"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Fax"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingFax">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<!-- Display entered faxes -->
+										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ fax }}</span>
+														<!-- remove the fax -->
+														<b-button variant="danger" @click="removeReceivingFax(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider>
+							</b-card-body>
+						</b-collapse>
+
+						<!-- end Receiving Methods -->
+
+					<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
+					<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
+						class="text-left px-4 py-3 m-0">
+						NPI Information
+					</b-button>
 					</b-card-header>
+
 					<b-collapse id="collapseNpiInformation" role="tabpanel">
 						<b-card-body>
 							<div class="d-flex">
@@ -1520,7 +1624,7 @@
 											<hr class="my-2">
 											<div class="label-value-row">
 												<div class="label-text">Additional Taxonomies:</div>
-												<div class="text">{{ entity.additional_taxonomies }}</div>
+												<div class="text">{{ processAdditionalTaxonomies(entity.additional_taxonomies) }}</div>
 											</div>
 										</div>
 									</div>
@@ -1705,6 +1809,10 @@ export default {
 				organizational_subpart:null,
 				services: [],
 				chains:[],
+				receiving_email: '', // For input
+            	receiving_emails: [], // For storing multiple emails
+				receiving_fax: '', // For input
+				receiving_faxes: [],
 
 			},
 			service_ids: [],
@@ -1739,7 +1847,7 @@ export default {
 		this.getServices();
 		this.getChains();
 		this.TitleShow();
-    this.fetchContactTypes();
+    	this.fetchContactTypes();
 		this.listFacilityContacts();
 		if (this.id) {
 			this.refresh();
@@ -1800,6 +1908,76 @@ export default {
 //   },
 		
 	methods: {
+
+		async addReceivingEmail() {
+        // Trim the entered email and check if it's not empty
+        const trimmedEmail = this.entity.receiving_email.trim();
+		console.log("Email:",trimmedEmail);
+        if (trimmedEmail !== '') {
+			// Ensure that receiving_emails is an array before pushing
+			if (!Array.isArray(this.entity.receiving_emails)) {
+            this.$set(this.entity, 'receiving_emails', []);
+        }
+
+            // Push the trimmed email to the receiving_emails array
+            this.entity.receiving_emails.push(trimmedEmail);
+
+			console.log("Array:",this.entity.receiving_emails);
+
+			// try {
+            //     // Make Axios POST request to store the data in the database
+            //     const response = await axios.post('/client/api/receivingEmails', {
+            //         receivingEmails: this.entity.receiving_emails
+            //     });
+
+			// 	response.log("API call:",response);
+
+            //     // Assuming the server responds with the updated list of receiving emails
+            //     this.receivingEmails = response.data.receivingEmails;
+
+            // }
+			try {
+			const url = "/client/api/receivingEmails";
+			const data = {'receivingEmails':this.entity.receiving_emails}
+			console.log(data);
+			// const resp = await axios.post('/client/sendemail', data);
+			const response = await axios.post(url,data);
+			console.log("Response from API:", response.data);
+
+			}
+			 catch (error) {
+                console.error('Error storing data:', error);
+            }
+            // Clear the input for the next entry
+            this.entity.receiving_email = '';
+        }
+	},
+	removeReceivingEmail(index) {
+        // Remove the email at the specified index from the receiving_emails array
+        this.entity.receiving_emails.splice(index, 1);
+    },
+	addReceivingFax() {
+        // Trim the entered fax and check if it's not empty
+        const trimmedFax = this.entity.receiving_fax.trim();
+		console.log("Fax:",trimmedFax);
+        if (trimmedFax !== '') {
+			// Ensure that receiving_emails is an array before pushing
+			if (!Array.isArray(this.entity.receiving_faxes)) {
+            this.$set(this.entity, 'receiving_faxes', []);
+        }
+
+            // Push the trimmed email to the receiving_emails array
+            this.entity.receiving_faxes.push(trimmedFax);
+
+			console.log("Array:",this.entity.receiving_faxes);
+            // Clear the input for the next entry
+            this.entity.receiving_fax = '';
+        }
+	},
+	removeReceivingFax(index) {
+        // Remove the email at the specified index from the receiving_emails array
+        this.entity.receiving_faxes.splice(index, 1);
+    },
 		// Method to search and filter services based on the search query
 			// searchServices() {
 			// 	if (this.searchQuery === '') {
@@ -1833,6 +2011,25 @@ export default {
 		// filterChains(option, query) {
 		// 	return option.toLowerCase().includes(query.toLowerCase());
 		// },
+		processAdditionalTaxonomies(jsonString) {
+			// Check if jsonString is null or undefined
+			if (jsonString === null || jsonString === undefined) {
+			return '';  // or any default value you prefer
+			}
+
+			// Parse the JSON string into an array
+			const taxonomiesArray = JSON.parse(jsonString);
+
+			// Check if taxonomiesArray is an array
+			if (!Array.isArray(taxonomiesArray)) {
+			return '';  // or any default value you prefer
+			}
+
+			// Join the array elements into a string without quotes
+			const formattedTaxonomies = taxonomiesArray.join(', ');
+
+			return formattedTaxonomies;
+		},
 		filterChains() {
 			// Wait for chains to be loaded
   			// await this.getChains();
@@ -1853,12 +2050,12 @@ export default {
 			console.log("Filtered:",this.filteredChains);
 
 			},
-			selectChain(selectedChain) {
+			selectChain(chain) {
 			// Set the selected chain
-			this.selectedChain = selectedChain;
+			this.selectedChain = chain.chain_name;
 			console.log("Selected Chain:",this.selectedChain);
-			this.entity.chain_name = selectedChain.chain_name;
-			console.log(" Chain:",this.entity.chain_name);
+			this.entity.chain_name = chain.chain_name;
+			console.log(" chain_name:",this.entity.chain_name);
 
 			// Clear the search term and filtered chains
 			this.searchChain = '';
@@ -2037,11 +2234,35 @@ export default {
 		async getChains() {
 			console.log("Fetching chains...");
 			// await this.$store.dispatch("chains/get");
-			await axios.get('/client/getChains')
+			const facilityId = this.entity.id;
+			await axios.get('/client/api/chainList')
 			.then(response => {
 				console.log("Response:",response.data);
-			// response data stored in records attribute to render as list
-			records.value = response.data;
+			// // response data stored in records attribute to render as list
+			// records.value = response.data;
+				response.data.facilityChains.forEach((item, index) => {
+				// console.log(`Element at index ${index}:`, item);
+
+				if (item.facility_id == facilityId) {
+					console.log("match found =", item.chain_id);
+					console.log("log =", response.data.chains);
+
+					response.data.chains.forEach((i, index) => {
+						console.log(`chain at index ${index}:`, i);
+						if (i.id == item.chain_id) {
+							console.log("Item found =", i.chain_name);
+							// Check if the service is not already in selectedServices before pushing
+							// if (!this.selectedServices.some(service => service.id === i.id)) {
+								// this.selectedServices.push(i);
+								this.selectedChain = i.chain_name;
+								console.log("output", this.selectedChain);
+								// response data stored in records attribute to render as list
+								records.value = response.data.chains;
+								// }
+						}
+					});
+				}
+			});
 			})
 			.catch(error => {
 				console.error(error);

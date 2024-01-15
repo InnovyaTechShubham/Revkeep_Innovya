@@ -1057,6 +1057,108 @@
 								</b-form-group>
 							</b-card-body>
 			</b-collapse>
+			<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseReceivingMethods
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>Receiving Methods</b-button>
+						</b-card-header>
+						<b-collapse id="collapseReceivingMethods" role="tabpanel">
+							<b-card-body>
+								<validation-provider
+									vid="r_email"
+									name="Email"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Email"
+												type="text"
+												v-model="entity.receiving_email"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Email"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingEmail">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<!-- Display entered emails -->
+										<div v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(email, index) in entity.receiving_emails" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ email }}</span>
+														<!-- X button to remove the email -->
+														<b-button variant="danger" @click="removeReceivingEmail(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="r_fax"
+									name="Fax"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Fax" label-for="r_fax" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Fax"
+												type="text"
+												v-model="entity.receiving_fax"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Fax"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingFax">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<!-- Display entered faxes -->
+										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ fax }}</span>
+														<!-- remove the fax -->
+														<b-button variant="danger" @click="removeReceivingFax(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider>
+							</b-card-body>
+						</b-collapse>
+
+						<!-- end Receiving Methods -->
 			</b-card-body>
 					</b-card>
 				
@@ -1146,6 +1248,10 @@ export default {
 				// 	_ids: [],
 				// },
 				services: [],
+				receiving_email: '', // For input
+            	receiving_emails: [], // For storing multiple emails
+				receiving_fax: '', // For input
+				receiving_faxes: [],
 			},
 			service_ids: [],
 			selectedContactType: 'phone',
@@ -1187,6 +1293,55 @@ export default {
 	// 	},
 
 	methods: {
+			addReceivingEmail() {
+			// Trim the entered email and check if it's not empty
+			const trimmedEmail = this.entity.receiving_email.trim();
+			console.log("Email:",trimmedEmail);
+			if (trimmedEmail !== '') {
+				// Ensure that receiving_emails is an array before pushing
+				if (!Array.isArray(this.entity.receiving_emails)) {
+				this.$set(this.entity, 'receiving_emails', []);
+			}
+			
+				// Check if the trimmed email already exists in the array
+				if (!this.entity.receiving_emails.includes(trimmedEmail)) {
+					// Push the trimmed email to the receiving_emails array
+					this.entity.receiving_emails.push(trimmedEmail);
+				}
+
+				console.log("Array:",this.entity.receiving_emails);
+				// Clear the input for the next entry
+				this.entity.receiving_email = '';
+			}
+		},
+		removeReceivingEmail(index) {
+			// Remove the email at the specified index from the receiving_emails array
+			this.entity.receiving_emails.splice(index, 1);
+		},
+		addReceivingFax() {
+			// Trim the entered fax and check if it's not empty
+			const trimmedFax = this.entity.receiving_fax.trim();
+			console.log("Fax:",trimmedFax);
+			if (trimmedFax !== '') {
+				// Ensure that receiving_emails is an array before pushing
+				if (!Array.isArray(this.entity.receiving_faxes)) {
+				this.$set(this.entity, 'receiving_faxes', []);
+			}
+				// Check if the trimmed email already exists in the array
+				if (!this.entity.receiving_faxes.includes(trimmedFax)) {
+					// Push the trimmed email to the receiving_emails array
+					this.entity.receiving_faxes.push(trimmedFax);
+				}
+
+				console.log("Array:",this.entity.receiving_faxes);
+				// Clear the input for the next entry
+				this.entity.receiving_fax = '';
+			}
+		},
+		removeReceivingFax(index) {
+			// Remove the email at the specified index from the receiving_emails array
+			this.entity.receiving_faxes.splice(index, 1);
+		},
 		filterChains() {
 			
 			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';

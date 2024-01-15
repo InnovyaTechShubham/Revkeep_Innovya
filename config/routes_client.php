@@ -1008,6 +1008,12 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
+
+	$builder->connect('/chainList', [
+		'controller' => 'ChainList',
+		'action' => 'index',
+		
+	]);
 // 	$builder->connect('/serviceList/:facilityId', [
 //     'controller' => 'ServiceList',
 //     'action' => 'index',
@@ -1061,5 +1067,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
     $builder->connect('/deleteChain/{id}', ['controller' => 'Chains', 'action' => 'delete'])
     ->setPass(['id'])
     ->setMethods(['POST']);
+
+	$builder->connect('/receivingEmails', [
+        'controller' => 'ReceivingEmails',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
 
 });

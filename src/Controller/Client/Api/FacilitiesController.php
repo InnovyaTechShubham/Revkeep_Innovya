@@ -94,7 +94,8 @@ class FacilitiesController extends ApiController
 	{
 		$entity = $this->Facilities->newEntity($this->getRequest()->getData(), [
 			'associated' => [
-				'Services'
+				'Services',
+				// 'Chains'
 			],
 		]);
 
@@ -264,7 +265,8 @@ class FacilitiesController extends ApiController
 		try {
 			$entity = $this->Facilities->patchEntity($entity, $this->getRequest()->getData(), [
 				'associated' => [
-					'Services'
+					'Services',
+					// 'Chains'
 				],
 			]);
 
