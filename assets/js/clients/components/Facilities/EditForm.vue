@@ -630,7 +630,7 @@
 												<b-form-input
 													name="f_name"
 													type="text"
-													v-model="form.f_name"
+													v-model="form.first_name"
 													:state="getValidationState(validationContext)"
 													:disabled="saving"
 												/>
@@ -652,7 +652,7 @@
 												<b-form-input
 													name="l_name"
 													type="text"
-													v-model="form.l_name"
+													v-model="form.last_name"
 													:state="getValidationState(validationContext)"
 													:disabled="saving"
 												/>
@@ -750,7 +750,7 @@
 															<b-form-input
 																:name="'phone' + index"
 																type="text"
-																v-model="form.phone_no"
+																v-model="form.phone"
 																v-mask="'(###) ###-####'"
 																:state="getValidationState(validationContext)"
 																:disabled="saving"
@@ -1325,9 +1325,14 @@ export default {
 									// for (let i = 0; i < response.data.length; i++) {
 									// this.contactTypes.push(response.data[i].contact_type);
 									// }
-									this.forms = response.data;
+									response.data.forEach((item)=>{
+										if(item.facility_id == this.entity.id){
+											this.forms.push(item);
+										}
+									});
+									// this.forms = response.data;
 								}
-							console.log("contact listed:", this.forms);
+							console.log("contact listing:", this.forms);
 						}
 					catch (error) 
 					{
