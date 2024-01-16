@@ -28,68 +28,73 @@
 		</b-container>
 		<div v-else>
 			<b-row>
-				<b-col cols="6" md="3" lg="4" xl="6" order="1" order-md="1" class="text-left mb-4">
-					<b-button @click="showDetails = !showDetails" variant="secondary">
-						<span v-if="showDetails">Hide Details</span>
-						<span v-else>Show Details</span>
-					</b-button>
-					<b-button @click="openRequest" v-if="isButton" variant="secondary">
-						<span >Show Request</span>
-					</b-button>
-					<b-button
-                        variant="primary"
-                        @click="openForm"
-                        :disabled="isRequest || addingRequest"
-                        >
-                        <span v-if="isRequest || addingRequest">Hide Request</span>
-                        <span v-else>Add Request</span>
-                    </b-button>
+    <b-col class="text-left mb-4">
+        <b-button @click="showDetails = !showDetails" variant="secondary">
+            <span v-if="showDetails">Hide Details</span>
+            <span v-else>Level Details</span>
+            <font-awesome-icon :icon="showDetails ? 'arrow-up' : 'arrow-down'" />
+        </b-button>
+    </b-col>
 
-						
-				</b-col>
-				<b-col cols="12" md="5" lg="4" xl="3" order="3" order-md="2" class="text-left mb-4">
-					<appeal-assign :appeal="appeal" />
-				</b-col>
-				<b-col cols="6" md="4" lg="4" xl="3" order="2" order-md="3" class="text-right text-md-right mb-4">
-					<b-button
-						@click="editing = true"
-						:active="editing"
-						:disabled="caseClosed"
-						variant="secondary"
-						:title="caseClosed ? 'This case is closed' : 'Edit appeal details'"
-					>
-						<font-awesome-icon icon="edit" fixed-width />
-						<span>Edit Appeal</span>
-					</b-button>
+	<b-col class="text-right mb-4  ">
+        <b-button @click="openRequest" v-if="isButton" variant="secondary">
+            <span>Show Request</span>
+        </b-button>
+        <b-button
+            variant="primary"
+            @click="openForm"
+            :disabled="isRequest || addingRequest"
+        >
+            <span v-if="isRequest || addingRequest">Hide Request</span>
+            <span v-else>Add Request</span>
+        </b-button>	
+    </b-col>
 
-					<b-dropdown variant="secondary" right title="Appeal Options">
-						<template #button-content>
-							<font-awesome-icon icon="cog" fixed-width />
-						</template>
+    <b-col class="text-left mb-4">
+        <appeal-assign :appeal="appeal" />
+    </b-col>
 
-						<b-dropdown-item @click="cancelAppeal" :disabled="caseClosed || !canCancel || cancelling">
-							<font-awesome-icon icon="ban" fixed-width />
-							<span>Cancel Appeal</span>
-						</b-dropdown-item>
+    <b-col class="text-right text-md-right mb-4">
+        <b-button
+            @click="editing = true"
+            :active="editing"
+            :disabled="caseClosed"
+            variant="secondary"
+            :title="caseClosed ? 'This case is closed' : 'Edit appeal details'"
+        >
+            <font-awesome-icon icon="edit" fixed-width />
+            <span>Edit Appeal</span>
+        </b-button>
 
-						<b-dropdown-item @click="reopenAppeal" :disabled="caseClosed || !canReopen || reopening">
-							<font-awesome-icon icon="envelope-open" fixed-width />
-							<span>Reopen Appeal</span>
-						</b-dropdown-item>
+        <b-dropdown variant="secondary" right title="Appeal Options">
+            <template #button-content>
+                <font-awesome-icon icon="cog" fixed-width />
+            </template>
 
-						<b-dropdown-divider />
+            <b-dropdown-item @click="cancelAppeal" :disabled="caseClosed || !canCancel || cancelling">
+                <font-awesome-icon icon="ban" fixed-width />
+                <span>Cancel Appeal</span>
+            </b-dropdown-item>
 
-						<b-dropdown-item
-							variant="danger"
-							@click="deleteAppeal"
-							:disabled="deleting || caseClosed || !canDelete"
-						>
-							<font-awesome-icon icon="trash" fixed-width />
-							<span>Delete Appeal</span>
-						</b-dropdown-item>
-					</b-dropdown>
-				</b-col>
-			</b-row>
+            <b-dropdown-item @click="reopenAppeal" :disabled="caseClosed || !canReopen || reopening">
+                <font-awesome-icon icon="envelope-open" fixed-width />
+                <span>Reopen Appeal</span>
+            </b-dropdown-item>
+
+            <b-dropdown-divider />
+
+            <b-dropdown-item
+                variant="danger"
+                @click="deleteAppeal"
+                :disabled="deleting || caseClosed || !canDelete"
+            >
+                <font-awesome-icon icon="trash" fixed-width />
+                <span>Delete Appeal</span>
+            </b-dropdown-item>
+        </b-dropdown>
+    </b-col>
+</b-row>
+
 			<b-collapse v-model="showDetails">
 				<appeal-summary :appeal="appeal" class="mb-4" />
 			</b-collapse>
