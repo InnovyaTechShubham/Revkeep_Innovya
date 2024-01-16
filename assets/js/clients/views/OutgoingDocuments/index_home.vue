@@ -24,16 +24,18 @@
 			<b-col cols="12">
 				<loading-indicator v-if="loading && empty" size="4x" class="my-5" />
 				<div v-else-if="!empty">
-					<table class="table mb-0">
+					<table class="table table-bordered mb-0">
             <thead>
                 <tr>
+				   <th class="col-md-1">Status</th>
                    <th class="col-md-2">Patient Name</th>
-                   <th class="col-md-2">Delivery Method</th>
-                   <th class="col-md-2">Status</th>
-                   <th class="col-md-2">Agency</th>
+                   <th class="col-md-1">Reciept Name</th>
+				   <th class="col-md-1">Reciept Type</th>
                    <th class="col-md-1">Download</th>
                    <th class="col-md-1">Appeal Level</th>
-                   <th class="col-md-6">Actions</th>
+				   <th class="col-md-1">Sent On</th>
+				   <th class="col-md-2">Delivery Method</th>
+                   <th class="col-md-2">Actions</th>
                 </tr>
             </thead>
         </table>
@@ -45,8 +47,7 @@
 							recount();
 							refresh();
 						"
-						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#dee2e6' }"
-						class="mb-2 shadow-sm"
+						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#e7eaea' }"
 					/>
 				</div>
 				<empty-result v-else icon="envelope-open">
