@@ -12,7 +12,7 @@
 					title="Edit"
 				>
 					<font-awesome-icon icon="edit" fixed-width />
-					<span>Edit1</span>
+					<span>Edit</span>
 				</b-button>
 
 				<b-dropdown variant="secondary" right title="More Options">
@@ -25,7 +25,7 @@
 						<span>New Case</span>
 					</b-dropdown-item>
 
-					<b-dropdown-divider />D
+					<b-dropdown-divider />
 
 					<b-dropdown-item @click="destroy" :disabled="loading" variant="danger">
 						<font-awesome-icon icon="trash" fixed-width />
