@@ -568,11 +568,11 @@
 					<b-form-input type="text" name="chain_name" v-model="searchChain"
 						:disabled="saving"
 						placeholder="Search for a Chain..." @input="filterChains" />
-					<b-input-group-append>
+					<!-- <b-input-group-append>
 						<b-input-group-text>
 							<font-awesome-icon icon="search" fixed-width />
 						</b-input-group-text>
-					</b-input-group-append>
+					</b-input-group-append> -->
 				</b-input-group>
 				<div class="mb-0" style="margin: 0;">
 					<b-list-group v-if="filteredChains.length > 0">
@@ -2148,13 +2148,13 @@ export default {
 			console.log("Filtered:",this.filteredServices);
 
 			},
-			deselectChain() {
-			// Clear the selected chain
-			this.selectedChain = null;
+		// 	deselectChain() {
+		// 	// Clear the selected chain
+		// 	this.selectedChain = null;
 
-			// Clear or update this.entity.chain_name as needed
-			this.entity.chain_name = '';
-		},
+		// 	// Clear or update this.entity.chain_name as needed
+		// 	this.entity.chain_name = '';
+		// },
 
 		async selectService(selectedService) {
 			// console.log('Selected Service:', selectedService);

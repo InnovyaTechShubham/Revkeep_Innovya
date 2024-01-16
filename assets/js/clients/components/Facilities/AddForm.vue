@@ -268,55 +268,64 @@
 										/>
 									</b-form-group>
 								</validation-provider> -->
-								<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-					<!-- <loading-indicator v-if="loadingChains && chains.length <= 0" /> -->
-					<b-input-group>
-						<b-form-input type="text" name="chain_name" v-model="searchChain"
-							:disabled="saving"
-							placeholder="Search for a Chain..." @input="filterChains" />
-						<b-input-group-append>
-							<b-input-group-text>
-								<font-awesome-icon icon="search" fixed-width />
-							</b-input-group-text>
-						</b-input-group-append>
-					</b-input-group>
-					<div class="mb-0" style="margin: 0;">
-						
-						<!-- <b-list-group v-if="selectedChains.length > 0" >
-							<b-list-group-item v-for="chain in selectedChains" :key="chain.id" class="mb-0">
-								<div class="d-flex justify-content-between align-items-center mb-0">
-									<div class="mb-0">{{ chain.name }}</div>
-									<b-btn variant="danger" @click="deselectChain(chain)" size="sm">
-										<font-awesome-icon
-											icon="times"
-											fixed-width
-										/>
-									</b-btn>
-								</div>
-							</b-list-group-item>
-						</b-list-group> -->
-						<b-list-group v-if="selectedChain">
-							<b-list-group-item class="mb-0">
-								<div class="d-flex justify-content-between align-items-center mb-0">
-								<div class="mb-0">{{ selectedChain.chain_name }}</div>
-								<b-btn variant="danger" @click="deselectChain" size="sm">
-									<font-awesome-icon icon="times" fixed-width />
-								</b-btn>
-								</div>
-							</b-list-group-item>
-							</b-list-group>
 
 
-					</div>
-					<div v-if="filteredChains.length > 0" class="mb-0">
-						<b-list-group>
-							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-								@click="selectChain(chain)">
-								{{ chain.chain_name }}
-							</b-list-group-item>
-						</b-list-group>
-					</div>
-				</b-form-group>
+								<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+									<b-input-group-append>
+										<b-input-group-text>
+											<font-awesome-icon icon="search" fixed-width />
+										</b-input-group-text>
+									</b-input-group-append>
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									
+									
+									<b-list-group v-if="selectedChain">
+										<b-list-group-item class="mb-0">
+											<div class="d-flex justify-content-between align-items-center mb-0">
+											<div class="mb-0">{{ selectedChain.chain_name }}</div>
+											<b-btn variant="danger" @click="deselectChain" size="sm">
+												<font-awesome-icon icon="times" fixed-width />
+											</b-btn>
+											</div>
+										</b-list-group-item>
+										</b-list-group>
+
+
+								</div>
+								<div v-if="filteredChains.length > 0" class="mb-0">
+									<b-list-group>
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group> -->
+							<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+									<!-- <b-input-group-append>
+										<b-input-group-text>
+											<font-awesome-icon icon="search" fixed-width />
+										</b-input-group-text>
+									</b-input-group-append> -->
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									<b-list-group v-if="filteredChains.length > 0">
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group>
 
 				</b-card-body>
 
@@ -1343,37 +1352,73 @@ export default {
 			this.entity.receiving_faxes.splice(index, 1);
 		},
 		filterChains() {
-			
+			// Wait for chains to be loaded
+  			// await this.getChains();
+			// Implement the logic to filter chains based on the search term
+			// .trim().replace(/"/g,'')
 			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
 			console.log("Search:",searchTerm);
 			console.log("chains:",records);
+			// console.log("Check", this.entity.chains);
 
 			// Filter chains, excluding the ones already selected
 			this.filteredChains = records.value.filter((chain) =>
 			chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+			// && chain.chain_name.length <= maxLength
+			// !this.selectedChains.some(selected => selected.id === chain.id) &&
+			// !this.filteredChains.some(filtered => filtered.id === chain.id)
     		);
 			console.log("Filtered:",this.filteredChains);
 
 			},
-
-		selectChain(selectedChain) {
+			selectChain(chain) {
 			// Set the selected chain
-			this.selectedChain = selectedChain;
-			console.log("Selected Chain:",this.selectedChain);
-			this.entity.chain_name = selectedChain.chain_name;
-			console.log(" Chain:",this.entity.chain_name);
+			// this.selectedChain = chain.chain_name;
+			// console.log("Selected Chain:",this.selectedChain);
+			// this.entity.chain_name = chain.chain_name;
+			// console.log(" chain_name:",this.entity.chain_name);
 
-			// Clear the search term and filtered chains
-			this.searchChain = '';
-			this.filteredChains = [];
+			// // Clear the search term and filtered chains
+			// this.searchChain = '';
+			// this.filteredChains = [];
+
+
+			this.searchChain = chain.chain_name;
+			this.entity.chain_name = chain.chain_name;
+        	this.filteredChains = [];
 			},
-		deselectChain() {
-			// Clear the selected chain
-			this.selectedChain = null;
+		// filterChains() {
+			
+		// 	const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
+		// 	console.log("Search:",searchTerm);
+		// 	console.log("chains:",records);
 
-			// Clear or update this.entity.chain_name as needed
-			this.entity.chain_name = '';
-		},
+		// 	// Filter chains, excluding the ones already selected
+		// 	this.filteredChains = records.value.filter((chain) =>
+		// 	chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+    	// 	);
+		// 	console.log("Filtered:",this.filteredChains);
+
+		// 	},
+
+		// selectChain(selectedChain) {
+		// 	// Set the selected chain
+		// 	this.selectedChain = selectedChain;
+		// 	console.log("Selected Chain:",this.selectedChain);
+		// 	this.entity.chain_name = selectedChain.chain_name;
+		// 	console.log(" Chain:",this.entity.chain_name);
+
+		// 	// Clear the search term and filtered chains
+		// 	this.searchChain = '';
+		// 	this.filteredChains = [];
+		// 	},
+		// deselectChain() {
+		// 	// Clear the selected chain
+		// 	this.selectedChain = null;
+
+		// 	// Clear or update this.entity.chain_name as needed
+		// 	this.entity.chain_name = '';
+		// },
 		filterServices() {
 			// Implement the logic to filter services based on the search term
 			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
