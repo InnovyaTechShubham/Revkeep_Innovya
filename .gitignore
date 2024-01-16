@@ -75,3 +75,5 @@ config/app.php
 webroot/js/clients.js
 webroot/js/vendors.js
 webroot/js/clients.js
+
+tests/Fixture/.gitkeep
