@@ -484,8 +484,7 @@
 					/>
 					</b-form-group>
 				</validation-provider> -->
-				<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-					<!-- <loading-indicator v-if="loadingChains && chains.length <= 0" /> -->
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
 					<b-input-group>
 						<b-form-input type="text" name="chain_name" v-model="searchChain"
 							:disabled="saving"
@@ -498,19 +497,7 @@
 					</b-input-group>
 					<div class="mb-0" style="margin: 0;">
 						
-						<!-- <b-list-group v-if="selectedChains.length > 0" >
-							<b-list-group-item v-for="chain in selectedChains" :key="chain.id" class="mb-0">
-								<div class="d-flex justify-content-between align-items-center mb-0">
-									<div class="mb-0">{{ chain.name }}</div>
-									<b-btn variant="danger" @click="deselectChain(chain)" size="sm">
-										<font-awesome-icon
-											icon="times"
-											fixed-width
-										/>
-									</b-btn>
-								</div>
-							</b-list-group-item>
-						</b-list-group> -->
+					
 						<b-list-group v-if="selectedChain">
 							<b-list-group-item class="mb-0">
 								<div class="d-flex justify-content-between align-items-center mb-0">
@@ -532,7 +519,76 @@
 							</b-list-group-item>
 						</b-list-group>
 					</div>
-				</b-form-group>
+				</b-form-group> -->
+
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+					<b-input-group>
+						<b-form-input type="text" name="chain_name" v-model="selectedChain"
+							:disabled="saving"
+							placeholder="Search for a Chain..." @input="filterChains" />
+						<b-input-group-append>
+							<b-input-group-text>
+								<font-awesome-icon icon="search" fixed-width />
+							</b-input-group-text>
+						</b-input-group-append>
+					</b-input-group>
+					<div class="mb-0" style="margin: 0;">
+						<b-list-group v-if="filteredChains.length > 0">
+							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+								@click="selectChain(chain)">
+								{{ chain.chain_name }}
+							</b-list-group-item>
+						</b-list-group>
+					</div>  
+				</b-form-group> --> 
+				
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+				<b-input-group>
+					<b-form-input type="text" name="chain_name" v-model="selectedChain"
+						:disabled="saving"
+						placeholder="Search for a Chain..." @input="filterChains" />
+					<b-input-group-append>
+						<b-input-group-text>
+							<font-awesome-icon icon="search" fixed-width />
+						</b-input-group-text>
+					</b-input-group-append>
+				</b-input-group>
+				<div class="mb-0" style="margin: 0;">
+					<b-list-group v-if="filteredChains.length > 0">
+						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+							@click="selectChain(chain)">
+							{{ chain.chain_name }}
+						</b-list-group-item>
+					</b-list-group>
+				</div>
+			</b-form-group> -->
+
+			<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+				<b-input-group>
+					<b-form-input type="text" name="chain_name" v-model="searchChain"
+						:disabled="saving"
+						placeholder="Search for a Chain..." @input="filterChains" />
+					<b-input-group-append>
+						<b-input-group-text>
+							<font-awesome-icon icon="search" fixed-width />
+						</b-input-group-text>
+					</b-input-group-append>
+				</b-input-group>
+				<div class="mb-0" style="margin: 0;">
+					<b-list-group v-if="filteredChains.length > 0">
+						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+							@click="selectChain(chain)">
+							{{ chain.chain_name }}
+						</b-list-group-item>
+					</b-list-group>
+				</div>
+			</b-form-group>
+
+
+
+
+
+
 
 
 				</b-card-body>
@@ -1813,6 +1869,7 @@ export default {
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
 				receiving_faxes: [],
+				outgoing_emails: {},
 
 			},
 			service_ids: [],
@@ -2052,14 +2109,19 @@ export default {
 			},
 			selectChain(chain) {
 			// Set the selected chain
-			this.selectedChain = chain.chain_name;
-			console.log("Selected Chain:",this.selectedChain);
-			this.entity.chain_name = chain.chain_name;
-			console.log(" chain_name:",this.entity.chain_name);
+			// this.selectedChain = chain.chain_name;
+			// console.log("Selected Chain:",this.selectedChain);
+			// this.entity.chain_name = chain.chain_name;
+			// console.log(" chain_name:",this.entity.chain_name);
 
-			// Clear the search term and filtered chains
-			this.searchChain = '';
-			this.filteredChains = [];
+			// // Clear the search term and filtered chains
+			// this.searchChain = '';
+			// this.filteredChains = [];
+
+
+			this.searchChain = chain.chain_name;
+			this.entity.chain_name = chain.chain_name;
+        	this.filteredChains = [];
 			},
 
 		filterServices() {
