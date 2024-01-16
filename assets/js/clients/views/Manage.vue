@@ -30,6 +30,9 @@
 						<b-nav-item title="Services" active-class="active" :to="{ name: 'services' }">
 							<span>Services</span>
 						</b-nav-item>
+						<b-nav-item title="Chains" active-class="active" :to="{ name: 'chains' }">
+							<span>Chains</span>
+						</b-nav-item>
 					</b-nav>
 				</b-col>
 				<b-col cols="12" lg="9" xl="10">
