@@ -55,10 +55,15 @@
       
       </td>
 	  <td class="col-md-1">
-		               <h3 v-if="appealLevel" class="h6 mb-0 ml-3 ">
-										{{ appealLevel }}
-									</h3>
-			           <div v-else class="text-muted ml-3">&mdash;</div>
+		<h2 v-if="appealLevel"
+             tag="h3"
+             class="h6 mb-0 ml-3"
+             @click="navigateToAppeal">
+    {{ appealLevel }}
+	  </h2>
+			           <div v-else class="text-muted ml-3">
+						<font-awesome-icon icon="building" fixed-width />
+					   </div>
 
 	  </td>
 	  <td class="col-md-1">
@@ -311,7 +316,14 @@ export default {
 				console.log("Agency Response =", agencyListResponse);
 				this.agencyList = agencyListResponse.data;
 				
-		}
+		},
+		navigateToAppeal() {
+    // Navigate to the specified route when the link is clicked
+    this.$router.push({
+      name: 'appeals.view',
+      params: { id: this.value.case_id, appeal_id: this.value.appeal_id },
+    });
+  },
 	},
 	mounted() {
 		this.test();

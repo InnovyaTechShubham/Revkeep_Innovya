@@ -32,8 +32,8 @@
                    <th class="col-md-1">Reciept Name</th>
 				   <th class="col-md-1">Reciept Type</th>
                    <th class="col-md-1">Download</th>
-                   <th class="col-md-1">Appeal Level</th>
-				   <th class="col-md-1">Sent On</th>
+                   <th class="col-md-1">Level</th>
+				   <th class="col-md-1">Sent Date</th>
 				   <th class="col-md-2">Delivery Method</th>
                    <th class="col-md-2">Actions</th>
                 </tr>
@@ -48,7 +48,8 @@
 							refresh();
 						"
 						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#e7eaea' }"
-					/>
+						class="list-item"
+						/>
 				</div>
 				<empty-result v-else icon="envelope">
 					No delivered documents
@@ -75,3 +76,9 @@ const recount = () => {
 	store.dispatch("updateState");
 };
 </script>
+
+<style scoped>
+  .list-item:hover {
+    background-color: #e7eaea !important;
+  }
+</style>
