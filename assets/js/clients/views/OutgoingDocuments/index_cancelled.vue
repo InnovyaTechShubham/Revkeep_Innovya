@@ -24,11 +24,27 @@
 			<b-col cols="12">
 				<loading-indicator v-if="loading && empty" size="4x" class="my-5" />
 				<div v-else-if="!empty">
+					<table class="table mb-0">
+            <thead>
+                <tr>
+                   <th class="col-md-2">Patient Name</th>
+                   <th class="col-md-2">Delivery Method</th>
+                   <th class="col-md-2">Status</th>
+                   <th class="col-md-2">Agency</th>
+                   <th class="col-md-1">Download</th>
+                   <th class="col-md-1">Appeal Level</th>
+                   <th class="col-md-6">Actions</th>
+                </tr>
+            </thead>
+        </table>
 					<outgoing-document-list-item
-						v-for="result in results"
+					v-for="(result, index) in results"
 						:key="result.id"
 						:value="result"
-						@updated="refresh"
+						@updated="
+							refresh();
+						"
+						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#dee2e6' }"
 						class="mb-2 shadow-sm"
 					/>
 				</div>

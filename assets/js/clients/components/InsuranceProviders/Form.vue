@@ -77,7 +77,7 @@
 
 					 <div class="d-flex align-items-start">
     <validation-provider vid="default_insurance_type_id" name="Type" :rules="{ required: false }" v-slot="validationContext">
-      <b-form-group label="Audit Type(s)" label-for="default_insurance_type_id" label-cols-lg="4" label-cols-xl="4">
+      <b-form-group label="Audit Types(s)" label-for="default_insurance_type_id" label-cols-lg="4" label-cols-xl="4">
         <b-form-checkbox-group
           name="insurance_type_ids"
           v-model="audittype_data"
@@ -106,309 +106,311 @@
       :disabled="saving"
     />
   </b-modal>
-					<b-form-group label="Decision Levels" label-for="entity.appeal_levels"  label-cols-lg="2" label-cols-xl="2">
+  <b-form-group label="Decision Levels" label-for="entity.appeal_levels"  label-cols-lg="2" label-cols-xl="2">
 						<div v-if="entity.appeal_levels.length > 0">
-							<div v-for="(appealLevel, index) in entity.appeal_levels" :key="index" class="mb-2">
-								<b-card no-body>
-									<b-card-header>
-										<b-form-group class="mb-0">
-											<b-input-group>
-												<!-- <b-form-select
-													v-model="appealLevel._joinData.appeal_level_id"
-													:options="appealLevels"
-													disabled
-													value-field="id"
-													text-field="name"
-													required="required"
-													placeholder="Level"
-													aria-readonly="true"
-												/> -->
-												<b-input-group-prepend>
-													<b-button
-														variant="danger"
-														@click="removeAppealLevel(appealLevel, index)"
-														title="Remove this level"
-													>
-														<font-awesome-icon icon="times" fixed-width />
-													</b-button>
-												</b-input-group-prepend>
-											</b-input-group>
-										</b-form-group>
-									</b-card-header>
-									<b-card-body>
-										<b-row>
-											<b-col cols="12" xl="6">
-												<b-form-group
-													label="Name"
-													description="This will override the default level of name"
-													label-cols-lg="4"
-												>
-													<b-form-input
-														name="label"
-														type="text"
-														v-model="appealLevel._joinData.label"
-														:disabled="saving"
-													/>
-												</b-form-group>
-											</b-col>
-											<!-- <b-col cols="12" xl="6">
-												<validation-provider
-													vid="agency_id"
-													name="Agency"
-													:rules="{ required: false }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Agency"
-														label-for="agency_id"
-														label-cols-lg="4"
-													>
-														<b-input-group>
-															<b-form-select
-																name="agency_id"
-																v-model="appealLevel._joinData.agency_id"
-																:disabled="saving"
-																:options="agencies"
-																value-field="id"
-																text-field="name"
-																:state="getValidationState(validationContext)"
-															/>
-															<template #append>
-																<b-button
-																	variant="primary"
-																	@click="addingAgency = !addingAgency"
-																	:active="addingAgency"
-																>
-																	<font-awesome-icon icon="plus" fixed-width />
-																</b-button>
-															</template>
-														</b-input-group>
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
-														/>
-													</b-form-group>
-												</validation-provider>
-											</b-col> -->
-											<b-col cols="12" xl="6">
-												<validation-provider
-													vid="days_to_respond"
-													name="Days to respond"
-													:rules="{ required: true, min: 0, max: 365 }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Days To Respond"
-														label-for="days_to_respond"
-														label-cols-lg="4"
-														description="The amount of days from before a response is due"
-													>
-														<b-form-input
-															name="days_to_respond"
-															type="number"
-															step="1"
-															min="0"
-															max="365"
-															default="30"
-															v-model="appealLevel._joinData.days_to_respond"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
-														/>
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
-														/>
-													</b-form-group>
-												</validation-provider>
-											</b-col>
-											<b-col cols="12" xl="6">
-												<validation-provider
-													vid="max_days"
-													name="Maximum Decision Days"
-													:rules="{ required: true, min: 0, max: 365 }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Days To Decision"
-														label-for="max_days"
-														label-cols-lg="4"
-														description="The maximum days before a return response is expected"
-													>
-														<b-form-input
-															name="max_days"
-															type="number"
-															step="1"
-															min="0"
-															max="365"
-															default="30"
-															v-model="appealLevel._joinData.max_days"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
-														/>
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
-														/>
-													</b-form-group>
-												</validation-provider>
-											</b-col>
-											<b-col cols="12" xl="6">
-												<validation-provider
-													vid="max_days"
-													name="Grace_days"
-													:rules="{ required: true, min: 0, max: 365 }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Grace Days"
-														label-for="Grace_days"
-														label-cols-lg="4"
-														description="The maximum days before a return response is expected"
-													>
-														<b-form-input
-															name="Grace_days"
-															type="number"
-															step="1"
-															min="0"
-															max="365"
-															default="0"
-															v-model="appealLevel._joinData.Grace_days"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
-														/>
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
-														/>
-													</b-form-group>
-												</validation-provider>
-											</b-col>
-											<b-col cols="12" xl="6">
-												<validation-provider
-													vid="level_type"
-													name="level_type"
-													:rules="{ required: true }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Level Type"
-														label-for="level_type"
-														label-cols-lg="4"
-														description="The Level Type should be `Pre-Appeal` or `Appeal`"
-													>
-														<!-- <b-form-input
-															name="level_type"
-															type="number"
-															step="1"
-															min="0"
-															max="365"
-															default="30"
-															v-model="appealLevel._joinData.level_type"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
-														/> -->
-														<b-form-select
-															name="level_type"
-															v-model="appealLevel._joinData.level_type"
-															:options="levelTypeOptions"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
-														/>
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
-														/>
-													</b-form-group>
-												</validation-provider>
-											</b-col>
-											<b-col cols="12" xl="6">
-												<validation-provider
-													vid="decision_options"
-													name="decision_options"
-													:rules="{ required: true }"
-													v-slot="validationContext"
-												>
-													<b-form-group
-														label="Decision Options1"
-														label-for="decision_options"
-														label-cols-lg="4"
-														description="Select the decision type"
-													>
-													<b-form-select
-														name="decision_options"
-														v-model="appealLevel._joinData.decision_options"
-														:options="decisionTypeOptions"
-														:disabled="saving"
-														:state="getValidationState(validationContext)"
+							<draggable v-model="entity.appeal_levels" @start="test" @end="onDragEnd">
+								<div v-for="(appealLevel, index) in entity.appeal_levels" :key="index" class="mb-2">
+									<b-card no-body>
+										<b-card-header>
+											<b-form-group class="mb-0">
+												<b-input-group>
+													<!-- <b-form-select
+														v-model="appealLevel._joinData.appeal_level_id"
+														:options="appealLevels"
+														disabled
+														value-field="id"
+														text-field="name"
 														required="required"
-														/>
-													<!-- <b-form-radio-group
-														name="decision_options"
-														v-model="appealLevel._joinData.decision_options"
-														:options="decisionTypeOptions"
-														:disabled="saving"
-														:state="getValidationState(validationContext)"
-														required="required"
-													
+														placeholder="Level"
+														aria-readonly="true"
 													/> -->
-														<b-form-invalid-feedback
-															v-for="error in validationContext.errors"
-															:key="error"
-															v-text="error"
+													<b-input-group-prepend>
+														<b-button
+															variant="danger"
+															@click="removeAppealLevel(appealLevel, index)"
+															title="Remove this level"
+														>
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</b-input-group-prepend>
+												</b-input-group>
+											</b-form-group>
+										</b-card-header>
+										<b-card-body>
+											<b-row>
+												<b-col cols="12" xl="6">
+													<b-form-group
+														label="Name"
+														description="This will override the default level of name"
+														label-cols-lg="4"
+													>
+														<b-form-input
+															name="label"
+															type="text"
+															v-model="appealLevel._joinData.label"
+															:disabled="saving"
 														/>
 													</b-form-group>
-												</validation-provider>
-											</b-col>
-											
-										</b-row>
-
-										<b-modal
-											v-model="addingAgency"
-											size="xl"
-											hide-header
-											hide-footer
-											body-class="p-0"
-											content-class="p-0"
-										>
-											<agency-form
-												@cancel="addingAgency = false"
-												@saved="addedNewAgency($event, appealLevel, index)"
-											>
-												<template #header>
-													<b-card-header>
-														<div class="d-flex justify-content-between align-items-center">
-															<span class="font-weight-bold">Add New Agency</span>
-															<b-button
-																variant="secondary"
-																size="sm"
-																@click="addingAgency = false"
-																title="Cancel"
-																class="mb-0"
-															>
-																<font-awesome-icon
-																	icon="remove"
-																	fixed-width
-																	class="my-0 py-0"
+												</b-col>
+												<!-- <b-col cols="12" xl="6">
+													<validation-provider
+														vid="agency_id"
+														name="Agency"
+														:rules="{ required: false }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Agency"
+															label-for="agency_id"
+															label-cols-lg="4"
+														>
+															<b-input-group>
+																<b-form-select
+																	name="agency_id"
+																	v-model="appealLevel._joinData.agency_id"
+																	:disabled="saving"
+																	:options="agencies"
+																	value-field="id"
+																	text-field="name"
+																	:state="getValidationState(validationContext)"
 																/>
-															</b-button>
-														</div>
-													</b-card-header>
-												</template>
-											</agency-form>
-										</b-modal>
-									</b-card-body>
-								</b-card>
-							</div>
+																<template #append>
+																	<b-button
+																		variant="primary"
+																		@click="addingAgency = !addingAgency"
+																		:active="addingAgency"
+																	>
+																		<font-awesome-icon icon="plus" fixed-width />
+																	</b-button>
+																</template>
+															</b-input-group>
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col> -->
+												<b-col cols="12" xl="6">
+													<validation-provider
+														vid="days_to_respond"
+														name="Days to respond"
+														:rules="{ required: true, min: 0, max: 365 }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Days To Respond"
+															label-for="days_to_respond"
+															label-cols-lg="4"
+															description="The amount of days from before a response is due"
+														>
+															<b-form-input
+																name="days_to_respond"
+																type="number"
+																step="1"
+																min="0"
+																max="365"
+																default="30"
+																v-model="appealLevel._joinData.days_to_respond"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
+															/>
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col>
+												<b-col cols="12" xl="6">
+													<validation-provider
+														vid="max_days"
+														name="Maximum Decision Days"
+														:rules="{ required: true, min: 0, max: 365 }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Days To Decision"
+															label-for="max_days"
+															label-cols-lg="4"
+															description="The maximum days before a return response is expected"
+														>
+															<b-form-input
+																name="max_days"
+																type="number"
+																step="1"
+																min="0"
+																max="365"
+																default="30"
+																v-model="appealLevel._joinData.max_days"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
+															/>
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col>
+												<b-col cols="12" xl="6">
+													<validation-provider
+														vid="max_days"
+														name="Grace_days"
+														:rules="{ required: true, min: 0, max: 365 }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Grace Days"
+															label-for="Grace_days"
+															label-cols-lg="4"
+															description="The maximum days before a return response is expected"
+														>
+															<b-form-input
+																name="Grace_days"
+																type="number"
+																step="1"
+																min="0"
+																max="365"
+																default="0"
+																v-model="appealLevel._joinData.Grace_days"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
+															/>
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col>
+												<b-col cols="12" xl="6">
+													<validation-provider
+														vid="level_type"
+														name="level_type"
+														:rules="{ required: true }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Level Type"
+															label-for="level_type"
+															label-cols-lg="4"
+															description="The Level Type should be `Pre-Appeal` or `Appeal`"
+														>
+															<!-- <b-form-input
+																name="level_type"
+																type="number"
+																step="1"
+																min="0"
+																max="365"
+																default="30"
+																v-model="appealLevel._joinData.level_type"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
+															/> -->
+															<b-form-select
+																name="level_type"
+																v-model="appealLevel._joinData.level_type"
+																:options="levelTypeOptions"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
+															/>
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col>
+												<b-col cols="12" xl="6">
+													<validation-provider
+														vid="decision_options"
+														name="decision_options"
+														:rules="{ required: true }"
+														v-slot="validationContext"
+													>
+														<b-form-group
+															label="Decision Options"
+															label-for="decision_options"
+															label-cols-lg="4"
+															description="Select the decision type"
+														>
+														<b-form-select
+															name="decision_options"
+															v-model="appealLevel._joinData.decision_options"
+															:options="decisionTypeOptions"
+															:disabled="saving"
+															:state="getValidationState(validationContext)"
+															required="required"
+															/>
+														<!-- <b-form-radio-group
+															name="decision_options"
+															v-model="appealLevel._joinData.decision_options"
+															:options="decisionTypeOptions"
+															:disabled="saving"
+															:state="getValidationState(validationContext)"
+															required="required"
+														
+														/> -->
+															<b-form-invalid-feedback
+																v-for="error in validationContext.errors"
+																:key="error"
+																v-text="error"
+															/>
+														</b-form-group>
+													</validation-provider>
+												</b-col>
+												
+											</b-row>
+
+											<b-modal
+												v-model="addingAgency"
+												size="xl"
+												hide-header
+												hide-footer
+												body-class="p-0"
+												content-class="p-0"
+											>
+												<agency-form
+													@cancel="addingAgency = false"
+													@saved="addedNewAgency($event, appealLevel, index)"
+												>
+													<template #header>
+														<b-card-header>
+															<div class="d-flex justify-content-between align-items-center">
+																<span class="font-weight-bold">Add New Agency</span>
+																<b-button
+																	variant="secondary"
+																	size="sm"
+																	@click="addingAgency = false"
+																	title="Cancel"
+																	class="mb-0"
+																>
+																	<font-awesome-icon
+																		icon="remove"
+																		fixed-width
+																		class="my-0 py-0"
+																	/>
+																</b-button>
+															</div>
+														</b-card-header>
+													</template>
+												</agency-form>
+											</b-modal>
+										</b-card-body>
+									</b-card>
+								</div>
+							</draggable>
 
 							<b-button
 								block
@@ -421,6 +423,8 @@
 								<font-awesome-icon icon="plus" fixed-width />
 								<span>Add Level</span>
 							</b-button>
+						<!-- </draggable> -->
+
 						</div>
 						<div v-else>
 							<empty-result icon="gavel">
@@ -440,7 +444,9 @@
 									</b-button>
 								</template>
 							</empty-result>
+							
 						</div>
+
 					</b-form-group>
 				</b-card-body>
 
@@ -748,10 +754,12 @@ import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import AgencyForm from "@/clients/components/Agencies/Form.vue";
 import axios from 'axios';
+import draggable from 'vuedraggable';
 export default {
 	name: "InsuranceProviderForm",
 	components: {
 		AgencyForm,
+		draggable,
 	},
 	props: {
 		id: {
@@ -984,45 +992,91 @@ export default {
 				this.loading = false;
 			}
 		},
-		async save() {
-			try {
+	// 	async save() {
+	// 		try {
 				
-				this.saving = true;
+	// 			this.saving = true;
                 
-						if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-						this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
-						} else {
-						this.entity.name = this.entity.name;
-						}
-						// Populate the insurance_types array with the selected insurance types
-						this.entity.insurance_types = this.audittype_data.map(id => {
-						return { id }; // Assuming the structure of insurance types is an object with an 'id' field
-    });
-				const request = Object.assign({}, this.entity);
-				const response = await this.$store.dispatch("insuranceProviders/save", request);
+	// 					if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+	// 					this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+	// 					} else {
+	// 					this.entity.name = this.entity.name;
+	// 					}
+	// 					// Populate the insurance_types array with the selected insurance types
+	// 					this.entity.insurance_types = this.audittype_data.map(id => {
+	// 					return { id }; // Assuming the structure of insurance types is an object with an 'id' field
+    // });
+	// 			const request = Object.assign({}, this.entity);
+	// 			const response = await this.$store.dispatch("insuranceProviders/save", request);
 
-				this.$emit("saved", response);
-				this.$emit("update:id", response.id);
-			} catch (e) {
-				if (e.response.data.errors) {
-					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+	// 			this.$emit("saved", response);
+	// 			this.$emit("update:id", response.id);
+	// 		} catch (e) {
+	// 			if (e.response.data.errors) {
+	// 				this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
 					
-				}
-				console.log("error = ", e);
-				this.$store.dispatch("apiError", {
-					error: e,
-					title: "Save Failed",
-					message: "Error saving insurance provider details. Please check for errors.",
-					variant: "warning",
-				});
-			} finally {
-				this.saving = false;
-				this.$store.dispatch("insuranceProviders/getActive");
-				this.$store.dispatch("insuranceProviders/getAll");
-				this.test();
+	// 			}
+	// 			console.log("error = ", e);
+	// 			this.$store.dispatch("apiError", {
+	// 				error: e,
+	// 				title: "Save Failed",
+	// 				message: "Error saving insurance provider details. Please check for errors.",
+	// 				variant: "warning",
+	// 			});
+	// 		} finally {
+	// 			this.saving = false;
+	// 			this.$store.dispatch("insuranceProviders/getActive");
+	// 			this.$store.dispatch("insuranceProviders/getAll");
+	// 			this.test();
+	// 		}
+	// 	},
+	async save() {
+		try {
+			this.saving = true;
+
+			// Check if appeal_levels exist, and if so, update their order numbers
+			if (this.entity.appeal_levels && this.entity.appeal_levels.length > 0) {
+			// Update order numbers based on the new array
+			this.entity.appeal_levels.forEach((item, index) => {
+				this.$set(item, 'order_number', index + 1);
+			});
 			}
+
+			// Modify the entity name based on the selected state
+			if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+			this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+			}
+
+			// Populate the insurance_types array with the selected insurance types
+			this.entity.insurance_types = this.audittype_data.map(id => {
+			return { id }; // Assuming the structure of insurance types is an object with an 'id' field
+			});
+
+			const request = Object.assign({}, this.entity);
+			const response = await this.$store.dispatch("insuranceProviders/save", request);
+			console.log('Backend Response:', response);
+
+			this.$emit("saved", response);
+			this.$emit("update:id", response.id);
+		} catch (e) {
+			if (e.response.data.errors) {
+			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+			}
+			console.log("error = ", e);
+			this.$store.dispatch("apiError", {
+			error: e,
+			title: "Save Failed",
+			message: "Error saving insurance provider details. Please check for errors.",
+			variant: "warning",
+			});
+		} finally {
+			this.saving = false;
+			this.$store.dispatch("insuranceProviders/getActive");
+			this.$store.dispatch("insuranceProviders/getAll");
+			this.test();
+		}
 		},
-		addAppealLevel() {
+				addAppealLevel() {
 			let nextId = this.availableAppealLevels[0]?.id ?? null;
 			// if(nextId >= 7){
 			// 	nextId = 6;
@@ -1055,6 +1109,25 @@ export default {
 				this.entity.appeal_levels[index]._joinData.agency_id = agency.id;
 			}
 		},
+		
+		async onDragEnd() {
+			
+			this.entity.appeal_levels.forEach(async (appealLevel, index) => {
+				
+				const originalIndex = this.entity.appeal_levels.findIndex(
+				(original) => original.id === appealLevel.id
+				);
+
+				if (originalIndex !== -1) {
+				// Update the order property locally
+				this.$set(this.entity.appeal_levels, originalIndex, {
+					...this.entity.appeal_levels[originalIndex],
+					order: index + 1,
+				});
+				}
+			});
+			},
+
 	},
 	watch: {
 		entity: {

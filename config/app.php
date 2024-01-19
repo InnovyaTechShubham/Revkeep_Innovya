@@ -381,7 +381,7 @@ return [
 			'className' => Connection::class,
 			'driver' => env('DATABASE_DRIVER', Sqlserver::class), // or Postgres::class
 			'persistent' => false,
-			'host' => env('DATABASE_HOST', 'localhost'),
+			'host' => env('DATABASE_HOST', 'localhost\SQLEXPRESS'),
 			/*
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
@@ -390,7 +390,7 @@ return [
 			'port' => env('DATABASE_PORT', null),
 			'username' => env('DATABASE_USER', 'sa'),
 			'password' => env('DATABASE_PASS', 'sa'),
-			'database' => env('DATABASE_NAME', 'revkeep_back'),
+			'database' => env('DATABASE_NAME', 'revkeep_3'),
 
 			/*
 			 * SQL Server Configuration

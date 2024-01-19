@@ -56,9 +56,44 @@
 						</b-form-group>
 					</validation-provider> -->
 
-					<b-form-group label="Level" label-cols-lg="4">
-						<b-form-select v-model="entity.appeal_level_id" :options="insuranceData" value-field="id" text-field="label"></b-form-select>
+					<b-form-group label="Decision Level" label-cols-lg="4">
+						<b-input-group>
+							<b-form-select v-model="entity.appeal_level_id" :options="insuranceData" value-field="id" text-field="label"></b-form-select>
+							<template #append>
+								<b-button
+									variant="primary"
+									@click="addingInsuranceProvider = !addingInsuranceProvider"
+									:active="addingInsuranceProvider"
+								>
+									<font-awesome-icon icon="plus" fixed-width />
+								</b-button>
+							</template>
+						</b-input-group>
 					</b-form-group>
+					<div v-if="addingInsuranceProvider" class="mb-4">
+							<!-- <insurance-provider-form
+								@cancel="addingInsuranceProvider = false"
+								@saved="addedNewInsuranceProvider"
+							>-->
+								<!-- <template #header> -->
+									<b-card-header>
+										<div class="d-flex justify-content-between align-items-center">
+											<span class="font-weight-bold">Edit Insurance Provider</span>
+											<b-button
+												variant="secondary"
+												size="sm"
+												@click="addingInsuranceProvider = false"
+												title="Cancel"
+												class="mb-0"
+											>
+												<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+											</b-button>
+										</div>
+									</b-card-header>
+								<!-- </template> -->
+							<!-- </insurance-provider-form>  -->
+							<EditForm :id="caseEntity.insurance_provider_id"  />
+						</div>
 						
 
 					<validation-provider
@@ -265,7 +300,7 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-					<validation-provider
+<validation-provider
 						vid="agency_id"
 						name="Agency"
 						:rules="{ required: false }"
@@ -448,7 +483,7 @@
 						</agency-form>
 					</div> -->
 
-						<validation-provider
+						<!-- <validation-provider
 							vid="insurance_provider_id"
 							name="Insurance Provider"
 							:rules="{ required: false }"
@@ -509,7 +544,7 @@
 									</b-card-header>
 								</template>
 							</insurance-provider-form>
-						</div>
+						</div> -->
 					
 
 					<!-- <b-card-footer>
@@ -577,7 +612,7 @@
 				<b-card-body>
 					<h6 class="text-muted">Optional</h6>
 					<b-card no-body>
-						<b-card-header header-tag="header" role="tab" class="p-0">
+					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseHearing
@@ -645,7 +680,7 @@
 									</b-form-select>
 								</b-form-group>
 
-								<!-- Render input based on selected Meeting Type -->
+								// Render input based on selected Meeting Type 
 								<template v-if="entity.meeting_type === 'Location'">
 									<b-form-group label="Address" label-for="address" label-cols-lg="4">
 										<b-form-input
@@ -675,7 +710,7 @@
 								</template>
 								</b-card-body>
 								</b-collapse>
-
+							-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -794,6 +829,7 @@ import { getAbsoluteMinimumDate, getTodaysDate } from "@/shared/helpers/dateHelp
 import AuditReviewerForm from "@/clients/components/AuditReviewers/Form.vue";
 import AgencyForm from "@/clients/components/Agencies/Form.vue";
 import InsuranceProviderForm from "@/clients/components/InsuranceProviders/Form.vue";
+import EditForm from "@/clients/components/InsuranceProviders/Form.vue";
 import axios from "axios";
 
 
@@ -803,6 +839,7 @@ export default {
 		AuditReviewerForm,
 		AgencyForm,
 		InsuranceProviderForm,
+		EditForm,
 	},
 	props: {
 		appeal: {
@@ -816,7 +853,8 @@ export default {
 					days_to_respond: 30,
 					days_to_respond_from_id: null,
 					assigned_to: null,
-					letter_date: getTodaysDate(),
+					// letter_date: getTodaysDate(),
+					letter_date: null,
 					received_date: getTodaysDate(),
 					due_date: null,
 					hearing_date: null,
@@ -875,7 +913,7 @@ export default {
 		
 	},
 	computed: {
-		
+
 		dueDate() {
     if (this.entity.days_to_respond_from_id == 1) {
       // received date
@@ -1039,9 +1077,9 @@ export default {
 		}
 
 		// for calling autofillform function during mounting phase for autofilling the form
-		if(true){
-			this.autoFillForm();
-		}
+		//if(true){
+		//	this.autoFillForm();
+		//}
 	},
 	methods: {
 		updateAppealLevel() {
@@ -1143,10 +1181,10 @@ export default {
 		}, 
 
 		// changedAuditReviewer(value) {
-		// 	const auditReviewer = this.auditReviewers.find((ar) => ar.id === value);
-		// 	if (auditReviewer && auditReviewer.id) {
-		// 		this.entity.agency_id = auditReviewer.agency_id ?? null;
-		// 	}
+			// 	const auditReviewer = this.auditReviewers.find((ar) => ar.id === value);
+			// 	if (auditReviewer && auditReviewer.id) {
+				// 		this.entity.agency_id = auditReviewer.agency_id ?? null;
+			// 	}
 		// },
 		addedAgency(agency) {
 			this.addingAgency = false;

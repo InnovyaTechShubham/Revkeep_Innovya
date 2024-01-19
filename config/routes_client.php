@@ -1035,4 +1035,48 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'controller' => 'CaseList',
 		'action' => 'index',
 	]);
+	$builder->connect('/hearing', [
+		'controller' => 'HearingCase',
+		'action' => 'index',
+		'_method' => 'POST'
+	]);
+	// // 
+	
+	$builder->connect('/chains', [
+		'controller' => 'Chains',
+		'action' => 'index',
+		'_method' => 'POST'
+	]);
+
+	// getting all db chain record to display
+	// /client/chains/getAllRecord
+	// $builder->connect('/getChains', [
+	// 	'controller' => 'Chains',
+	// 	'action' => 'getAllRecord',
+	// 	'_method' => 'POST'
+	// ]);
+
+	$builder->connect('/getChains', [
+		'controller' => 'Chains',
+		'action' => 'getAllRecord',
+		'_method' => 'GET'
+	]);
+	
+	// route to display chain details
+	$builder->connect('/viewChain/{id}', ['controller' => 'Chains', 'action' => 'viewChain'])
+	->setPass(['id'])
+	->setMethods(['GET']);
+
+	// edit chain route
+	$builder->connect('/editChain/{id}', ['controller' => 'Chains', 'action' => 'editChain'])
+	->setPass(['id'])
+	->setMethods(['POST']);
+
+	// delete chain route
+	//  const response = await api.post(`${url}/delete/${id}`, params);
+	//   T http://localhost:8765/client/api/chains/delete/1
+	$builder->connect('/deleteChain/{id}', ['controller' => 'Chains', 'action' => 'delete'])
+	->setPass(['id'])
+	->setMethods(['POST']);
+	
 });

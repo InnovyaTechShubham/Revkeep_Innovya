@@ -19,8 +19,13 @@
 						</p>
 						<b-list-group>
 							<draggable v-model="orderedList">
-								<b-list-group-item :disabled="generating" v-for="file in orderedList" :key="file.key"
-									class="cursor-grabbable" :variant="file.valid ? '' : 'light'">
+								<b-list-group-item
+									:disabled="generating"
+									v-for="file in orderedList"
+									:key="file.key"
+									class="cursor-grabbable"
+									:variant="file.valid ? '' : 'light'"
+								>
 									<div class="d-flex justify-content-start align-items-top">
 										<b-avatar icon variant="light" class="mr-2">
 											<font-awesome-icon icon="sort" fixed-width />
@@ -41,7 +46,11 @@
 												</p>
 											</div>
 											<div>
-												<b-button variant="danger" @click="removeFile(file)" title="Remove File">
+												<b-button
+													variant="danger"
+													@click="removeFile(file)"
+													title="Remove File"
+												>
 													<font-awesome-icon icon="remove" fixed-width />
 												</b-button>
 											</div>
@@ -56,8 +65,11 @@
 			<b-card-footer>
 				<b-row>
 					<b-col cols="12" class="text-right">
-						<b-button variant="primary" @click="generate"
-							:disabled="generating || !hasFiles || hasInvalidFiles">
+						<b-button
+							variant="primary"
+							@click="generate"
+							:disabled="generating || !hasFiles || hasInvalidFiles"
+						>
 							<span v-if="!generating">Create Packet</span>
 							<span v-else>
 								<font-awesome-icon icon="circle-notch" spin />
@@ -132,13 +144,13 @@
 							for manual delivery.
 						</b-alert> -->
 						<b-alert show v-if="!outgoingProfile" variant="warning">
-
+							
 						</b-alert>
 						<div v-else>
 							<!-- <h6>Primary Method: {{ agency.outgoing_primary_method_label }}</h6> -->
 							<b-list-group>
 
-								<!-- <b-list-group-item v-if="outgoingProfile.full_mail_to_address">
+<!-- <b-list-group-item v-if="outgoingProfile.full_mail_to_address">
 
 	<b-form-checkbox class="mr-3"
 
@@ -176,7 +188,7 @@
 
 </b-list-group-item> -->
 
-								<!-- <b-list-group-item class="clearfix" v-if="outgoingProfile.email">
+<!-- <b-list-group-item class="clearfix" v-if="outgoingProfile.email">
 
 	
 
@@ -204,7 +216,7 @@
 
 </b-list-group-item> -->
 
-								<!-- <b-list-group-item v-if="outgoingProfile.fax_number">
+<!-- <b-list-group-item v-if="outgoingProfile.fax_number">
 
 	
 
@@ -232,7 +244,7 @@
 
 </b-list-group-item> -->
 
-								<!-- <b-list-group-item v-if="outgoingProfile.electronic_website">
+<!-- <b-list-group-item v-if="outgoingProfile.electronic_website">
 
 	<b-form-checkbox class="mr-3"
 
@@ -262,7 +274,7 @@
 
 
 
-							</b-list-group>
+</b-list-group>
 						</div>
 					</div>
 					<!-- <empty-result v-else icon="question-circle">
@@ -281,7 +293,7 @@
 					</empty-result> -->
 					<!-- Add Search Bar -->
 					<!-- <b-form-input v-model="searchText" placeholder="Search agency" class="mt-2"></b-form-input> -->
-
+					
 					<!-- Add Search Button -->
 					<!-- <b-col cols="12" class="text-right">
 						<b-button variant="primary">
@@ -289,10 +301,8 @@
 						</b-button>
 					</b-col> -->
 					<!-- <b-button @click="delivery" variant="primary" class="text-right">Search</b-button> -->
-
-					<!-- <b-form-group label="Delivery Method" label-cols-lg="4">
-						<b-form-select label=" Delivery Method " v-model="selectedOptionMethod" class="mt-2"
-							@change="handleDeliveryMethodChange">
+					<b-form-group label="Delivery Method"  label-cols-lg="4">
+						<b-form-select label=" Delivery Method " v-model="selectedOptionMethod" class="mt-2" @change="handleDeliveryMethodChange">
 							<option value="Email">Email</option>
 							<option value="Fax">Fax</option>
 							<option value="Website">Website Portal</option>
@@ -458,14 +468,13 @@
 
 
 					<b-row>
-						<b-col cols="12">
+						<b-col cols="12" >
 
-							<b-form-input
-								v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd"
-								v-model="searchText" :placeholder="selectedOptionText" class="mt-2"
-								@input="handleInputChange"></b-form-input>
-							<p v-for="(result, index) in matchFound" :key="index" @click="selectResult(result)">
-								<span class="result-span">{{ result }}</span>
+							<b-form-input v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd" v-model="searchText"  :placeholder="selectedOptionText" class="mt-2"  @input="handleInputChange"></b-form-input>
+							 <p v-for="(result, index) in matchFound"
+									:key="index"
+									@click="selectResult(result)">
+									<span class="result-span">{{ result }}</span>
 							</p>
 
 							<!-- for displaying the mail opetions when mail is selected as delivery method -->
@@ -483,17 +492,16 @@
 							<b-form-group label="Expected Delivery Date" v-if="selectedOptionMethodMail">
 								<b-form-input type="date" v-model="mailExpectedDeliveryDate" class="mt-2"></b-form-input>
 							</b-form-group> -->
-							<b-form-group v-if="selectedOptionMethodMail">
-								<b-form-checkbox v-model="packageSentViaSnailMail">Package Sent via Snail
-									Mail</b-form-checkbox>
-							</b-form-group>
+							<b-form-group  v-if="selectedOptionMethodMail">
+								<b-form-checkbox v-model="packageSentViaSnailMail">Package Sent via Snail Mail</b-form-checkbox>
+							</b-form-group> 
 							<!-- <b-form-checkbox v-model="packageSentViaSnailMail" v-if="selectedOptionMethodMail">Package Sent via Snail Mail</b-form-checkbox> -->
 							<b-form-group label="Notes" v-if="selectedOptionMethodMail">
 								<b-form-input type="text" v-model="mailNotes" class="mt-2"></b-form-input>
 							</b-form-group>
 
 							<!-- For rendering FTP Input -->
-
+							
 							<b-form-group label="FTP Portal URL" v-if="selectedOptionMethodFtp">
 								<b-form-input type="text" v-model="config.portalUrlFtp" class="mt-2"></b-form-input>
 							</b-form-group>
@@ -507,8 +515,7 @@
 
 							<!-- For rendering ESMD Input -->
 							<b-form-group label="Select Agency" v-if="selectedOptionMethodEsmd">
-								<b-form-select v-model="selectedAgency" :options="agencyList" value-field="id"
-									text-field="name"></b-form-select>
+								<b-form-select v-model="selectedAgency" :options="agencyList" value-field="id" text-field="name"></b-form-select>
 							</b-form-group>
 							<b-form-group label="ESMD Portal URL" v-if="selectedOptionMethodEsmd">
 								<b-form-input type="text" v-model="portalUrlEsmd" class="mt-2"></b-form-input>
@@ -519,7 +526,7 @@
 							<b-form-group label="Password" v-if="selectedOptionMethodEsmd">
 								<b-form-input type="text" v-model="passwordEsmd" class="mt-2"></b-form-input>
 							</b-form-group>
-
+							
 
 
 
@@ -570,11 +577,11 @@
 								
 							</div> -->
 
-						<!-- <div v-if="data.age != null && data.age != undefined">
+							<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-						<!-- </div> -->
+					 	<!-- </div> -->
 					</b-row>
 					<b-row>
 						<!-- <div class="d-flex justify-content-between align-items-center">
@@ -588,12 +595,12 @@
 								
 							</div> -->
 
-						<!-- <div v-if="data.age != null && data.age != undefined">
+							<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-						<!-- </div> -->
-						<!-- <b-col cols="12" >
+					 	<!-- </div> -->
+						 <!-- <b-col cols="12" >
 							<div  class="suggestions">
 								
 									<div v-for="option,i in matchFound" :key="i" class="d-flex justify-content-between align-items-center suggestion-item">
@@ -612,16 +619,16 @@
 									<b-dropdown  variant="btn btn-secondary"  class="dropdown-container">
 										<template #button-content>
 											<span>Delivery Method</span> -->
-					<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
+											<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
 											<span v-if="selectedOptionL2 && appeal.appeal_level.order_number==2">: {{ selectedOptionL2 }}</span>
 											<span v-if="selectedOptionL3 && appeal.appeal_level.order_number==3">: {{ selectedOptionL3 }}</span>
 											<span v-if="selectedOptionL4 && appeal.appeal_level.order_number==4">: {{ selectedOptionL4 }}</span>
 											<span v-if="selectedOptionL5 && appeal.appeal_level.order_number==5">: {{ selectedOptionL5 }}</span>
 											<span v-if="selectedOptionL6 && appeal.appeal_level.order_number==6">: {{ selectedOptionL6 }}</span>-->
-					<!-- <span >: {{ selectedOption}}</span> 
+											<!-- <span >: {{ selectedOption}}</span> 
 										</template> -->
-					<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
-					<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
+										<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
+										<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Fax')">Fax</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Website')">Website</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Contact Number')">Contact Number</b-dropdown-item>
@@ -637,8 +644,8 @@
 									/>
 								</b-col> -->
 
-					<!-- Display filtered results based on the search query -->
-					<!-- <b-col cols="12">
+									<!-- Display filtered results based on the search query -->
+								<!-- <b-col cols="12">
 									<ul>
 										<li v-for="option in filteredOptions" :key="option">{{ option }}</li>
 									</ul>
@@ -657,7 +664,7 @@
 							<font-awesome-icon icon="chevron-right" fixed-width />
 						</b-button>
 					</b-col>
-
+					
 				</b-row>
 			</b-card-footer>
 		</b-tab>
@@ -692,6 +699,7 @@
 
 .result-span {
 	display: flex;
+
 	align-items: center;
 	/* Center vertically */
 	justify-content: center;
@@ -759,6 +767,7 @@ textarea {
 	border-top: none;
 	border-radius: 0 0 5px 5px;
 	z-index: 1000;
+
 }
 </style>
 
@@ -895,8 +904,8 @@ export default {
 			return this.selectedOption.filter(option =>
 				option.toLowerCase().includes(lowerSearchQuery)
 			);
-		},
-
+    	},
+		
 	},
 	data() {
 		return {
@@ -907,7 +916,7 @@ export default {
 			submitting: false,
 			submitted: false,
 			orderedList: this.allFiles,
-			selectedOption: null,
+			selectedOption:null,
 			searchQuery: '',
 			selectedOptionMethod: null,
 			email: [
@@ -918,25 +927,25 @@ export default {
 				'check@gmail.com',
 				// Add more email values as needed
 			],
-			selectedOptionText: '',
-			matchFound: [],
-			mail: ['abcd', 'efgh', '1234'],
-			selectedOptionMethodMail: null,
-			contact_no: ['1234', '5678', '8910'],
-			website: ['revkeep.com', 'revkeep.innovyatech.com'],
-			fax: ['1234567890', '23456787788'],
-			searchText: null,
-			deliveryMethodDetails: null,
-			mailServices: null,
-			mailTrackingID: null,
-			mailExpectedDeliveryDate: null,
-			selectedOptionMethodMail: null,
-			mailNotes: null,
-			packageSentViaSnailMail: null,
+			selectedOptionText:'',
+         	matchFound: [],
+			mail:['abcd','efgh','1234'],
+			selectedOptionMethodMail:null,
+			contact_no:['1234','5678','8910'],
+			website:['revkeep.com', 'revkeep.innovyatech.com'],
+			fax:['1234567890','23456787788'],
+			searchText:null,
+			deliveryMethodDetails : null,
+			mailServices:null,
+			mailTrackingID:null,
+			mailExpectedDeliveryDate:null,
+			selectedOptionMethodMail:null,
+			mailNotes:null,
+			packageSentViaSnailMail:null,
 			config: {
-				portalUrlFtp: "",
-				usernameFtp: "",
-				passwordFtp: "",
+			portalUrlFtp:"",
+			usernameFtp:"",
+			passwordFtp:"",
 			},
 			selectedOptionMethodFtp: false,
 			selectedOptionMethodEsmd: false,
@@ -1261,32 +1270,32 @@ export default {
 				this.generating = false;
 			}
 		},
-		//         async upload() {
-		// 		const insid=this.value.id;
-		// 		console.log("appeal id", insid);
+//         async upload() {
+// 		const insid=this.value.id;
+// 		console.log("appeal id", insid);
+			
+//   try {
+//     // Use Axios to make a request to your PHP backend
+// 	console.log("ftpuload initiated");
+//     const resp = await axios.post("/client/ftpp", {
+// 		insid,
+// 		ftpPortalUrl: this.config.portalUrlFtp,
+// 		ftpUsername: this.config.usernameFtp,
+// 		ftpPassword: this.config.passwordFtp,
+//     });
 
-		//   try {
-		//     // Use Axios to make a request to your PHP backend
-		// 	console.log("ftpuload initiated");
-		//     const resp = await axios.post("/client/ftpp", {
-		// 		insid,
-		// 		ftpPortalUrl: this.config.portalUrlFtp,
-		// 		ftpUsername: this.config.usernameFtp,
-		// 		ftpPassword: this.config.passwordFtp,
-		//     });
-
-		// 	this.$bvToast.toast('File successfully uploaded!', {
-		//             title: 'Success',
-		//             variant: 'success',
-		//             autoHideDelay: 5000,
-		//         });
-		// 	console.log("yes", resp);
-		//   } catch (e) {
-		// 	console.log(e);
-		//   } finally {
-		//     console.log(1);
-		//   }
-		// },
+// 	this.$bvToast.toast('File successfully uploaded!', {
+//             title: 'Success',
+//             variant: 'success',
+//             autoHideDelay: 5000,
+//         });
+// 	console.log("yes", resp);
+//   } catch (e) {
+// 	console.log(e);
+//   } finally {
+//     console.log(1);
+//   }
+// },
 
 		async submitPacket() {
 			try {
@@ -1348,106 +1357,107 @@ export default {
 					tracking: this.trackingNumber,
 				};
 				axios.post('/client/outgoingDetails', postData)
-					.then(response => {
-						// Handle the successful response here
-						console.log('Success:', response.data);
-					})
-					.catch(error => {
-						// Handle any errors that occur during the request
-						console.error('Error:', error);
-					});
+				.then(response => {
+				// Handle the successful response here
+				console.log('Success:', response.data);
+				})
+				.catch(error => {
+				// Handle any errors that occur during the request
+				console.error('Error:', error);
+				});
 				// For FTP UPLOAD
-				const insid = this.value.id;
+				const insid=this.value.id;
 				console.log("appeal id", insid);
+			
+		try {
+			// Use Axios to make a request to your PHP backend
+			console.log("ftpuload initiated");
+			const resp = await axios.post("/client/ftpp", {
+				insid,
+				ftpPortalUrl: this.config.portalUrlFtp,
+				ftpUsername: this.config.usernameFtp,
+				ftpPassword: this.config.passwordFtp,
+			});
 
-				try {
-					// Use Axios to make a request to your PHP backend
-					console.log("ftpuload initiated");
-					const resp = await axios.post("/client/ftpp", {
-						insid,
-						ftpPortalUrl: this.config.portalUrlFtp,
-						ftpUsername: this.config.usernameFtp,
-						ftpPassword: this.config.passwordFtp,
-					});
-
-					this.$bvToast.toast('File successfully uploaded!', {
-						title: 'Success',
-						variant: 'success',
-						autoHideDelay: 5000,
-					});
-					console.log("yes", resp);
-				} catch (e) {
-					console.log(e);
-				} finally {
-					console.log(1);
-				}
-			}
-		},
-		updateStatus(selectedStatus) {
-			// Call your function with the selected status and appealId
-			// For example, you can make an API request here or update the local data
-			console.log(`Selected status: ${selectedStatus}`);
-			this.selectedOption = selectedStatus;
-			// if(appealOrder==1)
-			// {
-			// 	this.selectedOptionL1=selectedStatus;
-			// }
-			// else if(appealOrder==2){
-			// 	this.selectedOptionL2=selectedStatus;
-			// }
-			// else if(appealOrder==3){
-			// 	this.selectedOptionL3=selectedStatus;
-			// }
-			// else if(appealOrder==4){
-			// 	this.selectedOptionL4=selectedStatus;
-			// }
-			// else if(appealOrder==5){
-			// 	this.selectedOptionL5=selectedStatus;
-			// }
-			// else if(appealOrder==6){
-			// 	this.selectedOptionL6=selectedStatus;
-			// }
-			// else if(appealOrder==7){
-			// 	this.selectedOptionL7=selectedStatus;
-			// }
-
-			// Call your function with the selectedStatus and appealId as arguments
-			// e.g., this.yourFunction(selectedStatus, appealId);
-		},
-		async test() {
-			try {
+			this.$bvToast.toast('File successfully uploaded!', {
+					title: 'Success',
+					variant: 'success',
+					autoHideDelay: 5000,
+				});
+			console.log("yes", resp);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			console.log(1);
+		}
+     	}
+	    },
+		updateStatus(selectedStatus) 
+		{
+        // Call your function with the selected status and appealId
+        // For example, you can make an API request here or update the local data
+        console.log(`Selected status: ${selectedStatus}`);
+		this.selectedOption = selectedStatus;
+		// if(appealOrder==1)
+		// {
+		// 	this.selectedOptionL1=selectedStatus;
+		// }
+		// else if(appealOrder==2){
+		// 	this.selectedOptionL2=selectedStatus;
+		// }
+		// else if(appealOrder==3){
+		// 	this.selectedOptionL3=selectedStatus;
+		// }
+		// else if(appealOrder==4){
+		// 	this.selectedOptionL4=selectedStatus;
+		// }
+		// else if(appealOrder==5){
+		// 	this.selectedOptionL5=selectedStatus;
+		// }
+		// else if(appealOrder==6){
+		// 	this.selectedOptionL6=selectedStatus;
+		// }
+		// else if(appealOrder==7){
+		// 	this.selectedOptionL7=selectedStatus;
+		// }
+		
+        // Call your function with the selectedStatus and appealId as arguments
+        // e.g., this.yourFunction(selectedStatus, appealId);
+        },
+		async test(){
+			try{
 				let url = "/client/outgoing";
 				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
+				headers: {
+					"Accept": "application/json",
+				},
 				});
-				console.log("RESPONSE = ", response);
+				console.log("RESPONSE = ",response);
 
 				// for fetching agency details from agency table
 				url = "/client/agencyList";
 				const responseAgency = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
+				headers: {
+					"Accept": "application/json",
+				},
 				});
 				//for storing agency list for rendering
-				responseAgency.data.forEach((item, index) => {
-					this.agencyList.push({ id: item.id, name: item.name })
+				responseAgency.data.forEach((item,index)=> {
+					this.agencyList.push({id:item.id , name:item.name })
 				});
-				console.log("RESPONSE Agency = ", this.agencyList);
-				try {
-					response.data.forEach((item, index) => {
-						if (item.email != null) {
+				console.log("RESPONSE Agency = ",this.agencyList);
+				try{
+					response.data.forEach((item,index)=> {
+						if(item.email !=null){
 							this.email.push(item.email);
 						}
 					})
 				}
-				catch (error) {
+				catch(error){
 
 				}
 			}
-			catch (error) {
+			catch (error){
 				console.log(error);
 			}
 		},
@@ -1496,134 +1506,139 @@ export default {
 
 		},
 		handleInputChange() {
-			// This method is called whenever the input changes
+      		// This method is called whenever the input changes
 
-			console.log('Text entered:', this.searchText);
+      		console.log('Text entered:', this.searchText);
 			this.matchFound = [];
 
 			//for filtering email values
-			if (this.selectedOptionMethod == 'Email') {
-				for (const emailValue of this.email) {
-					if (this.searchText == '') {
-						break;
-					}
-					if (emailValue.includes(this.searchText)) {
-						this.matchFound.push(emailValue);
-						console.log("match found = ", this.matchFound);
-						this.emailData = null;
-						// Exit the loop if a match is found
-					}
-					else {
-						this.emailData = this.searchText;
-						console.log("EMAIL = ", this.emailData);
-					}
+			if(this.selectedOptionMethod=='Email'){
+			for (const emailValue of this.email)
+			{   if(this.searchText==''){
+				break;
+			}
+				if (emailValue.includes(this.searchText)) 
+				{
+					this.matchFound.push(emailValue);
+					console.log("match found = " , this.matchFound);
+					this.emailData=null;
+					// Exit the loop if a match is found
 				}
+				else{
+					this.emailData=this.searchText;
+					console.log("EMAIL = ", this.emailData);
+				}
+		   	 }
 			}
 
 			//for filtering FAX values
-			if (this.selectedOptionMethod == 'Fax') {
-				for (const faxValue of this.fax) {
-					if (this.searchText == '') {
-						break;
-					}
-					if (faxValue.includes(this.searchText)) {
-						this.matchFound.push(faxValue);
-						console.log("match found = ", this.matchFound);
-						this.faxData = null;
-						// Exit the loop if a match is found
-					}
-					else {
-						this.faxData = this.searchText;
-					}
+			if(this.selectedOptionMethod=='Fax'){
+			for (const faxValue of this.fax)
+			{   if(this.searchText==''){
+				break;
+			}
+				if (faxValue.includes(this.searchText)) 
+				{
+					this.matchFound.push(faxValue);
+					console.log("match found = " , this.matchFound);
+					this.faxData=null;
+					// Exit the loop if a match is found
 				}
+				else{
+					this.faxData=this.searchText;
+				}
+		   	 }
 			}
 
 			//for filtering Website values
-			if (this.selectedOptionMethod == 'Website') {
-				for (const websiteValue of this.website) {
-					if (this.searchText == '') {
-						break;
-					}
-					if (websiteValue.includes(this.searchText)) {
-						this.matchFound.push(websiteValue);
-						console.log("match found = ", this.matchFound);
-						this.websiteData = null;
-						// Exit the loop if a match is found
-					}
-					else {
-						this.websiteData = this.searchText;
-					}
+			if(this.selectedOptionMethod=='Website'){
+			for (const websiteValue of this.website)
+			{   if(this.searchText==''){
+				break;
+			}
+				if (websiteValue.includes(this.searchText)) 
+				{
+					this.matchFound.push(websiteValue);
+					console.log("match found = " , this.matchFound);
+					this.websiteData=null;
+					// Exit the loop if a match is found
 				}
+				else{
+					this.websiteData=this.searchText;
+				}
+		   	 }
 			}
 
 			//for filtering contact number values
-			if (this.selectedOptionMethod == 'Contact Number') {
-				for (const contact_noValue of this.contact_no) {
-					if (this.searchText == '') {
-						break;
-					}
-					if (contact_noValue.includes(this.searchText)) {
-						this.matchFound.push(contact_noValue);
-						console.log("match found = ", this.matchFound);
-						this.contactNoData = null;
-						// Exit the loop if a match is found
-					}
-					else {
-						this.contactNoData = this.searchText;
-					}
+			if(this.selectedOptionMethod=='Contact Number'){
+			for (const contact_noValue of this.contact_no)
+			{   if(this.searchText==''){
+				break;
+			}
+				if (contact_noValue.includes(this.searchText)) 
+				{
+					this.matchFound.push(contact_noValue);
+					console.log("match found = " , this.matchFound);
+					this.contactNoData=null;
+					// Exit the loop if a match is found
 				}
+				else{
+					this.contactNoData=this.searchText;
+				}
+		   	 }
 			}
 
 			//for filtering MAIL values
-			if (this.selectedOptionMethod == 'Mail') {
-				for (const mailValue of this.mail) {
-					if (this.searchText == '') {
-						break;
-					}
-					if (mailValue.includes(this.searchText)) {
-						this.matchFound.push(mailValue);
-						console.log("match found = ", this.matchFound);
-						this.mailData = null;
-						// Exit the loop if a match is found
-					}
-					else {
-						this.mailData = this.searchText;
-					}
+			if(this.selectedOptionMethod=='Mail'){
+			for (const mailValue of this.mail)
+			{   if(this.searchText==''){
+				break;
+			}
+				if (mailValue.includes(this.searchText)) 
+				{
+					this.matchFound.push(mailValue);
+					console.log("match found = " , this.matchFound);
+					this.mailData=null;
+					// Exit the loop if a match is found
 				}
+				else{
+					this.mailData=this.searchText;
+				}
+		   	 }
 			}
-		},
+    	},
 		selectResult(result) {
-			// Handle the selection of a result, e.g., update the input field
-			this.searchText = result;
-			this.matchFound = []; // Hide the dropdown
-			console.log("Delivery method =", this.selectedOptionMethod);
-			console.log("Delivery details = ", result);
-			console.log("Services =", this.mailServices);
-			console.log("Tracking ID =", this.mailTrackingID);
-			console.log("Exp Dlv Date =", this.mailExpectedDeliveryDate);
-			console.log("Package send through mail", this.packageSentViaSnailMail);
-			console.log("Notes =", this.mailNotes);
-			console.log("Selected agency =", this.selectedAgency);
-			this.deliveryMethodDetails = result;
+      // Handle the selection of a result, e.g., update the input field
+      this.searchText = result;
+      this.matchFound = []; // Hide the dropdown
+	  console.log("Delivery method =", this.selectedOptionMethod);
+	  console.log("Delivery details = ", result);
+	  console.log("Services =", this.mailServices );
+	  console.log("Tracking ID =", this.mailTrackingID);
+	  console.log("Exp Dlv Date =",this.mailExpectedDeliveryDate);
+	  console.log("Package send through mail" , this.packageSentViaSnailMail);
+	  console.log("Notes =", this.mailNotes);
+	  console.log("Selected agency =", this.selectedAgency);
+	  this.deliveryMethodDetails = result;
 
-			if (this.selectedOptionMethod == 'Email' && this.emailData == null) {
-				this.emailData = this.deliveryMethodDetails;
-			}
-			else if (this.selectedOptionMethod == 'Fax') {
-				this.faxData = this.deliveryMethodDetails;
-			}
-			else if (this.selectedOptionMethod == 'Website') {
-				this.websiteData = this.deliveryMethodDetails;
-			}
-			else if (this.selectedOptionMethod == 'Contact Number') {
-				this.contactNumberData = this.deliveryMethodDetails;
-			}
-			//if Mail is selected then this.packageSentViaSnailMail this.mailNotes 
-			// if FTP is selected then this.portalUrlFtp this.usernameFtp this.passwordFtp
-			// if ESMD is selected then this.selectedAgency this.portalUrlEsmd this.usernameEsmd this.passwordEsmd
-
-		},
-
+	  if(this.selectedOptionMethod=='Email' && this.emailData==null){
+		this.emailData = this.deliveryMethodDetails;
+	  }
+	  else if(this.selectedOptionMethod=='Fax'){
+		this.faxData = this.deliveryMethodDetails;
+	  }
+	  else if(this.selectedOptionMethod=='Website'){
+		this.websiteData = this.deliveryMethodDetails;
+	  }
+	  else if(this.selectedOptionMethod=='Contact Number'){
+		this.contactNumberData = this.deliveryMethodDetails;
+	  }
+	  //if Mail is selected then this.packageSentViaSnailMail this.mailNotes 
+	  // if FTP is selected then this.portalUrlFtp this.usernameFtp this.passwordFtp
+	  // if ESMD is selected then this.selectedAgency this.portalUrlEsmd this.usernameEsmd this.passwordEsmd
+	  
+    },
+	
 	},
 	watch: {
 		allFiles(newVal, oldVal) {

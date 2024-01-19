@@ -1,25 +1,31 @@
 <template>
 	<b-container fluid class="mb-4">
-		<b-row class="my-4">
-			<b-col cols="4" xl="8" class="text-left">
+		<b-row class="my-4" >
+		<!--	<b-col cols="4" xl="8" class="text-left">
 				<b-button @click="showDetails = !showDetails" variant="secondary">
 					<span v-if="showDetails">Hide Details</span>
 					<span v-else>Show Details</span>
 				</b-button>
-				<b-button @click="showLoveMessage = !showLoveMessage" variant="secondary">
+				<b-button @click="showData" variant="secondary">
 					<span v-if="showLoveMessage">Hide Data</span>
 					<span v-else>Show Data</span>
 				</b-button>
-			</b-col>
+				<b-button @click="showFormattedData" variant="secondary">
+					<span v-if="isFormattedData">Hide Formatted Data</span>
+					<span v-else>Show Formatted Data</span>
+				</b-button>
+				// <b-button v-b-toggle.formattedData>
+				//	<span >Formatted Data</span>
+				//</b-button>
+			</b-col> -->
 		
 			<b-col cols="8" xl="4" class="text-right">
 				<case-assign :case-entity="caseEntity" />
 			</b-col>
 		</b-row>
-		<div>
-			<b-collapse v-model="showLoveMessage">
-			  <b-container fluid class="bv-example-row">
-				<!-- table for service claim information -->
+		<!--<b-collapse v-model="isFormattedData" id="collapse1" class="mt-2">
+			<b-container fluid class="bv-example-row">
+				
 				<template>
 					<div >
 						<b-table responsive striped hover :items="items"></b-table>
@@ -29,7 +35,7 @@
 			    <b-row>
 				<b-col>
 				  <div class="info-box">
-					<!-- patient information -->
+					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
 							<b-col cols="12">
 								<div>
@@ -45,15 +51,15 @@
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >First Name  &nbsp;  &nbsp;</b-col> 
-						    <b-col cols="5.5" ><p class="value-box">RAYMOND</p></b-col>
+						    <b-col cols="5.5" ><p class="value-box">Sakshi</p></b-col>
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Middle Name  &nbsp;  &nbsp;</b-col> 
-						    <b-col cols="5.5" ><p class="value-box">W</p></b-col>
+						    <b-col cols="5.5" ><p class="value-box"></p></b-col>
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Last Name  &nbsp;  &nbsp;</b-col> 
-						    <b-col cols="5.5" ><p class="value-box">BURCK</p></b-col>
+						    <b-col cols="5.5" ><p class="value-box">Mittal</p></b-col>
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >Contact Number  &nbsp;  &nbsp;</b-col> 
@@ -88,7 +94,7 @@
 					</b-row>
 					<b-row class="content-margin">
 						<b-col cols="6.5" >Payer Name  &nbsp;  &nbsp;</b-col> 
-						<b-col cols="5.5" ><p class="value-box">YOUR TAX DOLLARS AT WORK</p></b-col>
+						<b-col cols="5.5" ><p class="value-box">MEDICARE B</p></b-col>
 					</b-row>
 					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
@@ -116,7 +122,7 @@
 						<b-col cols="6.5" >ZIP &nbsp;  &nbsp;</b-col> 
 						<b-col cols="5.5" ><p class="value-box">11114</p></b-col>
 					</b-row>
-					<!-- PER_PayerTechnicalContactInformation -->
+					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
 						<b-col cols="12">
 							<div>
@@ -142,11 +148,11 @@
 				</div>
 					
 				</b-col>
-				<!-- Second column for 835 data -->
+				
 
 				<b-col>
 				  <div class="info-box">
-					<!-- N1_PayeeIdentification -->
+					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
 						<b-col cols="12">
 							<div>
@@ -169,7 +175,7 @@
 						<b-col cols="5.5" ><p class="value-box">3UR334563</p></b-col>
 					</b-row>
 					
-					<!-- payee address line -->
+					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
 						<b-col cols="12">
 							<div>
@@ -201,7 +207,7 @@
 						<b-col cols="5.5" ><p class="value-box">(123)-456-7890</p></b-col>
 					</b-row>
 
-					<!-- service claim information -->
+					
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
 						<b-col cols="12">
 							<div>
@@ -244,13 +250,13 @@
 					    </b-row>
 					    <b-row class="content-margin">
 						    <b-col cols="6.5" >837P Secondary DX&nbsp;  &nbsp;</b-col> 
-						    <!-- <b-col cols="5.5" ><p class="value-box">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</p></b-col> -->
+						    
 					    </b-row>
 
 				</div>
 				</b-col>
 
-				<!-- Third column for 835 data -->
+				
 				<b-col>
 					<div class="info-box">
 					<b-row style="margin-bottom: 20px;padding-right: 50px;">
@@ -295,7 +301,7 @@
 						    <b-col cols="6.5" >Payment Method  &nbsp;  &nbsp;</b-col> 
 						    <b-col cols="5.5" ><p class="value-box">Check</p></b-col>
 					    </b-row>
-						<!-- TRN_ReassociationTraceNumber -->
+						
 						<b-row style="margin-bottom: 20px;padding-right: 50px;">
 							<b-col cols="12">
 								<div>
@@ -330,14 +336,21 @@
 				    </div>
 				</b-col>
 
-
-				  
-
-
 				</b-row>
 			  </b-container>
+		    </b-collapse>
+		<div>
+
+		</div>
+		<div>
+			<b-collapse v-model="showLoveMessage">
+				<template>
+					<div >
+						<pre>{{ formattedData }}</pre>
+					</div>
+				</template>
 			</b-collapse>
-		    </div>
+		</div>
 		    
 		<b-collapse v-model="showDetails">
 			<b-row>
@@ -602,7 +615,7 @@
 					</div>
 				</b-col>
 			</b-row>
-		</b-collapse>
+		</b-collapse> -->
 		<b-row>
 			<b-col cols="12" lg="6" xl="6">
 				<h5 class="h6 my-2 font-weight-bold text-muted text-uppercase">Case Documents</h5>
@@ -644,6 +657,7 @@ import CaseAssign from "@/clients/components/Cases/Assign.vue";
 import CaseStatusLabel from "@/clients/components/Cases/StatusLabel.vue";
 import CaseFiles from "@/clients/components/Cases/Files.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
+import axios from "axios";
 
 export default {
 	name: "ViewCasesViewHome",
@@ -706,12 +720,17 @@ export default {
 		caseClosed() {
 			return this.caseEntity.closed && this.caseEntity.closed !== null;
 		},
-		hasReadmissions() {
-			return this.caseEntity.case_readmissions && this.caseEntity.case_readmissions.length > 0;
-		},
+		//hasReadmissions() {
+		//	return this.caseEntity.case_readmissions && this.caseEntity.case_readmissions.length > 0;
+		//},
+		formattedData() {
+      // Use JSON.stringify to format the JSON data for display
+      return JSON.stringify(this.response, null, 2); // null and 2 for spacing and indentation
+    }
 	},
 	data() {
 		return {
+			isFormattedData: false,
 			showDetails: false,
 			showLoveMessage: false,
 			items: [
@@ -721,10 +740,15 @@ export default {
 				{ ProcDate: '03/24/2019', ProcCode: '55672', Billed: '$60.00' , Allowed: '$34.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$26.00' , ProvPaid: '$34.00' },
 				{ ProcDate: '03/24/2019', ProcCode: '55673', Billed: '$73.00' , Allowed: '$49.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: 'CO-45' , Adjustment: '$24.00' , ProvPaid: '$49.00' },
 				{ ProcDate: 'Totals', ProcCode: '', Billed: '$226.00' , Allowed: '$132.00' , Deduct: '$0.00' , Co_Ins: '$0.00' , Co_Pay: '$0.00' , AdjCode: '' , Adjustment: '$94.00' , ProvPaid: '$132.00' },
-			]
+			],
+			response:null,
 		};
 	},
 	methods: {
+		// show formatted data(hard-coded data for 835 files)
+		showFormattedData(){
+			this.isFormattedData = !this.isFormattedData;
+		},
 		createdAppeal(appeal) {
 			this.$router.push({
 				name: "appeals.view",
@@ -747,6 +771,34 @@ export default {
 
 			this.$emit("added-request", request);
 		},
+		async showData(){
+			console.log('Button Clicked');
+			console.log('case deta2 =', this.caseEntity);
+			console.log('case deta3 =', this.caseEntity.patient.full_name);
+			this.showLoveMessage = !this.showLoveMessage;
+			const patientDetails = {
+                   fullName:this.caseEntity.patient.full_name,
+				   firstName:this.caseEntity.patient.first_name,
+				   middleName:this.caseEntity.patient.middle_name,
+				   lastName:this.caseEntity.patient.last_name,
+				   admitDate:this.caseEntity.admit_date
+                };
+
+			try{
+				const response = await axios.post('/client/patientParsedInfo', patientDetails);
+				console.log("Response1 =", response.data);
+				console.log("check = ",response.data.Loop2110);
+				if(response.data.Loop2110==undefined){
+					this.response = "DATA NOT AVAILABLE FOR THIS CASE";
+				}
+				else{
+					this.response = response.data;
+				}
+			}
+			catch(error){
+				this.response = "DATA NOT AVAILABLE FOR THIS CASE";
+			}
+		}
 	},
 };
 </script>

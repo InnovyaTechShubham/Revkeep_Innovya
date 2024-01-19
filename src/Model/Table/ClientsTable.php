@@ -293,8 +293,8 @@ class ClientsTable extends Table
 					'message' => __('This organization is already registered.'),
 				],
 			])
-			->requirePresence('npi_number', 'create')
-			->notEmptyString('npi_number');
+			->requirePresence('npi_number', 'create');
+			// ->notEmptyString('npi_number');
 
 		return $validator;
 	}
@@ -322,10 +322,10 @@ class ClientsTable extends Table
 			'skipTenantCheck' => true,
 		]), 'uniqueEmail', $checkOptions);
 
-		$rules->add($rules->isUnique(['npi_number'], [
-			'message' => 'NPI number is already registered',
-			'skipTenantCheck' => true,
-		]), 'uniqueNpi', $checkOptions);
+		// $rules->add($rules->isUnique(['npi_number'], [
+		// 	'message' => 'NPI number is already registered',
+		// 	'skipTenantCheck' => true,
+		// ]), 'uniqueNpi', $checkOptions);
 
 		return $rules;
 	}

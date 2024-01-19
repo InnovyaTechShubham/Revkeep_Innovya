@@ -48,7 +48,7 @@ echo $this->Form->create($form, [
 				<div class="col-lg-4 pr-lg-5 mb-2">
 					<h3 class="h4 text-dark">About You</h3>
 					<p class="text-muted">
-						This will be used as your display name and contact information.
+						This will be used as your account user name and contact information.
 					</p>
 				</div>
 				<div class="col-lg-8">

@@ -30,6 +30,7 @@ import Reports from "./reports";
 import Roles from "./roles";
 import Services from "./services";
 import Users from "./users";
+import Chains from "./chains"
 
 // 404 Error
 import Error404 from "@/clients/views/Error/Error404.vue";
@@ -64,6 +65,7 @@ const router = new Router({
 				...Facilities,
 				...InsuranceProviders,
 				...Services,
+				...Chains,
 			],
 		},
 		{
