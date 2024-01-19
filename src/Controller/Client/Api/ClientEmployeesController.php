@@ -247,6 +247,8 @@ class ClientEmployeesController extends ApiController
 	public function lookup(NpiServiceInterface $npiService): void
 {
     $this->getRequest()->allowMethod('post');
+{
+    $this->getRequest()->allowMethod('post');
 
 	$npiNumber = $this->getRequest()->getData('npi_number', '');
     $firstName = $this->getRequest()->getData('first_name', '');

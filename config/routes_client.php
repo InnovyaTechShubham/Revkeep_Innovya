@@ -1040,43 +1040,77 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		'_method' => 'POST'
 	]);
-	// // 
-	
-	$builder->connect('/chains', [
-		'controller' => 'Chains',
+
+
+	$builder->connect('/serviceList', [
+		'controller' => 'ServiceList',
 		'action' => 'index',
-		'_method' => 'POST'
+		
 	]);
 
-	// getting all db chain record to display
-	// /client/chains/getAllRecord
-	// $builder->connect('/getChains', [
-	// 	'controller' => 'Chains',
-	// 	'action' => 'getAllRecord',
-	// 	'_method' => 'POST'
-	// ]);
-
-	$builder->connect('/getChains', [
-		'controller' => 'Chains',
-		'action' => 'getAllRecord',
-		'_method' => 'GET'
+	$builder->connect('/chainList', [
+		'controller' => 'ChainList',
+		'action' => 'index',
+		
 	]);
+// 	$builder->connect('/serviceList/:facilityId', [
+//     'controller' => 'ServiceList',
+//     'action' => 'index',
+// ])->setPatterns(['facilityId' => '\d+'])->setPass(['facilityId']);
+	    
 	
-	// route to display chain details
-	$builder->connect('/viewChain/{id}', ['controller' => 'Chains', 'action' => 'viewChain'])
-	->setPass(['id'])
-	->setMethods(['GET']);
+	$builder->connect('/fetchmultiplefacility', [
+		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/facilityList', [
+		'controller' => 'FacilityList',
+		'action' => 'index',
+	    
+	]);
 
-	// edit chain route
-	$builder->connect('/editChain/{id}', ['controller' => 'Chains', 'action' => 'editChain'])
-	->setPass(['id'])
-	->setMethods(['POST']);
+	$builder->connect('/chains', [
+        'controller' => 'Chains',
+        'action' => 'index',
+        '_method' => 'POST'
+    ]);
+ 
+    // getting all db chain record to display
+    // /client/chains/getAllRecord
+    // $builder->connect('/getChains', [
+    //  'controller' => 'Chains',
+    //  'action' => 'getAllRecord',
+    //  '_method' => 'POST'
+    // ]);
+ 
+    $builder->connect('/getChains', [
+        'controller' => 'Chains',
+        'action' => 'getAllRecord',
+        '_method' => 'GET'
+    ]);
+   
+    // route to display chain details
+    $builder->connect('/viewChain/{id}', ['controller' => 'Chains', 'action' => 'viewChain'])
+    ->setPass(['id'])
+    ->setMethods(['GET']);
+ 
+    // edit chain route
+    $builder->connect('/editChain/{id}', ['controller' => 'Chains', 'action' => 'editChain'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
+ 
+    // delete chain route
+    //  const response = await api.post(`${url}/delete/${id}`, params);
+    //   T http://localhost:8765/client/api/chains/delete/1
+    $builder->connect('/deleteChain/{id}', ['controller' => 'Chains', 'action' => 'delete'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
 
-	// delete chain route
-	//  const response = await api.post(`${url}/delete/${id}`, params);
-	//   T http://localhost:8765/client/api/chains/delete/1
-	$builder->connect('/deleteChain/{id}', ['controller' => 'Chains', 'action' => 'delete'])
-	->setPass(['id'])
-	->setMethods(['POST']);
-	
+	$builder->connect('/receivingEmails', [
+        'controller' => 'ReceivingEmails',
+        'action' => 'index',
+        '_method' => 'POST'
+    ]);
+
 });
