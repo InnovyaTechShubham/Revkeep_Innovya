@@ -1070,7 +1070,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 
 	$builder->connect('/receivingEmails', [
         'controller' => 'ReceivingEmails',
-        'action' => 'add',
+        'action' => 'index',
         '_method' => 'POST'
     ]);
 

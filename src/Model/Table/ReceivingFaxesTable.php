@@ -30,6 +30,10 @@ class ReceivingFaxesTable extends Table
             ->requirePresence('fax', 'create')
             ->notEmptyString('fax');
 
+        $validator
+            ->scalar('description')
+            ->allowEmptyString('description')
+
         return $validator;
     }
 }

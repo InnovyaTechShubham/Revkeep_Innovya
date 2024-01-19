@@ -1505,7 +1505,7 @@
 						</b-card-header>
 						<b-collapse id="collapseReceivingMethods" role="tabpanel">
 							<b-card-body>
-								<validation-provider
+								<!-- <validation-provider
 									vid="r_email"
 									name="Email"
 									:rules="{ required: false, max: 250 }"
@@ -1532,13 +1532,12 @@
 											:key="error"
 											v-text="error"
 										></b-form-invalid-feedback>
-										<!-- Display entered emails -->
+
 										<div v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
 											<b-list-group>
 												<b-list-group-item v-for="(email, index) in entity.receiving_emails" :key="index">
 													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
 														<span>{{ email }}</span>
-														<!-- X button to remove the email -->
 														<b-button variant="danger" @click="removeReceivingEmail(index)">
 															<font-awesome-icon icon="times" fixed-width />
 														</b-button>
@@ -1547,9 +1546,154 @@
 											</b-list-group>
 										</div>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
 
-								<validation-provider
+								<template>
+									<div>
+										<b-row>
+										<!-- Section for Receiving Emails -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4"> -->
+											<!-- Display entered emails in tabular format -->
+											<div>
+												<h6>Receiving Emails</h6>
+												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+												<template slot="cell(email)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No emails added</span>
+												</empty-result>
+											</div>
+
+											<!-- Icon to open the pop-up -->
+											<b-button @click="openPopup" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button>
+
+											<!-- Pop-up for adding emails -->
+											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
+												<b-form @submit.prevent="addEmail">
+												<b-form-group label="Email" label-for="email">
+													<b-form-input v-model="newEmail.email" id="email" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newEmail.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+
+											<!-- Icon to delete selected entries -->
+											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+											</b-button>
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisible" title="Delete Emails" @ok="deleteSelectedEmails" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+													<template #cell(email)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<span>{{ info.item.email }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+
+										<!-- Section for Receiving Faxes -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Faxes" label-for="r_fax" label-cols-lg="4"> -->
+											<!-- Display entered faxes in tabular format -->
+											<div>
+												<h6>Receiving Faxes</h6>
+												<b-table v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0" :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+												<template slot="cell(fax)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No faxes added</span>
+												</empty-result>
+											</div>
+
+											<!-- Icon to open the pop-up -->
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopupFax" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<!-- Trash icon button on the right -->
+												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+											<!-- Pop-up for adding faxes -->
+											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
+												<b-form @submit.prevent="addFax">
+												<b-form-group label="Fax" label-for="fax">
+													<b-form-input v-model="newFax.fax" id="fax" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newFax.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes" @ok="deleteSelectedFaxes" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+													<template #cell(fax)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedFaxes" :value="info.item.fax" class="mr-2" />
+														<span>{{ info.item.fax }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedFaxes" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+										</b-row>
+									</div>
+									</template>
+
+
+
+
+
+								<!-- <validation-provider
 									vid="r_fax"
 									name="Fax"
 									:rules="{ required: false, max: 250 }"
@@ -1576,13 +1720,11 @@
 											:key="error"
 											v-text="error"
 										></b-form-invalid-feedback>
-										<!-- Display entered faxes -->
 										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
 											<b-list-group>
 												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
 													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
 														<span>{{ fax }}</span>
-														<!-- remove the fax -->
 														<b-button variant="danger" @click="removeReceivingFax(index)">
 															<font-awesome-icon icon="times" fixed-width />
 														</b-button>
@@ -1591,7 +1733,10 @@
 											</b-list-group>
 										</div>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
+								
+
+
 							</b-card-body>
 						</b-collapse>
 
@@ -1868,8 +2013,8 @@ export default {
 				receiving_email: '', // For input
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
-				receiving_faxes: [],
-				outgoing_emails: {},
+            	receiving_faxes: [], // For storing multiple emails
+				outgoing_emails: [],
 
 			},
 			service_ids: [],
@@ -1877,6 +2022,24 @@ export default {
 			titlename: [],
 			contactTypes: [],
 			inputFields: [{ selectedContactType: 'phone', phone: '' }],
+			displayedEmails: '',
+			displayedFaxes: '',
+			popupVisible: false,
+			popupVisibleFax: false,
+			deletePopupVisible: false,
+			deletePopupVisibleFax: false,
+
+			newEmail: {
+				email: '',
+				description: '',
+			},
+			selectedEmails: [],
+			newFax: {
+				fax: '',
+				description: '',
+			},
+			selectedFaxes: [],
+			showDeleteIcon: false,
 		};
 	},
 	computed: 
@@ -1965,76 +2128,335 @@ export default {
 //   },
 		
 	methods: {
+	
+	openPopupFax() {
+		this.popupVisibleFax = true;
+		},
+	closePopupFax() {
+		this.popupVisibleFax = false;
+		},
 
-		async addReceivingEmail() {
-        // Trim the entered email and check if it's not empty
-        const trimmedEmail = this.entity.receiving_email.trim();
-		console.log("Email:",trimmedEmail);
-        if (trimmedEmail !== '') {
-			// Ensure that receiving_emails is an array before pushing
-			if (!Array.isArray(this.entity.receiving_emails)) {
-            this.$set(this.entity, 'receiving_emails', []);
-        }
+	addFax() {
+		// Assuming newFax is a valid object with fax and description properties
+		const newFax = { ...this.newFax };
+		console.log("new:",newFax);
+		console.log("Receiving Faxes:", this.entity.receiving_faxes);
 
-            // Push the trimmed email to the receiving_emails array
-            this.entity.receiving_emails.push(trimmedEmail);
+		// Check if receiving_faxes is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.receiving_faxes)) {
+			this.$set(this.entity, 'receiving_faxes', []);
+		}
+		
+		// Add the new fax to the array
+		this.entity.receiving_faxes.push(newFax);
 
-			console.log("Array:",this.entity.receiving_emails);
+		// Clear the newFax object for the next entry
+		this.newFax = { fax: '', description: '' };
 
-			// try {
-            //     // Make Axios POST request to store the data in the database
-            //     const response = await axios.post('/client/api/receivingEmails', {
-            //         receivingEmails: this.entity.receiving_emails
-            //     });
-
-			// 	response.log("API call:",response);
-
-            //     // Assuming the server responds with the updated list of receiving emails
-            //     this.receivingEmails = response.data.receivingEmails;
-
-            // }
-			try {
-			const url = "/client/api/receivingEmails";
-			const data = {'receivingEmails':this.entity.receiving_emails}
-			console.log(data);
-			// const resp = await axios.post('/client/sendemail', data);
-			const response = await axios.post(url,data);
-			console.log("Response from API:", response.data);
-
-			}
-			 catch (error) {
-                console.error('Error storing data:', error);
-            }
-            // Clear the input for the next entry
-            this.entity.receiving_email = '';
-        }
+		// Close the pop-up
+		// this.closeFaxPopup();
+		this.popupVisibleFax = false;
 	},
-	removeReceivingEmail(index) {
-        // Remove the email at the specified index from the receiving_emails array
-        this.entity.receiving_emails.splice(index, 1);
+    openDeleteFaxPopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisibleFax = true;
     },
-	addReceivingFax() {
-        // Trim the entered fax and check if it's not empty
-        const trimmedFax = this.entity.receiving_fax.trim();
-		console.log("Fax:",trimmedFax);
-        if (trimmedFax !== '') {
-			// Ensure that receiving_emails is an array before pushing
-			if (!Array.isArray(this.entity.receiving_faxes)) {
-            this.$set(this.entity, 'receiving_faxes', []);
-        }
+    closeDeleteFaxPopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisibleFax = false;
+      // Reset selectedFaxes array
+      this.selectedFaxes = [];
+    },
+    // deleteSelectedFaxes() {
+    //   // Add logic to delete selected faxes
+    //   // Update the displayedFaxes text
+    //   this.displayedFaxes = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedFaxes() {
+		// Add logic to delete selected faxes
+		console.log("Inside");
+		const updatedFaxes = this.entity.receiving_faxes.filter(
+		(fax) => !this.selectedFaxes.includes(fax.fax)
+		);
+		console.log("Deleted:",updatedFaxes);
 
-            // Push the trimmed email to the receiving_emails array
-            this.entity.receiving_faxes.push(trimmedFax);
+		// Update the receiving_faxes array with the updatedFaxes
+		this.entity.receiving_faxes = updatedFaxes;
 
-			console.log("Array:",this.entity.receiving_faxes);
-            // Clear the input for the next entry
-            this.entity.receiving_fax = '';
-        }
+		// Reset selectedFaxes array
+		this.selectedFaxes = [];
+
+		// Close the delete popup
+		this.closeDeleteFaxPopup();
 	},
-	removeReceivingFax(index) {
-        // Remove the email at the specified index from the receiving_emails array
-        this.entity.receiving_faxes.splice(index, 1);
+//     addEmail() {
+//       // Add logic to add the new email to the list
+//       // Update the displayedEmails text
+// 	  this.displayedEmails = `
+//     <table border="1">
+//       <tr>
+//         <th>Email</th>
+//         <th>Description</th>
+//       </tr>
+//       <tr>
+//         <td>${this.newEmail.email}</td>
+//         <td>${this.newEmail.description}</td>
+//       </tr>
+//     </table>
+//   `;
+//       this.closePopup();
+//     },
+	// openPopup() {
+	// 	this.popupVisible = true;
+	// 	},
+	// closePopup() {
+	// 	this.popupVisible = false;
+	// 	},
+	openPopup() {
+		this.popupVisible = true;
+		},
+	closePopup() {
+		this.popupVisible = false;
+		},
+		
+	async addEmail() {
+		// Assuming newEmail is a valid object with email and description properties
+		const newEmail = { ...this.newEmail };
+		const email = newEmail.email;
+		const description= newEmail.description;
+		console.log("new:",newEmail);
+		console.log("Receiving Emails:", this.entity.receiving_emails);
+		// Prepare the data to be sent in the POST request
+		// const emailData = {
+		// 	email,
+		// 	description,
+		// 	};
+		// console.log("before API", emailData);
+
+		// Check if receiving_emails is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.receiving_emails)) {
+			this.$set(this.entity, 'receiving_emails', []);
+		}
+		
+		// Add the new email to the array
+		this.entity.receiving_emails.push(newEmail);
+
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+		
+		// Close the pop-up
+		// this.closePopup();
+		this.popupVisible = false;
+
+		// Prepare the data to be sent in the POST request
+		const emailData = {
+			email,
+			description,
+			};
+		console.log("before API", emailData);
+		await axios.post('/client/receivingEmails', emailData)
+			.then(response => {
+				// const responseData = response.data.data;
+				console.log("response:",response);
+				if(response.data.success){
+					console.log('email saved');
+					this.saving = false;
+					this.$router.push({
+						name: "receivingEmails"
+					});
+					this.$nextTick(function () {
+						this.$store.dispatch("notify", {
+							variant: "primary",
+							title: "Email Created!",
+							message: `New email Created!.`,
+						});
+					});
+					redirect_index()
+				}else{
+					this.saving = false;
+					console.log('email already exists');
+					this.errorMessage = response.data.message; 
+					this.$nextTick(function () {
+						this.$store.dispatch("notify", {
+							variant: "danger",
+							title: "Email Error",
+							message: this.errorMessage,
+						});
+					});
+				}
+			})
+			.catch(error => {
+				console.log(error)
+				// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
+				// this.saving = false;
+				// this.errorMessage = 'Error creating chain.'; 
+				// this.$nextTick(function () {
+				// 	this.$store.dispatch("notify", {
+				// 		variant: "danger",
+				// 		title: "Chain Error",
+				// 		message: error,
+				// 	});
+				// });
+			})
+
+		// // Send a POST request to your controller to add the new type
+        // axios.post('/client/receivingEmails', { email , description})
+        //     .then((response) => {
+		// 		console.log("inside API call");
+        //         // Handle the response, e.g., update the insuranceTypes list
+        //         this.entity.receiving_emails.push(response.data);
+
+        //         // // Close the modal
+        //         // this.$bvModal.hide('customAuditTypeModal');
+
+        //         // // Clear the input field
+        //         // this.newAuditType = '';
+		// 		console.log("check",response);
+
+		// 		window.location.reload();
+        //     })
+        //     .catch((error) => {
+        //         // Handle any errors, e.g., show an error message
+        //         console.error('Error adding new email:', error);
+        //     });
+
+		// try {
+		// 	const url = "/client/receivingEmails";
+		// 	const data = {'receivingEmails':this.entity.receiving_emails}
+		// 	console.log(data);
+		// 	// const resp = await axios.post('/client/sendemail', data);
+		// 	const response = await axios.post(url,data);
+		// 	console.log("Response from API:", response.data);
+
+		// 	}
+		// 	 catch (error) {
+        //         console.error('Error storing data:', error);
+        //     }
+        //     // Clear the input for the next entry
+        //     this.entity.receiving_email = '';
+        
+
+		// // Make a POST request to store the data in the database
+		// axios.post('client/api/receivingEmails', {
+		// receivingEmails: [newEmail] // Sending an array with a single email
+		// })
+		// .then(response => {
+		// // Handle success response if needed
+		// console.log('Data stored successfully:', response.data);
+		// })
+		// .catch(error => {
+		// // Handle error if the data couldn't be stored
+		// console.error('Error storing data:', error.response.data);
+		// });
+	},
+    openDeletePopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisible = true;
     },
+    closeDeletePopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisible = false;
+      // Reset selectedEmails array
+      this.selectedEmails = [];
+    },
+    // deleteSelectedEmails() {
+    //   // Add logic to delete selected emails
+    //   // Update the displayedEmails text
+    //   this.displayedEmails = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedEmails() {
+		// Add logic to delete selected emails
+		console.log("Inside");
+		const updatedEmails = this.entity.receiving_emails.filter(
+		(email) => !this.selectedEmails.includes(email.email)
+		);
+		console.log("Deleted:",updatedEmails);
+
+		// Update the receiving_emails array with the updatedEmails
+		this.entity.receiving_emails = updatedEmails;
+
+		// Reset selectedEmails array
+		this.selectedEmails = [];
+
+		// Close the delete popup
+		this.closeDeletePopup();
+	},
+
+	// 	async addReceivingEmail() {
+    //     // Trim the entered email and check if it's not empty
+    //     const trimmedEmail = this.entity.receiving_email.trim();
+	// 	console.log("Email:",trimmedEmail);
+    //     if (trimmedEmail !== '') {
+	// 		// Ensure that receiving_emails is an array before pushing
+	// 		if (!Array.isArray(this.entity.receiving_emails)) {
+    //         this.$set(this.entity, 'receiving_emails', []);
+    //     }
+
+    //         // Push the trimmed email to the receiving_emails array
+    //         this.entity.receiving_emails.push(trimmedEmail);
+
+	// 		console.log("Array:",this.entity.receiving_emails);
+
+	// 		// try {
+    //         //     // Make Axios POST request to store the data in the database
+    //         //     const response = await axios.post('/client/api/receivingEmails', {
+    //         //         receivingEmails: this.entity.receiving_emails
+    //         //     });
+
+	// 		// 	response.log("API call:",response);
+
+    //         //     // Assuming the server responds with the updated list of receiving emails
+    //         //     this.receivingEmails = response.data.receivingEmails;
+
+    //         // }
+	// 		try {
+	// 		const url = "/client/api/receivingEmails";
+	// 		const data = {'receivingEmails':this.entity.receiving_emails}
+	// 		console.log(data);
+	// 		// const resp = await axios.post('/client/sendemail', data);
+	// 		const response = await axios.post(url,data);
+	// 		console.log("Response from API:", response.data);
+
+	// 		}
+	// 		 catch (error) {
+    //             console.error('Error storing data:', error);
+    //         }
+    //         // Clear the input for the next entry
+    //         this.entity.receiving_email = '';
+    //     }
+	// },
+	// removeReceivingEmail(index) {
+    //     // Remove the email at the specified index from the receiving_emails array
+    //     this.entity.receiving_emails.splice(index, 1);
+    // },
+	// addReceivingFax() {
+    //     // Trim the entered fax and check if it's not empty
+    //     const trimmedFax = this.entity.receiving_fax.trim();
+	// 	console.log("Fax:",trimmedFax);
+    //     if (trimmedFax !== '') {
+	// 		// Ensure that receiving_emails is an array before pushing
+	// 		if (!Array.isArray(this.entity.receiving_faxes)) {
+    //         this.$set(this.entity, 'receiving_faxes', []);
+    //     }
+
+    //         // Push the trimmed email to the receiving_emails array
+    //         this.entity.receiving_faxes.push(trimmedFax);
+
+	// 		console.log("Array:",this.entity.receiving_faxes);
+    //         // Clear the input for the next entry
+    //         this.entity.receiving_fax = '';
+    //     }
+	// },
+	// removeReceivingFax(index) {
+    //     // Remove the email at the specified index from the receiving_emails array
+    //     this.entity.receiving_faxes.splice(index, 1);
+    // },
 		// Method to search and filter services based on the search query
 			// searchServices() {
 			// 	if (this.searchQuery === '') {
@@ -2627,6 +3049,23 @@ export default {
 };
 </script>
 <style scoped>
+
+.small-empty-result {
+    height: 50px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .small-empty-result span {
+    font-size: 12px; /* Adjust the font size as needed */
+    margin-top: 5px; /* Add margin as needed */
+  }
+
+.custom-modal .modal-footer {
+    display: none;
+  }
 .compact-card {
 	margin-bottom: 0;
 }

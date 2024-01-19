@@ -16,7 +16,7 @@ class FacilitiesReceivingMethodsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('facilities_receiving_methods');
+        $this->setTable('facilities_receivingmethods');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
