@@ -34,6 +34,9 @@ class OutgoingDetailsController extends AppController
                 $lastRow->contactNumber=$data['contactNumber'];
                 $lastRow->agency_id=$data['agency_id'];
                 $lastRow->delivery_method=$data['delivery_method'];
+                $lastRow->carrier=$data['carrier'];
+                $lastRow->tracking=$data['tracking'];
+                $lastRow->sent_date_time = date('Y-m-d H:i:s');
                 if ($outgoingDocument->save($lastRow)) {
                     // Successfully updated the last row
                     // Redirect or return a success response

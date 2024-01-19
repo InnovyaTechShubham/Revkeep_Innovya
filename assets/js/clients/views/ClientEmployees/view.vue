@@ -6,11 +6,8 @@
 				<span>{{ entity.full_name }}</span>
 			</template>
 			<template #buttons>
-				<b-button
-					variant="primary"
-					:to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
-					title="Edit"
-				>
+				<b-button variant="primary" :to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
+					title="Edit">
 					<font-awesome-icon icon="edit" fixed-width />
 					<span>Edit</span>
 				</b-button>
@@ -54,7 +51,7 @@
 
 			<b-card no-body class="shadow-sm">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab  no-body active lazy>
+					<b-tab no-body active lazy>
 						<template #title>Details</template>
 
 						<!-- <div class="row mt-4">
@@ -76,7 +73,7 @@
 							</dd>
 						</div>  -->
 
-						<div class="row mt-4">
+						<!-- <div class="row mt-4">
 							<dt class="col text-muted h6 small ml-3">Facility</dt>
 							<dd class="col-8 d-flex flex-wrap align-items-center">
 								<template v-if="MatchingFacility.length > 0">
@@ -88,7 +85,22 @@
 									<span class="text-muted">No matching facilities found.</span>
 								</template>
 							</dd>
+						</div> -->
+
+						<div class="row mt-4">
+							<dt class="col text-muted h6 small ml-3">Facility</dt>
+							<dd class="col-8 d-flex flex-wrap align-items-center">
+								<template v-if="MatchingFacility.length > 0">
+									<span v-for="(facilityName, index) in MatchingFacility" :key="index">
+										{{ index > 0 ? ', ' : '' }}{{ facilityName }}
+									</span>
+								</template>
+								<template v-else>
+									<span class="text-muted">No matching facilities found.</span>
+								</template>
+							</dd>
 						</div>
+
 
 						<div class="row ">
 							<dt class="col text-muted h6 small ml-3">NPI Number</dt>
@@ -133,15 +145,10 @@
 							</dd>
 						</div>
 					</b-tab>
-					<b-tab no-body  lazy>
+					<b-tab no-body lazy>
 						<template #title>Cases</template>
-						<case-index
-							ref="caseList"
-							hide-client-employee
-							:filters="caseFilters"
-							@clicked="viewCase"
-							empty-description="No cases have been created for this physician."
-						/>
+						<case-index ref="caseList" hide-client-employee :filters="caseFilters" @clicked="viewCase"
+							empty-description="No cases have been created for this physician." />
 					</b-tab>
 					<b-tab no-body lazy>
 						<template #title>Add Case</template>
@@ -224,7 +231,7 @@ export default {
 			try {
 				const url = "/client/fetchmultiplefacility";
 
-				
+
 				const response = await axios.get(url, {
 					headers: {
 						"Accept": "application/json",
@@ -233,7 +240,7 @@ export default {
 
 				console.log("RESPONSE = ", response.data);
 
-				
+
 				this.clientFacilities = response.data.filter(item => item.client_id === this.$route.params.id);
 
 				// Extract facility IDs directly without cleaning the array
@@ -248,7 +255,7 @@ export default {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
-		
+
 		async FacilitiesList() {
 			try {
 				const url = "/client/facilityList";

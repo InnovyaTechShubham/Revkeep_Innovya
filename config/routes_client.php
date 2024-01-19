@@ -1005,4 +1005,34 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 	    
 	]);
+	$builder->connect('/userslist', [
+		'controller' => 'UsersList',
+		'action' => 'index',
+	]);
+	// $builder->connect('/sendemail', [
+	// 	'controller' => 'SendEmail',
+	// 	'action' => 'index',
+	//     '_method' => 'POST'
+	// ]);
+	$builder->connect('/sendoutgoingemail', [
+		'controller' => 'SendOutgoingEmail',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+	$builder->connect('/facilityemaillist', [
+		'controller' => 'FacilityEmailList',
+		'action' => 'index',
+	]);
+	$builder->connect('/facilityfaxlist', [
+		'controller' => 'FacilityFaxList',
+		'action' => 'index',
+	]);
+	$builder->connect('/facilityreceivinglist', [
+		'controller' => 'FacilityReceivingList',
+		'action' => 'index',
+	]);
+	$builder->connect('/caselist', [
+		'controller' => 'CaseList',
+		'action' => 'index',
+	]);
 });

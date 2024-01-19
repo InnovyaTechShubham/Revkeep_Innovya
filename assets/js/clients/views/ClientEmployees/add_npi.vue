@@ -23,7 +23,7 @@
 				<b-card no-body class="shadow-sm mb-4">
 					<b-form @submit.prevent="npiLookup">
 						<b-card-body>
-							<b-form-group label="Npi Number" label-for="npi_number" label-cols="4" label-cols-lg="12">
+							<b-form-group label="NPI Number" label-for="npi_number" label-cols="4" label-cols-lg="12">
 								<b-input-group>
 									<b-form-input name="npi_number" type="number" v-model="query.npi_number"
 										:disabled="saving || searching" />
