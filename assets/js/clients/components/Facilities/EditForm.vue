@@ -2490,25 +2490,47 @@ export default {
 		// filterChains(option, query) {
 		// 	return option.toLowerCase().includes(query.toLowerCase());
 		// },
-		processAdditionalTaxonomies(jsonString) {
-			// Check if jsonString is null or undefined
-			if (jsonString === null || jsonString === undefined) {
-			return '';  // or any default value you prefer
-			}
+		// processAdditionalTaxonomies(jsonString) {
+		// 	// Check if jsonString is null or undefined
+		// 	if (jsonString === null || jsonString === undefined) {
+		// 	return '';  // or any default value you prefer
+		// 	}
 
-			// Parse the JSON string into an array
-			const taxonomiesArray = JSON.parse(jsonString);
+		// 	// Parse the JSON string into an array
+		// 	const taxonomiesArray = JSON.parse(jsonString);
 
-			// Check if taxonomiesArray is an array
-			if (!Array.isArray(taxonomiesArray)) {
-			return '';  // or any default value you prefer
-			}
+		// 	// Check if taxonomiesArray is an array
+		// 	if (!Array.isArray(taxonomiesArray)) {
+		// 	return '';  // or any default value you prefer
+		// 	}
 
-			// Join the array elements into a string without quotes
-			const formattedTaxonomies = taxonomiesArray.join(', ');
+		// 	// Join the array elements into a string without quotes
+		// 	const formattedTaxonomies = taxonomiesArray.join(', ');
 
-			return formattedTaxonomies;
-		},
+		// 	return formattedTaxonomies;
+		// },
+
+		
+		processAdditionalTaxonomies(jsonString) {    
+			// Check if jsonString is "NONE"    
+			if (jsonString === "NONE") {       return '';  
+			 // or any default value you prefer    
+			}    
+			try {       // Parse the JSON string into an array      
+				const taxonomiesArray = JSON.parse(jsonString);       
+				// Check if taxonomiesArray is an array      
+					if (Array.isArray(taxonomiesArray)) {         
+						// Join the array elements into a string without quotes        
+						return taxonomiesArray.join(', ');      
+					}    
+				}
+			catch (error)
+				{       
+				console.error('Error parsing JSON:', error);    
+				}     
+			// Return a default value or an empty string if parsing fails   
+			return '';  // or any default value you prefer  
+				},
 		filterChains() {
 			// Wait for chains to be loaded
   			// await this.getChains();

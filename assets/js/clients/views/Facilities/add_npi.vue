@@ -52,20 +52,19 @@
 								  v-model="query.city"
 								  
 								/>
-							</b-form-group>
+							    </b-form-group>
+							    
+							    <b-form-group label="Zip" label-for="zip" label-cols="4" label-cols-lg="12">
+								<b-form-input
+								  name="zip"
+								  type="text"
+								  v-model="query.zip"
+								  
+								/>
+							    </b-form-group>
+							    
+							    
 
-							<b-form-group label="Name" label-for="name" label-cols="4" label-cols-lg="12">
-								<b-input-group>
-									<b-form-input
-										name="name"
-										type="text"
-										v-model="query.name"
-										:disabled="saving || searching"
-										required
-										placeholder="Required"
-									/>
-								</b-input-group>
-							</b-form-group>
 						</b-card-body>
 						<b-card-footer class="text-right">
 							<b-button variant="primary" type="submit"
@@ -313,6 +312,8 @@ export default {
 				const response = await this.$store.dispatch("facilities/npiLookup", {
 					name: this.query.name,
 					state: this.query.state,
+					city: this.query.city,
+					zip: this.query.zip,
 				});
 
 				this.results = response;
