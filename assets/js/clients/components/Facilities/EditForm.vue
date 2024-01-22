@@ -1418,11 +1418,11 @@
 										<b-form-input type="text" name="service_ids" v-model="searchQuery"
 											:disabled="saving || loadingServices"
 											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
-										<b-input-group-append>
+										<!-- <b-input-group-append>
 											<b-input-group-text>
 												<font-awesome-icon icon="search" fixed-width />
 											</b-input-group-text>
-										</b-input-group-append>
+										</b-input-group-append> -->
 									</b-input-group>
 									<div class="mb-0" style="margin: 0;">
 										<!-- <b-list-group v-if="selectedServices.length > 0">
@@ -1589,9 +1589,10 @@
 											</b-modal>
 
 											<!-- Icon to delete selected entries -->
-											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="ml-auto">
 												<font-awesome-icon icon="trash" fixed-width />
 											</b-button>
+
 
 											<!-- Pop-up for deleting selected entries -->
 											<b-modal v-model="deletePopupVisible" title="Delete Emails" @ok="deleteSelectedEmails" ok-only>
@@ -1653,14 +1654,15 @@
 											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
 												<b-form @submit.prevent="addFax">
 												<b-form-group label="Fax" label-for="fax">
-													<b-form-input v-model="newFax.fax" id="fax" required />
+													<b-form-input v-model="newFax.fax" @input="formatFax" id="fax" required />
 												</b-form-group>
 												<b-form-group label="Description" label-for="description">
 													<b-form-input v-model="newFax.description" id="description" />
 												</b-form-group>
-												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												<b-button type="submit" variant="primary" class="mx-auto d-block">Ok</b-button>
 												</b-form>
 											</b-modal>
+
 
 											<!-- Pop-up for deleting selected entries -->
 											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes" @ok="deleteSelectedFaxes" ok-only>
@@ -2028,6 +2030,9 @@ export default {
 			popupVisibleFax: false,
 			deletePopupVisible: false,
 			deletePopupVisibleFax: false,
+			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
+			allowedDigits: 10,
+			 existingFaxes: [] ,
 
 			newEmail: {
 				email: '',
@@ -2047,6 +2052,11 @@ export default {
 		// concatenatedStreetAddress() {
         // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
     	// },
+		formattedFax() {
+			let numericFax = this.newFax.fax.replace(/\D/g, '');
+			numericFax = numericFax.slice(0, this.allowedDigits);
+			return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+			},
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -2126,6 +2136,12 @@ export default {
 //       console.error("Error fetching services:", error);
 //     }
 //   },
+	watch: {
+		'newFax.fax'(newValue) {
+      // Format fax number when it changes
+      this.newFax.fax = this.formatFaxNumber(newValue);
+    }
+	},
 		
 	methods: {
 	
@@ -2135,28 +2151,49 @@ export default {
 	closePopupFax() {
 		this.popupVisibleFax = false;
 		},
-
+	
+	formatFaxNumber(value) {
+      let numericFax = value.replace(/\D/g, '');
+      numericFax = numericFax.slice(0, this.allowedDigits);
+      return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    },
+    formatFax() {
+      // Update the displayed fax number when input changes
+      this.newFax.fax = this.formatFaxNumber(this.newFax.fax);
+    },
 	addFax() {
-		// Assuming newFax is a valid object with fax and description properties
 		const newFax = { ...this.newFax };
-		console.log("new:",newFax);
-		console.log("Receiving Faxes:", this.entity.receiving_faxes);
+		console.log("new:", newFax);
 
 		// Check if receiving_faxes is defined, if not, initialize it as an empty array
 		if (!Array.isArray(this.entity.receiving_faxes)) {
 			this.$set(this.entity, 'receiving_faxes', []);
 		}
-		
+
+		if (this.entity.receiving_faxes.map((fax) => fax.fax).includes(this.newFax.fax)) {
+			alert('Fax number already exists. Please enter a different fax.');
+			return;
+		}
+
 		// Add the new fax to the array
+		this.existingFaxes.push(this.newFax.fax);
+		// this.entity.receiving_faxes.push(newFax);
+		console.log('Before addFax:', this.entity.receiving_faxes);
 		this.entity.receiving_faxes.push(newFax);
+		console.log('After addFax:', this.entity.receiving_faxes);
 
 		// Clear the newFax object for the next entry
 		this.newFax = { fax: '', description: '' };
 
+		// Use $nextTick to ensure the DOM is updated
+		this.$nextTick(() => {
+			console.log("Receiving Faxes:", this.entity.receiving_faxes);
+		});
+
 		// Close the pop-up
-		// this.closeFaxPopup();
 		this.popupVisibleFax = false;
 	},
+
     openDeleteFaxPopup() {
       // Show checkboxes and delete icon
       this.showDeleteIcon = true;
@@ -2490,47 +2527,25 @@ export default {
 		// filterChains(option, query) {
 		// 	return option.toLowerCase().includes(query.toLowerCase());
 		// },
-		// processAdditionalTaxonomies(jsonString) {
-		// 	// Check if jsonString is null or undefined
-		// 	if (jsonString === null || jsonString === undefined) {
-		// 	return '';  // or any default value you prefer
-		// 	}
+		processAdditionalTaxonomies(jsonString) {
+			// Check if jsonString is null or undefined
+			if (jsonString === null || jsonString === undefined || jsonString === "NONE") {
+			return '';  // or any default value you prefer
+			}
 
-		// 	// Parse the JSON string into an array
-		// 	const taxonomiesArray = JSON.parse(jsonString);
+			// Parse the JSON string into an array
+			const taxonomiesArray = JSON.parse(jsonString);
 
-		// 	// Check if taxonomiesArray is an array
-		// 	if (!Array.isArray(taxonomiesArray)) {
-		// 	return '';  // or any default value you prefer
-		// 	}
+			// Check if taxonomiesArray is an array
+			if (!Array.isArray(taxonomiesArray)) {
+			return '';  // or any default value you prefer
+			}
 
-		// 	// Join the array elements into a string without quotes
-		// 	const formattedTaxonomies = taxonomiesArray.join(', ');
+			// Join the array elements into a string without quotes
+			const formattedTaxonomies = taxonomiesArray.join(', ');
 
-		// 	return formattedTaxonomies;
-		// },
-
-		
-		processAdditionalTaxonomies(jsonString) {    
-			// Check if jsonString is "NONE"    
-			if (jsonString === "NONE") {       return '';  
-			 // or any default value you prefer    
-			}    
-			try {       // Parse the JSON string into an array      
-				const taxonomiesArray = JSON.parse(jsonString);       
-				// Check if taxonomiesArray is an array      
-					if (Array.isArray(taxonomiesArray)) {         
-						// Join the array elements into a string without quotes        
-						return taxonomiesArray.join(', ');      
-					}    
-				}
-			catch (error)
-				{       
-				console.error('Error parsing JSON:', error);    
-				}     
-			// Return a default value or an empty string if parsing fails   
-			return '';  // or any default value you prefer  
-				},
+			return formattedTaxonomies;
+		},
 		filterChains() {
 			// Wait for chains to be loaded
   			// await this.getChains();
