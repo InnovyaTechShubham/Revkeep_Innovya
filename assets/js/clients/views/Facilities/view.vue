@@ -145,7 +145,7 @@
 								</div>
 							</b-col>
 							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
-								<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
+								<b-col cols="5" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Contact</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
@@ -186,6 +186,36 @@
 											</span>
 											<span v-else class="text-muted"> &mdash; </span>
 										</td>
+									</table>
+								</div>
+								
+								<h6 class="h6 text-uppercase font-weight-bold text-muted mt-5">Receiving Information</h6>
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0">
+
+										<tr>
+											<th>Emails</th>
+											<td>
+												<span v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
+													{{ entity.receiving_emails.join(', ') }}
+												</span>
+												<span v-else class="text-muted"> &mdash; </span>
+											</td>
+										</tr>
+										<tr>
+											<th>Faxes</th>
+											<td>
+												<pre>{{ JSON.stringify(entity.receiving_faxes, null, 2) }}</pre>
+												<span v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+													{{ entity.receiving_faxes.map(faxObj => `(${faxObj.fax}) ${faxObj.description}`).join(', ') }}
+												</span>
+												<!-- <span v-else>
+													<span class="text-muted">Condition not met</span>
+												</span> -->
+												<span v-else class="text-muted"> &mdash; </span>
+											</td>
+										</tr>
+
 									</table>
 								</div>
 							</b-col>
@@ -250,9 +280,75 @@
 									</table>
 								</div>
 							</b-col>
+							<!-- <b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2 text-center">
+    <h6 class="h6 text-uppercase font-weight-bold text-muted">Receiving Information</h6>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-headers-muted table-data-right mb-0 mx-auto">
+            <tbody>
+                <tr v-if="entity.receivingInfo && entity.receivingInfo.email">
+                    <th>Email</th>
+                    <td class="align-middle">
+                        <span v-if="entity.receivingInfo.email">
+                            <a
+                                :href="'mailto:' + entity.receivingInfo.email"
+                                class="font-weight-bold text-decoration-none"
+                            >{{ entity.receivingInfo.email }}</a>
+                        </span>
+                        <span v-else class="text-muted"> &mdash; </span>
+                    </td>
+                </tr>
+                <tr v-if="entity.receivingInfo && entity.receivingInfo.fax">
+                    <th>Fax</th>
+                    <td class="align-middle">
+                        <span v-if="entity.receivingInfo.fax">
+                            <a
+                                :href="$filters.linkTel(entity.receivingInfo.fax)"
+                                class="font-weight-bold text-decoration-none"
+                            >{{ $filters.formatPhone(entity.receivingInfo.fax) }}</a>
+                        </span>
+                        <span v-else class="text-muted"> &mdash; </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	</b-col> -->
+							<!-- <b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
+								<h6 class="h6 text-uppercase font-weight-bold text-muted">Receiving Information</h6>
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0">
+
+										<tr>
+											<th>Fax</th>
+											<td>
+												<span v-if="entity.fax">
+													<a
+														:href="$filters.linkTel(entity.fax)"
+														class="font-weight-bold text-decoration-none"
+														>{{ $filters.formatPhone(entity.fax) }}</a
+													>
+												</span>
+												<span v-else class="text-muted"> &mdash; </span>
+											</td>
+										</tr>
+										<th>Email</th>
+										<td>
+											<span v-if="entity.email">
+												<a
+													:href="'mailto:' + entity.email"
+													class="font-weight-bold text-decoration-none"
+													>{{ entity.email }}</a
+												>
+											</span>
+											<span v-else class="text-muted"> &mdash; </span>
+										</td>
+									</table>
+								</div>
+							</b-col> -->
 
 							<!-- <b-col cols="10" sm="6" lg="6" class="mb-4"> -->
-								<b-col cols="10" sm="5" lg="5" class="mb-0 ml-4 mt-2">
+								<!-- <b-col cols="10" sm="5" lg="5" class="mb-0 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Services</h6>
 
 								<b-list-group v-if="entity.services && entity.services.length > 0">
@@ -265,7 +361,32 @@
 									</b-list-group-item>
 								</b-list-group>
 								<empty-result v-else> No services assigned </empty-result>
+							</b-col> -->
+							<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2" :sm-offset="5" :lg-offset="5">
+								<h6 class="h6 text-uppercase font-weight-bold text-muted">Services</h6>
+
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0 mx-auto">
+										<tbody>
+											<tr v-if="entity.services && entity.services.length > 0" v-for="service in entity.services" :key="service.index">
+												<td class="text-center">
+													<b-link :to="{ name: 'services.view', params: { id: service.id } }" class="font-weight-bold text-decoration-none">
+														{{ service.name }}
+													</b-link>
+												</td>
+											</tr>
+											<tr v-else>
+												<td class="text-muted">No services assigned</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</b-col>
+
+
+
+
+
 						</b-row>
 					</b-tab>
 					<b-tab no-body  lazy>
