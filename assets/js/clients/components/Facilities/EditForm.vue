@@ -2752,38 +2752,55 @@ export default {
 		// async getChains() {
 		// 	await this.$store.dispatch("chains/getAll");
 		// },
+		// async getChains() {
+		// 	console.log("Fetching chains...");
+		// 	// await this.$store.dispatch("chains/get");
+		// 	const facilityId = this.entity.id;
+		// 	await axios.get('/client/api/chainList')
+		// 	.then(response => {
+		// 		console.log("Response:",response.data);
+		// 	// // response data stored in records attribute to render as list
+		// 	// records.value = response.data;
+		// 		response.data.facilityChains.forEach((item, index) => {
+		// 		// console.log(`Element at index ${index}:`, item);
+
+		// 		if (item.facility_id == facilityId) {
+		// 			console.log("match found =", item.chain_id);
+		// 			console.log("log =", response.data.chains);
+
+		// 			response.data.chains.forEach((i, index) => {
+		// 				console.log(`chain at index ${index}:`, i);
+		// 				if (i.id == item.chain_id) {
+		// 					console.log("Item found =", i.chain_name);
+		// 					// Check if the service is not already in selectedServices before pushing
+		// 					// if (!this.selectedServices.some(service => service.id === i.id)) {
+		// 						// this.selectedServices.push(i);
+		// 						this.selectedChain = i.chain_name;
+		// 						console.log("output", this.selectedChain);
+		// 						// response data stored in records attribute to render as list
+		// 						records.value = response.data.chains;
+		// 						// }
+		// 				}
+		// 			});
+		// 		}
+		// 	});
+		// 	})
+		// 	.catch(error => {
+		// 		console.error(error);
+		// 	})
+		// 	.finally(() => {
+		// 		this.saving = false;
+		// 	});
+		// 	console.log("Chains fetched successfully.");
+		// 	},
 		async getChains() {
 			console.log("Fetching chains...");
 			// await this.$store.dispatch("chains/get");
-			const facilityId = this.entity.id;
-			await axios.get('/client/api/chainList')
+			await axios.get('/client/getChains')
 			.then(response => {
 				console.log("Response:",response.data);
-			// // response data stored in records attribute to render as list
-			// records.value = response.data;
-				response.data.facilityChains.forEach((item, index) => {
-				// console.log(`Element at index ${index}:`, item);
-
-				if (item.facility_id == facilityId) {
-					console.log("match found =", item.chain_id);
-					console.log("log =", response.data.chains);
-
-					response.data.chains.forEach((i, index) => {
-						console.log(`chain at index ${index}:`, i);
-						if (i.id == item.chain_id) {
-							console.log("Item found =", i.chain_name);
-							// Check if the service is not already in selectedServices before pushing
-							// if (!this.selectedServices.some(service => service.id === i.id)) {
-								// this.selectedServices.push(i);
-								this.selectedChain = i.chain_name;
-								console.log("output", this.selectedChain);
-								// response data stored in records attribute to render as list
-								records.value = response.data.chains;
-								// }
-						}
-					});
-				}
-			});
+			// response data stored in records attribute to render as list
+			records.value = response.data;
 			})
 			.catch(error => {
 				console.error(error);
