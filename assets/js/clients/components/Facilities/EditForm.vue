@@ -3390,12 +3390,13 @@ export default {
 								},
 								});
 								if (response.data && Array.isArray(response.data)) {
-									// for (let i = 0; i < response.data.length; i++) {
-									// this.contactTypes.push(response.data[i].contact_type);
-									// }
-									this.forms = response.data;
+									response.data.forEach((item)=>{
+										if(item.facility_id == this.entity.id){
+											this.forms.push(item);
+										}
+									});
 								}
-							console.log("contact listed:", this.forms);
+							console.log("contact listed=", this.forms);
 						}
 					catch (error) 
 					{
