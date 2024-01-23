@@ -1570,10 +1570,22 @@
 												</empty-result>
 											</div>
 
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopup" variant="primary">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+													<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+
 											<!-- Icon to open the pop-up -->
-											<b-button @click="openPopup" variant="primary">
+											<!-- <b-button @click="openPopup" variant="primary">
 												<font-awesome-icon icon="plus" fixed-width />
-											</b-button>
+											</b-button> -->
 
 											<!-- Pop-up for adding emails -->
 											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
@@ -1587,11 +1599,11 @@
 												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
 												</b-form>
 											</b-modal>
-
+											
 											<!-- Icon to delete selected entries -->
-											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="ml-auto">
+											<!-- <b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
 												<font-awesome-icon icon="trash" fixed-width />
-											</b-button>
+											</b-button> -->
 
 
 											<!-- Pop-up for deleting selected entries -->
@@ -1644,7 +1656,6 @@
 												<font-awesome-icon icon="plus" fixed-width />
 												</b-button>
 
-												<!-- Trash icon button on the right -->
 												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
 												<font-awesome-icon icon="trash" fixed-width />
 												</b-button>
@@ -2032,7 +2043,8 @@ export default {
 			deletePopupVisibleFax: false,
 			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
 			allowedDigits: 10,
-			 existingFaxes: [] ,
+			existingFaxes: [] ,
+			errorMEssage: '',
 
 			newEmail: {
 				email: '',
@@ -2259,136 +2271,227 @@ export default {
 		this.popupVisible = false;
 		},
 		
-	async addEmail() {
-		// Assuming newEmail is a valid object with email and description properties
-		const newEmail = { ...this.newEmail };
-		const email = newEmail.email;
-		const description= newEmail.description;
-		console.log("new:",newEmail);
-		console.log("Receiving Emails:", this.entity.receiving_emails);
-		// Prepare the data to be sent in the POST request
-		// const emailData = {
-		// 	email,
-		// 	description,
-		// 	};
-		// console.log("before API", emailData);
+	// async addEmail() {
+	// 	// Assuming newEmail is a valid object with email and description properties
+	// 	const newEmail = { ...this.newEmail };
+	// 	const email = newEmail.email;
+	// 	const description= newEmail.description;
+	// 	console.log("new:",newEmail);
+	// 	console.log("Receiving Emails:", this.entity.receiving_emails);
+	// 	// Prepare the data to be sent in the POST request
+	// 	// const emailData = {
+	// 	// 	email,
+	// 	// 	description,
+	// 	// 	};
+	// 	// console.log("before API", emailData);
 
-		// Check if receiving_emails is defined, if not, initialize it as an empty array
-		if (!Array.isArray(this.entity.receiving_emails)) {
-			this.$set(this.entity, 'receiving_emails', []);
-		}
+	// 	// Check if receiving_emails is defined, if not, initialize it as an empty array
+	// 	if (!Array.isArray(this.entity.receiving_emails)) {
+	// 		this.$set(this.entity, 'receiving_emails', []);
+	// 	}
 		
-		// Add the new email to the array
-		this.entity.receiving_emails.push(newEmail);
+	// 	// Add the new email to the array
+	// 	this.entity.receiving_emails.push(newEmail);
 
-		// Clear the newEmail object for the next entry
-		this.newEmail = { email: '', description: '' };
+	// 	// Clear the newEmail object for the next entry
+	// 	this.newEmail = { email: '', description: '' };
 		
-		// Close the pop-up
-		// this.closePopup();
-		this.popupVisible = false;
+	// 	// Close the pop-up
+	// 	// this.closePopup();
+	// 	this.popupVisible = false;
 
-		// Prepare the data to be sent in the POST request
-		const emailData = {
-			email,
-			description,
-			};
-		console.log("before API", emailData);
-		await axios.post('/client/receivingEmails', emailData)
-			.then(response => {
-				// const responseData = response.data.data;
-				console.log("response:",response);
-				if(response.data.success){
-					console.log('email saved');
-					this.saving = false;
-					this.$router.push({
-						name: "receivingEmails"
-					});
-					this.$nextTick(function () {
-						this.$store.dispatch("notify", {
-							variant: "primary",
-							title: "Email Created!",
-							message: `New email Created!.`,
-						});
-					});
-					redirect_index()
-				}else{
-					this.saving = false;
-					console.log('email already exists');
-					this.errorMessage = response.data.message; 
-					this.$nextTick(function () {
-						this.$store.dispatch("notify", {
-							variant: "danger",
-							title: "Email Error",
-							message: this.errorMessage,
-						});
-					});
-				}
-			})
-			.catch(error => {
-				console.log(error)
-				// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
-				// this.saving = false;
-				// this.errorMessage = 'Error creating chain.'; 
-				// this.$nextTick(function () {
-				// 	this.$store.dispatch("notify", {
-				// 		variant: "danger",
-				// 		title: "Chain Error",
-				// 		message: error,
-				// 	});
-				// });
-			})
+	// 	// Prepare the data to be sent in the POST request
+	// 	const emailData = {
+	// 		email,
+	// 		description,
+	// 		};
+	// 	console.log("before API", emailData);
+	// 	await axios.post('/client/receivingEmails', emailData)
+	// 		.then(response => {
+	// 			// const responseData = response.data.data;
+	// 			console.log("response:",response);
+	// 			if(response.data.success){
+	// 				console.log('email saved');
+	// 				this.saving = false;
+	// 				this.$router.push({
+	// 					name: "receivingEmails"
+	// 				});
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "primary",
+	// 						title: "Email Created!",
+	// 						message: `New email Created!.`,
+	// 					});
+	// 				});
+	// 				redirect_index()
+	// 			}else{
+	// 				this.saving = false;
+	// 				console.log('email already exists');
+	// 				this.errorMessage = response.data.message; 
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "danger",
+	// 						title: "Email Error",
+	// 						message: this.errorMessage,
+	// 					});
+	// 				});
+	// 			}
+	// 		})
+	// 		.catch(error => {
+	// 			console.log(error)
+	// 			// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
+	// 			// this.saving = false;
+	// 			// this.errorMessage = 'Error creating chain.'; 
+	// 			// this.$nextTick(function () {
+	// 			// 	this.$store.dispatch("notify", {
+	// 			// 		variant: "danger",
+	// 			// 		title: "Chain Error",
+	// 			// 		message: error,
+	// 			// 	});
+	// 			// });
+	// 		})
 
-		// // Send a POST request to your controller to add the new type
-        // axios.post('/client/receivingEmails', { email , description})
-        //     .then((response) => {
-		// 		console.log("inside API call");
-        //         // Handle the response, e.g., update the insuranceTypes list
-        //         this.entity.receiving_emails.push(response.data);
+	// 	// // Send a POST request to your controller to add the new type
+    //     // axios.post('/client/receivingEmails', { email , description})
+    //     //     .then((response) => {
+	// 	// 		console.log("inside API call");
+    //     //         // Handle the response, e.g., update the insuranceTypes list
+    //     //         this.entity.receiving_emails.push(response.data);
 
-        //         // // Close the modal
-        //         // this.$bvModal.hide('customAuditTypeModal');
+    //     //         // // Close the modal
+    //     //         // this.$bvModal.hide('customAuditTypeModal');
 
-        //         // // Clear the input field
-        //         // this.newAuditType = '';
-		// 		console.log("check",response);
+    //     //         // // Clear the input field
+    //     //         // this.newAuditType = '';
+	// 	// 		console.log("check",response);
 
-		// 		window.location.reload();
-        //     })
-        //     .catch((error) => {
-        //         // Handle any errors, e.g., show an error message
-        //         console.error('Error adding new email:', error);
-        //     });
+	// 	// 		window.location.reload();
+    //     //     })
+    //     //     .catch((error) => {
+    //     //         // Handle any errors, e.g., show an error message
+    //     //         console.error('Error adding new email:', error);
+    //     //     });
 
-		// try {
-		// 	const url = "/client/receivingEmails";
-		// 	const data = {'receivingEmails':this.entity.receiving_emails}
-		// 	console.log(data);
-		// 	// const resp = await axios.post('/client/sendemail', data);
-		// 	const response = await axios.post(url,data);
-		// 	console.log("Response from API:", response.data);
+	// 	// try {
+	// 	// 	const url = "/client/receivingEmails";
+	// 	// 	const data = {'receivingEmails':this.entity.receiving_emails}
+	// 	// 	console.log(data);
+	// 	// 	// const resp = await axios.post('/client/sendemail', data);
+	// 	// 	const response = await axios.post(url,data);
+	// 	// 	console.log("Response from API:", response.data);
 
-		// 	}
-		// 	 catch (error) {
-        //         console.error('Error storing data:', error);
-        //     }
-        //     // Clear the input for the next entry
-        //     this.entity.receiving_email = '';
+	// 	// 	}
+	// 	// 	 catch (error) {
+    //     //         console.error('Error storing data:', error);
+    //     //     }
+    //     //     // Clear the input for the next entry
+    //     //     this.entity.receiving_email = '';
         
 
-		// // Make a POST request to store the data in the database
-		// axios.post('client/api/receivingEmails', {
-		// receivingEmails: [newEmail] // Sending an array with a single email
-		// })
-		// .then(response => {
-		// // Handle success response if needed
-		// console.log('Data stored successfully:', response.data);
-		// })
-		// .catch(error => {
-		// // Handle error if the data couldn't be stored
-		// console.error('Error storing data:', error.response.data);
-		// });
-	},
+	// 	// // Make a POST request to store the data in the database
+	// 	// axios.post('client/api/receivingEmails', {
+	// 	// receivingEmails: [newEmail] // Sending an array with a single email
+	// 	// })
+	// 	// .then(response => {
+	// 	// // Handle success response if needed
+	// 	// console.log('Data stored successfully:', response.data);
+	// 	// })
+	// 	// .catch(error => {
+	// 	// // Handle error if the data couldn't be stored
+	// 	// console.error('Error storing data:', error.response.data);
+	// 	// });
+	// },
+	async addEmail() {
+    const newEmail = { ...this.newEmail };
+    const email = newEmail.email;
+    const description = newEmail.description;
+
+    // Check if the email is in a valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	if (!emailRegex.test(email)) {
+		this.$bvToast.toast('Error: Please enter a valid email address.', {
+			title: 'Error',
+			variant: 'danger',
+			solid: true,
+			autoHideDelay: 5000, // milliseconds
+    });
+    return;
+}
+
+
+    // Check if receiving_emails is defined, if not, initialize it as an empty array
+    if (!Array.isArray(this.entity.receiving_emails)) {
+        this.$set(this.entity, 'receiving_emails', []);
+    }
+
+    // // Check if the email already exists
+    // if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+    //     alert('Email address already exists. Please enter a different email.');
+    //     return;
+    // }
+	// Check if the email already exists
+	if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+		this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+			title: 'Error',
+			variant: 'danger',
+			solid: true,
+			autoHideDelay: 5000, // milliseconds
+		});
+		return;
+	}
+
+
+    // Add the new email to the array
+    this.entity.receiving_emails.push(newEmail);
+
+    // Clear the newEmail object for the next entry
+    this.newEmail = { email: '', description: '' };
+
+    // Close the pop-up
+    this.popupVisible = false;
+
+    // Prepare the data to be sent in the POST request
+    const emailData = {
+        email,
+        description,
+    };
+
+    try {
+        // Make a POST request to store the data in the database
+        const response = await axios.post('/client/receivingEmails', emailData);
+
+        if (response.data.success) {
+            console.log('Email saved successfully.');
+            this.saving = false;
+            this.$router.push({ name: 'receivingEmails' });
+
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'primary',
+                    title: 'Email Created!',
+                    message: 'New email created.',
+                });
+            });
+
+            redirect_index();
+        } else {
+            this.saving = false;
+            console.log('Email already exists');
+            this.errorMessage = response.data.message;
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'danger',
+                    title: 'Email Error',
+                    message: this.errorMessage,
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error creating email:', error);
+    }
+},
+
     openDeletePopup() {
       // Show checkboxes and delete icon
       this.showDeleteIcon = true;
