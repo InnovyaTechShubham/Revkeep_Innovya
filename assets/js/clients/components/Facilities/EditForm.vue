@@ -614,7 +614,7 @@
 								<b-input-group-append>
 								  <b-button variant="primary" class="mb-1" @click="createNewForm">
 				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contact</span>
+				                 	<span>Add Contacts</span>
 			                      </b-button>
                                 </b-input-group-append>
 
@@ -1189,6 +1189,11 @@ export default {
 
 				this.$store.dispatch("facilities/getAll");
 				this.$store.dispatch("facilities/getActive");
+				console.log("post data :", this.forms);
+				// await axios.post('/client/facilityAddForms', this.forms );
+				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
+        		console.log('saving Response:', responsed);
+                console.log('Data saved successfully');
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -1255,6 +1260,8 @@ export default {
 			title_id: null,
 			contact_id: null,
 			phone_no: null,
+			id:null,
+			facility_name:this.entity.name
 			// ... other form fields ...
 			
 			// ... other form-specific data ...
