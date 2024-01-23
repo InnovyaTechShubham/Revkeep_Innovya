@@ -2044,7 +2044,7 @@ export default {
 			deletePopupVisible: false,
 			deletePopupVisibleFax: false,
 			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
-			// allowedDigits: 10,
+			allowedDigits: 10,
 			// existingFaxes: [] ,
 
 			newEmail: {
@@ -2149,12 +2149,12 @@ export default {
 //       console.error("Error fetching services:", error);
 //     }
 //   },
-	watch: {
-		'newFax.fax'(newValue) {
-      // Format fax number when it changes
-      this.newFax.fax = this.formatFaxNumber(newValue);
-    }
-	},
+	// watch: {
+	// 	'newFax.fax'(newValue) {
+    //   // Format fax number when it changes
+    //   this.newFax.fax = this.formatFaxNumber(newValue);
+    // }
+	// },
 		
 	methods: {
 	
@@ -2165,15 +2165,15 @@ export default {
 		this.popupVisibleFax = false;
 		},
 	
-	// formatFaxNumber(value) {
-    //   let numericFax = value.replace(/\D/g, '');
-    //   numericFax = numericFax.slice(0, this.allowedDigits);
-    //   return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    // },
-    // formatFax() {
-    //   // Update the displayed fax number when input changes
-    //   this.newFax.fax = this.formatFaxNumber(this.newFax.fax);
-    // },
+	formatFaxNumber(value) {
+      let numericFax = value.replace(/\D/g, '');
+      numericFax = numericFax.slice(0, this.allowedDigits);
+      return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    },
+    formatFax() {
+      // Update the displayed fax number when input changes
+      this.newFax.fax = this.formatFaxNumber(this.newFax.fax);
+    },
 // 	addFax() {
 //     const newFax = { ...this.newFax };
 //     console.log("new:", newFax);
@@ -2508,7 +2508,7 @@ addFax() {
         email,
         description,
     };
-
+	console.log("header:",emailData);
     try {
         // Make a POST request to store the data in the database
         const response = await axios.post('/client/receivingEmails', emailData);
