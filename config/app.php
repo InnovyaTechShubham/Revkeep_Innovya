@@ -376,90 +376,130 @@ return [
 	 *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
 	 *   other RDBMS.
 	 */
+	// 'Datasources' => [
+	// 	'default' => [
+	// 		'className' => Connection::class,
+	// 		'driver' => env('DATABASE_DRIVER', Sqlserver::class), // or Postgres::class
+	// 		'persistent' => false,
+	// 		'host' => env('DATABASE_HOST', 'localhost\SQLEXPRESS'),
+	// 		/*
+    //          * CakePHP will use the default DB port based on the driver selected
+    //          * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
+    //          * the following line and set the port accordingly
+    //          */
+	// 		'port' => env('DATABASE_PORT', null),
+	// 		'username' => env('DATABASE_USER', 'sa'),
+	// 		'password' => env('DATABASE_PASS', 'sa'),
+	// 		'database' => env('DATABASE_NAME', 'revkeep_3'),
+
+	// 		/*
+	// 		 * SQL Server Configuration
+	// 		 */
+	// 		'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', null),
+
+	// 		/*
+	// 		 * Postgres Configuration
+	// 		 */
+	// 		'schema' => env('DATABASE_SCHEMA', null),
+
+	// 		/*
+    //          * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
+    //          */
+	// 		//'encoding' => PDO::SQLSRV_ENCODING_UTF8, // 65001
+	// 		'encoding' => env('DATABASE_ENCODING', null), // 'UTF8' for Postgres
+	// 		'timezone' => 'UTC',
+	// 		'flags' => [],
+	// 		'cacheMetadata' => true,
+	// 		'log' => false,
+
+	// 		/**
+	// 		 * Set identifier quoting to true if you are using reserved words or
+	// 		 * special characters in your table or column names. Enabling this
+	// 		 * setting will result in queries built using the Query Builder having
+	// 		 * identifiers quoted when creating SQL. It should be noted that this
+	// 		 * decreases performance because each query needs to be traversed and
+	// 		 * manipulated before being executed.
+	// 		 */
+	// 		'quoteIdentifiers' => true,
+
+	// 		/**
+	// 		 * During development, if using MySQL < 5.6, uncommenting the
+	// 		 * following line could boost the speed at which schema metadata is
+	// 		 * fetched from the database. It can also be set directly with the
+	// 		 * mysql configuration directive 'innodb_stats_on_metadata = 0'
+	// 		 * which is the recommended value in production environments
+	// 		 */
+	// 		//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+	// 		'url' => env('DATABASE_URL', null),
+	// 	],
+
+	// 	/**
+	// 	 * The test connection is used during the test suite.
+	// 	 */
+	// 	'test' => [
+	// 		'className' => Connection::class,
+	// 		'driver' => env('DATABASE_TEST_DRIVER', Sqlserver::class), // or Postgres::class
+	// 		'persistent' => false,
+	// 		'host' => env('DATABASE_TEST_HOST', 'localhost'),
+	// 		'port' => env('DATABASE_TEST_PORT', null),
+	// 		'username' => env('DATABASE_TEST_USER', 'development'),
+	// 		'password' => env('DATABASE_TEST_PASS', 'development'),
+	// 		'database' => env('DATABASE_TEST_NAME', 'revkeep_test'),
+	// 		//'encoding' => PDO::SQLSRV_ENCODING_UTF8, // 65001
+	// 		'encoding' => env('DATABASE_TEST_ENCODING', null), // 'UTF8' for Postgres
+	// 		'timezone' => 'UTC',
+	// 		'cacheMetadata' => true,
+	// 		'quoteIdentifiers' => false,
+	// 		'log' => false,
+	// 		//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+	// 		'url' => env('DATABASE_TEST_URL', null),
+	// 		// SQL Server Configuration
+	// 		'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', null),
+	// 		// Postgres Configuration
+	// 		'schema' => env('DATABASE_SCHEMA', null)
+	// 	],
+	// ],
+
 	'Datasources' => [
 		'default' => [
 			'className' => Connection::class,
-			'driver' => env('DATABASE_DRIVER', Sqlserver::class), // or Postgres::class
+			'driver' => env('DATABASE_DRIVER', Sqlserver::class),
 			'persistent' => false,
-			'host' => env('DATABASE_HOST', 'localhost\SQLEXPRESS'),
-			/*
-             * CakePHP will use the default DB port based on the driver selected
-             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
-             * the following line and set the port accordingly
-             */
-			'port' => env('DATABASE_PORT', null),
-			'username' => env('DATABASE_USER', 'sa'),
-			'password' => env('DATABASE_PASS', 'sa'),
-			'database' => env('DATABASE_NAME', 'revkeep_3'),
-
-			/*
-			 * SQL Server Configuration
-			 */
-			'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', null),
-
-			/*
-			 * Postgres Configuration
-			 */
-			'schema' => env('DATABASE_SCHEMA', null),
-
-			/*
-             * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
-             */
-			//'encoding' => PDO::SQLSRV_ENCODING_UTF8, // 65001
-			'encoding' => env('DATABASE_ENCODING', null), // 'UTF8' for Postgres
-			'timezone' => 'UTC',
+			'host' => env('DATABASE_HOST', 'revkeep-development.database.windows.net'),
+			'port' => env('DATABASE_PORT', '1433'), // Azure SQL Database default port
+			'username' => env('DATABASE_USER', 'revkeep'),
+			'password' => env('DATABASE_PASS', '5HN3MsyEhfNhEhPc'),
+			'database' => env('DATABASE_NAME', 'revkeep_test'),
+			'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', 30), // Adjust as needed
+			'encoding' => env('DATABASE_ENCODING', 'utf8'), // Assuming UTF-8, adjust if needed
 			'flags' => [],
 			'cacheMetadata' => true,
-			'log' => false,
-
-			/**
-			 * Set identifier quoting to true if you are using reserved words or
-			 * special characters in your table or column names. Enabling this
-			 * setting will result in queries built using the Query Builder having
-			 * identifiers quoted when creating SQL. It should be noted that this
-			 * decreases performance because each query needs to be traversed and
-			 * manipulated before being executed.
-			 */
 			'quoteIdentifiers' => true,
-
-			/**
-			 * During development, if using MySQL < 5.6, uncommenting the
-			 * following line could boost the speed at which schema metadata is
-			 * fetched from the database. It can also be set directly with the
-			 * mysql configuration directive 'innodb_stats_on_metadata = 0'
-			 * which is the recommended value in production environments
-			 */
-			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-
+			'timezone' => 'UTC', // Adjust as needed
+			'log' => false,
 			'url' => env('DATABASE_URL', null),
 		],
-
-		/**
-		 * The test connection is used during the test suite.
-		 */
+	
 		'test' => [
 			'className' => Connection::class,
-			'driver' => env('DATABASE_TEST_DRIVER', Sqlserver::class), // or Postgres::class
+			'driver' => env('DATABASE_TEST_DRIVER', Sqlserver::class),
 			'persistent' => false,
-			'host' => env('DATABASE_TEST_HOST', 'localhost'),
-			'port' => env('DATABASE_TEST_PORT', null),
-			'username' => env('DATABASE_TEST_USER', 'development'),
-			'password' => env('DATABASE_TEST_PASS', 'development'),
+			'host' => env('DATABASE_TEST_HOST', 'revkeep-development.database.windows.net'),
+			'port' => env('DATABASE_TEST_PORT', '1433'), // Azure SQL Database default port
+			'username' => env('DATABASE_TEST_USER', 'revkeep'),
+			'password' => env('DATABASE_TEST_PASS', '5HN3MsyEhfNhEhPc'),
 			'database' => env('DATABASE_TEST_NAME', 'revkeep_test'),
-			//'encoding' => PDO::SQLSRV_ENCODING_UTF8, // 65001
-			'encoding' => env('DATABASE_TEST_ENCODING', null), // 'UTF8' for Postgres
-			'timezone' => 'UTC',
+			'encoding' => env('DATABASE_TEST_ENCODING', 'utf8'), // Assuming UTF-8, adjust if needed
+			'timezone' => 'UTC', // Adjust as needed
 			'cacheMetadata' => true,
 			'quoteIdentifiers' => false,
 			'log' => false,
-			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 			'url' => env('DATABASE_TEST_URL', null),
-			// SQL Server Configuration
-			'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', null),
-			// Postgres Configuration
-			'schema' => env('DATABASE_SCHEMA', null)
+			'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', 30), // Adjust as needed
 		],
 	],
+	
 
 	/**
 	 * Configures logging options
