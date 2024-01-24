@@ -4,16 +4,16 @@
 		v-bind="{
 			action,
 			filters: {
-				status: 'CANCELLED',
+				status:[ 'NEW','DELIVERED','FAILED','CANCELLED'],
 			},
-			search: cancelledSearch,
+			search: newSearch,
 			perPage,
 		}"
 	>
 		<b-row class="mb-4">
 			<b-col cols="6" md="6" lg="6" class="mb-0">
 				<b-form @submit.prevent="doSearch">
-					<search-input v-model="cancelledSearch" v-bind="{ loading }" />
+					<search-input v-model="newSearch" v-bind="{ loading }" />
 				</b-form>
 			</b-col>
 			<b-col cols="6" md="6" lg="6" class="text-right">
@@ -24,7 +24,8 @@
 			<b-col cols="12">
 				<loading-indicator v-if="loading && empty" size="4x" class="my-5" />
 				<div v-else-if="!empty">
-					<table class="table table-bordered table-responsive mb-0">
+					<div class="table-container">
+					<table class="table table-bordered mb-0 scrollable-row ">
             <thead>
                 <tr>
 					<th class="col-md-1">Id</th>
@@ -41,20 +42,22 @@
                 </tr>
             </thead>
         </table>
+		</div>
 					<outgoing-document-list-item
-					v-for="(result, index) in results"
+					    v-for="(result, index) in results"
 						:key="result.id"
 						:value="result"
 						@updated="
+							recount();
 							refresh();
 						"
 						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#e7eaea' }"
 						class="list-item"
 					/>
 				</div>
-				<empty-result v-else icon="envelope">
-					No cancelled documents
-					<template #content> Cancelled documents are removed from the outgoing queue. </template>
+				<empty-result v-else icon="envelope-open">
+					No new documents
+					<template #content> Completed packets from appeals will appear here. </template>
 				</empty-result>
 			</b-col>
 		</b-row>
@@ -68,7 +71,7 @@ import OutgoingDocumentListItem from "@/clients/components/OutgoingDocuments/Lis
 import store from "@/clients/store";
 
 // Search queries for various statuses
-const cancelledSearch = ref("");
+const newSearch = ref("");
 
 const perPage = ref(15);
 const action = getIndex;
@@ -77,9 +80,12 @@ const recount = () => {
 	store.dispatch("updateState");
 };
 </script>
-
 <style scoped>
   .list-item:hover {
     background-color: #e7eaea !important;
   }
+  .scrollable-row {
+  max-width: 1580px; /* Set the desired width for the scrollable row */
+  overflow-x: auto;
+}
 </style>
