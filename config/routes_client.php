@@ -1113,9 +1113,36 @@ $routes->prefix('client', function (RouteBuilder $builder) {
     ->setPass(['id'])
     ->setMethods(['POST']);
 
-	$builder->connect('/receivingEmails', [
+	// $builder->connect('/receivingEmails', [
+    //     'controller' => 'ReceivingEmails',
+    //     'action' => 'index',
+    //     '_method' => 'POST'
+    // ]);
+	// $routes->scope('/', function ($routes) {
+	// 	$routes->setExtensions(['json']); // Enable JSON response
+	
+	// 	$routes->resources('ReceivingTables', ['map' => ['add' => ['action' => 'add', 'method' => 'POST']]]);
+	// });
+	// $builder->resources('ReceivingEmails', [
+	// 	'map' => [
+	// 		'all' => [
+	// 			'action' => 'add',
+	// 			'method' => 'POST',
+	// 			// 'path' => 'all'
+	// 		],
+	// 	]
+	// ]);
+	// $builder->setExtensions(['json']); // Enable JSON response
+
+    $builder->connect('/receivingEmails', [
         'controller' => 'ReceivingEmails',
-        'action' => 'index',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
+	$builder->connect('/receivingFaxes', [
+        'controller' => 'ReceivingFaxes',
+        'action' => 'add',
         '_method' => 'POST'
     ]);
 
