@@ -2225,65 +2225,59 @@ export default {
 // },
 
 async addFax() {
-    const newFax = { ...this.newFax };
-    console.log("new:", newFax);
-	const fax = newFax.fax;
-    const description = newFax.description;
-
-   
-
-    // Validate fax number format
-    const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-    if (!faxRegex.test(newFax.fax)) {
-        this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
-            title: 'Error',
-            variant: 'danger',
-            solid: true,
-            autoHideDelay: 5000, // milliseconds
-        });
-        return;
-    }
-
-	// Check if receiving_faxes is defined, if not, initialize it as an empty array
-	if (!Array.isArray(this.entity.receiving_faxes)) {
-	this.$set(this.entity, 'receiving_faxes', []);
-}
-
-    // Check if the fax number already exists
-    if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
-        this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
-            title: 'Error',
-            variant: 'danger',
-            solid: true,
-            autoHideDelay: 5000, // milliseconds
-        });
-        return;
-    }
-
-    // Add the new fax to the array
-    this.entity.receiving_faxes.push(newFax);
-
-    // Clear the newFax object for the next entry
-    this.newFax = { fax: '', description: '' };
-
-    // Use $nextTick to ensure the DOM is updated
-    // this.$nextTick(() => {
-    //     console.log("Receiving Faxes:", this.entity.receiving_faxes);
-    // });
-
-    // Close the pop-up
-    this.popupVisibleFax = false;
-
-	// Prepare the data to be sent in the POST request
-    const faxData = {
-        fax,
-        description,
-    };
-	console.log("header:",faxData);
     try {
+        const newFax = { ...this.newFax };
+        console.log("new:", newFax);
+		// Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Validate fax number format
+        const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+        if (!faxRegex.test(newFax.fax)) {
+            this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Check if receiving_faxes is defined, if not, initialize it as an empty array
+        if (!Array.isArray(this.entity.receiving_faxes)) {
+            this.$set(this.entity, 'receiving_faxes', []);
+        }
+
+        // Check if the fax number already exists
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+            this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Add the new fax to the array
+        this.entity.receiving_faxes.push(newFax);
+
+        // Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Close the pop-up
+        this.popupVisibleFax = false;
+
+        // Prepare the data to be sent in the POST request
+        const faxData = {
+            fax: newFax.fax,  // Use the updated fax number
+            description: newFax.description,
+        };
+        console.log("header:", faxData);
+
         // Make a POST request to store the data in the database
         const response = await axios.post('/client/receivingFaxes', faxData);
-		console.log('Axios Response:', response);
+        console.log('Axios Response:', response);
 
         if (response.data.success) {
             console.log('Fax saved successfully.');
@@ -2510,95 +2504,97 @@ async addFax() {
 	// 	// });
 	// },
 	async addEmail() {
-    const newEmail = { ...this.newEmail };
-    const email = newEmail.email;
-    const description = newEmail.description;
+		const newEmail = { ...this.newEmail };
+		const email = newEmail.email;
+		const description = newEmail.description;
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
 
-    // Check if the email is in a valid format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		// Check if the email is in a valid format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-	if (!emailRegex.test(email)) {
-		this.$bvToast.toast('Error: Please enter a valid email address.', {
-			title: 'Error',
-			variant: 'danger',
-			solid: true,
-			autoHideDelay: 5000, // milliseconds
-    });
-    return;
-	}
-
-
-    // Check if receiving_emails is defined, if not, initialize it as an empty array
-    if (!Array.isArray(this.entity.receiving_emails)) {
-        this.$set(this.entity, 'receiving_emails', []);
-    }
-
-    // // Check if the email already exists
-    // if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
-    //     alert('Email address already exists. Please enter a different email.');
-    //     return;
-    // }
-	// Check if the email already exists
-	if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
-		this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
-			title: 'Error',
-			variant: 'danger',
-			solid: true,
-			autoHideDelay: 5000, // milliseconds
+		if (!emailRegex.test(email)) {
+			this.$bvToast.toast('Error: Please enter a valid email address.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
 		});
 		return;
-	}
+		}
 
 
-    // Add the new email to the array
-    this.entity.receiving_emails.push(newEmail);
+		// Check if receiving_emails is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.receiving_emails)) {
+			this.$set(this.entity, 'receiving_emails', []);
+		}
 
-    // Clear the newEmail object for the next entry
-    this.newEmail = { email: '', description: '' };
+		// // Check if the email already exists
+		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+		//     alert('Email address already exists. Please enter a different email.');
+		//     return;
+		// }
+		// Check if the email already exists
+		if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+			this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+			});
+			return;
+		}
 
-    // Close the pop-up
-    this.popupVisible = false;
 
-    // Prepare the data to be sent in the POST request
-    const emailData = {
-        email,
-        description,
-    };
-	console.log("header:",emailData);
-    try {
-        // Make a POST request to store the data in the database
-        const response = await axios.post('/client/receivingEmails', emailData);
-		console.log('Axios Response:', response);
+		// Add the new email to the array
+		this.entity.receiving_emails.push(newEmail);
 
-        if (response.data.success) {
-            console.log('Email saved successfully.');
-            this.saving = false;
-            this.$router.push({ name: 'receivingEmails' });
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
 
-            this.$nextTick(() => {
-                this.$store.dispatch('notify', {
-                    variant: 'primary',
-                    title: 'Email Created!',
-                    message: 'New email created.',
-                });
-            });
+		// Close the pop-up
+		this.popupVisible = false;
 
-            redirect_index();
-        } else {
-            this.saving = false;
-            console.log('Email already exists');
-            this.errorMessage = response.data.message;
-            this.$nextTick(() => {
-                this.$store.dispatch('notify', {
-                    variant: 'danger',
-                    title: 'Email Error',
-                    message: this.errorMessage,
-                });
-            });
-        }
-    } catch (error) {
-        console.error('Error creating email:', error);
-    }
+		// Prepare the data to be sent in the POST request
+		const emailData = {
+			email,
+			description,
+		};
+		console.log("header:",emailData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingEmails', emailData);
+			console.log('Axios Response:', response);
+
+			if (response.data.success) {
+				console.log('Email saved successfully.');
+				this.saving = false;
+				this.$router.push({ name: 'receivingEmails' });
+
+				this.$nextTick(() => {
+					this.$store.dispatch('notify', {
+						variant: 'primary',
+						title: 'Email Created!',
+						message: 'New email created.',
+					});
+				});
+
+				redirect_index();
+			} else {
+				this.saving = false;
+				// console.log('Email already exists');
+				this.errorMessage = response.data.message;
+				this.$nextTick(() => {
+					this.$store.dispatch('notify', {
+						variant: 'danger',
+						title: 'Email Error',
+						message: this.errorMessage,
+					});
+				});
+			}
+		} catch (error) {
+			console.error('Error creating email:', error);
+		}
 },
 
     openDeletePopup() {
