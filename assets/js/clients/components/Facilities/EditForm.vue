@@ -1505,48 +1505,6 @@
 						</b-card-header>
 						<b-collapse id="collapseReceivingMethods" role="tabpanel">
 							<b-card-body>
-								<!-- <validation-provider
-									vid="r_email"
-									name="Email"
-									:rules="{ required: false, max: 250 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4">
-										<b-input-group>
-											<b-form-input
-												name="Email"
-												type="text"
-												v-model="entity.receiving_email"
-												:state="getValidationState(validationContext)"
-												:disabled="saving"
-												placeholder="Enter Email"
-											></b-form-input>
-											<b-input-group-append>
-												<b-button @click="addReceivingEmail">
-													<font-awesome-icon icon="plus" fixed-width />
-												</b-button>
-											</b-input-group-append>
-										</b-input-group>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										></b-form-invalid-feedback>
-
-										<div v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
-											<b-list-group>
-												<b-list-group-item v-for="(email, index) in entity.receiving_emails" :key="index">
-													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
-														<span>{{ email }}</span>
-														<b-button variant="danger" @click="removeReceivingEmail(index)">
-															<font-awesome-icon icon="times" fixed-width />
-														</b-button>
-													</div>
-												</b-list-group-item>
-											</b-list-group>
-										</div>
-									</b-form-group>
-								</validation-provider> -->
 
 								<template>
 									<div>
@@ -2028,8 +1986,10 @@ export default {
 				receiving_email: '', // For input
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
-            	receiving_faxes: [], // For storing multiple emails
-				outgoing_emails: [],
+            	receiving_faxes: [], // For storing multiple faxes
+				// outgoing_emails: [],
+            	receiving_methods: [], 
+
 
 			},
 			service_ids: [],
@@ -2043,8 +2003,9 @@ export default {
 			popupVisibleFax: false,
 			deletePopupVisible: false,
 			deletePopupVisibleFax: false,
+			isFaxInputDisabled: false,
 			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
-			allowedDigits: 10,
+			// allowedDigits: 10,
 			// existingFaxes: [] ,
 
 			newEmail: {
@@ -2097,6 +2058,10 @@ export default {
 		} else {
 			this.loading = false;
 		}
+	},
+	created()
+	{
+		this.addReceivingMethod();
 	},
 	// // Load selected services from database on component initialization
 	// created() {
@@ -2157,6 +2122,51 @@ export default {
 	// },
 		
 	methods: {
+	// 	addReceivingMethod() {
+    //     // Assuming you have the necessary data in your component's data or computed properties
+	// 	const facilityId = this.entity.id;
+	// 		const data = {
+	// 			facility_id: facilityId,
+	// 			receiving_email_id: this.selectedReceivingEmailId,
+	// 			receiving_fax_id: this.selectedReceivingFaxId,
+	// 		};
+
+	// 		// Make an Axios POST request to store data
+	// 		axios.post('/facilities-receivingmethods/store', data)
+	// 			.then(response => {
+	// 				// Handle the success response as needed
+	// 				console.log(response.data);
+	// 			})
+	// 			.catch(error => {
+	// 				// Handle errors
+	// 				console.error(error);
+	// 			});
+    // },
+	
+		async addReceivingMethod() {
+
+			console.log("started");
+			const facilityId = this.entity.id;
+			const data = {
+				facility_id: facilityId,
+				receiving_email_id: this.selectedReceivingEmailId,
+				receiving_fax_id: this.selectedReceivingFaxId,
+			};
+			// console.log(facilityId);
+			
+
+			// Send a POST request to your controller to add the new type
+			axios.post('/client/receivingMethods', data)
+				.then((response) => {
+					this.receiving_methods.push(response.data);
+					console.log("check",response);
+
+				})
+				.catch((error) => {
+					// Handle any errors, e.g., show an error message
+					console.error('Error adding new type:', error);
+				});
+			},
 	
 	openPopupFax() {
 		this.popupVisibleFax = true;
@@ -2164,16 +2174,18 @@ export default {
 	closePopupFax() {
 		this.popupVisibleFax = false;
 		},
-	
-	formatFaxNumber(value) {
-      let numericFax = value.replace(/\D/g, '');
-      numericFax = numericFax.slice(0, this.allowedDigits);
-      return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    },
-    formatFax() {
-      // Update the displayed fax number when input changes
-      this.newFax.fax = this.formatFaxNumber(this.newFax.fax);
-    },
+	formatFax() {
+		const numericFax = this.newFax.fax.replace(/\D/g, '');
+
+		if (numericFax.length > 10) {
+		this.faxInputError = true; // Invalid fax number
+		// this.isFaxInputDisabled = true; // Disable the input field
+		} else {
+		this.newFax.fax = numericFax ? numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+		this.faxInputError = false;
+		// this.isFaxInputDisabled = false; // Enable the input field
+		}
+		},
 // 	addFax() {
 //     const newFax = { ...this.newFax };
 //     console.log("new:", newFax);
@@ -2212,14 +2224,13 @@ export default {
 //     this.popupVisibleFax = false;
 // },
 
-addFax() {
+async addFax() {
     const newFax = { ...this.newFax };
     console.log("new:", newFax);
+	const fax = newFax.fax;
+    const description = newFax.description;
 
-    // Check if receiving_faxes is defined, if not, initialize it as an empty array
-    if (!Array.isArray(this.entity.receiving_faxes)) {
-        this.$set(this.entity, 'receiving_faxes', []);
-    }
+   
 
     // Validate fax number format
     const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
@@ -2232,6 +2243,11 @@ addFax() {
         });
         return;
     }
+
+	// Check if receiving_faxes is defined, if not, initialize it as an empty array
+	if (!Array.isArray(this.entity.receiving_faxes)) {
+	this.$set(this.entity, 'receiving_faxes', []);
+}
 
     // Check if the fax number already exists
     if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
@@ -2251,12 +2267,52 @@ addFax() {
     this.newFax = { fax: '', description: '' };
 
     // Use $nextTick to ensure the DOM is updated
-    this.$nextTick(() => {
-        console.log("Receiving Faxes:", this.entity.receiving_faxes);
-    });
+    // this.$nextTick(() => {
+    //     console.log("Receiving Faxes:", this.entity.receiving_faxes);
+    // });
 
     // Close the pop-up
     this.popupVisibleFax = false;
+
+	// Prepare the data to be sent in the POST request
+    const faxData = {
+        fax,
+        description,
+    };
+	console.log("header:",faxData);
+    try {
+        // Make a POST request to store the data in the database
+        const response = await axios.post('/client/receivingFaxes', faxData);
+		console.log('Axios Response:', response);
+
+        if (response.data.success) {
+            console.log('Fax saved successfully.');
+            this.saving = false;
+            this.$router.push({ name: 'receivingFaxes' });
+
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'primary',
+                    title: 'Fax Created!',
+                    message: 'New fax created.',
+                });
+            });
+
+            redirect_index();
+        } else {
+            this.saving = false;
+            this.errorMessage = response.data.message;
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'danger',
+                    title: 'Fax Error',
+                    message: this.errorMessage,
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error creating fax:', error);
+    }
 },
     openDeleteFaxPopup() {
       // Show checkboxes and delete icon
@@ -2469,7 +2525,7 @@ addFax() {
 			autoHideDelay: 5000, // milliseconds
     });
     return;
-}
+	}
 
 
     // Check if receiving_emails is defined, if not, initialize it as an empty array
@@ -2512,6 +2568,7 @@ addFax() {
     try {
         // Make a POST request to store the data in the database
         const response = await axios.post('/client/receivingEmails', emailData);
+		console.log('Axios Response:', response);
 
         if (response.data.success) {
             console.log('Email saved successfully.');
