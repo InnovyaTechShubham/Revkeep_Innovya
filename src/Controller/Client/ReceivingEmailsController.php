@@ -8,100 +8,65 @@ use Cake\Network\Exception\MethodNotAllowedException;
 
 class ReceivingEmailsController extends AppController
 {
-    // public function index()
-    // {
-    //     $this->autoRender = false; 
-    //     $receivingEmail = new ReceivingEmailsTable();
-    //     if ($this->request->is('post')) {
-    //      $email = $this->request->getData('email');
-    //      $description = $this->request->getData('description');
-    //      $new = $receivingEmail->newEntity([
-
-    //         'email' => $email,
-    //         'description' => $description
-    //     ]);
-    //     if ($receivingEmail->save($new)) {
-    //         $response = [
-
-    //             'success' => 'true',
-
-    //             'message' => 'Document entry saved.',
-
-    //         ];
-
-    //     }
-
-    // }
-    
-    // }
-    public function index()
+    public function initialize(): void
     {
-        $this->autoRender = false;
-        $receivingEmail = new ReceivingEmailsTable();
-        // $chainOrganizationsTable = $ChainOrganizationsTable->newEmptyEntity();
-        // $chainOrganizationsTable = $this->ChainsOrganizations;
-        // $chainOrganizationsTable = new ChainOrganizationsTable();
- 
-        if ($this->request->is('post')) {
-            $email = $this->request->getData('email');
-            $description = $this->request->getData('description');
-             // Check if email already exists
-            $existingEmail = $receivingEmail->exists(['email' => $email]);
-            // if chain_name is empty
-            // if (empty($email) || empty( $description)) {
-            //     // Handle the case where $chain_name is undefined, null, or empty
-            //     $response = [
-            //         'success' => false,
-            //         'message' => 'Chain name and Chain Type is required.',
-            //     ];
-           
-                // Send the JSON response back to the client
-                // echo json_encode($response);
-                // Optionally, you can use "die();" to terminate further script execution
-                // die();
-            }
-            if ($existingEmail) {
-                // Handle the case where the chain_name already exists
-                $response = [
-                    'success' => false,
-                    'message' => 'Email Already exists.',
-                ];
-                // Send the JSON response back to the client
-                echo json_encode($response);
-                // Optionally, you can use "die();" to terminate further script execution
-                die();
-            }else{
-                // $chain_name = $this->request->getData('chain_name');
-                // $chain_type = $this->request->getData('chain_type');
-               
- 
-                //  get facility and services data
-                // $facilityArray = $this->request->getData('Facility_data');
-                // $serviceArray = $this->request->getData('Service_data');
- 
- 
-                $new = $receivingEmail->newEntity([
-                   
-                    'email' => $email,
-                    'description' => $description
-                ]);
-           
-                if ($receivingEmail->save($new)) {
-                    $receivingEmail = $new->id;
- 
-                   
-                } else {
-                    $response = [
-                        'success' => false,
-                        'message' => 'Error saving data in Chains table.',
-                    ];
-                    // Send the JSON response back to the client
-                    echo json_encode($response);
-                    // Optionally, you can use "die();" to terminate further script execution
-                    die();
-                }
-            }
-           
+        parent::initialize();
+        $this->loadComponent('RequestHandler');
+    }
+
+    public function add() 
+    {
+        $this->request->allowMethod(['post']);
+
+        $email = $this->request->getData('email');
+        $description = $this->request->getData('description');
+
+       
+
+        // Validate the data (you can add more validations here)
+        if (empty($email)) {
+            $this->response = $this->response->withStatus(400);
+            $this->set(['success' => false, 'message' => 'Email is required.', '_serialize' => ['success', 'message']]);
+            return;
         }
+
+        // Assuming you have a ReceivingEmailsTable with the appropriate model
+        // $ReceivingEmailsTable = $this->getTableLocator()->get('ReceivingEmails');
+        $ReceivingEmailsTable = new ReceivingEmailsTable();
+        // Create a new entity and save it
+        $receivingEntry = $ReceivingEmailsTable->newEmptyEntity();
+        $receivingEntry->email = $email;
+        $receivingEntry->description = $description;
+        $receivingEntry->created_at = ' ';
+
+        // Insert debugging code
+        $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
+        
+        
+        $jsonContent = json_encode($receivingEntry, JSON_PRETTY_PRINT);
+        $file = fopen($filePath, 'w');
+        fwrite($file, $jsonContent);
+        fclose($file);
+        try{
+            // if ($ReceivingEmailsTable->save($receivingEntry)) {
+            //     $this->set(['success' => true, 'message' => 'Email saved successfully.', '_serialize' => ['success', 'message']]);
+            // } else {
+            //     $this->response = $this->response->withStatus(500);
+            //     $this->set(['success' => false, 'message' => 'Internal server error.', '_serialize' => ['success', 'message']]);
+            // }
+            $ReceivingEmailsTable->save($receivingEntry);
+            return $this->response
+                    ->withType('application/json')
+                    ->withStringBody(json_encode($receivingEntry));
+                
+    }
+    catch (\Exception $e){
+        $responseMessage = ['error' => $e->getMessage()];
+        return $this->response
+                    ->withType('application/json')
+                    ->withStringBody(json_encode($responseMessage));
+    }
+
+    }
     
 }
