@@ -1101,4 +1101,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         '_method' => 'POST'
     ]);
 
+	$builder->connect('/receivingMethods', [
+        'controller' => 'ReceivingMethods',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
 });
