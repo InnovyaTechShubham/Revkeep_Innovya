@@ -2375,10 +2375,11 @@ export default {
 			this.loading = false;
 		}
 	},
-	created()
-	{
-		this.addReceivingMethod();
-	},
+	// created()
+	// {
+	// 	// this.addReceivingMethod();
+	// 	this.addEmail();
+	// },
 	// // Load selected services from database on component initialization
 	// created() {
 	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
@@ -2459,30 +2460,30 @@ export default {
 	// 			});
     // },
 	
-		async addReceivingMethod() {
+		// async addReceivingMethod() {
 
-			console.log("started");
-			const facilityId = this.entity.id;
-			const data = {
-				facility_id: facilityId,
-				receiving_email_id: this.selectedReceivingEmailId,
-				receiving_fax_id: this.selectedReceivingFaxId,
-			};
-			// console.log(facilityId);
+		// 	console.log("started");
+		// 	const facilityId = this.entity.id;
+		// 	const data = {
+		// 		facility_id: facilityId,
+		// 		receiving_email_id: this.selectedReceivingEmailId,
+		// 		receiving_fax_id: this.selectedReceivingFaxId,
+		// 	};
+		// 	// console.log(facilityId);
 			
 
-			// Send a POST request to your controller to add the new type
-			axios.post('/client/receivingMethods', data)
-				.then((response) => {
-					this.receiving_methods.push(response.data);
-					console.log("check",response);
+		// 	// Send a POST request to your controller to add the new type
+		// 	axios.post('/client/receivingMethods', data)
+		// 		.then((response) => {
+		// 			this.receiving_methods.push(response.data);
+		// 			console.log("check",response);
 
-				})
-				.catch((error) => {
-					// Handle any errors, e.g., show an error message
-					console.error('Error adding new type:', error);
-				});
-			},
+		// 		})
+		// 		.catch((error) => {
+		// 			// Handle any errors, e.g., show an error message
+		// 			console.error('Error adding new type:', error);
+		// 		});
+		// 	},
 	
 	openPopupFax() {
 		this.popupVisibleFax = true;
@@ -2872,7 +2873,7 @@ async addFax() {
 		this.popupVisible = false;
 
 		// Prepare the data to be sent in the POST request
-		const emailData = {
+		const emailData = {   
 			email,
 			description,
 		};
@@ -2881,32 +2882,52 @@ async addFax() {
 			// Make a POST request to store the data in the database
 			const response = await axios.post('/client/receivingEmails', emailData);
 			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_emails", response.data);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				// Check if the expected properties are present
+				if (responseData.email && responseData.description && responseData.id) 
+				{
+				// if (response.data.success) {
+					console.log('Email saved successfully.');
+					this.saving = false;
+					// this.$router.push({ name: 'receivingEmails' });
 
-			if (response.data.success) {
-				console.log('Email saved successfully.');
-				this.saving = false;
-				this.$router.push({ name: 'receivingEmails' });
-
-				this.$nextTick(() => {
-					this.$store.dispatch('notify', {
-						variant: 'primary',
-						title: 'Email Created!',
-						message: 'New email created.',
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Email Created!',
+							message: 'New email created.',
+						});
 					});
-				});
 
-				redirect_index();
+					// redirect_index();
+				// } else {
+				// 	this.saving = false;
+				// 	// console.log('Email already exists');
+				// 	this.errorMessage = response.data.message;
+				// 	this.$nextTick(() => {
+				// 		this.$store.dispatch('notify', {
+				// 			variant: 'danger',
+				// 			title: 'Email Error',
+				// 			message: this.errorMessage,
+				// 		});
+				// 	});
+				// }
 			} else {
-				this.saving = false;
-				// console.log('Email already exists');
-				this.errorMessage = response.data.message;
-				this.$nextTick(() => {
-					this.$store.dispatch('notify', {
-						variant: 'danger',
-						title: 'Email Error',
-						message: this.errorMessage,
-					});
-				});
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save email. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
 			}
 		} catch (error) {
 			console.error('Error creating email:', error);
