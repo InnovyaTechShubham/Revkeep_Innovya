@@ -190,34 +190,43 @@
 								</div>
 								
 								<h6 class="h6 text-uppercase font-weight-bold text-muted mt-5">Receiving Information</h6>
-								<div class="table-responsive">
-									<table class="table table-sm table-headers-muted table-data-right mb-0">
+<div class="table-responsive">
+    <table class="table table-sm table-headers-muted table-data-right mb-0">
 
-										<tr>
-											<th>Emails</th>
-											<td>
-												<span v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
-													{{ entity.receiving_emails.join(', ') }}
-												</span>
-												<span v-else class="text-muted"> &mdash; </span>
-											</td>
-										</tr>
-										<tr>
-											<th>Faxes</th>
-											<td>
-												<pre>{{ JSON.stringify(entity.receiving_faxes, null, 2) }}</pre>
-												<span v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
-													{{ entity.receiving_faxes.map(faxObj => `(${faxObj.fax}) ${faxObj.description}`).join(', ') }}
-												</span>
-												<!-- <span v-else>
-													<span class="text-muted">Condition not met</span>
-												</span> -->
-												<span v-else class="text-muted"> &mdash; </span>
-											</td>
-										</tr>
+        <tr>
+    		<th>Emails</th>
+			<td>
+				<span v-if="entity.receiving_emails && Array.isArray(entity.receiving_emails) && entity.receiving_emails.length > 0">
+					{{ entity.receiving_emails.map(emailObj => `${emailObj.email}(${emailObj.description})`).join(', ') }}
+				</span>
+				<span v-else class="text-muted"> &mdash; </span>
+			</td>
+		</tr>
+		<!-- <tr><th>Emails</th></tr> -->
+		<!-- <tr v-if="entity.receiving_emails && entity.receiving_emails.length > 0" v-for="email in entity.receiving_emails" :key="email.index"> -->
+												<!-- <td class="text-center"> -->
+													<!-- <b-link :to="{ name: 'services.view', params: { id: service.id } }" class="font-weight-bold text-decoration-none"> -->
+														<!-- {{ receiving_emails.email }} -->
+													<!-- </b-link> -->
+												<!-- </td> -->
+											<!-- </tr>
+											<tr v-else>
+												<td class="text-muted">No emails</td>
+											</tr> -->
 
-									</table>
-								</div>
+        <tr>
+            <th>Faxes</th>
+            <td>
+                <span v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+                    {{ entity.receiving_faxes.map(faxObj => `(${faxObj.fax}) ${faxObj.description}`).join(', ') }}
+                </span>
+                <span v-else class="text-muted"> &mdash; </span>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 							</b-col>
 							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
 								<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
@@ -424,13 +433,68 @@ export default {
 	data() {
 		return {
 			loading: true,
+			// entity: {
+			// 	id: null,
+			// 	name: null,
+			// 	active: null,
+			// 	full_address: null,
+			// 	receiving_faxes: [], // For storing multiple faxes
+            // 	// receiving_emails: [], // For storing multiple emails
+
+			// },
+			// similar: [],
 			entity: {
-				id: null,
-				name: null,
-				active: null,
-				full_address: null,
+				id: this.id,
+				name: "",
+				display_name:null,
+				facility_type_id: null,
+				active: true,
+				phone: null,
+				fax: null,
+				email: null,
+				// street_address_1: null,
+				// street_address_2: null,
+				city: null,
+				state: null,
+				zip: null,
+				npi_number: null,
+				npi_manual: null,
+				primary_taxonomy: null,
+				location_phone: null,
+				mailing_phone: null,
+				additional_taxonomies: null,
+				client_owned: true,
+				chain_name: '',
+				area_name: null,
+				ou_number: null,
+				territory: null,
+				// rvp_name: null,
+				has_contract: false,
+				contract_start_date: null,
+				contract_end_date: null,
+				indemnification_days: null,
+				max_return_work_days: null,
+				address_1: null,
+				address_2: null,
+				// taxonomy_code: null,
+				// taxonomy_desc: null,
+				// taxonomy_group: null,
+				// taxonomy_license:  null,
+				// taxonomy_state: null,
+				othername: null,
+				enumeration_type: null,
+				organizational_subpart:null,
+				services: [],
+				chains:[],
+				receiving_email: '', // For input
+            	receiving_emails: [], // For storing multiple emails
+				receiving_fax: '', // For input
+            	receiving_faxes: [], // For storing multiple faxes
+				// outgoing_emails: [],
+            	receiving_methods: [], 
+
+
 			},
-			similar: [],
 		};
 	},
 	computed: {
@@ -445,8 +509,127 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		// this.addEmail();
+		// console.log('entity:', this.entity);
+        // console.log('entity.receiving_emails:', this.entity.receiving_emails);
+        // console.log('Array.isArray(entity.receiving_emails):', Array.isArray(this.entity.receiving_emails));
+        // console.log('entity.receiving_emails.length:', this.entity.receiving_emails.length);
+		// this.$emit('Receiving_emails', [{ email: 'test@example.com', description: 'test' }]);
 	},
+	created() {
+		console.log("Component created");
+		// Listen for the emitted event
+		// this.$root.$on('Receiving_emails', this.updateReceivingEmails);
+  	},
 	methods: {
+
+	// 	async addEmail() {
+	// 		const newEmail = { ...this.newEmail };
+	// 		const email = newEmail.email;
+	// 		const description = newEmail.description;
+	// 		// Clear the newEmail object for the next entry
+	// 		this.newEmail = { email: '', description: '' };
+
+	// 		// // Check if the email is in a valid format
+	// 		// const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	// 		// if (!emailRegex.test(email)) {
+	// 		// 	this.$bvToast.toast('Error: Please enter a valid email address.', {
+	// 		// 		title: 'Error',
+	// 		// 		variant: 'danger',
+	// 		// 		solid: true,
+	// 		// 		autoHideDelay: 5000, // milliseconds
+	// 		// });
+	// 		// return;
+	// 		// }
+
+
+	// 		// Check if receiving_emails is defined, if not, initialize it as an empty array
+	// 		if (!Array.isArray(this.entity.receiving_emails)) {
+	// 			this.$set(this.entity, 'receiving_emails', []);
+	// 		}
+
+	// 		// // Check if the email already exists
+	// 		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+	// 		//     alert('Email address already exists. Please enter a different email.');
+	// 		//     return;
+	// 		// }
+	// 		// Check if the email already exists
+	// 		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+	// 		// 	this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+	// 		// 		title: 'Error',
+	// 		// 		variant: 'danger',
+	// 		// 		solid: true,
+	// 		// 		autoHideDelay: 5000, // milliseconds
+	// 		// 	});
+	// 		// 	return;
+	// 		// }
+
+
+	// 		// Add the new email to the array
+	// 		this.entity.receiving_emails.push(newEmail);
+
+	// 		// // Clear the newEmail object for the next entry
+	// 		// this.newEmail = { email: '', description: '' };
+
+	// 		// // Close the pop-up
+	// 		// this.popupVisible = false;
+
+	// 		// Prepare the data to be sent in the POST request
+	// 		const emailData = {
+	// 			email,
+	// 			description,
+	// 		};
+	// 		console.log("header:",emailData);
+	// 		try {
+	// 			// Make a POST request to store the data in the database
+	// 			const response = await axios.post('/client/receivingEmails', emailData);
+	// 			console.log('Axios Response:', response);
+	// 			await this.$nextTick();
+	// 			this.$emit("Receiving_emails", response.data);
+	// 			console.log("Emitted data:", response.data);
+	// 			if (response.data.success) {
+	// 				console.log('Email saved successfully.');
+	// 				this.saving = false;
+	// 				this.$router.push({ name: 'receivingEmails' });
+
+	// 				this.$nextTick(() => {
+	// 					this.$store.dispatch('notify', {
+	// 						variant: 'primary',
+	// 						title: 'Email Created!',
+	// 						message: 'New email created.',
+	// 					});
+	// 				});
+
+	// 				redirect_index();
+	// 			} else {
+	// 				this.saving = false;
+	// 				// console.log('Email already exists');
+	// 				this.errorMessage = response.data.message;
+	// 				this.$nextTick(() => {
+	// 					this.$store.dispatch('notify', {
+	// 						variant: 'danger',
+	// 						title: 'Email Error',
+	// 						message: this.errorMessage,
+	// 					});
+	// 				});
+	// 			}
+	// 		} catch (error) {
+	// 			console.error('Error creating email:', error);
+	// 		}
+	// },
+		// Event handler for receiving the emitted event
+	// 	updateReceivingEmails(newEmailsArray) {
+    //     console.log("Inside updateReceivingEmails", newEmailsArray);
+
+    //     // Create a temporary variable to hold the updated array
+    //     const updatedEmails = [...newEmailsArray];
+
+    //     // Use Vue.set to ensure reactivity
+    //     Vue.set(this.entity, 'receiving_emails', updatedEmails);
+
+    //     console.log("Updated", this.entity.receiving_emails);
+    // },
 		async refresh() {
 			try {
 				this.loading = true;
