@@ -1821,48 +1821,6 @@
 						</b-card-header>
 						<b-collapse id="collapseReceivingMethods" role="tabpanel">
 							<b-card-body>
-								<!-- <validation-provider
-									vid="r_email"
-									name="Email"
-									:rules="{ required: false, max: 250 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4">
-										<b-input-group>
-											<b-form-input
-												name="Email"
-												type="text"
-												v-model="entity.receiving_email"
-												:state="getValidationState(validationContext)"
-												:disabled="saving"
-												placeholder="Enter Email"
-											></b-form-input>
-											<b-input-group-append>
-												<b-button @click="addReceivingEmail">
-													<font-awesome-icon icon="plus" fixed-width />
-												</b-button>
-											</b-input-group-append>
-										</b-input-group>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										></b-form-invalid-feedback>
-
-										<div v-if="entity.receiving_emails && entity.receiving_emails.length > 0">
-											<b-list-group>
-												<b-list-group-item v-for="(email, index) in entity.receiving_emails" :key="index">
-													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
-														<span>{{ email }}</span>
-														<b-button variant="danger" @click="removeReceivingEmail(index)">
-															<font-awesome-icon icon="times" fixed-width />
-														</b-button>
-													</div>
-												</b-list-group-item>
-											</b-list-group>
-										</div>
-									</b-form-group>
-								</validation-provider> -->
 
 								<template>
 									<div>
@@ -1886,10 +1844,22 @@
 												</empty-result>
 											</div>
 
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopup" variant="primary">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+													<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+
 											<!-- Icon to open the pop-up -->
-											<b-button @click="openPopup" variant="primary">
+											<!-- <b-button @click="openPopup" variant="primary">
 												<font-awesome-icon icon="plus" fixed-width />
-											</b-button>
+											</b-button> -->
 
 											<!-- Pop-up for adding emails -->
 											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
@@ -1903,11 +1873,11 @@
 												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
 												</b-form>
 											</b-modal>
-
+											
 											<!-- Icon to delete selected entries -->
-											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="ml-auto">
+											<!-- <b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
 												<font-awesome-icon icon="trash" fixed-width />
-											</b-button>
+											</b-button> -->
 
 
 											<!-- Pop-up for deleting selected entries -->
@@ -1960,7 +1930,6 @@
 												<font-awesome-icon icon="plus" fixed-width />
 												</b-button>
 
-												<!-- Trash icon button on the right -->
 												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
 												<font-awesome-icon icon="trash" fixed-width />
 												</b-button>
@@ -1969,15 +1938,17 @@
 											<!-- Pop-up for adding faxes -->
 											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
 												<b-form @submit.prevent="addFax">
-												<b-form-group label="Fax" label-for="fax">
-													<b-form-input v-model="newFax.fax" @input="formatFax" id="fax" required />
-												</b-form-group>
-												<b-form-group label="Description" label-for="description">
-													<b-form-input v-model="newFax.description" id="description" />
-												</b-form-group>
-												<b-button type="submit" variant="primary" class="mx-auto d-block">Ok</b-button>
+													<b-form-group label="Fax" label-for="fax">
+														<b-form-input v-model="newFax.fax" @input="formatFax" id="fax" required />
+													</b-form-group>
+													<b-form-group label="Description" label-for="description">
+														<b-form-input v-model="newFax.description" id="description" />
+													</b-form-group>
+													<b-button type="submit" variant="primary" class="mx-auto d-block">Ok</b-button>
 												</b-form>
 											</b-modal>
+
+
 
 
 											<!-- Pop-up for deleting selected entries -->
@@ -2331,8 +2302,10 @@ export default {
 				receiving_email: '', // For input
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
-            	receiving_faxes: [], // For storing multiple emails
-				outgoing_emails: [],
+            	receiving_faxes: [], // For storing multiple faxes
+				// outgoing_emails: [],
+            	receiving_methods: [], 
+
 
 			},
 			service_ids: [],
@@ -2346,9 +2319,10 @@ export default {
 			popupVisibleFax: false,
 			deletePopupVisible: false,
 			deletePopupVisibleFax: false,
+			isFaxInputDisabled: false,
 			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
-			allowedDigits: 10,
-			 existingFaxes: [] ,
+			// allowedDigits: 10,
+			// existingFaxes: [] ,
 
 			newEmail: {
 				email: '',
@@ -2368,11 +2342,11 @@ export default {
 		// concatenatedStreetAddress() {
         // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
     	// },
-		formattedFax() {
-			let numericFax = this.newFax.fax.replace(/\D/g, '');
-			numericFax = numericFax.slice(0, this.allowedDigits);
-			return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-			},
+		// formattedFax() {
+		// 	let numericFax = this.newFax.fax.replace(/\D/g, '');
+		// 	numericFax = numericFax.slice(0, this.allowedDigits);
+		// 	return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+		// 	},
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -2401,6 +2375,11 @@ export default {
 			this.loading = false;
 		}
 	},
+	// created()
+	// {
+	// 	// this.addReceivingMethod();
+	// 	this.addEmail();
+	// },
 	// // Load selected services from database on component initialization
 	// created() {
 	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
@@ -2452,14 +2431,59 @@ export default {
 //       console.error("Error fetching services:", error);
 //     }
 //   },
-	watch: {
-		'newFax.fax'(newValue) {
-      // Format fax number when it changes
-      this.newFax.fax = this.formatFaxNumber(newValue);
-    }
-	},
+	// watch: {
+	// 	'newFax.fax'(newValue) {
+    //   // Format fax number when it changes
+    //   this.newFax.fax = this.formatFaxNumber(newValue);
+    // }
+	// },
 		
 	methods: {
+	// 	addReceivingMethod() {
+    //     // Assuming you have the necessary data in your component's data or computed properties
+	// 	const facilityId = this.entity.id;
+	// 		const data = {
+	// 			facility_id: facilityId,
+	// 			receiving_email_id: this.selectedReceivingEmailId,
+	// 			receiving_fax_id: this.selectedReceivingFaxId,
+	// 		};
+
+	// 		// Make an Axios POST request to store data
+	// 		axios.post('/facilities-receivingmethods/store', data)
+	// 			.then(response => {
+	// 				// Handle the success response as needed
+	// 				console.log(response.data);
+	// 			})
+	// 			.catch(error => {
+	// 				// Handle errors
+	// 				console.error(error);
+	// 			});
+    // },
+	
+		// async addReceivingMethod() {
+
+		// 	console.log("started");
+		// 	const facilityId = this.entity.id;
+		// 	const data = {
+		// 		facility_id: facilityId,
+		// 		receiving_email_id: this.selectedReceivingEmailId,
+		// 		receiving_fax_id: this.selectedReceivingFaxId,
+		// 	};
+		// 	// console.log(facilityId);
+			
+
+		// 	// Send a POST request to your controller to add the new type
+		// 	axios.post('/client/receivingMethods', data)
+		// 		.then((response) => {
+		// 			this.receiving_methods.push(response.data);
+		// 			console.log("check",response);
+
+		// 		})
+		// 		.catch((error) => {
+		// 			// Handle any errors, e.g., show an error message
+		// 			console.error('Error adding new type:', error);
+		// 		});
+		// 	},
 	
 	openPopupFax() {
 		this.popupVisibleFax = true;
@@ -2467,49 +2491,140 @@ export default {
 	closePopupFax() {
 		this.popupVisibleFax = false;
 		},
-	
-	formatFaxNumber(value) {
-      let numericFax = value.replace(/\D/g, '');
-      numericFax = numericFax.slice(0, this.allowedDigits);
-      return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-    },
-    formatFax() {
-      // Update the displayed fax number when input changes
-      this.newFax.fax = this.formatFaxNumber(this.newFax.fax);
-    },
-	addFax() {
-		const newFax = { ...this.newFax };
-		console.log("new:", newFax);
+	formatFax() {
+		const numericFax = this.newFax.fax.replace(/\D/g, '');
 
-		// Check if receiving_faxes is defined, if not, initialize it as an empty array
-		if (!Array.isArray(this.entity.receiving_faxes)) {
-			this.$set(this.entity, 'receiving_faxes', []);
+		if (numericFax.length > 10) {
+		this.faxInputError = true; // Invalid fax number
+		// this.isFaxInputDisabled = true; // Disable the input field
+		} else {
+		this.newFax.fax = numericFax ? numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+		this.faxInputError = false;
+		// this.isFaxInputDisabled = false; // Enable the input field
 		}
+		},
+// 	addFax() {
+//     const newFax = { ...this.newFax };
+//     console.log("new:", newFax);
 
-		if (this.entity.receiving_faxes.map((fax) => fax.fax).includes(this.newFax.fax)) {
-			alert('Fax number already exists. Please enter a different fax.');
-			return;
-		}
+//     // Check if receiving_faxes is defined, if not, initialize it as an empty array
+//     if (!Array.isArray(this.entity.receiving_faxes)) {
+//         this.$set(this.entity, 'receiving_faxes', []);
+//     }
 
-		// Add the new fax to the array
-		this.existingFaxes.push(this.newFax.fax);
-		// this.entity.receiving_faxes.push(newFax);
-		console.log('Before addFax:', this.entity.receiving_faxes);
-		this.entity.receiving_faxes.push(newFax);
-		console.log('After addFax:', this.entity.receiving_faxes);
+//     // Check if the fax number already exists
+//     if (this.entity.receiving_faxes.map((fax) => fax.fax).includes(this.newFax.fax)) {
+//         this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+//             title: 'Error',
+//             variant: 'danger',
+//             solid: true,
+//             autoHideDelay: 5000, // milliseconds
+//         });
+//         return;
+//     }
 
+//     // Add the new fax to the array
+//     this.existingFaxes.push(this.newFax.fax);
+//     this.entity.receiving_faxes.push(newFax);
+//     console.log('Before addFax:', this.entity.receiving_faxes);
+//     console.log('After addFax:', this.entity.receiving_faxes);
+
+//     // Clear the newFax object for the next entry
+//     this.newFax = { fax: '', description: '' };
+
+//     // Use $nextTick to ensure the DOM is updated
+//     this.$nextTick(() => {
+//         console.log("Receiving Faxes:", this.entity.receiving_faxes);
+//     });
+
+//     // Close the pop-up
+//     this.popupVisibleFax = false;
+// },
+
+async addFax() {
+    try {
+        const newFax = { ...this.newFax };
+        console.log("new:", newFax);
 		// Clear the newFax object for the next entry
-		this.newFax = { fax: '', description: '' };
+        this.newFax = { fax: '', description: '' };
 
-		// Use $nextTick to ensure the DOM is updated
-		this.$nextTick(() => {
-			console.log("Receiving Faxes:", this.entity.receiving_faxes);
-		});
+        // Validate fax number format
+        const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+        if (!faxRegex.test(newFax.fax)) {
+            this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
 
-		// Close the pop-up
-		this.popupVisibleFax = false;
-	},
+        // Check if receiving_faxes is defined, if not, initialize it as an empty array
+        if (!Array.isArray(this.entity.receiving_faxes)) {
+            this.$set(this.entity, 'receiving_faxes', []);
+        }
 
+        // Check if the fax number already exists
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+            this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Add the new fax to the array
+        this.entity.receiving_faxes.push(newFax);
+
+        // Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Close the pop-up
+        this.popupVisibleFax = false;
+
+        // Prepare the data to be sent in the POST request
+        const faxData = {
+            fax: newFax.fax,  // Use the updated fax number
+            description: newFax.description,
+        };
+        console.log("header:", faxData);
+
+        // Make a POST request to store the data in the database
+        const response = await axios.post('/client/receivingFaxes', faxData);
+        console.log('Axios Response:', response);
+
+        if (response.data.success) {
+            console.log('Fax saved successfully.');
+            this.saving = false;
+            this.$router.push({ name: 'receivingFaxes' });
+
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'primary',
+                    title: 'Fax Created!',
+                    message: 'New fax created.',
+                });
+            });
+
+            redirect_index();
+        } else {
+            this.saving = false;
+            this.errorMessage = response.data.message;
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'danger',
+                    title: 'Fax Error',
+                    message: this.errorMessage,
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error creating fax:', error);
+    }
+},
     openDeleteFaxPopup() {
       // Show checkboxes and delete icon
       this.showDeleteIcon = true;
@@ -2575,136 +2690,250 @@ export default {
 		this.popupVisible = false;
 		},
 		
+	// async addEmail() {
+	// 	// Assuming newEmail is a valid object with email and description properties
+	// 	const newEmail = { ...this.newEmail };
+	// 	const email = newEmail.email;
+	// 	const description= newEmail.description;
+	// 	console.log("new:",newEmail);
+	// 	console.log("Receiving Emails:", this.entity.receiving_emails);
+	// 	// Prepare the data to be sent in the POST request
+	// 	// const emailData = {
+	// 	// 	email,
+	// 	// 	description,
+	// 	// 	};
+	// 	// console.log("before API", emailData);
+
+	// 	// Check if receiving_emails is defined, if not, initialize it as an empty array
+	// 	if (!Array.isArray(this.entity.receiving_emails)) {
+	// 		this.$set(this.entity, 'receiving_emails', []);
+	// 	}
+		
+	// 	// Add the new email to the array
+	// 	this.entity.receiving_emails.push(newEmail);
+
+	// 	// Clear the newEmail object for the next entry
+	// 	this.newEmail = { email: '', description: '' };
+		
+	// 	// Close the pop-up
+	// 	// this.closePopup();
+	// 	this.popupVisible = false;
+
+	// 	// Prepare the data to be sent in the POST request
+	// 	const emailData = {
+	// 		email,
+	// 		description,
+	// 		};
+	// 	console.log("before API", emailData);
+	// 	await axios.post('/client/receivingEmails', emailData)
+	// 		.then(response => {
+	// 			// const responseData = response.data.data;
+	// 			console.log("response:",response);
+	// 			if(response.data.success){
+	// 				console.log('email saved');
+	// 				this.saving = false;
+	// 				this.$router.push({
+	// 					name: "receivingEmails"
+	// 				});
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "primary",
+	// 						title: "Email Created!",
+	// 						message: `New email Created!.`,
+	// 					});
+	// 				});
+	// 				redirect_index()
+	// 			}else{
+	// 				this.saving = false;
+	// 				console.log('email already exists');
+	// 				this.errorMessage = response.data.message; 
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "danger",
+	// 						title: "Email Error",
+	// 						message: this.errorMessage,
+	// 					});
+	// 				});
+	// 			}
+	// 		})
+	// 		.catch(error => {
+	// 			console.log(error)
+	// 			// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
+	// 			// this.saving = false;
+	// 			// this.errorMessage = 'Error creating chain.'; 
+	// 			// this.$nextTick(function () {
+	// 			// 	this.$store.dispatch("notify", {
+	// 			// 		variant: "danger",
+	// 			// 		title: "Chain Error",
+	// 			// 		message: error,
+	// 			// 	});
+	// 			// });
+	// 		})
+
+	// 	// // Send a POST request to your controller to add the new type
+    //     // axios.post('/client/receivingEmails', { email , description})
+    //     //     .then((response) => {
+	// 	// 		console.log("inside API call");
+    //     //         // Handle the response, e.g., update the insuranceTypes list
+    //     //         this.entity.receiving_emails.push(response.data);
+
+    //     //         // // Close the modal
+    //     //         // this.$bvModal.hide('customAuditTypeModal');
+
+    //     //         // // Clear the input field
+    //     //         // this.newAuditType = '';
+	// 	// 		console.log("check",response);
+
+	// 	// 		window.location.reload();
+    //     //     })
+    //     //     .catch((error) => {
+    //     //         // Handle any errors, e.g., show an error message
+    //     //         console.error('Error adding new email:', error);
+    //     //     });
+
+	// 	// try {
+	// 	// 	const url = "/client/receivingEmails";
+	// 	// 	const data = {'receivingEmails':this.entity.receiving_emails}
+	// 	// 	console.log(data);
+	// 	// 	// const resp = await axios.post('/client/sendemail', data);
+	// 	// 	const response = await axios.post(url,data);
+	// 	// 	console.log("Response from API:", response.data);
+
+	// 	// 	}
+	// 	// 	 catch (error) {
+    //     //         console.error('Error storing data:', error);
+    //     //     }
+    //     //     // Clear the input for the next entry
+    //     //     this.entity.receiving_email = '';
+        
+
+	// 	// // Make a POST request to store the data in the database
+	// 	// axios.post('client/api/receivingEmails', {
+	// 	// receivingEmails: [newEmail] // Sending an array with a single email
+	// 	// })
+	// 	// .then(response => {
+	// 	// // Handle success response if needed
+	// 	// console.log('Data stored successfully:', response.data);
+	// 	// })
+	// 	// .catch(error => {
+	// 	// // Handle error if the data couldn't be stored
+	// 	// console.error('Error storing data:', error.response.data);
+	// 	// });
+	// },
 	async addEmail() {
-		// Assuming newEmail is a valid object with email and description properties
 		const newEmail = { ...this.newEmail };
 		const email = newEmail.email;
-		const description= newEmail.description;
-		console.log("new:",newEmail);
-		console.log("Receiving Emails:", this.entity.receiving_emails);
-		// Prepare the data to be sent in the POST request
-		// const emailData = {
-		// 	email,
-		// 	description,
-		// 	};
-		// console.log("before API", emailData);
+		const description = newEmail.description;
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Check if the email is in a valid format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		if (!emailRegex.test(email)) {
+			this.$bvToast.toast('Error: Please enter a valid email address.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+		});
+		return;
+		}
+
 
 		// Check if receiving_emails is defined, if not, initialize it as an empty array
 		if (!Array.isArray(this.entity.receiving_emails)) {
 			this.$set(this.entity, 'receiving_emails', []);
 		}
-		
+
+		// // Check if the email already exists
+		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+		//     alert('Email address already exists. Please enter a different email.');
+		//     return;
+		// }
+		// Check if the email already exists
+		if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+			this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+			});
+			return;
+		}
+
+
 		// Add the new email to the array
 		this.entity.receiving_emails.push(newEmail);
 
 		// Clear the newEmail object for the next entry
 		this.newEmail = { email: '', description: '' };
-		
+
 		// Close the pop-up
-		// this.closePopup();
 		this.popupVisible = false;
 
 		// Prepare the data to be sent in the POST request
-		const emailData = {
+		const emailData = {   
 			email,
 			description,
-			};
-		console.log("before API", emailData);
-		await axios.post('/client/receivingEmails', emailData)
-			.then(response => {
-				// const responseData = response.data.data;
-				console.log("response:",response);
-				if(response.data.success){
-					console.log('email saved');
+		};
+		console.log("header:",emailData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingEmails', emailData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_emails", response.data);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				// Check if the expected properties are present
+				if (responseData.email && responseData.description && responseData.id) 
+				{
+				// if (response.data.success) {
+					console.log('Email saved successfully.');
 					this.saving = false;
-					this.$router.push({
-						name: "receivingEmails"
-					});
-					this.$nextTick(function () {
-						this.$store.dispatch("notify", {
-							variant: "primary",
-							title: "Email Created!",
-							message: `New email Created!.`,
+					// this.$router.push({ name: 'receivingEmails' });
+
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Email Created!',
+							message: 'New email created.',
 						});
 					});
-					redirect_index()
-				}else{
-					this.saving = false;
-					console.log('email already exists');
-					this.errorMessage = response.data.message; 
-					this.$nextTick(function () {
-						this.$store.dispatch("notify", {
-							variant: "danger",
-							title: "Email Error",
-							message: this.errorMessage,
-						});
-					});
-				}
-			})
-			.catch(error => {
-				console.log(error)
-				// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
-				// this.saving = false;
-				// this.errorMessage = 'Error creating chain.'; 
-				// this.$nextTick(function () {
-				// 	this.$store.dispatch("notify", {
-				// 		variant: "danger",
-				// 		title: "Chain Error",
-				// 		message: error,
+
+					// redirect_index();
+				// } else {
+				// 	this.saving = false;
+				// 	// console.log('Email already exists');
+				// 	this.errorMessage = response.data.message;
+				// 	this.$nextTick(() => {
+				// 		this.$store.dispatch('notify', {
+				// 			variant: 'danger',
+				// 			title: 'Email Error',
+				// 			message: this.errorMessage,
+				// 		});
 				// 	});
-				// });
-			})
+				// }
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save email. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating email:', error);
+		}
+},
 
-		// // Send a POST request to your controller to add the new type
-        // axios.post('/client/receivingEmails', { email , description})
-        //     .then((response) => {
-		// 		console.log("inside API call");
-        //         // Handle the response, e.g., update the insuranceTypes list
-        //         this.entity.receiving_emails.push(response.data);
-
-        //         // // Close the modal
-        //         // this.$bvModal.hide('customAuditTypeModal');
-
-        //         // // Clear the input field
-        //         // this.newAuditType = '';
-		// 		console.log("check",response);
-
-		// 		window.location.reload();
-        //     })
-        //     .catch((error) => {
-        //         // Handle any errors, e.g., show an error message
-        //         console.error('Error adding new email:', error);
-        //     });
-
-		// try {
-		// 	const url = "/client/receivingEmails";
-		// 	const data = {'receivingEmails':this.entity.receiving_emails}
-		// 	console.log(data);
-		// 	// const resp = await axios.post('/client/sendemail', data);
-		// 	const response = await axios.post(url,data);
-		// 	console.log("Response from API:", response.data);
-
-		// 	}
-		// 	 catch (error) {
-        //         console.error('Error storing data:', error);
-        //     }
-        //     // Clear the input for the next entry
-        //     this.entity.receiving_email = '';
-        
-
-		// // Make a POST request to store the data in the database
-		// axios.post('client/api/receivingEmails', {
-		// receivingEmails: [newEmail] // Sending an array with a single email
-		// })
-		// .then(response => {
-		// // Handle success response if needed
-		// console.log('Data stored successfully:', response.data);
-		// })
-		// .catch(error => {
-		// // Handle error if the data couldn't be stored
-		// console.error('Error storing data:', error.response.data);
-		// });
-	},
     openDeletePopup() {
       // Show checkboxes and delete icon
       this.showDeleteIcon = true;
@@ -3068,38 +3297,55 @@ export default {
 		// async getChains() {
 		// 	await this.$store.dispatch("chains/getAll");
 		// },
+		// async getChains() {
+		// 	console.log("Fetching chains...");
+		// 	// await this.$store.dispatch("chains/get");
+		// 	const facilityId = this.entity.id;
+		// 	await axios.get('/client/api/chainList')
+		// 	.then(response => {
+		// 		console.log("Response:",response.data);
+		// 	// // response data stored in records attribute to render as list
+		// 	// records.value = response.data;
+		// 		response.data.facilityChains.forEach((item, index) => {
+		// 		// console.log(`Element at index ${index}:`, item);
+
+		// 		if (item.facility_id == facilityId) {
+		// 			console.log("match found =", item.chain_id);
+		// 			console.log("log =", response.data.chains);
+
+		// 			response.data.chains.forEach((i, index) => {
+		// 				console.log(`chain at index ${index}:`, i);
+		// 				if (i.id == item.chain_id) {
+		// 					console.log("Item found =", i.chain_name);
+		// 					// Check if the service is not already in selectedServices before pushing
+		// 					// if (!this.selectedServices.some(service => service.id === i.id)) {
+		// 						// this.selectedServices.push(i);
+		// 						this.selectedChain = i.chain_name;
+		// 						console.log("output", this.selectedChain);
+		// 						// response data stored in records attribute to render as list
+		// 						records.value = response.data.chains;
+		// 						// }
+		// 				}
+		// 			});
+		// 		}
+		// 	});
+		// 	})
+		// 	.catch(error => {
+		// 		console.error(error);
+		// 	})
+		// 	.finally(() => {
+		// 		this.saving = false;
+		// 	});
+		// 	console.log("Chains fetched successfully.");
+		// 	},
 		async getChains() {
 			console.log("Fetching chains...");
 			// await this.$store.dispatch("chains/get");
-			const facilityId = this.entity.id;
-			await axios.get('/client/api/chainList')
+			await axios.get('/client/getChains')
 			.then(response => {
 				console.log("Response:",response.data);
-			// // response data stored in records attribute to render as list
-			// records.value = response.data;
-				response.data.facilityChains.forEach((item, index) => {
-				// console.log(`Element at index ${index}:`, item);
-
-				if (item.facility_id == facilityId) {
-					console.log("match found =", item.chain_id);
-					console.log("log =", response.data.chains);
-
-					response.data.chains.forEach((i, index) => {
-						console.log(`chain at index ${index}:`, i);
-						if (i.id == item.chain_id) {
-							console.log("Item found =", i.chain_name);
-							// Check if the service is not already in selectedServices before pushing
-							// if (!this.selectedServices.some(service => service.id === i.id)) {
-								// this.selectedServices.push(i);
-								this.selectedChain = i.chain_name;
-								console.log("output", this.selectedChain);
-								// response data stored in records attribute to render as list
-								records.value = response.data.chains;
-								// }
-						}
-					});
-				}
-			});
+			// response data stored in records attribute to render as list
+			records.value = response.data;
 			})
 			.catch(error => {
 				console.error(error);
