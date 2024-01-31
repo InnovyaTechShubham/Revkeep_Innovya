@@ -1102,9 +1102,15 @@ $routes->prefix('client', function (RouteBuilder $builder) {
     ]);
 
 	$builder->connect('/receivingMethods', [
-        'controller' => 'ReceivingMethods',
+        'controller' => 'FacilitiesReceivingMethods',
         'action' => 'add',
         '_method' => 'POST'
     ]);
+
+	$builder->connect('/fetchReceivingEmails', [
+		'controller' => 'ReceivingEmails',
+		'action' => 'index',
+		
+	]);
 
 });
