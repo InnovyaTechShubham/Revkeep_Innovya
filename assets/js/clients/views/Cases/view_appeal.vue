@@ -428,6 +428,7 @@
 									show-case-files
 									@submitted="appealPacketSubmitted"
 									@remove="unselectFile"
+									:request_id="request_id"
 								/>
 							</b-tab>
 							
@@ -1100,6 +1101,7 @@ export default {
 			isAppeal: true,
 			isButton:true,
 			isEditing:false,
+			request_id:[],
 		};
 	},
 	
@@ -1521,27 +1523,30 @@ export default {
 		},
 		// request tabs 
 		handleTabClick(caseRequest) {
-        this.entity = {
-        name: caseRequest.name,
-        type_label: caseRequest.type_label,
-		status_label: caseRequest.status_label,
-		insurance_provider: caseRequest.insurance_provider,
-		agency: caseRequest.agency,
-		insurance_provider_id: caseRequest.insurance_provider_id,
-		agency_id: caseRequest.agency_id,
-        days_due_left: caseRequest.days_due_left,
-		due_date: caseRequest.due_date,
-		completed: caseRequest.completed,
-		completed_at: caseRequest.completed_at,
-		created: caseRequest.created,
-		unable_to_complete: caseRequest.unable_to_complete,
-		assigned_to_user: caseRequest.assigned_to_user,
-		assigned_to: caseRequest.assigned_to,
-		completed_by: caseRequest.completed_by,
-		id : caseRequest.id,
-      };
-	  this.isEditing = true;
-    }, 
+			this.entity = {
+				name: caseRequest.name,
+				type_label: caseRequest.type_label,
+				status_label: caseRequest.status_label,
+				insurance_provider: caseRequest.insurance_provider,
+				agency: caseRequest.agency,
+				insurance_provider_id: caseRequest.insurance_provider_id,
+				agency_id: caseRequest.agency_id,
+				days_due_left: caseRequest.days_due_left,
+				due_date: caseRequest.due_date,
+				completed: caseRequest.completed,
+				completed_at: caseRequest.completed_at,
+				created: caseRequest.created,
+				unable_to_complete: caseRequest.unable_to_complete,
+				assigned_to_user: caseRequest.assigned_to_user,
+				assigned_to: caseRequest.assigned_to,
+				completed_by: caseRequest.completed_by,
+				id : caseRequest.id,
+			};
+			this.isEditing = true;
+			// Pass the request_id to the appeal-response component
+			// this.$refs.appealResponseComponent.generate({ request_id: caseRequest.id });
+			this.request_id.push(caseRequest.id);
+    	}, 
 
 	
 
