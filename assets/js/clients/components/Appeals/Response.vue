@@ -362,12 +362,15 @@
 
 					<!-- Inside the "Facility" block where you have the delivery method dropdown -->
 					<div v-if="selectedSubmitTo === 'facility'">
+						<b-form-group label="Facility Selected">
+							<b-form-input type="text" v-model="facilityName" disabled></b-form-input>
+						</b-form-group>
 						<b-form-group label="Delivery Method" label-cols-lg="4">
 							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
 								:disabled="isFacilitySelected" @change="handleSubmitToChange">
 								<option value="Fax">Fax</option>
 								<option value="Email">Email</option>
-								<option value="Manual">Manual</option>
+								<option value="Manual">Mail</option>
 							</b-form-select>
 						</b-form-group>
 
@@ -408,12 +411,15 @@
 
 
 					<div v-if="selectedSubmitTo === 'agency'">
+						<b-form-group label="Agency Selected">
+							<b-form-input type="text" v-model="agencyName" disabled></b-form-input>
+						</b-form-group>
 						<b-form-group label="Delivery Method" label-cols-lg="4">
 							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-							:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
+								:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
 								<option value="Fax">Fax</option>
 								<option value="Email">Email</option>
-								<option value="Manual">Manual</option>
+								<option value="Manual">Mail</option>
 							</b-form-select>
 						</b-form-group>
 
@@ -423,17 +429,19 @@
 							</b-alert>
 						</b-form-group>
 
-						<div v-if="selectedDeliveryMethod === 'Email'">
-							<b-form-group label="Agency Email">
-								<b-form-input type="text" v-model="selectedAgencyEmail" disabled></b-form-input>
-							</b-form-group>
-						</div>
+						<!-- Dropdown for Email -->
+						<b-form-group v-if="selectedDeliveryMethod === 'Email' && agencyEmailList.length > 0"
+							label="Select Email" label-cols-lg="4">
+							<b-form-select v-model="selectedFax" :options="getEmailOptions()" value-field="email"
+								text-field="displayText"></b-form-select>
+						</b-form-group>
 
-						<div v-if="selectedDeliveryMethod === 'Fax'">
-							<b-form-group label="Agency Fax">
-								<b-form-input type="text" v-model="selectedAgencyFax" disabled></b-form-input>
-							</b-form-group>
-						</div>
+						<!-- Dropdown for Fax -->
+						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && agencyFaxList.length > 0" label="Select Fax"
+							label-cols-lg="4">
+							<b-form-select v-model="selectedEmail" :options="getFaxOptions()" value-field="fax"
+								text-field="displayText"></b-form-select>
+						</b-form-group>
 					</div>
 
 					<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
@@ -829,7 +837,7 @@ export default {
 		},
 	},
 	computed: {
-		
+
 		isFacilitySelected() {
 			return this.selectedSubmitTo === 'facility' && this.facility_id === null;
 		},
@@ -954,6 +962,7 @@ export default {
 			passwordEsmd: null,
 			agencyList: [],
 			selectedAgency: null,
+			matchingContacts: null,
 			emailData: null,
 			faxData: null,
 			websiteData: null,
@@ -976,17 +985,26 @@ export default {
 			emailIds: [],
 			faxIds: [],
 			emailList: [],
+			facilityList: [],
 			faxList: [],
+			agencyEmailList: [],
+			agencyFaxList: [],
+			agencyEmailDesc: [],
+			agencyFaxDesc: [],
 			extractedEmails: [],
 			extractedFaxes: [],
 			agencyid: null,
-
+			agencyName: '',
+			facilityName: '',
+			MultiAgencyContact: [],
 		};
 
 	},
 	mounted() {
 		this.checkExists();
 		this.test();
+		this.FacilityList();
+		this.MultiAgencyContactList();
 		this.fetchuserlist();
 		this.AgencyList();
 		this.AppealList();
@@ -995,8 +1013,23 @@ export default {
 		this.facilityfaxList();
 		this.FacilityReceivingList();
 
+
 	},
 	methods: {
+		getEmailOptions() {
+			return this.agencyEmailList.map(email => ({
+				email: email,
+				displayText: `${email} (${this.agencyEmailDesc[this.agencyEmailList.indexOf(email)]})`
+			}));
+		},
+
+		getFaxOptions() {
+			return this.agencyFaxList.map(fax => ({
+				fax: fax,
+				displayText: `${fax} (${this.agencyFaxDesc[this.agencyFaxList.indexOf(fax)]})`
+			}));
+		},
+
 		async CaseList() {
 			try {
 				const url = "/client/caselist";
@@ -1024,6 +1057,39 @@ export default {
 				}
 
 				console.log("RESPONSE cases = ", response.data);
+			} catch (error) {
+				console.error("Error fetching client facilities:", error);
+			}
+		},
+		async MultiAgencyContactList() {
+			try {
+				const url = "/client/multiagencycontactlist";
+
+				// Fetch data from the server
+				const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+					},
+				});
+				this.MultiAgencyContact = response.data;
+				console.log("RESPONSE multi agency contact = ", response.data);
+			} catch (error) {
+				console.error("Error fetching multi agency contact:", error);
+			}
+		},
+
+		async FacilityList() {
+			try {
+				const url = "/client/facilityList";
+
+				// Fetch data from the server
+				const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+					},
+				});
+				this.facilityList = response.data;
+				console.log("RESPONSE facility = ", response.data);
 			} catch (error) {
 				console.error("Error fetching client facilities:", error);
 			}
@@ -1101,9 +1167,16 @@ export default {
 						.filter(item => this.emailIds.includes(item.id))
 						.map(item => item.email);
 
+					// Extract facility name based on facility_id
+					let facility = this.facilityList.find(item => item.id === this.facility_id);
+
+					// Store facility name in this.facilityName
+					this.facilityName = facility ? facility.name : 'Unknown Facility';
+
 					// Log the details for verification
 					console.log("Receiving Email Details:", this.receivingEmailDetails);
 					console.log("Receiving Fax Details:", this.receivingFaxDetails);
+					console.log("Facility Selected:", this.facilityName);
 				} else {
 					console.log("No data found for the provided facility_id");
 				}
@@ -1111,9 +1184,6 @@ export default {
 				console.error("Error fetching facility receiving data:", error);
 			}
 		},
-
-
-
 		async AgencyList() {
 			try {
 				const url = "/client/agencyList";
@@ -1130,6 +1200,48 @@ export default {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
+
+		// async AppealList() {
+		// 	try {
+		// 		const url = "/client/appealList";
+
+		// 		// Fetch data from the server
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+
+		// 		const insid = this.value.id;
+		// 		console.log("appeal id", insid);
+
+		// 		// Find the appeal with matching id
+		// 		let selectedAppeal = response.data.find(appeal => appeal.id === insid);
+		// 		console.log("checking selected Appeal", selectedAppeal)
+		// 		if (selectedAppeal) {
+		// 			// Find agency with matching id
+		// 			const selectedAgency = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
+		// 			console.log("selected agency ", selectedAgency);
+		// 			this.agencyid = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
+		// 			console.log("agency id ", this.agencyid.id);
+		// 			if (selectedAgency) {
+		// 				// Update selected agency email and fax
+		// 				this.selectedAgencyEmail = selectedAgency.contact_email;
+		// 				this.selectedAgencyFax = selectedAgency.contact_fax;
+		// 				this.agencyName = selectedAgency.name;
+		// 			}
+		// 		}
+
+		// 		console.log("RESPONSE appeal = ", response.data);
+		// 		console.log("Selected Agency Email:", this.selectedAgencyEmail);
+		// 		console.log("Selected Agency Fax:", this.selectedAgencyFax);
+		// 		console.log("Selected Agency Name:", this.agencyName);
+		// 	} catch (error) {
+		// 		console.error("Error fetching client facilities:", error);
+		// 	}
+		// },
+
+
 		async AppealList() {
 			try {
 				const url = "/client/appealList";
@@ -1146,23 +1258,40 @@ export default {
 
 				// Find the appeal with matching id
 				let selectedAppeal = response.data.find(appeal => appeal.id === insid);
-				console.log("checking selected Appeal", selectedAppeal)
+				console.log("checking selected Appeal", selectedAppeal);
 
 				if (selectedAppeal) {
-					// Find agency with matching id
-					const selectedAgency = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-					this.agencyid = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-					console.log("agency id ",this.agencyid.id);
-					if (selectedAgency) {
-						// Update selected agency email and fax
-						this.selectedAgencyEmail = selectedAgency.contact_email;
-						this.selectedAgencyFax = selectedAgency.contact_fax;
+					// Convert reactive data to plain JavaScript object
+					const multiAgencyContactData = JSON.parse(JSON.stringify(this.MultiAgencyContact));
+
+					// Log MultiAgencyContact for debugging
+					console.log("MultiAgencyContact:", multiAgencyContactData);
+
+					// Find all agencies with matching id in MultiAgencyContact
+					const matchingAgencies = multiAgencyContactData.filter(agency => agency.agency_id === selectedAppeal.agency_id);
+					console.log("matching agencies ", matchingAgencies);
+
+					if (matchingAgencies.length > 0) {
+						// Update selected agency information
+						this.selectedAgencyEmail = matchingAgencies[0].agency_email; // Assuming you want to use the first instance
+						this.selectedAgencyFax = matchingAgencies[0].agency_fax;
+						this.agencyName = matchingAgencies[0].agency_name;
+
+						// Store email and fax from all matching instances
+						this.agencyEmailList = matchingAgencies.map(agency => agency.agency_email).filter(email => email !== "NULL");
+						this.agencyFaxList = matchingAgencies.map(agency => agency.agency_fax).filter(fax => fax !== null);
+						this.agencyEmailDesc = matchingAgencies.map(agency => agency.desc_email);
+						this.agencyFaxDesc = matchingAgencies.map(agency => agency.desc_fax);
+					} else {
+						console.log("No matching agencies found for the provided agency_id");
 					}
 				}
-
-				console.log("RESPONSE appeal = ", response.data);
 				console.log("Selected Agency Email:", this.selectedAgencyEmail);
 				console.log("Selected Agency Fax:", this.selectedAgencyFax);
+				console.log("Selected Agency Name:", this.agencyName);
+				console.log("Email List:", this.agencyEmailList);
+				console.log("Fax List:", this.agencyFaxList);
+				console.log("Desc Fax:", this.agencyFaxDesc);
 			} catch (error) {
 				console.error("Error fetching client facilities:", error);
 			}

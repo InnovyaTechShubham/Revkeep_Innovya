@@ -993,7 +993,6 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	$builder->connect('/multiplefacility', [
 		'controller' => 'Multiplefacility',
 		'action' => 'index',
-	    
 	]);
 	$builder->connect('/fetchmultiplefacility', [
 		'controller' => 'FetchMultiplefacility',
@@ -1034,6 +1033,17 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	$builder->connect('/caselist', [
 		'controller' => 'CaseList',
 		'action' => 'index',
+	]);
+	$builder->connect('/multipleagencycontact', [
+		'controller' => 'MultipleAgencyContact',
+		'action' => 'index',
+		'_method' => 'POST'
+		
+	]);
+	$builder->connect('/multiagencycontactlist', [
+		'controller' => 'MultiAgencyContactList',
+		'action' => 'index',
+	    
 	]);
 	$builder->connect('/hearing', [
 		'controller' => 'HearingCase',
