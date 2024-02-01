@@ -100,31 +100,94 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-
-					<validation-provider
+					<div>
+					<b-row>
+					<!-- First Column -->
+					<b-col md="6">
+						<!-- Facility Type -->
+						<validation-provider
 						vid="facility_type_id"
 						name="Facility Type"
 						:rules="{ required: true }"
 						v-slot="validationContext"
-					>
-						<b-form-group label="Main Type" label-for="facility_type_id" label-cols-lg="2">
+						>
+						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="4">
 							<b-form-select
-								name="facility_type_id"
-								v-model="entity.facility_type_id"
-								:state="getValidationState(validationContext)"
-								:options="facilityTypes"
-								:disabled="saving || loadingFacilityTypes"
-								required="required"
-								value-field="id"
-								text-field="name"
+							name="facility_type_id"
+							v-model="entity.facility_type_id"
+							:state="getValidationState(validationContext)"
+							:options="facilityTypes"
+							:disabled="saving || loadingFacilityTypes"
+							required="required"
+							value-field="id"
+							text-field="name"
 							/>
 							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
+							v-for="error in validationContext.errors"
+							:key="error"
+							v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+						</validation-provider>
+					</b-col>
+
+					<!-- Second Column -->
+					<b-col md="6">
+						<!-- Ownership Type -->
+						<validation-provider
+						vid="ownership_type"
+						name="Ownership Type"
+						:rules="{ required: true }"
+						v-slot="validationContext"
+						>
+						<b-form-group label="Ownership Type" label-for="ownership_type" label-cols-lg="4">
+							<b-form-select
+							name="ownership_type"
+							v-model="entity.ownership_type"
+							:state="getValidationState(validationContext)"
+							:options="ownershipTypes"
+							:disabled="saving"
+							required="required"
+							value-field="value"
+							text-field="text"
+							/>
+							<b-form-invalid-feedback
+							v-for="error in validationContext.errors"
+							:key="error"
+							v-text="error"
+							/>
+						</b-form-group>
+						</validation-provider>
+					</b-col>
+					</b-row>
+				</div>
+
+
+					<!-- <validation-provider
+						vid="facility_type_id"
+						name="Facility Type"
+						:rules="{ required: true }"
+						v-slot="validationContext"
+						>
+						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="2">
+							<b-form-checkbox-group
+							id="facility_type_id"
+							v-model="entity.facility_type_id"
+							:options="facilityTypes"
+							:state="getValidationState(validationContext)"
+							:disabled="saving || loadingFacilityTypes"
+							required="required"
+							value-field="id"
+							text-field="name"
+							/>
+							<b-form-invalid-feedback
+							v-for="error in validationContext.errors"
+							:key="error"
+							v-text="error"
+							/>
+						</b-form-group>
+						</validation-provider> -->
+
 
 					<b-row>
 					<!-- First Column -->
@@ -152,6 +215,43 @@
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
 						</validation-provider>
+
+						<!-- Active -->
+						
+					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
+						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
+						<b-form-checkbox name="active" v-model="entity.active" :disabled="saving">Active</b-form-checkbox>
+						<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+									vid="has_contract"
+									name="Contract"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Contract"
+										label-for="has_contract"
+										label-cols-lg="4"
+										description="This facility is contracted."
+									>
+										<b-form-checkbox
+											name="has_contract"
+											v-model="entity.has_contract"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										>
+											Has Contract
+										</b-form-checkbox>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
 					</b-col>
 
 					<!-- Second Column -->
@@ -183,6 +283,14 @@
 							<b-form-input name="county" type="text" v-model="entity.county" :state="getValidationState(validationContext)" :disabled="saving" />
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
+						</validation-provider>
+
+						 <!-- Owned -->
+						<validation-provider vid="client_owned" name="Owned" :rules="{ required: false }" v-slot="validationContext">
+							<b-form-group label="Owned" label-for="client_owned" label-cols-lg="4" description="Facility is owned/provided by the client.">
+							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving">Owned</b-form-checkbox>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+							</b-form-group>
 						</validation-provider>
 					</b-col>
 					</b-row>
@@ -495,51 +603,6 @@
 						</b-form-group>
 					</validation-provider> -->
 
-					<!-- <validation-provider
-						vid="active"
-						name="Active"
-						:rules="{ required: false }"
-						v-slot="validationContext"
-					>
-						<b-form-group
-							label="Facility Status"
-							label-for="active"
-							label-cols-lg="4"
-							description="Inactive facilities will not show up in dropdown lists."
-						>
-							<b-form-checkbox name="active" v-model="entity.active" :disabled="saving"
-								>Active</b-form-checkbox
-							>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-                    <validation-provider
-						vid="client_owned"
-						name="Owned"
-						:rules="{ required: false }"
-						v-slot="validationContext"
-					>
-						<b-form-group
-							label="Owned"
-							label-for="client_owned"
-							label-cols-lg="4"
-							description="Facility is owned/provided by client."
-						>
-							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving"
-								>Owned</b-form-checkbox
-							>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider> -->
 					
 					<!-- <validation-provider
 						vid="chain_name"
@@ -1137,6 +1200,65 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
+
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
+									<!-- Division -->
+									<validation-provider vid="division" name="Division" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Division" label-for="division" label-cols-lg="4">
+										<b-form-input name="division" type="text" v-model="entity.division" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+
+									<!-- Territory -->
+									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+
+									<!-- OU Number -->
+									<validation-provider vid="ou_number" name="OU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
+										<b-form-input name="ou_number" type="text" v-model="entity.ou_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+
+								<!-- Second Column -->
+								
+								
+									<b-col md="6">
+									<!-- Region -->
+									<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
+										</validation-provider>
+
+									<!-- Area -->
+									<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+										<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+
+									<!-- BU Number -->
+									<validation-provider vid="bu_number" name="BU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
+										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+								</b-row>
+
 								<!-- <validation-provider
 									vid="chain_name"
 									name="Chain"
@@ -1159,7 +1281,7 @@
 									</b-form-group>
 								</validation-provider> -->
 
-								<validation-provider
+								<!-- <validation-provider
 									vid="division"
 									name="Division"
 									:rules="{ required: false, max: 60 }"
@@ -1290,7 +1412,7 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
 
 								<!-- <validation-provider
 									vid="rvp_name"
@@ -1329,7 +1451,7 @@
 						</b-card-header>
 						<b-collapse id="collapseContract" role="tabpanel">
 							<b-card-body>
-								<validation-provider
+								<!-- <validation-provider
 									vid="client_owned"
 									name="Owned"
 									:rules="{ required: false }"
@@ -1355,28 +1477,67 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
-
+								</validation-provider> -->
 								<validation-provider
-									vid="has_contract"
-									name="Contract"
+									vid="active"
+									name="Active"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract"
-										label-for="has_contract"
-										label-cols-lg="4"
-										description="This facility is contracted."
+										label="Contract Status"
+										label-for="active"
+										label-cols-lg="2"
+										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox
-											name="has_contract"
-											v-model="entity.has_contract"
+										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
+											>Active</b-form-checkbox
+										>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								
+								<validation-provider
+									vid="original_start_date"
+									name="Original Start Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="2">
+										<b-form-input
+											type="date"
+											v-model="entity.original_start_date"
+											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
-										>
-											Has Contract
-										</b-form-checkbox>
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="term_date"
+									name="Term Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Term Date" label-for="term_date" label-cols-lg="2">
+										<b-form-input
+											type="date"
+											v-model="entity.term_date"
+											name="term_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -1391,7 +1552,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Start Date" label-for="contract_start_date" label-cols-lg="4">
+									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="2">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_start_date"
@@ -1413,7 +1574,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="End Date" label-for="contract_end_date" label-cols-lg="4">
+									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="2">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_end_date"
@@ -1430,6 +1591,112 @@
 								</validation-provider>
 
 								<validation-provider
+									vid="renewal_date"
+									name="Renewal Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="2">
+										<b-form-input
+											type="date"
+											v-model="entity.renewal_date"
+											name="renewal_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+								vid="service_operations"
+								name="Service Operations"
+								:rules="{ required: true }"
+								v-slot="validationContext"
+								>
+								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
+									<b-form-checkbox-group
+									id="service_operations"
+									v-model="entity.serviceOperations"
+									:options="serviceOperationsOptions"
+									:state="getValidationState(validationContext)"
+									:disabled="saving"
+									required="required"
+									/>
+									<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+									/>
+								</b-form-group>
+								</validation-provider>
+
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
+									<!-- Contract Bill Type -->
+									<validation-provider
+									vid="contract_bill_type"
+									name="Contract Bill Type"
+									:rules="{ required: true }"
+									v-slot="validationContext"
+									>
+									<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
+										<b-form-select
+										name="contract_bill_type"
+										v-model="entity.contract_bill_type"
+										:state="getValidationState(validationContext)"
+										:options="contractBillTypes"
+										:disabled="saving"
+										required="required"
+										value-field="value"
+										text-field="text"
+										/>
+										<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+										/>
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+
+								<!-- Second Column -->
+								<b-col md="6">
+									<!-- Contract Type -->
+									<validation-provider
+									vid="contract_type"
+									name="Contract Type"
+									:rules="{ required: true }"
+									v-slot="validationContext"
+									>
+									<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
+										<b-form-select
+										name="contract_type"
+										v-model="entity.contract_type"
+										:state="getValidationState(validationContext)"
+										:options="contractTypes"
+										:disabled="saving"
+										required="required"
+										value-field="value"
+										text-field="text"
+										direction="down"
+										/>
+										<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+										/>
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+							</b-row>
+
+								<validation-provider
 									vid="indemnification_days"
 									name="Indemnification Days"
 									:rules="{ required: false, min: 0, max: 365 }"
@@ -1438,7 +1705,7 @@
 									<b-form-group
 										label="Indemnification Days"
 										label-for="indemnification_days"
-										label-cols-lg="4"
+										label-cols-lg="2"
 										description="Days exceeded for Indemnification"
 									>
 										<b-form-input
@@ -1469,7 +1736,7 @@
 									<b-form-group
 										label="Max Return Days"
 										label-for="max_return_work_days"
-										label-cols-lg="4"
+										label-cols-lg="2"
 										description="Maximum days to return work to facility"
 									>
 										<b-form-input
@@ -2075,6 +2342,7 @@ export default {
 				display_name:null,
 				facility_type_id: null,
 				active: true,
+				contract_status:true,
 				phone: null,
 				fax: null,
 				email: null,
@@ -2104,8 +2372,12 @@ export default {
 				has_contract: false,
 				contract_start_date: null,
 				contract_end_date: null,
+				original_start_date: null,
+				term_date: null,
+				renewal_date: null,
 				indemnification_days: null,
 				max_return_work_days: null,
+				// service_operations: null,
 				address_1: null,
 				address_2: null,
 				// taxonomy_code: null,
@@ -2124,7 +2396,10 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-
+				serviceOperations: [],
+				contract_bill_type: null,
+				contract_type: null,
+				ownership_type: null,
 
 			},
 			service_ids: [],
@@ -2152,10 +2427,73 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
+			serviceOperationsOptions: [
+				{ value: 'pt', text: 'PT' },
+				{ value: 'ot', text: 'OT' },
+				{ value: 'st', text: 'ST' },
+			],
+			contractBillTypes: [
+			{ value: 'other', text: 'Other' },
+			{ value: 'ghc', text: 'GHC' },
+			{ value: 'synergy', text: 'Synergy' },
+			{ value: 'encore', text: 'Encore' },
+			],
+			contractTypes: [
+		{ value: 'management_agreement', text: 'Management Agreement' },
+		{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
+		{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
+		{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
+		{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
+		{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
+		{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
+		{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
+		{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
+		{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
+		{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
+		],
+		ownershipTypes: [
+		{ value: 'corporate_chain', text: 'Corporate Chain' },
+		{ value: 'county_owned', text: 'County Owned' },
+		{ value: 'hospital_owned', text: 'Hospital Owned' },
+		{ value: 'independent', text: 'Independent' },
+		{ value: 'managed', text: 'Managed' },
+		{ value: 'management_company', text: 'Management Company' },
+		{ value: 'silver_stone_living', text: 'Silver Stone Living' },
+		],
+
+	// 	pricingSchedule: [
+    //     { label: 'Medicare A', typeOptions: ['$', '%','Custom'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min', contractRate: '' },
+    //     { label: 'Medicare B', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Managed A', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
+    //     { label: 'Managed A PPS', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Managed B', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Commercial', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min' },
+    //     { label: 'Medicaid', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Workers Comp', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
+    //     { label: 'Auto', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Military', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min' },
+    //     { label: 'Private Pay', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
+    //     { label: 'Other', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
+    //     // Add similar data for other rows and columns
+    //   ],
+    //   tableFields: [
+    //     { key: 'id', label: 'ID' },
+    //     { key: 'medicareA', label: 'Medicare A' },
+    //     { key: 'medicareB', label: 'Medicare B' },
+    //     // Add similar fields for other columns
+    //   ],
 		};
 	},
 	computed: 
 	{
+	// 	tableFields() {
+    //   return [
+    //     { key: 'label', label: 'Contract Pricing Schedule' },
+    //     { key: 'selectedType', label: 'Type' },
+    //     { key: 'selectedValue', label: 'Value' },
+    //     { key: 'contractRate', label: 'Contract Rate' },
+    //   ];
+    // },
 		// concatenatedStreetAddress() {
         // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
     	// },
@@ -2257,6 +2595,26 @@ export default {
 	// },
 		
 	methods: {
+
+		getTypeOptions(row) {
+      return row.typeOptions.concat(['Custom']);
+    },
+    getValueOptions(row) {
+      return row.valueOptions.concat(['Custom']);
+    },
+
+		getPlaceholder(selectedValue) {
+      // You can customize the placeholder based on the selected value
+      if (selectedValue === 'per_min') {
+        return '$0.00/min';
+      } else if (selectedValue === 'per_hour') {
+        return '$0.00/hr';
+      } else if (selectedValue === 'per_diem') {
+        return '$0.00/diem';
+      } else {
+        return 'Enter rate...';
+      }
+    },
 		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
 
