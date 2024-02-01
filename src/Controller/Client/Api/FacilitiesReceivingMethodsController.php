@@ -1,45 +1,96 @@
 <?php
+namespace App\Controller\Client;
 
-declare(strict_types=1);
+use App\Model\Table\FacilitiesReceivingMethodsTable;
+use App\Controller\AppController;
+use Cake\Network\Exception\MethodNotAllowedException;
 
-namespace App\Controller\Client\Api;
 
-class FacilitiesReceivingMethodsController extends ApiController
+class FacilitiesReceivingMethodsController extends AppController
 {
-    public function index()
+    public function initialize(): void
     {
-        // Action for listing facilities receiving methods
-        $facilitiesReceivingMethods = $this->FacilitiesReceivingMethods->find('all');
-        $this->set(compact('facilitiesReceivingMethods'));
+        parent::initialize();
+        // $facilitiesReceivingMethodsTable = new FacilitiesReceivingMethodsTable();
+
+        // $this->loadModel('FacilitiesReceivingMethods'); // Load the model for the FacilitiesReceivingMethods table
     }
 
-    public function add()
+    public function add() 
     {
-        // Action for adding a new facility receiving method
-        $facilitiesReceivingMethod = $this->FacilitiesReceivingMethods->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $facilitiesReceivingMethod = $this->FacilitiesReceivingMethods->patchEntity($facilitiesReceivingMethod, $this->request->getData());
-            if ($this->FacilitiesReceivingMethods->save($facilitiesReceivingMethod)) {
-                $this->Flash->success(__('The facility receiving method has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('Unable to add the facility receiving method.'));
+
+        $this->request->allowMethod(['post']);
+
+        $facilityId = $this->request->getData('facility_id');
+        $receivingEmailId = $this->request->getData('receiving_email_id');
+        $receivingFaxId = $this->request->getData('receiving_fax_id');
+
+        // Add more fields as needed
+
+         // Insert debugging code
+         $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
+        
+        
+         $jsonContent = json_encode($receivingEmailId, JSON_PRETTY_PRINT);
+         $file = fopen($filePath, 'w');
+         fwrite($file, $jsonContent);
+         fclose($file);
+
+        // Validate the data (you can add more validations here)
+        if (empty($facilityId)) {
+            $this->response = $this->response->withStatus(400);
+            $this->set(['success' => false, 'message' => 'facility_id is required.', '_serialize' => ['success', 'message']]);
+            return;
         }
-        $this->set(compact('facilitiesReceivingMethod'));
-    }
 
-    // public function edit($id)
-    // {
-    //     // Action for editing a facility receiving method
-    //     $facilitiesReceivingMethod = $this->FacilitiesReceivingMethods->get($id);
-    //     if ($this->request->is(['patch', 'post', 'put'])) {
-    //         $facilitiesReceivingMethod = $this->FacilitiesReceivingMethods->patchEntity($facilitiesReceivingMethod, $this->request->getData());
-    //         if ($this->FacilitiesReceivingMethods->save($facilitiesReceivingMethod)) {
-    //             $this->Flash->success(__('The facility receiving method has been saved.'));
-    //             return $this->redirect(['action' => 'index']);
-    //         }
-    //         $this->Flash->error(__('Unable to update the facility receiving method.'));
-    //     }
-    //     $this->set(compact('facilitiesReceivingMethod'));
-    // }
+        // Assuming you have a FacilitiesReceivingMethodsTable with the appropriate model
+        $facilitiesReceivingMethodsTable = new FacilitiesReceivingMethodsTable();
+        // Create a new entity and save it
+        $facilitiesReceivingMethodsEntry = $facilitiesReceivingMethodsTable->newEmptyEntity();
+        $facilitiesReceivingMethodsEntry->facility_id = $facilityId;
+        $facilitiesReceivingMethodsEntry->receiving_email_id = $receivingEmailId;
+        $facilitiesReceivingMethodsEntry->receiving_fax_id = $receivingFaxId;
+        $facilitiesReceivingMethodsEntry->created_at = ' ';
+
+        // $facilitiesReceivingMethodsTable = $FacilitiesReceivingMethodsTable->newEntity([
+        //     'facility_id' => $facilityId,
+        //     'receiving_email_id' => $receivingEmailId,
+        //     'receiving_fax_id' => $receivingFaxId,
+        //     'created_at' => ''
+        // ]);
+
+        // $FacilitiesReceivingMethodsTable->save($facilitiesReceivingMethodsTable);
+
+        // // Insert debugging code
+        // $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
+        
+        
+        // $jsonContent = json_encode($facilitiesReceivingMethodsEntry, JSON_PRETTY_PRINT);
+        // $file = fopen($filePath, 'w');
+        // fwrite($file, $jsonContent);
+        // fclose($file);
+        try {
+            // if ($facilitiesReceivingMethodsTable->save($facilitiesReceivingMethodsEntry)) {
+            //     $this->set(['success' => true, 'message' => 'Facility receiving method saved successfully.', '_serialize' => ['success', 'message']]);
+            // } else {
+            //     $this->response = $this->response->withStatus(500);
+            //     $this->set(['success' => false, 'message' => 'Internal server error.', '_serialize' => ['success', 'message']]);
+            // }
+            $facilitiesReceivingMethodsTable->save($facilitiesReceivingMethodsEntry);
+            return $this->response
+                    ->withType('application/json')
+                    ->withStringBody(json_encode($facilitiesReceivingMethodsEntry));
+        } catch (\Exception $e) {
+            // $this->log($e->getMessage(), 'error');
+            // $responseMessage = ['error' => $e->getMessage()];
+            // $this->response = $this->response->withStatus(500);
+            // $this->set(['success' => false, 'message' => $responseMessage, '_serialize' => ['success', 'message']]);
+            $responseMessage = ['error' => $e->getMessage()];
+             return $this->response
+                    ->withType('application/json')
+                    ->withStringBody(json_encode($responseMessage));
+        }
+
+        // $this->viewBuilder()->setOption('serialize', ['success', 'message']);
+    }
 }

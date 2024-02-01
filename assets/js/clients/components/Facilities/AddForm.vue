@@ -6,7 +6,7 @@
 				<slot name="header"></slot>
 
 				<b-card-body>
-					<validation-provider
+					<!-- <validation-provider
 						vid="name"
 						name="Name"
 						:rules="{ required: true, min: 2, max: 50 }"
@@ -32,7 +32,7 @@
 								/>
 							</b-input-group>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 
 					<validation-provider
 						vid="disp_name"
@@ -40,7 +40,7 @@
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
+						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="2">
 							<b-form-input
 								name="disp_name"
 								type="text"
@@ -62,7 +62,7 @@
 						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Main Type" label-for="facility_type_id" label-cols-lg="4">
+						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="2">
 							<b-form-select
 								name="facility_type_id"
 								v-model="entity.facility_type_id"
@@ -81,7 +81,68 @@
 						</b-form-group>
 					</validation-provider>
 
-					<b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
+					<b-row>
+					<!-- First Column -->
+					<b-col md="6">
+						<!-- Address 1 -->
+						<validation-provider vid="street_address_1" name="Street Address" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="Address1" label-for="street_address_1" label-cols-lg="4">
+							<b-form-input name="street_address_1" type="text" v-model="entity.address_2" placeholder="Street address" class="rounded-b-0" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- City -->
+						<validation-provider vid="city" name="City" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="City" label-for="city" label-cols-lg="4">
+							<b-form-input name="city" type="text" v-model="entity.city" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- Zip -->
+						<validation-provider vid="zip" name="Zip" :rules="{ required: false, max: 20, alpha_num: true }" v-slot="validationContext">
+						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
+							<b-form-input name="zip" type="text" v-model="entity.zip" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+					</b-col>
+
+					<!-- Second Column -->
+					<b-col md="6">
+
+						<!-- Address 2 -->
+						<validation-provider vid="street_address_2" name="Street Address" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="Address2" label-for="street_address_2" label-cols-lg="4">
+							<b-form-input name="street_address_2" type="text" v-model="entity.street_address_2" placeholder="Suite, unit, floor, etc..." class="rounded-b-0" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- State -->
+						<validation-provider vid="state" name="State" :rules="{ required: false, max: 2 }" v-slot="validationContext">
+						<b-form-group label="State" label-for="state" label-cols-lg="4">
+							<b-form-select name="state" v-model="entity.state" :options="states" value-field="abbreviation" text-field="name" :state="getValidationState(validationContext)" :disabled="saving">
+							<template #first>
+								<option :value="null" />
+							</template>
+							</b-form-select>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- County -->
+						<validation-provider vid="county" name="County" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="County" label-for="county" label-cols-lg="4">
+							<b-form-input name="county" type="text" v-model="entity.county" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+					</b-col>
+					</b-row>
+
+					<!-- <b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
 						<validation-provider
 							vid="street_address_1"
 							name="Street Address"
@@ -102,7 +163,7 @@
 								:key="error"
 								v-text="error"
 							/>
-						</validation-provider>
+						</validation-provider> -->
 						<!--<validation-provider
 							vid="street_address_2"
 							name="Street Address (Continued)"
@@ -124,9 +185,9 @@
 								v-text="error"
 							/>
 						</validation-provider>-->
-					</b-form-group>
+					<!-- </b-form-group> -->
 
-					<validation-provider
+					<!-- <validation-provider
 						vid="city"
 						name="City"
 						:rules="{ required: false, max: 50 }"
@@ -246,8 +307,8 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
-					<validation-provider
+								</validation-provider> -->
+					<!-- <validation-provider
 									vid="chain_name"
 									name="Chain"
 									:rules="{ required: false, max: 250 }"
@@ -267,7 +328,65 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
+
+
+								<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+									<b-input-group-append>
+										<b-input-group-text>
+											<font-awesome-icon icon="search" fixed-width />
+										</b-input-group-text>
+									</b-input-group-append>
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									
+									
+									<b-list-group v-if="selectedChain">
+										<b-list-group-item class="mb-0">
+											<div class="d-flex justify-content-between align-items-center mb-0">
+											<div class="mb-0">{{ selectedChain.chain_name }}</div>
+											<b-btn variant="danger" @click="deselectChain" size="sm">
+												<font-awesome-icon icon="times" fixed-width />
+											</b-btn>
+											</div>
+										</b-list-group-item>
+										</b-list-group>
+
+
+								</div>
+								<div v-if="filteredChains.length > 0" class="mb-0">
+									<b-list-group>
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group> -->
+							<b-form-group label="Chain" label-for="chain_name" label-cols-lg="2">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+									<!-- <b-input-group-append>
+										<b-input-group-text>
+											<font-awesome-icon icon="search" fixed-width />
+										</b-input-group-text>
+									</b-input-group-append> -->
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									<b-list-group v-if="filteredChains.length > 0">
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group>
 
 				</b-card-body>
 
@@ -287,93 +406,63 @@
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
 								
-								<validation-provider
-									vid="area_name"
-									name="Area"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-										<b-form-input
-											name="area_name"
-											type="text"
-											v-model="entity.area_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
+									<!-- Division -->
+									<validation-provider vid="division" name="Division" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Division" label-for="division" label-cols-lg="4">
+										<b-form-input name="division" type="text" v-model="entity.division" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 									</b-form-group>
-								</validation-provider>
+									</validation-provider>
 
-								<validation-provider
-									vid="ou_number"
-									name="OU Number"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
-										<b-form-input
-											name="ou_number"
-											type="text"
-											v-model="entity.ou_number"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="territory"
-									name="Territory"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
+									<!-- Territory -->
+									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
 									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-										<b-form-input
-											name="territory"
-											type="text"
-											v-model="entity.territory"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 									</b-form-group>
-								</validation-provider>
+									</validation-provider>
 
-								<validation-provider
-									vid="rvp_name"
-									name="RVP"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="RVP" label-for="rvp_name" label-cols-lg="4">
-										<b-form-input
-											name="rvp_name"
-											type="text"
-											v-model="entity.rvp_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+									<!-- OU Number -->
+									<validation-provider vid="ou_number" name="OU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
+										<b-form-input name="ou_number" type="text" v-model="entity.ou_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 									</b-form-group>
-								</validation-provider>
+									</validation-provider>
+								</b-col>
+
+								<!-- Second Column -->
+								
+								
+									<b-col md="6">
+									<!-- Region -->
+									<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
+										</validation-provider>
+
+									<!-- Area -->
+									<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+										<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+
+									<!-- BU Number -->
+									<validation-provider vid="bu_number" name="BU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
+										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+								</b-row>
 							</b-card-body>
 						</b-collapse>
 						<b-card-header header-tag="header" role="tab" class="p-0">
@@ -897,9 +986,323 @@
 									</empty-result>
 								</b-form-group>
 							</b-card-body>
+						</b-collapse> -->
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseServices
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Services</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseServices" role="tabpanel">
+							<b-card-body>
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-form-checkbox-group
+										v-else-if="services.length > 0"
+										stacked
+										name="services_ids"
+										v-model="entity.services._ids"
+										:options="services"
+										:disabled="saving || loadingServices"
+										value-field="id"
+										text-field="name"
+									/>
+									<empty-result v-else>
+										No services added
+										<template #content> Create services to assign to this facility. </template>
+									</empty-result>
+								</b-form-group> -->
+
+								<!-- <b-form-group
+										label="Assigned Services"
+										label-for="entity.services._ids"
+										label-cols-lg="4"
+										
+									>
+										<services-search-multi
+											name="denial_reasons"
+											v-model="currentDenialReasons"
+											@add="addingDenialReason = true"
+											:disabled="saving"
+										/>
+									</b-form-group> -->
+
+									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4" class="mb-0" style="margin: 0;">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-input-group>
+										<b-form-input type="text" name="service_ids" v-model="searchQuery"
+											:disabled="saving || loadingServices || formDisabled"
+											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
+										<b-input-group-append>
+											<b-input-group-text>
+												<font-awesome-icon icon="search" fixed-width />
+											</b-input-group-text>
+										</b-input-group-append>
+									</b-input-group>
+									<div class="mb-0" style="margin: 0;">
+										<!-- <b-list-group v-if="selectedServices.length > 0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id">
+												{{ service.name }}
+												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
+											</b-list-group-item>
+										</b-list-group> -->
+										<b-list-group v-if="selectedServices.length > 0" class="mb-0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id" class="mb-0">
+												<div class="d-flex justify-content-between align-items-center mb-0">
+													<div class="mb-0">{{ service.name }}</div>
+													<b-btn variant="danger" @click="deselectService(service)" size="sm">
+														<!-- <b-icon icon="x"></b-icon> -->
+														<!-- <font-awesome-icon icon="fa-xmark"  style="color:red"/> -->
+														<font-awesome-icon
+															icon="times"
+															fixed-width
+														/>
+													</b-btn>
+												</div>
+											</b-list-group-item>
+										</b-list-group>
+
+									</div>
+									<div v-if="filteredServices.length > 0" class="mb-0">
+										<b-list-group>
+											<b-list-group-item v-for="service in filteredServices" :key="service.id"
+												@click="selectService(service)">
+												{{ service.name }}
+											</b-list-group-item>
+										</b-list-group>
+									</div>
+								</b-form-group>
+							</b-card-body>
+			</b-collapse>
+			<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseReceivingMethods
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>Outgoing Methods</b-button>
+						</b-card-header>
+						<b-collapse id="collapseReceivingMethods" role="tabpanel">
+							<b-card-body>
+
+								<template>
+									<div>
+										<b-row>
+										<!-- Section for Receiving Emails -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4"> -->
+											<!-- Display entered emails in tabular format -->
+											<div>
+												<h6>Outgoing Emails</h6>
+												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+												<template slot="cell(email)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No emails added</span>
+												</empty-result>
+											</div>
+
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopup" variant="primary">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+													<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+
+											<!-- Icon to open the pop-up -->
+											<!-- <b-button @click="openPopup" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button> -->
+
+											<!-- Pop-up for adding emails -->
+											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
+												<b-form @submit.prevent="addEmail">
+												<b-form-group label="Email" label-for="email">
+													<b-form-input v-model="newEmail.email" id="email" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newEmail.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+											
+											<!-- Icon to delete selected entries -->
+											<!-- <b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+											</b-button> -->
+
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisible" title="Delete Emails" @ok="deleteSelectedEmails" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+													<template #cell(email)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<span>{{ info.item.email }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+
+										<!-- Section for Receiving Faxes -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Faxes" label-for="r_fax" label-cols-lg="4"> -->
+											<!-- Display entered faxes in tabular format -->
+											<div>
+												<h6>Outgoing Faxes</h6>
+												<b-table v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0" :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+												<template slot="cell(fax)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No faxes added</span>
+												</empty-result>
+											</div>
+
+											<!-- Icon to open the pop-up -->
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopupFax" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+											<!-- Pop-up for adding faxes -->
+											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
+												<b-form @submit.prevent="addFax">
+													<b-form-group label="Fax" label-for="fax">
+														<b-form-input v-model="newFax.fax" @input="formatFax" id="fax" required />
+													</b-form-group>
+													<b-form-group label="Description" label-for="description">
+														<b-form-input v-model="newFax.description" id="description" />
+													</b-form-group>
+													<b-button type="submit" variant="primary" class="mx-auto d-block">Ok</b-button>
+												</b-form>
+											</b-modal>
+
+
+
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes" @ok="deleteSelectedFaxes" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+													<template #cell(fax)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedFaxes" :value="info.item.fax" class="mr-2" />
+														<span>{{ info.item.fax }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedFaxes" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+										</b-row>
+									</div>
+									</template>
+
+
+
+
+
+								<!-- <validation-provider
+									vid="r_fax"
+									name="Fax"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Fax" label-for="r_fax" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Fax"
+												type="text"
+												v-model="entity.receiving_fax"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Fax"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingFax">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ fax }}</span>
+														<b-button variant="danger" @click="removeReceivingFax(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider> -->
+								
+
+
+							</b-card-body>
 						</b-collapse>
+
+						<!-- end Receiving Methods -->
+
+						<!-- end Receiving Methods -->
+			</b-card-body>
 					</b-card>
-				</b-card-body>
+				
 
 				<b-card-footer>
 					<b-row>
@@ -946,7 +1349,11 @@ export default {
 				phone: null,
 				fax: null,
 				email: null,
-				street_address_1: null,
+				website: null,
+				f_name: null,
+				l_name: null,
+				title_id: null,
+				// street_address_1: null,
 				street_address_2: null,
 				city: null,
 				state: null,
@@ -958,6 +1365,7 @@ export default {
 				chain_name: null,
 				area_name: null,
 				ou_number: null,
+				bu_number: null,
 				territory: null,
 				rvp_name: null,
 				has_contract: false,
@@ -965,14 +1373,43 @@ export default {
 				contract_end_date: null,
 				indemnification_days: null,
 				max_return_work_days: null,
-				services: {
-					_ids: [],
-				},
+				address_1: null,
+				address_2: null,
+				// services: {
+				// 	_ids: [],
+				// },
+				services: [],
+				chains:[],
+				receiving_email: '', // For input
+            	receiving_emails: [], // For storing multiple emails
+				receiving_fax: '', // For input
+				receiving_faxes: [],
+            	receiving_methods: [], 
+
 			},
+			service_ids: [],
+			selectedContactType: 'phone',
 			forms: [],
 			titlename: [],
 			contactTypes: [],
 			inputFields: [{ selectedContactType: 'phone', phone: '' }],
+			popupVisible: false,
+			popupVisibleFax: false,
+			deletePopupVisible: false,
+			deletePopupVisibleFax: false,
+			isFaxInputDisabled: false,
+			newEmail: {
+				email: '',
+				description: '',
+			},
+			selectedEmails: [],
+			newFax: {
+				fax: '',
+				description: '',
+			},
+			selectedFaxes: [],
+			showDeleteIcon: false,
+
 		};
 	},
 	computed: mapGetters({
@@ -992,7 +1429,582 @@ export default {
 			this.loading = false;
 		}
 	},
-	methods: {
+
+	// created() {
+	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
+	// 	const facilityId = this.entity.id;
+
+	// 	// Retrieve previously selected services for the specific facility from localStorage
+	// 	const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
+
+	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
+	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
+	// 	},
+
+	methods: 
+	{
+		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
+			const facilityId = this.entity.id;
+
+			// Determine if receivingEmailId or receivingFaxId is provided
+			const data = {
+				facility_id: facilityId,
+				receiving_email_id: receivingEmailId || null,
+				receiving_fax_id: receivingFaxId || null,
+			};
+			console.log("Payload",data);
+
+			// try {
+			// 	// const response = await axios.post('/client/receivingMethods', data);
+			// 	await axios.post('/client/receivingMethods', data)
+            //     .then(response => {
+            //         // const responseData = response.data.data;
+			// 		console.log("success");
+			// 	});
+			// 	// console.log('Receiving methods updated:', responseData);
+			// } catch (error) {
+			// 	console.error('Error updating receiving methods:', error);
+			// }
+			try {
+				const response = await axios.post('/client/receivingMethods', data, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+				console.log('Receiving methods updated:', response.data);
+			} catch (error) {
+				console.error('Error updating receiving methods:', error);
+			}
+	},
+	openPopupFax() {
+		this.popupVisibleFax = true;
+		},
+	closePopupFax() {
+		this.popupVisibleFax = false;
+		},
+	formatFax() {
+		const numericFax = this.newFax.fax.replace(/\D/g, '');
+
+		if (numericFax.length > 10) {
+		this.faxInputError = true; // Invalid fax number
+		// this.isFaxInputDisabled = true; // Disable the input field
+		} else {
+		this.newFax.fax = numericFax ? numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+		this.faxInputError = false;
+		// this.isFaxInputDisabled = false; // Enable the input field
+		}
+	},
+	async addFax() {
+    try {
+        const newFax = { ...this.newFax };
+        console.log("new:", newFax);
+		const fax = newFax.email;
+		const description = newFax.description;
+		// Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Validate fax number format
+        const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+        if (!faxRegex.test(fax)) {
+            this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Check if receiving_faxes is defined, if not, initialize it as an empty array
+        if (!Array.isArray(this.entity.receiving_faxes)) {
+            this.$set(this.entity, 'receiving_faxes', []);
+        }
+
+        // Check if the fax number already exists
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+            this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Add the new fax to the array
+        this.entity.receiving_faxes.push(newFax);
+
+        // Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Close the pop-up
+        this.popupVisibleFax = false;
+
+        // Prepare the data to be sent in the POST request
+        const faxData = {
+            fax,
+            description,
+        };
+        console.log("header:", faxData);
+
+        // Make a POST request to store the data in the database
+        const response = await axios.post('/client/receivingFaxes', faxData);
+        console.log('Axios Response:', response);
+		await this.$nextTick();
+		this.$emit("Receiving_faxes", response);
+		console.log("Emitted data:", response.data);
+		// Check for a successful status code (2xx)
+		if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				// Check if the expected properties are present
+				if (responseData.fax && responseData.description && responseData.id) 
+				{
+					console.log('Fax saved successfully.');
+					this.saving = false;
+					
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Fax Created!',
+							message: 'New fax created.',
+						});
+					});
+					await this.updateReceivingMethods(null, responseData.id);
+
+					
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save fax. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating fax:', error);
+		}
+},
+    openDeleteFaxPopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisibleFax = true;
+    },
+    closeDeleteFaxPopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisibleFax = false;
+      // Reset selectedFaxes array
+      this.selectedFaxes = [];
+    },
+    // deleteSelectedFaxes() {
+    //   // Add logic to delete selected faxes
+    //   // Update the displayedFaxes text
+    //   this.displayedFaxes = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedFaxes() {
+		// Add logic to delete selected faxes
+		console.log("Inside");
+		const updatedFaxes = this.entity.receiving_faxes.filter(
+		(fax) => !this.selectedFaxes.includes(fax.fax)
+		);
+		console.log("Deleted:",updatedFaxes);
+
+		// Update the receiving_faxes array with the updatedFaxes
+		this.entity.receiving_faxes = updatedFaxes;
+
+		// Reset selectedFaxes array
+		this.selectedFaxes = [];
+
+		// Close the delete popup
+		this.closeDeleteFaxPopup();
+	},
+	openPopup() {
+		this.popupVisible = true;
+		},
+	closePopup() {
+		this.popupVisible = false;
+		},
+		async addEmail() {
+		const newEmail = { ...this.newEmail };
+		const email = newEmail.email;
+		const description = newEmail.description;
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Check if the email is in a valid format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		if (!emailRegex.test(email)) {
+			this.$bvToast.toast('Error: Please enter a valid email address.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+		});
+		return;
+		}
+
+
+		// Check if receiving_emails is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.receiving_emails)) {
+			this.$set(this.entity, 'receiving_emails', []);
+		}
+
+		// // Check if the email already exists
+		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+		//     alert('Email address already exists. Please enter a different email.');
+		//     return;
+		// }
+		// Check if the email already exists
+		if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+			this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+			});
+			return;
+		}
+
+
+		// Add the new email to the array
+		this.entity.receiving_emails.push(newEmail);
+
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Close the pop-up
+		this.popupVisible = false;
+
+		// Prepare the data to be sent in the POST request
+		const emailData = {   
+			email,
+			description,
+		};
+		console.log("header:",emailData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingEmails', emailData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_emails", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				console.log("id",responseData.id);
+				// Check if the expected properties are present
+				if (responseData.email && responseData.description && responseData.id) 
+				{
+				// if (response.data.success) {
+					console.log('Email saved successfully.');
+					this.saving = false;
+					// this.$router.push({ name: 'receivingEmails' });
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Email Created!',
+							message: 'New email created.',
+						});
+					});
+					await this.updateReceivingMethods(responseData.id, null);
+
+					// redirect_index();
+				// } else {
+				// 	this.saving = false;
+				// 	// console.log('Email already exists');
+				// 	this.errorMessage = response.data.message;
+				// 	this.$nextTick(() => {
+				// 		this.$store.dispatch('notify', {
+				// 			variant: 'danger',
+				// 			title: 'Email Error',
+				// 			message: this.errorMessage,
+				// 		});
+				// 	});
+				// }
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save email. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating email:', error);
+		}
+},
+
+    openDeletePopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisible = true;
+    },
+    closeDeletePopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisible = false;
+      // Reset selectedEmails array
+      this.selectedEmails = [];
+    },
+    // deleteSelectedEmails() {
+    //   // Add logic to delete selected emails
+    //   // Update the displayedEmails text
+    //   this.displayedEmails = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedEmails() {
+		// Add logic to delete selected emails
+		console.log("Inside");
+		const updatedEmails = this.entity.receiving_emails.filter(
+		(email) => !this.selectedEmails.includes(email.email)
+		);
+		console.log("Deleted:",updatedEmails);
+
+		// Update the receiving_emails array with the updatedEmails
+		this.entity.receiving_emails = updatedEmails;
+
+		// Reset selectedEmails array
+		this.selectedEmails = [];
+
+		// Close the delete popup
+		this.closeDeletePopup();
+	},
+		// 	addReceivingEmail() {
+		// 	// Trim the entered email and check if it's not empty
+		// 	const trimmedEmail = this.entity.receiving_email.trim();
+		// 	console.log("Email:",trimmedEmail);
+		// 	if (trimmedEmail !== '') {
+		// 		// Ensure that receiving_emails is an array before pushing
+		// 		if (!Array.isArray(this.entity.receiving_emails)) {
+		// 		this.$set(this.entity, 'receiving_emails', []);
+		// 	}
+			
+		// 		// Check if the trimmed email already exists in the array
+		// 		if (!this.entity.receiving_emails.includes(trimmedEmail)) {
+		// 			// Push the trimmed email to the receiving_emails array
+		// 			this.entity.receiving_emails.push(trimmedEmail);
+		// 		}
+
+		// 		console.log("Array:",this.entity.receiving_emails);
+		// 		// Clear the input for the next entry
+		// 		this.entity.receiving_email = '';
+		// 	}
+		// },
+		// removeReceivingEmail(index) {
+		// 	// Remove the email at the specified index from the receiving_emails array
+		// 	this.entity.receiving_emails.splice(index, 1);
+		// },
+		// addReceivingFax() {
+		// 	// Trim the entered fax and check if it's not empty
+		// 	const trimmedFax = this.entity.receiving_fax.trim();
+		// 	console.log("Fax:",trimmedFax);
+		// 	if (trimmedFax !== '') {
+		// 		// Ensure that receiving_emails is an array before pushing
+		// 		if (!Array.isArray(this.entity.receiving_faxes)) {
+		// 		this.$set(this.entity, 'receiving_faxes', []);
+		// 	}
+		// 		// Check if the trimmed email already exists in the array
+		// 		if (!this.entity.receiving_faxes.includes(trimmedFax)) {
+		// 			// Push the trimmed email to the receiving_emails array
+		// 			this.entity.receiving_faxes.push(trimmedFax);
+		// 		}
+
+		// 		console.log("Array:",this.entity.receiving_faxes);
+		// 		// Clear the input for the next entry
+		// 		this.entity.receiving_fax = '';
+		// 	}
+		// },
+		// removeReceivingFax(index) {
+		// 	// Remove the email at the specified index from the receiving_emails array
+		// 	this.entity.receiving_faxes.splice(index, 1);
+		// },
+		filterChains() {
+			// Wait for chains to be loaded
+  			// await this.getChains();
+			// Implement the logic to filter chains based on the search term
+			// .trim().replace(/"/g,'')
+			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("chains:",records);
+			// console.log("Check", this.entity.chains);
+
+			// Filter chains, excluding the ones already selected
+			this.filteredChains = records.value.filter((chain) =>
+			chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+			// && chain.chain_name.length <= maxLength
+			// !this.selectedChains.some(selected => selected.id === chain.id) &&
+			// !this.filteredChains.some(filtered => filtered.id === chain.id)
+    		);
+			console.log("Filtered:",this.filteredChains);
+
+			},
+		selectChain(chain) {
+			// Set the selected chain
+			// this.selectedChain = chain.chain_name;
+			// console.log("Selected Chain:",this.selectedChain);
+			// this.entity.chain_name = chain.chain_name;
+			// console.log(" chain_name:",this.entity.chain_name);
+
+			// // Clear the search term and filtered chains
+			// this.searchChain = '';
+			// this.filteredChains = [];
+
+
+			this.searchChain = chain.chain_name;
+			this.entity.chain_name = chain.chain_name;
+        	this.filteredChains = [];
+			},
+		// filterChains() {
+			
+		// 	const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
+		// 	console.log("Search:",searchTerm);
+		// 	console.log("chains:",records);
+
+		// 	// Filter chains, excluding the ones already selected
+		// 	this.filteredChains = records.value.filter((chain) =>
+		// 	chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+    	// 	);
+		// 	console.log("Filtered:",this.filteredChains);
+
+		// 	},
+
+		// selectChain(selectedChain) {
+		// 	// Set the selected chain
+		// 	this.selectedChain = selectedChain;
+		// 	console.log("Selected Chain:",this.selectedChain);
+		// 	this.entity.chain_name = selectedChain.chain_name;
+		// 	console.log(" Chain:",this.entity.chain_name);
+
+		// 	// Clear the search term and filtered chains
+		// 	this.searchChain = '';
+		// 	this.filteredChains = [];
+		// 	},
+		// deselectChain() {
+		// 	// Clear the selected chain
+		// 	this.selectedChain = null;
+
+		// 	// Clear or update this.entity.chain_name as needed
+		// 	this.entity.chain_name = '';
+		// },
+		filterServices() {
+			// Implement the logic to filter services based on the search term
+			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("services:",this.services);
+
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm)
+			// );
+
+			// Filter services, excluding the ones already selected
+			this.filteredServices = this.services.filter((service) =>
+				service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
+			);
+			console.log("Filtered:",this.filteredServices);
+
+			},
+
+		// selectService(selectedService) {
+		// 	console.log('Selected Service:', selectedService);
+		// 	// Check if the service ID is not already selected
+		// 	// if (!this.entity.services._ids.includes(selectedService.id)) {
+		// 	// 	// Push the selected service ID to the array
+		// 	// 	this.entity.services._ids.push(selectedService.id);
+		// 	// }
+
+		// 	if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+		// 		// Push the selected facility to the array
+		// 		this.selectedServices.push(selectedService);
+
+		// 		// Save the updated selected services for the specific facility to localStorage
+		// 		const facilityId = this.entity.id;
+    	// 		localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				
+		// 		console.log("selected array:",this.selectedServices);
+		// 		this.entity.services.push(selectedService);
+		// 		console.log("pushed:",this.entity.services);
+		// 	}
+
+		// 	// Clear the search term and filtered services
+		// 	this.searchQuery = '';
+		// 	// this.filteredServices = [];
+		// 	 // Update the filtered services, excluding the selected service
+  		// 	this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+		// 	},
+		async selectService(selectedService) {
+			
+			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+			// if (serviceInResponse && !this.selectedServices.some(service => service.id === selectedService.id)) {
+				// Push the selected facility to the array
+				this.selectedServices.push(selectedService);
+
+				// // Save the updated selected services for the specific facility to localStorage
+				// const facilityId = this.entity.id;
+    			// localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				
+				console.log("selected array:",this.selectedServices);
+				this.entity.services.push(selectedService);
+				console.log("pushed:",this.entity.services);
+			}
+			const facilityId = this.entity.id;
+
+			try {
+			const url = "/client/api/serviceList";
+			const response = await axios.get(url, {
+				headers: {
+				"Accept": "application/json",
+				},
+			});
+
+			console.log("Response from API:", response.data);
+
+			response.data.facilityservices.forEach((item, index) => {
+    		console.log(`Element at index ${index}:`, item);
+
+			if (item.facility_id == facilityId) {
+				console.log("match found =", item.service_id);
+
+				response.data.services.forEach((i, index) => {
+					console.log(`service at index ${index}:`, i);
+					if (i.id == item.service_id) {
+						console.log("service found =", i.name);
+						// Check if the service is not already in selectedServices before pushing
+						if (!this.selectedServices.some(service => service.id === i.id)) {
+							this.selectedServices.push(i);
+							console.log("output", this.selectedServices);
+                }
+					}
+				});
+			}
+		});
+		} catch (error) {
+			console.error("Error fetching services:", error);
+			}
+
+			// Clear the search term and filtered services
+			this.searchQuery = '';
+			// this.filteredServices = [];
+			 // Update the filtered services, excluding the selected service
+  			// this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+			// Update the filtered services, excluding all selected services
+			this.filteredServices = this.filteredServices.filter(service => !this.selectedServices.some(selected => selected.id === service.id));
+
+		},
+		deselectService(selectedService) {
+			// Remove the selected facility from the array
+			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
+		},
+
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
@@ -1025,8 +2037,6 @@ export default {
 		},
 
 		async save() {
-
-		
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -1061,7 +2071,7 @@ export default {
 				this.saving = false;
 			}
 		},
-		openCustomTitle() {
+	openCustomTitle() {
 			// Open the custom Title type modal when the "Add" button is clicked
 			this.$bvModal.show("customTitle");
 		},

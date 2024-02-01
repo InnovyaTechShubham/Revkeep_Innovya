@@ -114,6 +114,7 @@ class FacilitiesTable extends Table
 				'chain_name',
 				'area_name',
 				'ou_number',
+				'bu_number',
 				'territory',
 				'rvp_name',
 				'has_contract',
@@ -121,6 +122,7 @@ class FacilitiesTable extends Table
 				'contract_end_date',
 				'indemnification_days',
 				'max_return_work_days',
+				'county'
 			],
 		]);
 
@@ -227,6 +229,13 @@ class FacilitiesTable extends Table
 			->allowEmptyString('ou_number')
 			->maxLength('ou_number', 60);
 
+		$validator
+			->allowEmptyString('bu_number')
+			->maxLength('bu_number', 60);
+
+		$validator
+			->allowEmptyString('county')
+			->maxLength('county', 60);
 		$validator
 			->allowEmptyString('territory')
 			->maxLength('territory', 60);
