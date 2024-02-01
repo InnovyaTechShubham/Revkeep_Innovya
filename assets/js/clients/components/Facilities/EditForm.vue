@@ -1733,7 +1733,7 @@
 									<b-input-group>
 										<b-form-input type="text" name="service_ids" v-model="searchQuery"
 											:disabled="saving || loadingServices"
-											placeholder="Search for a Services..." @input="filterServices" class="mb-0" />
+											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
 										<!-- <b-input-group-append>
 											<b-input-group-text>
 												<font-awesome-icon icon="search" fixed-width />

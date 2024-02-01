@@ -251,8 +251,8 @@ class NpiUtility
 		return self::sendRequest([
 			'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
 			//'Npi_number' => $npiNumber,
-			'first_name' => $firstName . "*",
-			'last_name' => $lastName . "*",
+			'first_name' => $firstName,
+			'last_name' => $lastName,
 			'state' => $state,
 			'city' => $city,
 			'postal_code' => $postalCode,

@@ -311,162 +311,7 @@
 							<option value="FTP">FTP</option>
 							<option value="ESMD">ESMD</option>
 						</b-form-select>
-					</b-form-group> -->
-
-					<b-form-group label="Submit To" label-cols-lg="4">
-						<b-form-select label=" Submit To " v-model="selectedSubmitTo" class="mt-2"
-							@change="handleSubmitToChange">
-							<option value="facility">Facility</option>
-							<option value="agency">Agency</option>
-							<option value="user">User</option>
-						</b-form-select>
 					</b-form-group>
-
-					<!-- <div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Select User" label-cols-lg="4">
-							<b-form-select v-model="selectedUser" :options="userList"></b-form-select>
-						</b-form-group>
-					</div> -->
-
-					<!-- <div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Select User" label-cols-lg="4">
-							<b-input-group>
-								<b-form-select v-model="selectedUser" :options="filteredUserList"
-									class="mb-0"></b-form-select>
-								<b-input-group-append>
-									<b-input-group-text>
-										<font-awesome-icon icon="search" />
-									</b-input-group-text>
-								</b-input-group-append>
-							</b-input-group>
-						</b-form-group>
-					</div> -->
-					<div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Search User" label-cols-lg="4">
-							<div class="position-relative">
-								<b-form-input v-model="searchUser" @input="handleUserSearch"
-									placeholder="Search user..."></b-form-input>
-								<!-- <b-button variant="outline-secondary" class="position-absolute"
-									style="top: 50%; right: 10px; transform: translateY(-50%);" @click="clearUserSearch">
-								</b-button> -->
-							</div>
-
-							<b-list-group v-if="searchResults.length > 0" class="search-results">
-								<b-list-group-item v-for="(user, index) in searchResults" :key="index"
-									@click="selectUser(user)">
-									{{ user.text }}
-								</b-list-group-item>
-							</b-list-group>
-						</b-form-group>
-					</div>
-
-					<!-- Inside the "Facility" block where you have the delivery method dropdown -->
-					<div v-if="selectedSubmitTo === 'facility'">
-						<b-form-group label="Delivery Method" label-cols-lg="4">
-							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-								:disabled="isFacilitySelected" @change="handleSubmitToChange">
-								<option value="Fax">Fax</option>
-								<option value="Email">Email</option>
-								<option value="Manual">Manual</option>
-							</b-form-select>
-						</b-form-group>
-
-						<b-form-group v-if="isFacilitySelected">
-							<b-alert show variant="warning">
-								No facility is selected. Please choose a facility.
-							</b-alert>
-						</b-form-group>
-
-						<!-- Dropdown for Fax -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && receivingFaxDetails.length > 0"
-							label="Select Fax" label-cols-lg="4">
-							<b-form-select v-model="selectedFax" :options="receivingFaxDetails" value-field="fax"
-								text-field="fax"></b-form-select>
-						</b-form-group>
-
-						<!-- Dropdown for Email -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Email' && receivingEmailDetails.length > 0"
-							label="Select Email" label-cols-lg="4">
-							<b-form-select v-model="selectedEmail" :options="receivingEmailDetails" value-field="email"
-								text-field="email"></b-form-select>
-						</b-form-group>
-					</div>
-
-					<b-form-group
-						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Email' && isEmailIdsEmpty">
-						<b-alert show variant="warning">
-							No email IDs are available for the facility. Please provide valid email IDs.
-						</b-alert>
-					</b-form-group>
-
-					<b-form-group
-						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Fax' && isFaxIdsEmpty">
-						<b-alert show variant="warning">
-							No fax IDs are available for the facility. Please provide valid fax IDs.
-						</b-alert>
-					</b-form-group>
-
-
-					<div v-if="selectedSubmitTo === 'agency'">
-						<b-form-group label="Delivery Method" label-cols-lg="4">
-							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-							:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
-								<option value="Fax">Fax</option>
-								<option value="Email">Email</option>
-								<option value="Manual">Manual</option>
-							</b-form-select>
-						</b-form-group>
-
-						<b-form-group v-if="isAgencyNotSelected">
-							<b-alert show variant="warning">
-								Please select an agency before submitting.
-							</b-alert>
-						</b-form-group>
-
-						<div v-if="selectedDeliveryMethod === 'Email'">
-							<b-form-group label="Agency Email">
-								<b-form-input type="text" v-model="selectedAgencyEmail" disabled></b-form-input>
-							</b-form-group>
-						</div>
-
-						<div v-if="selectedDeliveryMethod === 'Fax'">
-							<b-form-group label="Agency Fax">
-								<b-form-input type="text" v-model="selectedAgencyFax" disabled></b-form-input>
-							</b-form-group>
-						</div>
-					</div>
-
-					<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
-						<!-- Render fields for User -->
-						<div class="row">
-							<!-- Carrier dropdown -->
-							<div class="col-md-6 form-group">
-								<label for="carrier">Carrier:</label>
-								<div class="input-group">
-									<select class="form-control" v-model="carrier">
-										<option value="FedEx">FedEx</option>
-										<option value="UPS">UPS</option>
-										<option value="USPS">USPS</option>
-									</select>
-								</div>
-							</div>
-
-							<!-- Tracking# input -->
-							<div class="col-md-6 form-group">
-								<label for="trackingNumber">Tracking#:</label>
-								<input type="text" class="form-control" v-model="trackingNumber" />
-							</div>
-						</div>
-
-						<!-- Add more fields as needed -->
-
-						<div class="form-group">
-							<label for="notes">Notes:</label>
-							<textarea class="form-control" v-model="notes"></textarea>
-						</div>
-					</div>
-
-
 					<b-row>
 						<b-col cols="12" >
 
@@ -672,102 +517,16 @@
 </template>
 
 <style scoped>
-.manual-delivery-fields .form-group {
-	margin-bottom: 10px;
-}
-
-.manual-delivery-fields .form-group label {
-	display: block;
-	margin-bottom: 5px;
-}
-
-.manual-delivery-fields .form-group .input-group {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-}
-
-.manual-delivery-fields .form-group .form-control {
-	margin-left: 10px;
-	/* Adjust the margin as needed */
-}
-
-.manual-delivery-fields .form-group textarea {
-	resize: vertical;
-	/* Allow vertical resizing of the textarea */
-}
-
 .result-span {
 	display: flex;
-
-	align-items: center;
-	/* Center vertically */
-	justify-content: center;
-	/* Center horizontally */
-	border: 0.5px solid #000;
-	/* Add your desired border styles here */
-	padding: 1px;
-	/* Adjust padding as needed */
-	font-size: inherit;
-	/* Inherit the font size from the parent (input) */
-	width: 100%;
-	/* Take the maximum available width */
-	height: 100%;
-	/* Take the maximum available height */
-	box-sizing: border-box;
-	/* Include border and padding in the width and height calculation */
-}
-
-/* Style for Submit To dropdown */
-.b-form-select {
-	width: 100%;
-	/* Take the maximum available width */
-}
-
-/* Style for carrier, tracking, and notes */
-label {
-	margin-top: 10px;
-	/* Add some top margin for better spacing */
-	display: block;
-	/* Make labels block-level for proper alignment */
-}
-
-input[type="text"],
-textarea {
-	width: 100%;
-	/* Take the maximum available width */
-	padding: 8px;
-	/* Adjust padding as needed */
-	box-sizing: border-box;
-	/* Include padding in the width calculation */
-	margin-bottom: 10px;
-	/* Add some bottom margin for better spacing */
-}
-
-/* Add more styles as needed */
-
-/* Style for mailNotes (example) */
-.b-form-input[type="text"] {
-	width: 100%;
-	/* Take the maximum available width */
-	padding: 8px;
-	/* Adjust padding as needed */
-	box-sizing: border-box;
-	/* Include padding in the width calculation */
-	margin-bottom: 10px;
-	/* Add some bottom margin for better spacing */
-}
-
-.search-results {
-	position: absolute;
-	width: 100%;
-	max-height: 150px;
-	overflow-y: auto;
-	border: 1px solid #ced4da;
-	border-top: none;
-	border-radius: 0 0 5px 5px;
-	z-index: 1000;
-
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  border: 0.5px solid #000; /* Add your desired border styles here */
+  padding: 1px; /* Adjust padding as needed */
+  font-size: inherit; /* Inherit the font size from the parent (input) */
+  width: 100%; /* Take the maximum available width */
+  height: 100%; /* Take the maximum available height */
+  box-sizing: border-box; /* Include border and padding in the width and height calculation */
 }
 </style>
 
@@ -827,18 +586,12 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		request_id: {
+			type: Array, // adjust the type based on your needs
+			default: () => [],
+		},
 	},
 	computed: {
-		
-		isFacilitySelected() {
-			return this.selectedSubmitTo === 'facility' && this.facility_id === null;
-		},
-		isEmailIdsEmpty() {
-			return this.emailIds.length === 0;
-		},
-		isFaxIdsEmpty() {
-			return this.faxIds.length === 0;
-		},
 		localValue: {
 			get() {
 				return this.value;
@@ -846,12 +599,6 @@ export default {
 			set(val) {
 				this.$emit("input", val);
 			},
-		},
-		filteredUserList() {
-			const regex = new RegExp(this.searchQuery, 'i');
-			return this.userList
-				.filter(user => regex.test(user.full_name))
-				.map(user => user.full_name);
 		},
 		allFiles() {
 			return [
@@ -947,275 +694,25 @@ export default {
 			usernameFtp:"",
 			passwordFtp:"",
 			},
-			selectedOptionMethodFtp: false,
-			selectedOptionMethodEsmd: false,
-			portalUrlEsmd: null,
-			usernameEsmd: null,
-			passwordEsmd: null,
-			agencyList: [],
-			selectedAgency: null,
-			emailData: null,
-			faxData: null,
-			websiteData: null,
-			contactNumberData: null,
-			selectedSubmitTo: 'facility',
-			selectedDeliveryMethod: 'fax',
-			carrier: '',
-			trackingNumber: '',
-			notes: '',
-			userList: [], // Array to store the full_name of users
-			selectedUser: null, // Selected user from the list
-			searchQuery: '',
-			searchUser: '',
-			searchResults: [],
-			appealList: [], // Assuming you have appeal data
-			agencyList: [], // Assuming you have agency data
-			selectedAgencyEmail: "", // Variable to store selected agency email
-			selectedAgencyFax: "", // Variable to store selected agency fax
-			facility_id: null,
-			emailIds: [],
-			faxIds: [],
-			emailList: [],
-			faxList: [],
-			extractedEmails: [],
-			extractedFaxes: [],
-			agencyid: null,
+			selectedOptionMethodFtp:false,
+			selectedOptionMethodEsmd:false,
+			portalUrlEsmd:null,
+			usernameEsmd:null,
+			passwordEsmd:null,
+			agencyList:[],
+			selectedAgency:null,
+			emailData:null,
+			faxData:null,
+			websiteData:null,
+			contactNumberData:null,
 
 		};
-
 	},
 	mounted() {
 		this.checkExists();
 		this.test();
-		this.fetchuserlist();
-		this.AgencyList();
-		this.AppealList();
-		this.CaseList();
-		this.facilityemailList();
-		this.facilityfaxList();
-		this.FacilityReceivingList();
-
 	},
 	methods: {
-		async CaseList() {
-			try {
-				const url = "/client/caselist";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-
-				// Extract case_id from your component
-				const case_id = this.value.case_id;
-				console.log("Case ID from your component:", case_id);
-
-				// Find the matching case in the response data
-				const matchingCase = response.data.find((caseData) => caseData.id === case_id);
-
-				if (matchingCase) {
-					this.facility_id = matchingCase.facility_id;
-					console.log("Matched Facility ID:", this.facility_id);
-					// Now you have the facility_id for the matched case_id
-				} else {
-					console.log("No matching case found for the provided case_id");
-				}
-
-				console.log("RESPONSE cases = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-
-		async facilityemailList() {
-			try {
-				const url = "/client/facilityemaillist";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				this.emailList = response.data;
-				console.log("RESPONSE email facility = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-		async facilityfaxList() {
-			try {
-				const url = "/client/facilityfaxlist";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				this.faxList = response.data;
-				console.log("RESPONSE fax facility = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-		async FacilityReceivingList() {
-			try {
-				const url = "/client/facilityreceivinglist";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-
-				console.log("RESPONSE facility receiving = ", response.data);
-
-				// Check if this.facility_id is present in the response data
-				const facilityReceivingData = response.data.find(item => item.facility_id === this.facility_id);
-
-				if (facilityReceivingData) {
-					// Extract email and fax IDs associated with the facility_id
-					this.emailIds = response.data
-						.filter(item => item.facility_id === this.facility_id)
-						.map(item => item.receiving_email_id);
-
-					this.faxIds = response.data
-						.filter(item => item.facility_id === this.facility_id)
-						.map(item => item.receiving_fax_id);
-
-					// Now emailIds and faxIds contain the IDs associated with the facility_id
-					console.log("Email IDs:", this.emailIds);
-					console.log("Fax IDs:", this.faxIds);
-
-					// Get fax numbers for the IDs inside faxIds array
-					this.receivingFaxDetails = this.faxList
-						.filter(item => this.faxIds.includes(item.id))
-						.map(item => item.fax);
-
-					// Get email addresses for the IDs inside emailIds array
-					this.receivingEmailDetails = this.emailList
-						.filter(item => this.emailIds.includes(item.id))
-						.map(item => item.email);
-
-					// Log the details for verification
-					console.log("Receiving Email Details:", this.receivingEmailDetails);
-					console.log("Receiving Fax Details:", this.receivingFaxDetails);
-				} else {
-					console.log("No data found for the provided facility_id");
-				}
-			} catch (error) {
-				console.error("Error fetching facility receiving data:", error);
-			}
-		},
-
-
-
-		async AgencyList() {
-			try {
-				const url = "/client/agencyList";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				this.agencyList = response.data;
-				console.log("RESPONSE agencies = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-		async AppealList() {
-			try {
-				const url = "/client/appealList";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-
-				const insid = this.value.id;
-				console.log("appeal id", insid);
-
-				// Find the appeal with matching id
-				let selectedAppeal = response.data.find(appeal => appeal.id === insid);
-				console.log("checking selected Appeal", selectedAppeal)
-
-				if (selectedAppeal) {
-					// Find agency with matching id
-					const selectedAgency = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-					this.agencyid = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-					console.log("agency id ",this.agencyid.id);
-					if (selectedAgency) {
-						// Update selected agency email and fax
-						this.selectedAgencyEmail = selectedAgency.contact_email;
-						this.selectedAgencyFax = selectedAgency.contact_fax;
-					}
-				}
-
-				console.log("RESPONSE appeal = ", response.data);
-				console.log("Selected Agency Email:", this.selectedAgencyEmail);
-				console.log("Selected Agency Fax:", this.selectedAgencyFax);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-		handleUserSearch() {
-			// Implement search logic here and update searchResults
-			this.searchResults = this.userList.filter(user => user.text.toLowerCase().includes(this.searchUser.toLowerCase()));
-		},
-		clearUserSearch() {
-			this.searchUser = '';
-			this.searchResults = [];
-		},
-		selectUser(user) {
-			this.selectedUser = user.value; // Set the selected user ID or value
-			this.searchUser = user.text; // Set the search bar value
-			this.searchResults = []; // Clear the search results
-			console.log("selected user id", this.selectedUser);
-		},
-
-		async fetchuserlist() {
-			try {
-				const url = "/client/userslist";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-
-				this.userList = response.data.map(user => ({
-					value: user.id,
-					text: user.full_name,
-				}));
-
-				console.log("userList = ", this.userList);
-
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
-
-
-		handleSubmitToChange() {
-			// Handle any logic when the "Submit To" dropdown changes
-			// For example, you might want to reset some fields based on the selected option
-			if (this.selectedSubmitTo === 'user') {
-				this.selectedDeliveryMethod = ''; // Reset the selected delivery method
-				// Reset other fields as needed
-			} else {
-				// Handle other cases if needed
-			}
-		},
 		removeFile(file) {
 			this.$emit("remove", file);
 		},
@@ -1240,12 +737,13 @@ export default {
 		async generate() {
 			try {
 				this.generating = true;
-
+				console.log('inside generate function',this.request_id);
 				const response = await this.$store.dispatch("appealPackets/generate", {
 					id: this.value.id,
 					case_files: this.caseFiles,
 					appeal_files: this.appealFiles,
 					ordered_list: this.orderedList,
+					request_id: this.request_id,
 				});
 
 				this.$emit("generated", response);
@@ -1299,21 +797,11 @@ export default {
 
 		async submitPacket() {
 			try {
-				console.log('Send email initiated');
-				const data = { 'id': this.selectedUser }
-
-				// Use Axios to make the request to the controller for sending user_id 
-				console.log(data);
-				const resp = await axios.post('/client/sendoutgoingemail', data);
-				console.log(resp);
-			} catch (e) {
-				console.log(e)
-			}
-			try {
 				this.submitting = true;
 
 				const response = await this.$store.dispatch("appealPackets/submit", {
 					id: this.value.id,
+					request_id: this.request_id,
 				});
 
 				this.$emit("submitted", response);
@@ -1339,22 +827,20 @@ export default {
 				this.submitting = false;
 
 				const postData = {
-					packageSentViaSnailMail: this.packageSentViaSnailMail,
-					mailNotes: this.notes,
-					ftpPortalUrl: this.portalUrlFtp,
-					ftpUsername: this.usernameFtp,
-					ftpPassword: this.passwordFtp,
-					EsmdPortalUrl: this.portalUrlEsmd,
-					EsmdUsername: this.usernameEsmd,
-					EsmdPassword: this.passwordEsmd,
-					email: this.emailData,
-					fax: this.faxData,
-					website: this.websiteData,
-					contactNumber: this.contactNumberData,
-					agency_id: this.selectedAgency,
-					delivery_method: this.selectedDeliveryMethod,
-					carrier: this.carrier,
-					tracking: this.trackingNumber,
+					packageSentViaSnailMail:this.packageSentViaSnailMail,
+					mailNotes:this.mailNotes,
+					ftpPortalUrl:this.portalUrlFtp,
+					ftpUsername:this.usernameFtp,
+					ftpPassword:this.passwordFtp,
+					EsmdPortalUrl:this.portalUrlEsmd,
+					EsmdUsername:this.usernameEsmd,
+					EsmdPassword:this.passwordEsmd,
+					email:this.emailData,
+					fax:this.faxData,
+					website:this.websiteData,
+					contactNumber:this.contactNumberData,
+					agency_id:this.selectedAgency,
+					delivery_method:this.selectedOptionMethod,
 				};
 				axios.post('/client/outgoingDetails', postData)
 				.then(response => {
@@ -1426,7 +912,7 @@ export default {
         },
 		async test(){
 			try{
-				let url = "/client/outgoing";
+				let url = "/client/outgoingList";
 				const response = await axios.get(url, {
 				headers: {
 					"Accept": "application/json",
@@ -1462,48 +948,31 @@ export default {
 			}
 		},
 		handleDeliveryMethodChange() {
-			//this.selectedAgency = null;
-			// This function is called when the selected option changes
-			console.log('Selected delivery method:', this.selectedOptionMethod);
+		// This function is called when the selected option changes
+		console.log('Selected delivery method:', this.selectedOptionMethod);
 
-			//for rendering mail options after mail is selected as delivery method
-			this.selectedOptionText = "Search " + this.selectedOptionMethod;
-			if (this.selectedOptionMethod == 'Mail') {
-				this.selectedOptionMethodMail = true;
-			}
-			else {
-				this.selectedOptionMethodMail = false;
-			}
-			if (this.selectedOptionMethod == 'FTP') {
-				this.selectedOptionMethodFtp = true;
-			}
-			else {
-				this.selectedOptionMethodFtp = false;
-			}
-
-			if (this.selectedOptionMethod == 'ESMD') {
-				this.selectedOptionMethodEsmd = true;
-			}
-			else {
-				this.selectedOptionMethodEsmd = false;
-			}
-			// Check if the selected delivery method is Email
-			if (this.selectedDeliveryMethod === 'email') {
-				// Update the form fields with the agency's email
-				if (this.selectedSubmitTo === 'agency' && this.selectedAgencyEmail) {
-					// Assuming you have a field to store the email value, update accordingly
-					this.emailData = this.selectedAgencyEmail;
-				}
-			}
-			// Check if the selected delivery method is Fax
-			if (this.selectedDeliveryMethod === 'fax') {
-				// Update the form fields with the agency's fax
-				if (this.selectedSubmitTo === 'agency' && this.selectedAgencyFax) {
-					// Assuming you have a field to store the fax value, update accordingly
-					this.faxData = this.selectedAgencyFax;
-				}
-			}
-
+		//for rendering mail options after mail is selected as delivery method
+		this.selectedOptionText = "Search "+this.selectedOptionMethod;
+		if (this.selectedOptionMethod == 'Mail'){
+			this.selectedOptionMethodMail = true;
+		}
+		else{
+			this.selectedOptionMethodMail = false;
+		}
+		if(this.selectedOptionMethod == 'FTP'){
+			this.selectedOptionMethodFtp=true;
+		}
+		else{
+			this.selectedOptionMethodFtp=false;
+		}
+		
+		if(this.selectedOptionMethod == 'ESMD'){
+			this.selectedOptionMethodEsmd=true;
+		}
+		else{
+			this.selectedOptionMethodEsmd=false;
+		}
+		
 		},
 		handleInputChange() {
       		// This method is called whenever the input changes

@@ -130,7 +130,7 @@
 					<b-card no-body class="shadow-sm">
 						<b-tabs card>
 							<b-tab no-body lazy>
-								<template #title>Existing Cases</template>
+								<template #title>Cases</template>
 								<case-index
 									ref="caseList"
 									:filters="caseFilters"
