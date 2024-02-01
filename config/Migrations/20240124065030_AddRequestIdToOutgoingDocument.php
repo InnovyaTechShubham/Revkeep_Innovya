@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class AddEmailColumnToOutgoingDocuments extends AbstractMigration
+class AddRequestIdToOutgoingDocument extends AbstractMigration
 {
     /**
      * Change Method.
@@ -15,11 +15,14 @@ class AddEmailColumnToOutgoingDocuments extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('outgoing_documents');
-        $table
-        ->addColumn('email', 'string', [
+
+        
+        $table->addColumn('request_id', 'string', [
             'default' => null,
             'null' => true,
-        ])
-        ->update();
+        ]);
+
+
+        $table->update();
     }
 }

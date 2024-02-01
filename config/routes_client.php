@@ -912,7 +912,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'_method' => 'POST'
 	]);
 
-	$builder->connect('/outgoing', [
+ 	$builder->connect('/outgoingList', [
 		'controller' => 'Outgoing',
 		'action' => 'index',
 		
@@ -978,11 +978,66 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'controller' => 'FacilitiesAddContact',
 		'action' => 'index',
 	]);
-	$builder->connect('/hearing', [
-		'controller' => 'HearingCase',
+
+
+	$builder->connect('/facilityAddForms', [
+		'controller' => 'FacilityAddForm',
 		'action' => 'index',
-		'_method' => 'POST'
+	    '_method' => 'POST'
 	]);
 
-	
+	$builder->connect('/facilityContactList', [
+		'controller' => 'FacilityContactList',
+		'action' => 'index',
+	]);
+	$builder->connect('/multiplefacility', [
+		'controller' => 'Multiplefacility',
+		'action' => 'index',
+	]);
+	$builder->connect('/fetchmultiplefacility', [
+		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/facilityList', [
+		'controller' => 'FacilityList',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/userslist', [
+		'controller' => 'UsersList',
+		'action' => 'index',
+	]);
+	// $builder->connect('/sendemail', [
+	// 	'controller' => 'SendEmail',
+	// 	'action' => 'index',
+	//     '_method' => 'POST'
+	// ]);
+	$builder->connect('/sendoutgoingemail', [
+		'controller' => 'SendOutgoingEmail',
+		'action' => 'index',
+	    '_method' => 'POST'
+	]);
+	$builder->connect('/facilityemaillist', [
+		'controller' => 'FacilityEmailList',
+		'action' => 'index',
+	]);
+	$builder->connect('/facilityfaxlist', [
+		'controller' => 'FacilityFaxList',
+		'action' => 'index',
+	]);
+	$builder->connect('/facilityreceivinglist', [
+		'controller' => 'FacilityReceivingList',
+		'action' => 'index',
+	]);
+	$builder->connect('/caselist', [
+		'controller' => 'CaseList',
+		'action' => 'index',
+	]);
+	$builder->connect('/multipleagencycontact', [
+		'controller' => 'MultipleAgencyContact',
+		'action' => 'index',
+		'_method' => 'POST'
+		
+	]);
 });

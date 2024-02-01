@@ -586,6 +586,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		request_id: {
+			type: Array, // adjust the type based on your needs
+			default: () => [],
+		},
 	},
 	computed: {
 		localValue: {
@@ -733,12 +737,13 @@ export default {
 		async generate() {
 			try {
 				this.generating = true;
-
+				console.log('inside generate function',this.request_id);
 				const response = await this.$store.dispatch("appealPackets/generate", {
 					id: this.value.id,
 					case_files: this.caseFiles,
 					appeal_files: this.appealFiles,
 					ordered_list: this.orderedList,
+					request_id: this.request_id,
 				});
 
 				this.$emit("generated", response);
@@ -796,6 +801,7 @@ export default {
 
 				const response = await this.$store.dispatch("appealPackets/submit", {
 					id: this.value.id,
+					request_id: this.request_id,
 				});
 
 				this.$emit("submitted", response);
@@ -835,7 +841,6 @@ export default {
 					contactNumber:this.contactNumberData,
 					agency_id:this.selectedAgency,
 					delivery_method:this.selectedOptionMethod,
-					requestName:this.myRequest,
 				};
 				axios.post('/client/outgoingDetails', postData)
 				.then(response => {
@@ -907,7 +912,7 @@ export default {
         },
 		async test(){
 			try{
-				let url = "/client/outgoing";
+				let url = "/client/outgoingList";
 				const response = await axios.get(url, {
 				headers: {
 					"Accept": "application/json",
