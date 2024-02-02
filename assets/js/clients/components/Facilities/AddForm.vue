@@ -6,7 +6,7 @@
 				<slot name="header"></slot>
 
 				<b-card-body>
-					<!-- <validation-provider
+				<!-- <validation-provider
 						vid="name"
 						name="Name"
 						:rules="{ required: true, min: 2, max: 50 }"
@@ -44,7 +44,7 @@
 							<b-form-input
 								name="disp_name"
 								type="text"
-								v-model="entity.display_name"
+								v-model="entity.name"
 								:state="getValidationState(validationContext)"
 								:disabled="saving"
 							/>
@@ -143,6 +143,7 @@
 					</b-row>
 
 					<!-- <b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
+
 						<validation-provider
 							vid="street_address_1"
 							name="Street Address"
@@ -163,7 +164,7 @@
 								:key="error"
 								v-text="error"
 							/>
-						</validation-provider> -->
+							</validation-provider> -->
 						<!--<validation-provider
 							vid="street_address_2"
 							name="Street Address (Continued)"
@@ -185,8 +186,7 @@
 								v-text="error"
 							/>
 						</validation-provider>-->
-					<!-- </b-form-group> -->
-
+						<!-- </b-form-group> -->
 					<!-- <validation-provider
 						vid="city"
 						name="City"
@@ -328,7 +328,7 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider> -->
+									</validation-provider> -->
 
 
 								<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
@@ -391,10 +391,9 @@
 				</b-card-body>
 
 				<b-card-body>
-
+				
 					<!-- <h6 class="text-muted">Optional</h6> -->
 					<!-- <b-card no-body> -->
-
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -461,11 +460,12 @@
 									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
 										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
 										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+
 									</b-form-group>
-									</validation-provider>
+								</validation-provider>
 								</b-col>
 								</b-row>
-							</b-card-body>
+							 </b-card-body>							
 						</b-collapse>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -524,20 +524,6 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-							</b-card-body>
-						</b-collapse>
-						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseContact
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Contact</b-button
-							>
-						</b-card-header>
-						<b-collapse id="collapseContact" role="tabpanel">
-							<b-card-body>
 
 								<validation-provider
 									vid="email"
@@ -560,7 +546,6 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
 								<validation-provider
 									vid="website"
 									name="Website"
@@ -1003,7 +988,7 @@
 									</empty-result>
 								</b-form-group>
 							</b-card-body>
-						</b-collapse> -->
+							</b-collapse> -->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1094,8 +1079,8 @@
 									</div>
 								</b-form-group>
 							</b-card-body>
-			</b-collapse>
-			<b-card-header header-tag="header" role="tab" class="p-0">
+						</b-collapse>
+				<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseReceivingMethods
@@ -1309,17 +1294,14 @@
 									</b-form-group>
 								</validation-provider> -->
 								
-
-
-							</b-card-body>
-						</b-collapse>
+				</b-card-body>
+			</b-collapse>
 
 						<!-- end Receiving Methods -->
 
 						<!-- end Receiving Methods -->
 			</b-card-body>
 					</b-card>
-				
 
 				<b-card-footer>
 					<b-row>
@@ -1336,7 +1318,7 @@
 						</b-col>
 					</b-row>
 				</b-card-footer>
-			<!-- </b-card> -->
+				<!-- </b-card> -->
 		</b-form>
 	</validation-observer>
 </template>
@@ -1348,7 +1330,6 @@ import axios from "axios";
 import { ref} from "vue";
 // get All record
 const records = ref([]);
-
 
 export default {
 	name: "FacilityAddForm",
@@ -1439,7 +1420,6 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
-
 		};
 	},
 	computed: mapGetters({
@@ -1452,15 +1432,14 @@ export default {
 	mounted() {
 		this.getChains();
 		this.getServices();
-		// this.TitleShow();
-        // this.fetchContactTypes();
+		this.TitleShow();
+        this.fetchContactTypes();
 		if (this.id) {
 			this.refresh();
 		} else {
 			this.loading = false;
 		}
 	},
-
 	// created() {
 	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
 	// 	const facilityId = this.entity.id;
@@ -1471,10 +1450,10 @@ export default {
 	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
 	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
 	// 	},
-
+	
 	methods: 
 	{
-		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
+	async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
 
 			// Determine if receivingEmailId or receivingFaxId is provided
@@ -2040,7 +2019,6 @@ export default {
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
 		},
-
 		async getChains() {
 			console.log("Fetching chains...");
 			// await this.$store.dispatch("chains/get");
@@ -2058,7 +2036,6 @@ export default {
 			});
 			console.log("Chains fetched successfully.");
 			},
-
 		cancel() {
 			this.$emit("cancel");
 		},
@@ -2087,6 +2064,8 @@ export default {
 		},
 
 		async save() {
+
+		
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -2121,7 +2100,7 @@ export default {
 				this.saving = false;
 			}
 		},
-	openCustomTitle() {
+		openCustomTitle() {
 			// Open the custom Title type modal when the "Add" button is clicked
 			this.$bvModal.show("customTitle");
 		},
@@ -2147,24 +2126,95 @@ export default {
 				this.newCustomName = '';
 				console.log("check",response);
 
-		window.location.reload();
-	})
-	.catch((error) => {
-		// Handle any errors, e.g., show an error message
-		console.error('Error adding new type:', error);
-	});
-},
-addInputField() {
-      this.inputFields.push({ selectedContactType: 'phone', phone: '' });
-    },
-    removeInputField(index) {
-      this.inputFields.splice(index, 1);
-    },
-    getValidationState(validationContext) {
-      // Implement your validation state logic if needed
-      return null;
-    },
+				window.location.reload();
+			})
+			.catch((error) => {
+				// Handle any errors, e.g., show an error message
+				console.error('Error adding new type:', error);
+			});
+	},
+	async TitleShow (){
+		try {
+				const url = "/client/facilityTitle";
+					
+					const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
+					
+					});
+					console.log("check =",response.data);
+				
+				if (response.data && Array.isArray(response.data)) {
+						for (let i = 0; i < response.data.length; i++) {
+						this.titlename.push(response.data[i].title);
+						}
+					}
+						console.log("Titlename:", this.titlename);
+			}catch (error) {
+				console.error("Error fetching data:", error.message);
+				}
+
+
+	},
+
+	async fetchContactTypes() {
+				try{
+				const url = "/client/facilityTitle";
+					
+					const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
+					});
+					if (response.data && Array.isArray(response.data)) {
+						for (let i = 0; i < response.data.length; i++) {
+						this.contactTypes.push(response.data[i].contact_type);
+						}
+					}
+					console.log("contacttype:", this.contactTypes);
+			}catch (error) {
+				console.error("Error fetching data:", error.message);
+				}
+	},
+
+		    addInputField() {
+                this.inputFields.push({ selectedContactType: 'phone', phone: '' });
+        },
+            removeInputField(index) {
+                this.inputFields.splice(index, 1);
+        },
+            getValidationState(validationContext) {
+                // Implement your validation state logic if needed
+                 return null;
+        },
+
+        createNewForm() {
+			const newForm = {
+			
+			f_name: null,
+			l_name: null,
+			title_id: null,
+			contact_id: null,
+			phone_no: null,
+			facility_name:this.entity.name
+			// ... other form fields ...
+			
+			// ... other form-specific data ...
+			};
+			// Push an empty object to the forms array
+			this.forms.push(newForm);
+			console.log("my form :",this.forms);
+        },
+      removeForm(index) {
+        // Remove the form at the specified index
+        this.forms.splice(index, 1);
+      },
 	
+
+
 	},
 };
 </script>

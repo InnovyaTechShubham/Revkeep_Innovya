@@ -216,6 +216,27 @@
 						</b-form-group>
 						</validation-provider>
 
+						<validation-provider
+									vid="original_start_date"
+									name="Original Start Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.original_start_date"
+											name="original_start_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
 						<!-- Active -->
 						
 					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
@@ -282,6 +303,28 @@
 						<b-form-group label="County" label-for="county" label-cols-lg="4">
 							<b-form-input name="county" type="text" v-model="entity.county" :state="getValidationState(validationContext)" :disabled="saving" />
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<validation-provider
+									vid="term_date"
+									name="Term Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.term_date"
+											name="term_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
 						</b-form-group>
 						</validation-provider>
 
@@ -1439,6 +1482,323 @@
 						</b-collapse>
 						<!-- end -->
 
+
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseContact
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Contact</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseContact" role="tabpanel">
+							<b-card-body>
+								<validation-provider
+									vid="phone"
+									name="Phone"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
+										<b-form-input
+											name="phone"
+											type="text"
+											v-model="entity.phone"
+											v-mask="'(###) ###-####'"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="fax"
+									name="Fax"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
+										<b-form-input
+											name="fax"
+											type="text"
+											v-model="entity.fax"
+											v-mask="'(###) ###-####'"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="email"
+									name="Email"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
+										<b-form-input
+											name="email"
+											type="email"
+											v-model="entity.email"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+								<validation-provider
+									vid="website"
+									name="Website"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
+										<b-form-input
+											name="website"
+											type="url"
+											v-model="entity.website"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<b-input-group-append>
+								  <b-button variant="primary" class="mb-1" @click="createNewForm">
+				                 	<font-awesome-icon icon="plus" fixed-width />
+				                 	<span>Add Contacts</span>
+			                      </b-button>
+                                </b-input-group-append>
+
+								<form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
+									<b-card body>
+										<validation-provider
+											vid="f_name"
+											name="First_Name"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
+												<b-form-input
+													name="f_name"
+													type="text"
+													v-model="form.first_name"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+											vid="l_name"
+											name="Last_Name"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
+												<b-form-input
+													name="l_name"
+													type="text"
+													v-model="form.last_name"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+											vid="title_id"
+											name="Main_Title"
+											:rules="{ required: true, numeric: true }"
+											v-slot="validationContext"
+										>
+											<b-form-group
+												label="Title"
+												label-for="title_id"
+												label-cols-lg="4"
+											>
+												<b-input-group>
+													<b-form-select
+														name="title_id"
+														v-model="form.title_id"
+														:options="titlename"
+														:disabled="saving || loadingtitlename"
+														:state="getValidationState(validationContext)"
+														value-field="id"
+														text-field="full_name"
+														
+													>
+													
+														<template #first>
+															<option disabled v-if="!hastitlename" :value="null">
+															Please Select Title
+															</option>
+														</template>
+													</b-form-select>
+													<template #append>
+														<b-button
+															variant="primary"
+															@click="openCustomTitle"
+														>
+															<font-awesome-icon icon="plus" fixed-width />
+														</b-button>
+													</template>
+												</b-input-group>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+										<template>
+											<div>
+												<!-- Add BootstrapVue grid classes to create a row -->
+												<b-row>
+													<!-- Column for the dropdown and input field -->
+													<b-col md="4">
+														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+															<b-form-group label="Contact Number Type" label-for="type">
+																<!-- Wrapper for select and input fields -->
+																<div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
+																<!-- Dropdown (select) field -->
+																	<label :for="'contacType' + index"></label>
+																	<b-input-group  class="mb-3">
+																		<b-form-select
+																			name="conatct_id"
+																			v-model="form.contact_id"
+																			:options="contactTypes"
+																			:disabled="saving || loadingcontactTypes"
+																			:state="getValidationState(validationContext)"
+																			value-field="id"
+																			text-field="full_name"
+																			
+																		>
+																			<template #first>
+																				<option disabled v-if="!hascontactTypes" :value="null">
+																				Please Select Contact Type
+																				</option>
+																			</template>
+																		</b-form-select>
+																	</b-input-group>
+																</div>
+															</b-form-group>
+														</validation-provider>
+													</b-col>
+													<b-col md="8">
+														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+														<b-form-group label="Contact Number" label-for="phone">
+															<b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
+															<b-form-input
+																:name="'phone' + index"
+																type="text"
+																v-model="form.phone"
+																v-mask="'(###) ###-####'"
+																:state="getValidationState(validationContext)"
+																:disabled="saving"
+															></b-form-input>
+
+															<!-- Button inside the input group to remove the corresponding field -->
+															<b-input-group-append>
+																<b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+																<font-awesome-icon icon="minus" fixed-width />
+																</b-button>
+																<!-- Button to add a new input field -->
+																<b-button variant="primary" @click="addInputField">
+															<font-awesome-icon icon="plus" fixed-width />
+														</b-button>
+															</b-input-group-append>
+															</b-input-group>
+
+															<b-form-invalid-feedback
+															v-for="error in validationContext.errors"
+															:key="error"
+															v-text="error"
+															></b-form-invalid-feedback>
+														</b-form-group>
+														
+														</validation-provider>
+													</b-col>
+												</b-row>
+											</div>
+										</template>
+               								
+
+										<validation-provider
+											vid="email"
+											name="Email"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="Email" label-for="email" label-cols-lg="4">
+												<b-form-input
+													name="email"
+													type="email"
+													v-model="form.email"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+										<b-card-footer class="d-flex justify-content-end">
+												<b-button type="button" variant="light"  @click="removeForm(index)">
+												<span>Cancel</span>
+												</b-button>
+										</b-card-footer>
+	
+										<b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
+											<b-form-input
+											id="newCustomName"
+											name="newCustomeTitleName"
+											type="text"
+											v-model="form.title_id"
+											placeholder="Add custom Title"
+											:disabled="saving"
+											/>
+										</b-modal>
+									</b-card>
+								</form>
+							</b-card-body>
+						</b-collapse>
+
+
+						<!-- Contract Section Start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1478,6 +1838,9 @@
 										/>
 									</b-form-group>
 								</validation-provider> -->
+							<b-row>
+							<!-- First Column -->
+							<b-col md="6">
 								<validation-provider
 									vid="active"
 									name="Active"
@@ -1487,57 +1850,12 @@
 									<b-form-group
 										label="Contract Status"
 										label-for="active"
-										label-cols-lg="2"
+										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
 										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								
-								<validation-provider
-									vid="original_start_date"
-									name="Original Start Date"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="2">
-										<b-form-input
-											type="date"
-											v-model="entity.original_start_date"
-											name="original_start_date"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="term_date"
-									name="Term Date"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Term Date" label-for="term_date" label-cols-lg="2">
-										<b-form-input
-											type="date"
-											v-model="entity.term_date"
-											name="term_date"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -1552,7 +1870,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="2">
+									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_start_date"
@@ -1568,13 +1886,17 @@
 									</b-form-group>
 								</validation-provider>
 
+							</b-col>
+
+							<!-- Second Column -->
+							<b-col md="6">
 								<validation-provider
 									vid="contract_end_date"
 									name="Contract End Date"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="2">
+									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_end_date"
@@ -1596,7 +1918,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="2">
+									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
 											v-model="entity.renewal_date"
@@ -1611,6 +1933,133 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+
+								</b-col>
+								</b-row>
+
+									<b-row>
+									<!-- First Column -->
+									<b-col md="6">
+										<!-- Contract Bill Type -->
+										<validation-provider
+										vid="contract_bill_type"
+										name="Contract Bill Type"
+										:rules="{ required: true }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_bill_type"
+											v-model="entity.contract_bill_type"
+											:state="getValidationState(validationContext)"
+											:options="contractBillTypes"
+											:disabled="saving"
+											required="required"
+											value-field="value"
+											text-field="text"
+											/>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="indemnification_days"
+										name="Indemnification Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Indemnification Days"
+											label-for="indemnification_days"
+											label-cols-lg="4"
+											description="Days exceeded for Indemnification"
+										>
+											<b-form-input
+												name="indemnification_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="entity.indemnification_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+
+									</b-col>
+
+									<!-- Second Column -->
+									<b-col md="6">
+										<!-- Contract Type -->
+										<validation-provider
+										vid="contract_type"
+										name="Contract Type"
+										:rules="{ required: true }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_type"
+											v-model="entity.contract_type"
+											:state="getValidationState(validationContext)"
+											:options="contractTypes"
+											:disabled="saving"
+											required="required"
+											value-field="value"
+											text-field="text"
+											direction="down"
+											/>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="max_return_work_days"
+										name="Max Return Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Max Return Days"
+											label-for="max_return_work_days"
+											label-cols-lg="4"
+											description="Maximum days to return work to facility"
+										>
+											<b-form-input
+												name="max_return_work_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="entity.max_return_work_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									</b-col>
+								</b-row>
 
 								<validation-provider
 								vid="service_operations"
@@ -1635,130 +2084,36 @@
 								</b-form-group>
 								</validation-provider>
 
+								<b-card title="Contract Pricing Schedule" border-variant="light">
+
 								<b-row>
-								<!-- First Column -->
 								<b-col md="6">
-									<!-- Contract Bill Type -->
-									<validation-provider
-									vid="contract_bill_type"
-									name="Contract Bill Type"
-									:rules="{ required: true }"
-									v-slot="validationContext"
-									>
-									<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
-										<b-form-select
-										name="contract_bill_type"
-										v-model="entity.contract_bill_type"
-										:state="getValidationState(validationContext)"
-										:options="contractBillTypes"
-										:disabled="saving"
-										required="required"
-										value-field="value"
-										text-field="text"
-										/>
-										<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-										/>
-									</b-form-group>
-									</validation-provider>
+									<b-table :items="insurances.slice(0, 6)" :fields="fields">
+									<template v-slot:cell(rate)="data">
+										<div class="d-flex">
+										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
+										</div>
+									</template>
+									</b-table>
+								
 								</b-col>
 
-								<!-- Second Column -->
 								<b-col md="6">
-									<!-- Contract Type -->
-									<validation-provider
-									vid="contract_type"
-									name="Contract Type"
-									:rules="{ required: true }"
-									v-slot="validationContext"
-									>
-									<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
-										<b-form-select
-										name="contract_type"
-										v-model="entity.contract_type"
-										:state="getValidationState(validationContext)"
-										:options="contractTypes"
-										:disabled="saving"
-										required="required"
-										value-field="value"
-										text-field="text"
-										direction="down"
-										/>
-										<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-										/>
-									</b-form-group>
-									</validation-provider>
+								<!-- <b-card title="Contract Pricing Schedule" border-variant="light"> -->
+									<b-table :items="insurances.slice(6, 12)" :fields="fields">
+									<template v-slot:cell(rate)="data">
+										<div class="d-flex">
+										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
+										</div>
+									</template>
+									</b-table>
 								</b-col>
 							</b-row>
-
-								<validation-provider
-									vid="indemnification_days"
-									name="Indemnification Days"
-									:rules="{ required: false, min: 0, max: 365 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Indemnification Days"
-										label-for="indemnification_days"
-										label-cols-lg="2"
-										description="Days exceeded for Indemnification"
-									>
-										<b-form-input
-											name="indemnification_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.indemnification_days"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="max_return_work_days"
-									name="Max Return Days"
-									:rules="{ required: false, min: 0, max: 365 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Max Return Days"
-										label-for="max_return_work_days"
-										label-cols-lg="2"
-										description="Maximum days to return work to facility"
-									>
-										<b-form-input
-											name="max_return_work_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.max_return_work_days"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+							</b-card>	
+							
 							</b-card-body>
 						</b-collapse>
+						<!-- Contract Section End-->
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -2439,49 +2794,44 @@ export default {
 			{ value: 'encore', text: 'Encore' },
 			],
 			contractTypes: [
-		{ value: 'management_agreement', text: 'Management Agreement' },
-		{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
-		{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
-		{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
-		{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
-		{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
-		{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
-		{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
-		{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
-		{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
-		{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
-		],
-		ownershipTypes: [
-		{ value: 'corporate_chain', text: 'Corporate Chain' },
-		{ value: 'county_owned', text: 'County Owned' },
-		{ value: 'hospital_owned', text: 'Hospital Owned' },
-		{ value: 'independent', text: 'Independent' },
-		{ value: 'managed', text: 'Managed' },
-		{ value: 'management_company', text: 'Management Company' },
-		{ value: 'silver_stone_living', text: 'Silver Stone Living' },
+			{ value: 'management_agreement', text: 'Management Agreement' },
+			{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
+			{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
+			{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
+			{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
+			{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
+			{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
+			{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
+			{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
+			{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
+			{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
+			],
+			ownershipTypes: [
+			{ value: 'corporate_chain', text: 'Corporate Chain' },
+			{ value: 'county_owned', text: 'County Owned' },
+			{ value: 'hospital_owned', text: 'Hospital Owned' },
+			{ value: 'independent', text: 'Independent' },
+			{ value: 'managed', text: 'Managed' },
+			{ value: 'management_company', text: 'Management Company' },
+			{ value: 'silver_stone_living', text: 'Silver Stone Living' },
 		],
 
-	// 	pricingSchedule: [
-    //     { label: 'Medicare A', typeOptions: ['$', '%','Custom'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min', contractRate: '' },
-    //     { label: 'Medicare B', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Managed A', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
-    //     { label: 'Managed A PPS', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Managed B', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Commercial', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min' },
-    //     { label: 'Medicaid', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Workers Comp', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
-    //     { label: 'Auto', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Military', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['per_min', 'per_hour', 'per_diem'], selectedValue: 'per_min' },
-    //     { label: 'Private Pay', typeOptions: ['$', '%'], selectedType: '%', valueOptions: ['%'], selectedValue: '%' },
-    //     { label: 'Other', typeOptions: ['$', '%'], selectedType: '$', valueOptions: ['fixed_amount'], selectedValue: 'fixed_amount' },
-    //     // Add similar data for other rows and columns
-    //   ],
-    //   tableFields: [
-    //     { key: 'id', label: 'ID' },
-    //     { key: 'medicareA', label: 'Medicare A' },
-    //     { key: 'medicareB', label: 'Medicare B' },
-    //     // Add similar fields for other columns
-    //   ],
+		insurances: [
+			{ insurance_type: 'Medicare A', rate: '' },
+			{ insurance_type: 'Medicare B', rate: '' },
+			{ insurance_type: 'Managed A', rate: '' },
+			{ insurance_type: 'Managed A PPS', rate: '' },
+			{ insurance_type: 'Managed B', rate: '' },
+			{ insurance_type: 'Commercial', rate: '' },
+			{ insurance_type: 'Medicaid', rate: '' },
+			{ insurance_type: 'Workers Comp', rate: '' },
+			{ insurance_type: 'Auto', rate: '' },
+			{ insurance_type: 'Military', rate: '' },
+			{ insurance_type: 'Private Pay', rate: '' },
+			{ insurance_type: 'Other', rate: '' },
+    ],
+    fields: [{ key: 'insurance_type', label: 'Insurance Type' },
+      { key: 'rate', label: 'Contract Rate (%)' },],
 		};
 	},
 	computed: 
@@ -3717,6 +4067,9 @@ async addFax() {
 
 				this.$store.dispatch("facilities/getAll");
 				this.$store.dispatch("facilities/getActive");
+				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
+        		console.log('saving Response:', responsed);
+                console.log('Data saved successfully');
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -3785,6 +4138,7 @@ async addFax() {
 			title_id: null,
 			contact_id: null,
 			phone_no: null,
+			facility_name:this.entity.name
 			// ... other form fields ...
 			
 			// ... other form-specific data ...
@@ -3852,12 +4206,14 @@ async addFax() {
 								},
 								});
 								if (response.data && Array.isArray(response.data)) {
-									// for (let i = 0; i < response.data.length; i++) {
-									// this.contactTypes.push(response.data[i].contact_type);
-									// }
-									this.forms = response.data;
+									response.data.forEach((item)=>{
+										if(item.facility_id == this.entity.id){
+											this.forms.push(item);
+										}
+
+									});
 								}
-							console.log("contact listed:", this.forms);
+							console.log("contact listed :", this.forms);
 						}
 					catch (error) 
 					{
