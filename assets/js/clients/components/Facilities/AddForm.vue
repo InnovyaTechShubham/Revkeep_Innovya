@@ -6,7 +6,7 @@
 				<slot name="header"></slot>
 
 				<b-card-body>
-					<!-- <validation-provider
+				<!-- <validation-provider
 						vid="name"
 						name="Name"
 						:rules="{ required: true, min: 2, max: 50 }"
@@ -44,7 +44,7 @@
 							<b-form-input
 								name="disp_name"
 								type="text"
-								v-model="entity.disp_name"
+								v-model="entity.name"
 								:state="getValidationState(validationContext)"
 								:disabled="saving"
 							/>
@@ -143,6 +143,7 @@
 					</b-row>
 
 					<!-- <b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
+
 						<validation-provider
 							vid="street_address_1"
 							name="Street Address"
@@ -163,7 +164,7 @@
 								:key="error"
 								v-text="error"
 							/>
-						</validation-provider> -->
+							</validation-provider> -->
 						<!--<validation-provider
 							vid="street_address_2"
 							name="Street Address (Continued)"
@@ -185,8 +186,7 @@
 								v-text="error"
 							/>
 						</validation-provider>-->
-					<!-- </b-form-group> -->
-
+						<!-- </b-form-group> -->
 					<!-- <validation-provider
 						vid="city"
 						name="City"
@@ -328,7 +328,7 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider> -->
+									</validation-provider> -->
 
 
 								<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
@@ -392,7 +392,8 @@
 
 				<b-card-body>
 				
-					<b-card no-body>
+					<!-- <h6 class="text-muted">Optional</h6> -->
+					<!-- <b-card no-body> -->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -459,11 +460,12 @@
 									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
 										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
 										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+
 									</b-form-group>
-									</validation-provider>
+								</validation-provider>
 								</b-col>
 								</b-row>
-							</b-card-body>
+							 </b-card-body>							
 						</b-collapse>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -956,7 +958,7 @@
 							</b-card-body>
 						</b-collapse>
 
-						<b-card-header header-tag="header" role="tab" class="p-0">
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseServices
@@ -986,7 +988,7 @@
 									</empty-result>
 								</b-form-group>
 							</b-card-body>
-						</b-collapse> -->
+							</b-collapse> -->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1077,8 +1079,8 @@
 									</div>
 								</b-form-group>
 							</b-card-body>
-			</b-collapse>
-			<b-card-header header-tag="header" role="tab" class="p-0">
+						</b-collapse>
+				<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseReceivingMethods
@@ -1292,17 +1294,14 @@
 									</b-form-group>
 								</validation-provider> -->
 								
-
-
-							</b-card-body>
-						</b-collapse>
+				</b-card-body>
+			</b-collapse>
 
 						<!-- end Receiving Methods -->
 
 						<!-- end Receiving Methods -->
 			</b-card-body>
 					</b-card>
-				
 
 				<b-card-footer>
 					<b-row>
@@ -1319,7 +1318,7 @@
 						</b-col>
 					</b-row>
 				</b-card-footer>
-			</b-card>
+				<!-- </b-card> -->
 		</b-form>
 	</validation-observer>
 </template>
@@ -1328,6 +1327,9 @@
 import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import axios from "axios";
+import { ref} from "vue";
+// get All record
+const records = ref([]);
 
 export default {
 	name: "FacilityAddForm",
@@ -1341,9 +1343,16 @@ export default {
 		return {
 			loading: true,
 			saving: false,
+			searchChain:'',
+			selectedChain: '',
+			filteredChains:[],
+			searchQuery: '',            // The search query entered by the user
+			filteredServices: [], 
+			selectedServices: [],		 // The list of services selected by the user
 			entity: {
 				id: this.id,
 				name: "",
+				display_name:null,
 				facility_type_id: null,
 				active: true,
 				phone: null,
@@ -1362,6 +1371,8 @@ export default {
 				npi_manual: null,
 				primary_taxonomy: null,
 				client_owned: false,
+				division: null,
+				region:null,
 				chain_name: null,
 				area_name: null,
 				ou_number: null,
@@ -1409,7 +1420,6 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
-
 		};
 	},
 	computed: mapGetters({
@@ -1420,6 +1430,7 @@ export default {
 		loadingServices: "services/loadingAll",
 	}),
 	mounted() {
+		this.getChains();
 		this.getServices();
 		this.TitleShow();
         this.fetchContactTypes();
@@ -1429,7 +1440,6 @@ export default {
 			this.loading = false;
 		}
 	},
-
 	// created() {
 	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
 	// 	const facilityId = this.entity.id;
@@ -1440,10 +1450,10 @@ export default {
 	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
 	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
 	// 	},
-
+	
 	methods: 
 	{
-		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
+	async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
 
 			// Determine if receivingEmailId or receivingFaxId is provided
@@ -2009,6 +2019,23 @@ export default {
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
 		},
+		async getChains() {
+			console.log("Fetching chains...");
+			// await this.$store.dispatch("chains/get");
+			await axios.get('/client/getChains')
+			.then(response => {
+				console.log("Response:",response.data);
+			// response data stored in records attribute to render as list
+			records.value = response.data;
+			})
+			.catch(error => {
+				console.error(error);
+			})
+			.finally(() => {
+				this.saving = false;
+			});
+			console.log("Chains fetched successfully.");
+			},
 		cancel() {
 			this.$emit("cancel");
 		},
@@ -2037,6 +2064,8 @@ export default {
 		},
 
 		async save() {
+
+		
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -2071,7 +2100,7 @@ export default {
 				this.saving = false;
 			}
 		},
-	openCustomTitle() {
+		openCustomTitle() {
 			// Open the custom Title type modal when the "Add" button is clicked
 			this.$bvModal.show("customTitle");
 		},

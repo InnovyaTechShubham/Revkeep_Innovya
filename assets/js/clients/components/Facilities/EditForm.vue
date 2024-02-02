@@ -1439,7 +1439,7 @@
 						</b-collapse>
 						<!-- end -->
 
-						<!-- Contacts Code from shubham_dev -->
+
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1544,7 +1544,7 @@
 								<b-input-group-append>
 								  <b-button variant="primary" class="mb-1" @click="createNewForm">
 				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contact</span>
+				                 	<span>Add Contacts</span>
 			                      </b-button>
                                 </b-input-group-append>
 
@@ -1753,7 +1753,7 @@
 								</form>
 							</b-card-body>
 						</b-collapse>
-						<!-- end -->
+
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -4176,9 +4176,10 @@ async addFax() {
 										if(item.facility_id == this.entity.id){
 											this.forms.push(item);
 										}
+
 									});
 								}
-							console.log("contact listed=", this.forms);
+							console.log("contact listed :", this.forms);
 						}
 					catch (error) 
 					{
