@@ -295,10 +295,10 @@
 
 				<!-- Details section start-->
 
-				<b-card-body>
+				
 				
 					<!-- <h6 class="text-muted">Optional</h6> -->
-					<!-- <b-card no-body> -->
+					<b-card no-body>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1203,7 +1203,7 @@
 
 						<!-- end Receiving Methods -->
 
-			</b-card-body>
+			<!-- </b-card-body> -->
 					</b-card>
 
 				<b-card-footer>
@@ -1221,7 +1221,7 @@
 						</b-col>
 					</b-row>
 				</b-card-footer>
-				<!-- </b-card> -->
+				</b-card>
 		</b-form>
 	</validation-observer>
 </template>

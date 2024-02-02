@@ -267,7 +267,7 @@
 				<!--Main section end-->
 
 				<!-- Details section start-->
-				<b-card-body>
+				<b-card no-body>
 					
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -1255,7 +1255,7 @@
 					</b-collapse>
 
 					<!--NPI information section end-->
-				</b-card-body>
+				
 					</b-card>
 				
 
@@ -1275,7 +1275,7 @@
 						</b-col>
 					</b-row>
 				</b-card-footer>
-			<!-- </b-card> -->
+			</b-card>
 		</b-form>
 	</validation-observer>
 </template>
