@@ -155,7 +155,7 @@
   <h5 style="margin: 0;">Mail Delivery Information</h5>
   <div>
     <!-- Your custom cross icon button -->
-	<span aria-hidden="true" @click="cancelModal" style="cursor: pointer; font-size: 24px;">&times;</span>
+	<span aria-hidden="true" class="close custom-close" @click="cancelModal" style="cursor: pointer; font-size: 24px;">&times;</span>
 
     
   </div>
@@ -477,4 +477,8 @@ preview() {
 .table{
 	cursor: pointer;
 }
+ .custom-close:hover {
+    background-color: red;
+    text-decoration: none; 
+  }
 </style>

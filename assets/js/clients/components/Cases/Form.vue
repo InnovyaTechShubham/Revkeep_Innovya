@@ -217,7 +217,7 @@
 								:rules="{ required: true }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Admit Date" label-for="admit_date" label-cols-lg="4">
+								<b-form-group label="Begin DOS" label-for="admit_date" label-cols-lg="4">
 									<b-form-input
 										name="admit_date"
 										type="date"
@@ -241,7 +241,7 @@
 								:rules="{ required: false }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Discharge Date" label-for="discharge_date" label-cols-lg="4">
+								<b-form-group label="End DOS" label-for="discharge_date" label-cols-lg="4">
 									<b-form-input
 										name="discharge_date"
 										type="date"
@@ -266,7 +266,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Visit ID / Number" label-for="visit_number" label-cols-lg="4">
+									<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
 										<b-form-input
 											name="visit_number"
 											v-model="entity.visit_number"
@@ -666,6 +666,11 @@
 								</div>
 							</b-card-body> -->
 							<b-card-body>
+								<b-row>	
+								<b-col cols="12" md="6" >
+                                 <p>Claim Billing Codes :</p>
+								</b-col>
+							</b-row>
 						<b-row>	
 							<b-col cols="12" md="6">	
 							<validation-provider
@@ -772,6 +777,11 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+								</b-col>
+							</b-row>
+							<b-row>	
+								<b-col cols="12" md="6" >
+                                 <p>Claim Denial Codes :</p>
 								</b-col>
 							</b-row>
 							<b-row>
