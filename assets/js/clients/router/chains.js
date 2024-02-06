@@ -36,7 +36,7 @@ export default [
 		name: "chains.edit",
 		component: Add,
 		meta: {
-			title: "Edit Chains",
+			title: "Edit chains",
 		},
 	},
 	// {

@@ -1,30 +1,56 @@
 <template>
-	<div>
-		<b-row class="mx-1" style="background: white;">
-			<div class="header-container w-100">
-				<div class="d-flex justify-content-between align-items-center w-100">
-					<page-header class="no-shadow">
-						<template #title>Chains<span class="badge ml-4 my-0 text-muted badge-light badge-pill">{{ records.length }}</span></template>
-						
-					</page-header>
-					
-
-					<div>
-						<b-button variant="primary" :to="{ name: 'chains.add' }" title="Add New">
-						<font-awesome-icon icon="plus" fixed-width />
-						<span>Add New</span>
-						</b-button>
-					</div>
-				</div>
-			</div>
-		</b-row>
+	<paginated-results
+		v-slot="{
+			doSearch,
+			empty,
+			hasNextPage,
+			hasPrevPage,
+			loading,
+			nextPage,
+			prevPage,
+			page,
+			pages,
+			refresh,
+			results,
+			total,
+		}"
+		v-bind="{
+			// action,
+			filters,
+			search,
+			perPage,
+		}"
+	>
+		<page-header v-bind="{ loading, total }">
+			<template #title>Chains</template>
+			<template #buttons>
+				<b-button variant="primary" :to="{ name: 'chains.add' }" title="Add New">
+					<font-awesome-icon icon="plus" fixed-width />
+					<span>Add New</span>
+				</b-button>
+			</template>
+		</page-header>
 
 		<b-row class="mt-4">
 			<b-col cols="12" md="9" lg="4" order="1" class="mb-4 mb-lg-0">
-			<b-form @submit.prevent="doSearch">
-				<search-input v-model="search" v-bind="{ loading }" />
-			</b-form>
+				<b-form @submit.prevent="doSearch">
+					<search-input v-model="search" v-bind="{ loading }" />
+				</b-form>
 			</b-col>
+			<!-- <b-col cols="6" md="3" lg="2" order="2" class="text-left text-md-right text-lg-left">
+				<b-dropdown split @click="filtering = !filtering" :pressed="filtering">
+					<template #button-content>
+						<font-awesome-icon icon="filter" fixed-width />
+						<span>Filter</span>
+					</template>
+					<b-dropdown-item-button @click="resetFilters" :disabled="loading" title="Clear all filters">
+						<span>Clear Filters</span>
+					</b-dropdown-item-button>
+					<b-dropdown-item-button @click="refresh" :disabled="loading" title="Refresh">
+						<span>Refresh</span>
+					</b-dropdown-item-button>
+				</b-dropdown>
+			</b-col> -->
 		</b-row>
 	  <b-row>
 		<b-col cols="12">
@@ -76,21 +102,26 @@
 	  </b-row>
 	</div>
 </template>
-<style scoped>
-	.header-container {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 10px; /* Adjust padding as needed */
-	}
-	.no-shadow {
-		box-shadow: none !important;
-	}
-</style>
+
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import axios from "axios";
 import { getIndex } from "@/clients/services/chain";
+
+import IndexFilters from "@/clients/components/Services/Filters.vue";
+import axios from 'axios';
+
+const defaultFilters = {
+	active: null,
+	owned: null,
+};
+
+const filters = reactive({ ...defaultFilters });
+const resetFilters = () => Object.assign(filters, defaultFilters);
+const filtering = ref(false);
+
+const search = ref("");
+const perPage = ref(15);
+// const action = getIndex;
 
 // get All record
 const records = ref([]);
