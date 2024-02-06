@@ -135,7 +135,7 @@
 					</b-row>
 
 					<b-row>
-						<b-col col="12">
+						<b-col col="12" md="6">
 							<validation-provider
 									vid="facility_id"
 									name="Facility"
@@ -180,18 +180,20 @@
 
 									<facility-form @saved="addedFacility" @cancel="addingFacility = false" />
 								</div>
-
+                        </b-col>
+                        <b-col col="12" md="6">
 								<validation-provider
-									vid="visit_number"
-									name="Visit ID/Number"
+									vid="facility_status"
+									name="Facility Status"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Visit ID / Number" label-for="visit_number" label-cols-lg="4">
+									<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
 										<b-form-input
-											name="visit_number"
-											v-model="entity.visit_number"
+											name="facility_name"
+											v-model="entity.facility_name"
 											:disabled="saving"
+											readonly
 											:state="getValidationState(validationContext)"
 											type="text"
 											autocomplete="off"
@@ -207,7 +209,8 @@
 					</b-row>
 
 					<b-row>
-						<b-col cols="12">
+						  
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="admit_date"
 								name="Admit Date"
@@ -231,7 +234,7 @@
 								</b-form-group>
 							</validation-provider>
 						</b-col>
-						<b-col cols="12">
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="discharge_date"
 								name="Discharge Date"
@@ -254,9 +257,34 @@
 								</b-form-group>
 							</validation-provider>
 						</b-col>
-					</b-row>
-					<b-row>
-						<b-col cols="12">
+				</b-row>
+				<b-row>		
+					<b-col cols="12" md="6">
+						        <validation-provider
+									vid="visit_number"
+									name="Visit ID/Number"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Visit ID / Number" label-for="visit_number" label-cols-lg="4">
+										<b-form-input
+											name="visit_number"
+											v-model="entity.visit_number"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+											type="text"
+											autocomplete="off"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
+						
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="insurance_provider_id"
 								name="Insurance Provider"
@@ -324,7 +352,10 @@
 									</template>
 								</insurance-provider-form>
 							</div>
-
+                     </b-col>
+                            </b-row>
+                <b-row>
+                        <b-col cols="12" md="6">
 							<validation-provider
 								vid="case_type_id"
 								name="Audit Type"
@@ -348,7 +379,7 @@
 									/>
 								</b-form-group>
 							</validation-provider>
-
+                            </b-col>
 							<!-- <validation-provider
 								vid="insurance_type_id"
 								name="Insurance Type"
@@ -373,7 +404,7 @@
 									/>
 								</b-form-group>
 							</validation-provider> -->
-
+							<b-col cols="12" md="6">
 							<validation-provider
 								vid="client_employee_id"
 								name="Primary Employee"
@@ -444,7 +475,10 @@
 									</template>
 								</client-employee-form>
 							</div>
-
+                 </b-col>
+				 </b-row>
+                     <b-row>
+                       <b-col cols="12" md="6">
 							<b-form-group
 								id="utc"
 								label="Unable To Complete"
@@ -456,7 +490,8 @@
 									UTC
 								</b-form-checkbox>
 							</b-form-group>
-
+                       </b-col>
+                        <b-col cols="12" md="6">
 							<validation-provider
 								vid="assigned_to"
 								name="Assigned To"
@@ -613,7 +648,7 @@
 								role="tab"
 								class="text-left px-4 py-3 m-0"
 							>
-							Claim Billing Codes
+							Claim Details
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseClaimBillingCodes" role="tabpanel">
@@ -631,6 +666,8 @@
 								</div>
 							</b-card-body> -->
 							<b-card-body>
+						<b-row>	
+							<b-col cols="12" md="6">	
 							<validation-provider
 									vid="insurance_plan"
 									name="Insurance Plan"
@@ -652,8 +689,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
-
+                            </b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -679,7 +716,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+							</b-row>
+							<b-row>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -705,7 +745,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -731,36 +772,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-							</b-card-body>
-
-							<!-- <case-readmissions
-								v-if="hasReadmissions"
-								v-model="entity.case_readmissions"
-								:disabled="saving"
-							/>
-							<b-card-body v-else>
-								<empty-result icon="list"
-									>No Codes
-									<template #content> Add Billing Codes. </template>
-								</empty-result>
-							</b-card-body> -->
-						</b-collapse>
-
-
-						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseClaimDenialCodes
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
-								Claim Denial Codes
-							</b-button>
-						</b-card-header>
-
-						<b-collapse id="collapseClaimDenialCodes" role="tabpanel">
-							<b-card-body>
+								</b-col>
+							</b-row>
+							<b-row>
+									<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_plan"
 									name="CARCs"
@@ -782,7 +797,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -808,8 +824,41 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+								</b-col>
+							</b-row>
 							</b-card-body>
+
+							<!-- <case-readmissions
+								v-if="hasReadmissions"
+								v-model="entity.case_readmissions"
+								:disabled="saving"
+							/>
+							<b-card-body v-else>
+								<empty-result icon="list"
+									>No Codes
+									<template #content> Add Billing Codes. </template>
+								</empty-result>
+							</b-card-body> -->
 						</b-collapse>
+
+
+					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseClaimDenialCodes
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>
+								Claim Denial Codes
+							</b-button>
+						</b-card-header>
+
+						<b-collapse id="collapseClaimDenialCodes" role="tabpanel">
+							<b-card-body>
+								
+							</b-card-body>
+						</b-collapse> -->
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
