@@ -826,6 +826,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		request_id: {
+			type: Array, // adjust the type based on your needs
+			default: () => [],
+		},
 	},
 	computed: {
 
@@ -1437,12 +1441,13 @@ export default {
 		async generate() {
 			try {
 				this.generating = true;
-
+				console.log('inside generate function',this.request_id);
 				const response = await this.$store.dispatch("appealPackets/generate", {
 					id: this.value.id,
 					case_files: this.caseFiles,
 					appeal_files: this.appealFiles,
 					ordered_list: this.orderedList,
+					request_id: this.request_id,
 				});
 
 				this.$emit("generated", response);
@@ -1522,6 +1527,7 @@ export default {
 
 				const response = await this.$store.dispatch("appealPackets/submit", {
 					id: this.value.id,
+					request_id: this.request_id,
 				});
 
 				this.$emit("submitted", response);

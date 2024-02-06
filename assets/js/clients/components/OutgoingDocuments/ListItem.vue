@@ -18,8 +18,8 @@
         </b-badge>
       </td>
   
-  <td class="col-md-1">
-	<span font-weight-bold>{{ value.facility_name }}</span>
+  <td class="col-md-1 font-weight-bold">
+	<span >{{ value.facility_name }}</span>
   </td>
 
    <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName }}</td>
@@ -69,7 +69,7 @@
 			     {{ $filters.formatDate(value.created) }}
 
 	  </td>
-	  <td class="col-md-2 center-both align-middle"   @click="handleDeliveryMethodClick">
+	  <td class="col-md-1 center-both align-middle"   @click="handleDeliveryMethodClick">
 		                    <p v-if="value.delivery_method" class="text-muted mb-0" title="Delivery Method">
 								<font-awesome-icon
 									v-if="value.delivery_method_icon"

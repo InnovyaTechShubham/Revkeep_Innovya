@@ -128,6 +128,13 @@
 				</b-col>
 				<b-col cols="12" lg="8" xl="9">
 					<b-card no-body class="shadow-sm">
+					<!-- 	<div class="position-relative d-flex flex-row-reverse  ">
+                            <b-button @click="addCase" variant="primary" class="position-absolute mt-2 mr-1" >
+								<font-awesome-icon icon="plus" fixed-width />
+								<span>Case</span>
+							</b-button>
+							<case-form v-if="showCaseForm" :patient-id="patient.id" hide-patient hide-cancel @saved="addedCase" />
+                           </div> -->
 						<b-tabs card>
 							<b-tab no-body lazy>
 								<template #title>Cases</template>
@@ -139,14 +146,15 @@
 									empty-description="No cases have been created for this patient."
 								/>
 							</b-tab>
-							<b-tab no-body lazy>
+						    <b-tab no-body lazy>
 								<template #title>Add Case</template>
 								<case-form flush :patient-id="patient.id" hide-patient hide-cancel @saved="addedCase" />
-							</b-tab>
+							</b-tab> 
 							<b-tab>
 								<template #title>Similar Patients</template>
 								<similar-patients :patient-id="$route.params.id" @saved="afterMerged" />
 							</b-tab>
+							
 						</b-tabs>
 					</b-card>
 				</b-col>
@@ -172,6 +180,7 @@ export default {
 			loading: true,
 			deleting: false,
 			initialLoaded: false,
+			showCaseForm: false,
 			patient: {
 				id: null,
 				full_name: "",
@@ -279,6 +288,9 @@ export default {
 			} finally {
 				this.deleting = false;
 			}
+		},
+		addCase(){
+              this.showCaseForm = true
 		},
 	},
 };

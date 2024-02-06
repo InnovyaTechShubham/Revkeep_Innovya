@@ -36,7 +36,7 @@
 				   <th class="col-md-2">Recipient Type</th>
                    <th class="col-md-1">Level</th>
 				   <th class="col-md-1">Sent Date</th>
-				   <th class="col-md-2">Delivery Method</th>
+				   <th class="col-md-1">Method</th>
 				    <th class="col-md-1">Download</th>
                   <!--<th class="col-md-2">Actions</th>--> 
                 </tr>
