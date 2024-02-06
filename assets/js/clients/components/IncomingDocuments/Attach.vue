@@ -123,7 +123,8 @@
 					</empty-result>
 				</paginated-results>
 			</b-tab>
-			<b-tab title="Closed Cases" no-body lazy>
+			<!-- Closed cases Tab hidden for now -->
+			<!-- <b-tab title="Closed Cases" no-body lazy>
 				<paginated-results
 					v-slot="{
 						empty,
@@ -178,7 +179,7 @@
 						<template #content> No closed cases found for this patient. </template>
 					</empty-result>
 				</paginated-results>
-			</b-tab>
+			</b-tab> -->
 		</b-tabs>
 	</b-card>
 </template>

@@ -45,11 +45,11 @@ class ChainsController extends AppController
 
         if ($this->request->is('post')) {
             $chain_name = $this->request->getData('chain_name');
-            $chain_type = $this->request->getData('chain_type');
+            // $chain_type = $this->request->getData('chain_type');
              // Check if chain_name already exists
             $existingChain = $type->exists(['chain_name' => $chain_name]);
             // if chain_name is empty
-            if (empty($chain_name) || empty( $chain_type)) {
+            if (empty($chain_name)) {
                 // Handle the case where $chain_name is undefined, null, or empty
                 $response = [
                     'success' => false,
@@ -84,7 +84,7 @@ class ChainsController extends AppController
                 $new = $type->newEntity([
                     
                     'chain_name' => $chain_name,
-                    'chain_type' => $chain_type,
+                    // 'chain_type' => $chain_type,
                 ]);
             
                 if ($type->save($new)) {
@@ -206,9 +206,9 @@ class ChainsController extends AppController
         if ($this->request->is('post')) {
             // $chain_id = $this->request->getData('id'); // Assuming you have an 'id' field in your form
             $chain_name = $this->request->getData('chain_name');
-            $chain_type = $this->request->getData('chain_type');
+            // $chain_type = $this->request->getData('chain_type');
             // if chain_name is empty
-            if (empty($chain_name) || empty( $chain_type)) {
+            if (empty($chain_name)) {
                 // Handle the case where $chain_name is undefined, null, or empty
                 $response = [
                     'success' => false,
@@ -230,7 +230,7 @@ class ChainsController extends AppController
             // Patch the entity with the new data
             $type->patchEntity($chain, [
                 'chain_name' => $chain_name,
-                'chain_type' => $chain_type,
+                // 'chain_type' => $chain_type,
             ]);
         
             // Save the changes
