@@ -30,8 +30,8 @@ class ChainOrganization extends Entity
      */
     protected $_accessible = [
         'chain_id' => true,
-        'org_id' => true, // Updated from 'facility_id' to 'org_id'
-        'desc' => true,   // Updated from 'service_id' to 'desc'
+        'facility_id' => true,
+        'service_id' => true,
         'chain' => true,
         'facility' => true,
         'service' => true,
