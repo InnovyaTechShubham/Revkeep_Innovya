@@ -32,7 +32,7 @@ class ReceivingFaxesTable extends Table
 
         $validator
             ->scalar('description')
-            ->allowEmptyString('description')
+            ->allowEmptyString('description');
 
         return $validator;
     }

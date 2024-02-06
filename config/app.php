@@ -471,7 +471,7 @@ return [
 			'port' => env('DATABASE_PORT', '1433'),
 			'username' => env('DATABASE_USER', 'revkeep'),
 			'password' => env('DATABASE_PASS', '5HN3MsyEhfNhEhPc'),
-			'database' => env('DATABASE_NAME', 'revkeep_local'),
+			'database' => env('DATABASE_NAME', 'revkeep_test_local_data'),
 			'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', 30),
 			// 'encoding' => env('DATABASE_ENCODING', 'utf8'),
 			'encoding' => PDO::SQLSRV_ENCODING_UTF8,
