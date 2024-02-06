@@ -114,10 +114,12 @@
 						@click="markDelivered"
 						:disabled="isDelivered || isCancelled"
 						class="mb-0 ml-1"
+						class="mb-0 ml-1"
 					>
 						<span v-if="isDelivered">Delivered</span>
 						<span v-else>Mark Delivered</span>
 					</b-button>
+		                <b-dropdown right class="mb-0">
 		                <b-dropdown right class="mb-0">
 						<template #button-content>
 							<font-awesome-icon icon="cog" />
