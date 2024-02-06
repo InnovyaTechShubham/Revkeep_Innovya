@@ -1113,4 +1113,15 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		
 	]);
 
+	$builder->connect('/facilitystatuslist', [
+		'controller' => 'FacilityStatusList',
+		'action' => 'index',
+		
+	]);
+	
+	$builder->connect('/facilitybilltypelist', [
+		'controller' => 'FacilityBillTypeList',
+		'action' => 'index',
+		
+	]);
 });

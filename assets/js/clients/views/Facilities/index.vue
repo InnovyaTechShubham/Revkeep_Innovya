@@ -22,19 +22,23 @@
 		}"
 	>
 		<page-header v-bind="{ loading, total }">
-		  <template #title>Facilities</template>
-		  <template #buttons>
-		    <b-dropdown right variant="primary" no-caret>
-			<template #button-content>
-			  <font-awesome-icon icon="plus" fixed-width />
-			  <span>Add New</span>
+			<template #title>Facilities</template>
+			<template #buttons>
+				<b-dropdown right variant="primary">
+					<template #button-content>
+						<font-awesome-icon icon="plus" fixed-width />
+						<span>Add New</span>
+					</template>
+					<b-dropdown-item :to="{ name: 'facilities.add' }" title="Create New Facility">
+						<font-awesome-icon icon="pencil" fixed-width />
+						<span>Create New Facility</span>
+					</b-dropdown-item>
+					<b-dropdown-item :to="{ name: 'facilities.add.npi' }" title="Add New Facility from NPI Registry">
+						<font-awesome-icon icon="search" fixed-width />
+						<span>Search NPI Registry</span>
+					</b-dropdown-item>
+				</b-dropdown>
 			</template>
-			<b-dropdown-item :to="{ name: 'facilities.add.npi' }" title="Add New Facility from NPI Registry">
-			  <font-awesome-icon icon="search" fixed-width />
-			  <span>Search NPI Registry</span>
-			</b-dropdown-item>
-		    </b-dropdown>
-		  </template>
 		</page-header>
 
 		<b-row class="mt-4">
