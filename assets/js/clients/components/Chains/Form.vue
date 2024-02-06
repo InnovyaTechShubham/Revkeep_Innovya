@@ -33,7 +33,7 @@
 						</b-form-group>
 					</validation-provider>
 
-					<validation-provider
+					<!-- <validation-provider
 						vid="Chain Type"
 						name="Chain Type"
 						:rules="{ required: false, max: 255 }"
@@ -55,7 +55,7 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 					<!-- showing facilities and services -->
 
 					<!-- <validation-provider
@@ -224,11 +224,11 @@
 				</b-card-body>
 				<!-- select option for facilities and services -->
 				<!-- Use a template element for conditional rendering -->
-				<template v-if="!flatFacilitiesServicesArr.length">
+				<!-- <template v-if="!flatFacilitiesServicesArr.length">
 					<empty-result>
 					No facilities and services available
 					</empty-result>
-				</template>
+				</template> -->
 
 				<b-card-footer>
 					<b-row>
@@ -369,7 +369,7 @@ export default {
 			entity: {
 				id: this.id,
 				chain_name: "",
-				chain_type: "",
+				//chain_type: "",
 				active: true,
 				client_owned: true,
 				facilities: [],
@@ -536,13 +536,14 @@ export default {
 			// Set saving to true to disable the button during the request
 			this.saving = true;
 			// Extract the required data
-
-			const { chain_name, chain_type } = this.entity;
+			// chain_type removed for now
+			// const { chain_name, chain_type } = this.entity;
+			const { chain_name } = this.entity;
 
 			// Prepare the data to be sent in the POST request
 			const chainData = {
 				chain_name,
-				chain_type,
+				// chain_type, chain_type removed from here for now
 				Facility_data: this.selectedItems,
 				Service_data: this.serviceItems
 			};
@@ -603,7 +604,9 @@ export default {
 			// alert('inside editchain');
 			this.saving = true;
 			// Extract the required data
-			const {chain_name, chain_type } = this.entity;
+			// chain_type removed from below axios call
+			// const {chain_name, chain_type } = this.entity;
+			const {chain_name } = this.entity;
 
 			// Prepare the data to be sent in the POST request
 			// const chainData = {
@@ -613,7 +616,7 @@ export default {
 
 			const chainData = {
 				chain_name,
-				chain_type,
+				// chain_type, removed from here also
 				Facility_data: this.selectedItems,
 				Service_data: this.serviceItems
 			};
@@ -674,7 +677,8 @@ export default {
 				// alert('success block4')
                 this.chain_data.push(response.data);
 				this.entity.chain_name = this.chain_data[0]['chain_name'];
-				this.entity.chain_type = this.chain_data[0]['chain_type'];
+				// chain_type is removed from being auto_populated on edit page
+				// this.entity.chain_type = this.chain_data[0]['chain_type'];
 				// TODO: PUSH FACILITY DATA TO BELOW FACILITY AND SERVICES ARRAY
 				const chainOrganizations = response.data['chain_organizations'];
 				chainOrganizations.forEach(chainOrg => {

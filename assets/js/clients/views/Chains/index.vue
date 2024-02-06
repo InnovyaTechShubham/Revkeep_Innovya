@@ -59,9 +59,9 @@
 					  <h6 class="h6 font-weight-bold mb-1">
 						{{ result.chain_name }}
 					  </h6>
-					  <p v-if="result.chain_type" class="small mb-1 text-muted" title="Description">
+					  <!-- <p v-if="result.chain_type" class="small mb-1 text-muted" title="Description">
 						{{ result.chain_type }}
-					  </p>
+					  </p> -->
 					</b-col>
 				  </b-row>
 				</div>

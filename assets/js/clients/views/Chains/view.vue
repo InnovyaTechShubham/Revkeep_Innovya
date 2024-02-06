@@ -33,10 +33,10 @@
 					<p class="text-muted mb-0">
 					</p>
 				</b-col>
-				<b-col cols="12" sm="6" lg="6" class="mb-4">
+				<!-- <b-col cols="12" sm="6" lg="6" class="mb-4">
 					<b-badge pill variant="primary">{{ result[0]['chain_type']}}</b-badge>
-				</b-col>
-				<b-col cols="12" sm="6" lg="6" class="mb-4 text-sm-right">
+				</b-col> -->
+				<!-- <b-col cols="12" sm="6" lg="6" class="mb-4 text-sm-right">
 					<p class="small text-muted mb-0">
 						<span> Last updated  </span>
 						<span >
@@ -47,7 +47,7 @@
                         <div>
                         </div>
 					</p>
-				</b-col>
+				</b-col> -->
 			</b-row>
 			<b-row>
 				<b-col cols="12">
