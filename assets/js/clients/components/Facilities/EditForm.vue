@@ -1725,10 +1725,10 @@ export default {
 // },
 
 async addFax() {
-    try {
+    
         const newFax = { ...this.newFax };
         console.log("new:", newFax);
-		const fax = newFax.email;
+		const fax = newFax.fax;
 		const description = newFax.description;
 		// Clear the newFax object for the next entry
         this.newFax = { fax: '', description: '' };
@@ -1751,7 +1751,7 @@ async addFax() {
         }
 
         // Check if the fax number already exists
-        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === fax)) {
             this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
                 title: 'Error',
                 variant: 'danger',
@@ -1776,7 +1776,7 @@ async addFax() {
             description,
         };
         console.log("header:", faxData);
-
+		try {
         // Make a POST request to store the data in the database
         const response = await axios.post('/client/receivingFaxes', faxData);
         console.log('Axios Response:', response);
