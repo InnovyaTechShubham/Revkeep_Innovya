@@ -285,7 +285,7 @@
 							</b-form-group>
 						</validation-provider> -->
 
-						<b-form-group label="Bill Typed" label-for="bill_type" label-cols-lg="4">
+						<b-form-group label="Bill Type" label-for="bill_type" label-cols-lg="4">
 							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
 								<template #first>
 									<option :value="null" />
