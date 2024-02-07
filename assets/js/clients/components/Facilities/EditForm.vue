@@ -9,7 +9,7 @@
 					<validation-provider
 						vid="name"
 						name="Name"
-						:rules="{ required: true, min: 2, max: 50 }"
+						:rules="{ required: true, min: 2, max: 170 }"
 						v-slot="validationContext"
 					>
 						<b-form-group label="Name" label-for="name" label-cols-lg="4">
@@ -22,17 +22,16 @@
 									v-model="entity.name"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
-									required
-									placeholder="Required"
+									:readonly=true
 								/>
-								<b-input-group-append>
+								<!-- <b-input-group-append>
 									<b-button
 										variant="primary"
 										@click="npiLookup"
 										:disabled="npiLookingUp || !entity.name"
 										>NPI Search</b-button
 									>
-								</b-input-group-append>
+								</b-input-group-append> -->
 								<b-form-invalid-feedback
 									v-for="error in validationContext.errors"
 									:key="error"
@@ -42,7 +41,7 @@
 						</b-form-group>
 					</validation-provider>
 
-					<b-list-group v-if="npiResults.length > 0">
+					<!-- <b-list-group v-if="npiResults.length > 0">
 						<div v-for="npiResult in npiResults" :key="npiResult.number">
 							<NPIOrganization :value="npiResult" v-slot="{ name, number, primaryAddress, value }">
 								<b-list-group-item>
@@ -75,14 +74,14 @@
 								</b-list-group-item>
 							</NPIOrganization>
 						</div>
-					</b-list-group>
-					<empty-result v-else-if="npiSearched && npiResults.length <= 0">
+					</b-list-group> -->
+					<!-- <empty-result v-else-if="npiSearched && npiResults.length <= 0">
 						No Results
 						<template #content>
 							No organizations were found in the NPI Registry matching what you provided.
 						</template>
 					</empty-result>
-					<loading-indicator v-else-if="npiLookingUp" />
+					<loading-indicator v-else-if="npiLookingUp" /> -->
 				</b-card-body>
                 
 				<b-card-body>
@@ -97,9 +96,9 @@
 							<b-form-input
 								name="disp_name"
 								type="text"
-								v-model="entity.disp_name"
+								v-model="entity.display_name"
 								:state="getValidationState(validationContext)"
-								:disabled="saving"
+								
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -135,18 +134,190 @@
 					</validation-provider>
 
 					<validation-provider
+						vid="street_address_1"
+						name="Street Address"
+						:rules="{ required: false, max: 50 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
+							<b-form-input
+								name="street_address_1"
+								type="text"
+								v-model="entity.address_2"
+								placeholder=""
+								class="rounded-b-0"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="city"
+						name="City"
+						:rules="{ required: false, max: 50 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="City" label-for="city" label-cols-lg="4">
+							<b-form-input
+								name="city"
+								type="text"
+								v-model="entity.city"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="state"
+						name="State"
+						:rules="{ required: false, max: 2 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="State" label-for="state" label-cols-lg="4">
+							<b-form-select
+								name="state"
+								v-model="entity.state"
+								:options="states"
+								value-field="abbreviation"
+								text-field="name"
+								:state="getValidationState(validationContext)"
+								:disabled=true
+								
+							>
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="zip"
+						name="Zip"
+						:rules="{ required: false, max: 20, alpha_num: true }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
+							<b-form-input
+								name="zip"
+								type="text"
+								v-model="entity.zip"
+								:state="getValidationState(validationContext)"
+								:disabled="saving"
+								:readonly=true
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<!-- <validation-provider
 						vid="area_name"
 						name="Area"
 						:rules="{ required: false, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+						<b-form-group label="Location Address" label-for="area_name" label-cols-lg="4">
 							<b-form-input
 								name="area_name"
 								type="text"
 								v-model="entity.area_name"
 								:state="getValidationState(validationContext)"
-								:disabled="saving"
+								:disabled="saving|| fromnNPI"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="city"
+						name="City"
+						:rules="{ required: false, max: 50 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="City" label-for="city" label-cols-lg="4">
+							<b-form-input
+								name="city"
+								type="text"
+								v-model="entity.city"
+								:state="getValidationState(validationContext)"
+								:disabled="saving|| fromnNPI"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="state"
+						name="State"
+						:rules="{ required: false, max: 2 }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="State" label-for="state" label-cols-lg="4">
+							<b-form-select
+								name="state"
+								v-model="entity.state"
+								:options="states"
+								value-field="abbreviation"
+								text-field="name"
+								:state="getValidationState(validationContext)"
+								:disabled="saving|| fromnNPI"
+							>
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<validation-provider
+						vid="zip"
+						name="Zip"
+						:rules="{ required: false, max: 20, alpha_num: true }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
+							<b-form-input
+								name="zip"
+								type="text"
+								v-model="entity.zip"
+								:state="getValidationState(validationContext)"
+								:disabled="saving|| fromnNPI"
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -220,7 +391,7 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 
 					<validation-provider
 						vid="active"
@@ -255,7 +426,7 @@
 							label="Owned"
 							label-for="client_owned"
 							label-cols-lg="4"
-							description="Facilities is owned/provided by client."
+							description="Facility is owned/provided by client."
 						>
 							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving"
 								>Owned</b-form-checkbox
@@ -268,7 +439,7 @@
 						</b-form-group>
 					</validation-provider>
 					
-					<validation-provider
+					<!-- <validation-provider
 						vid="chain_name"
 						name="Chain"
 						:rules="{ required: false, max: 250 }"
@@ -288,15 +459,144 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
+					<!-- <validation-provider
+					vid="chain_name"
+					name="Chain"
+					:rules="{ required: false, max: 250 }"
+					v-slot="validationContext"
+				>
+					<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+					<b-form-select
+						v-model="entity.chain_name"
+						:state="getValidationState(validationContext)"
+						:disabled="saving"
+						:filter="filterChains"
+					>
+						<option v-for="chain in chains" :key="chain.id" :value="chain.chain_name">
+						{{ chain.chain_name }}
+						</option>
+					</b-form-select>
+					<b-form-invalid-feedback
+						v-for="error in validationContext.errors"
+						:key="error"
+						v-text="error"
+					/>
+					</b-form-group>
+				</validation-provider> -->
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+					<b-input-group>
+						<b-form-input type="text" name="chain_name" v-model="searchChain"
+							:disabled="saving"
+							placeholder="Search for a Chain..." @input="filterChains" />
+						<b-input-group-append>
+							<b-input-group-text>
+								<font-awesome-icon icon="search" fixed-width />
+							</b-input-group-text>
+						</b-input-group-append>
+					</b-input-group>
+					<div class="mb-0" style="margin: 0;">
+						
+					
+						<b-list-group v-if="selectedChain">
+							<b-list-group-item class="mb-0">
+								<div class="d-flex justify-content-between align-items-center mb-0">
+								<div class="mb-0">{{ selectedChain }}</div>
+								<b-btn variant="danger" @click="deselectChain" size="sm">
+									<font-awesome-icon icon="times" fixed-width />
+								</b-btn>
+								</div>
+							</b-list-group-item>
+							</b-list-group>
+
+
+					</div>
+					<div v-if="filteredChains.length > 0" class="mb-0">
+						<b-list-group>
+							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+								@click="selectChain(chain)">
+								{{ chain.chain_name }}
+							</b-list-group-item>
+						</b-list-group>
+					</div>
+				</b-form-group> -->
+
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+					<b-input-group>
+						<b-form-input type="text" name="chain_name" v-model="selectedChain"
+							:disabled="saving"
+							placeholder="Search for a Chain..." @input="filterChains" />
+						<b-input-group-append>
+							<b-input-group-text>
+								<font-awesome-icon icon="search" fixed-width />
+							</b-input-group-text>
+						</b-input-group-append>
+					</b-input-group>
+					<div class="mb-0" style="margin: 0;">
+						<b-list-group v-if="filteredChains.length > 0">
+							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+								@click="selectChain(chain)">
+								{{ chain.chain_name }}
+							</b-list-group-item>
+						</b-list-group>
+					</div>  
+				</b-form-group> --> 
+				
+				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+				<b-input-group>
+					<b-form-input type="text" name="chain_name" v-model="selectedChain"
+						:disabled="saving"
+						placeholder="Search for a Chain..." @input="filterChains" />
+					<b-input-group-append>
+						<b-input-group-text>
+							<font-awesome-icon icon="search" fixed-width />
+						</b-input-group-text>
+					</b-input-group-append>
+				</b-input-group>
+				<div class="mb-0" style="margin: 0;">
+					<b-list-group v-if="filteredChains.length > 0">
+						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+							@click="selectChain(chain)">
+							{{ chain.chain_name }}
+						</b-list-group-item>
+					</b-list-group>
+				</div>
+			</b-form-group> -->
+
+			<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+				<b-input-group>
+					<b-form-input type="text" name="chain_name" v-model="searchChain"
+						:disabled="saving"
+						placeholder="Search for a Chain..." @input="filterChains" />
+					<!-- <b-input-group-append>
+						<b-input-group-text>
+							<font-awesome-icon icon="search" fixed-width />
+						</b-input-group-text>
+					</b-input-group-append> -->
+				</b-input-group>
+				<div class="mb-0" style="margin: 0;">
+					<b-list-group v-if="filteredChains.length > 0">
+						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+							@click="selectChain(chain)">
+							{{ chain.chain_name }}
+						</b-list-group-item>
+					</b-list-group>
+				</div>
+			</b-form-group>
+
+
+
+
+
+
 
 
 				</b-card-body>
 
-				<b-card-body>
+				<!-- <b-card-body> -->
 				<!--	<h6 class="text-muted">Optional</h6>  -->
-					<b-card no-body>
-						<b-card-header header-tag="header" role="tab" class="p-0">
+					<!-- <b-card no-body> -->
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseAddress
@@ -305,8 +605,8 @@
 								class="text-left px-4 py-3 m-0"
 								>Address</b-button
 							>
-						</b-card-header>
-						<b-collapse id="collapseAddress" role="tabpanel">
+						</b-card-header> -->
+						<!-- <b-collapse id="collapseAddress" role="tabpanel">
 							<b-card-body>
 								<b-form-group label="Address" label-for="street_address_1" label-cols-lg="4">
 									<validation-provider
@@ -390,7 +690,7 @@
 											value-field="abbreviation"
 											text-field="name"
 											:state="getValidationState(validationContext)"
-											:disabled="saving"
+											:disabled=true
 										>
 											<template #first>
 												<option :value="null" />
@@ -426,9 +726,9 @@
 									</b-form-group>
 								</validation-provider>
 							</b-card-body>
-						</b-collapse>
+						</b-collapse> -->
 
-						<b-card-header header-tag="header" role="tab" class="p-0">
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseContact
@@ -437,8 +737,8 @@
 								class="text-left px-4 py-3 m-0"
 								>Contact</b-button
 							>
-						</b-card-header>
-						<b-collapse id="collapseContact" role="tabpanel">
+						</b-card-header> -->
+						<!-- <b-collapse id="collapseContact" role="tabpanel">
 							<b-card-body>
 								<validation-provider
 									vid="phone"
@@ -508,7 +808,713 @@
 									</b-form-group>
 								</validation-provider>
 							</b-card-body>
+						</b-collapse> -->
+
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseContract
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Contract</b-button
+							>
+						</b-card-header> -->
+						<!-- <b-collapse id="collapseContract" role="tabpanel">
+							<b-card-body>
+								<validation-provider
+									vid="client_owned"
+									name="Owned"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Owned"
+										label-for="client_owned"
+										label-cols-lg="4"
+										description="Your organization owns this facility."
+									>
+										<b-form-checkbox
+											name="client_owned"
+											v-model="entity.client_owned"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										>
+											Owned
+										</b-form-checkbox>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="has_contract"
+									name="Contract"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Contract"
+										label-for="has_contract"
+										label-cols-lg="4"
+										description="This facility is contracted."
+									>
+										<b-form-checkbox
+											name="has_contract"
+											v-model="entity.has_contract"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										>
+											Has Contract
+										</b-form-checkbox>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="contract_start_date"
+									name="Contract Start Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Start Date" label-for="contract_start_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.contract_start_date"
+											name="contract_start_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="contract_end_date"
+									name="Contract End Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="End Date" label-for="contract_end_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.contract_end_date"
+											name="contract_end_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="indemnification_days"
+									name="Indemnification Days"
+									:rules="{ required: false, min: 0, max: 365 }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Indemnification Days"
+										label-for="indemnification_days"
+										label-cols-lg="4"
+										description="Days exceeded for Indemnification"
+									>
+										<b-form-input
+											name="indemnification_days"
+											type="number"
+											step="1"
+											min="0"
+											max="365"
+											default="30"
+											v-model="entity.indemnification_days"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="max_return_work_days"
+									name="Max Return Days"
+									:rules="{ required: false, min: 0, max: 365 }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Max Return Days"
+										label-for="max_return_work_days"
+										label-cols-lg="4"
+										description="Maximum days to return work to facility"
+									>
+										<b-form-input
+											name="max_return_work_days"
+											type="number"
+											step="1"
+											min="0"
+											max="365"
+											default="30"
+											v-model="entity.max_return_work_days"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+							</b-card-body>
+						</b-collapse> -->
+
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseServices
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Services</b-button
+							>
+						</b-card-header> -->
+						<!-- <b-collapse id="collapseServices" role="tabpanel">
+							<b-card-body>
+								<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-form-checkbox-group
+										v-else-if="services.length > 0"
+										stacked
+										name="services_ids"
+										v-model="entity.services._ids"
+										:options="services"
+										:disabled="saving || loadingServices"
+										value-field="id"
+										text-field="name"
+									/>
+									<empty-result v-else>
+										No services added
+										<template #content> Create services to assign to this facility. </template>
+									</empty-result>
+								</b-form-group>
+							</b-card-body>
+						</b-collapse> -->
+					<!-- </b-card>
+				</b-card-body> -->
+
+				<b-card-body>
+					<!-- <h6 class="text-muted">Optional</h6> -->
+					<b-card no-body>
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseAdditional
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Details</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseAdditional" role="tabpanel">
+							<b-card-body>
+								<!-- <validation-provider
+									vid="chain_name"
+									name="Chain"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+										<b-form-input
+											name="chain_name"
+											type="text"
+											v-model="entity.chain_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider> -->
+
+								<validation-provider
+									vid="division"
+									name="Division"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Division" label-for="division" label-cols-lg="4">
+										<b-form-input
+											name="division"
+											type="text"
+											v-model="entity.division"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="region"
+									name="Region"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Region" label-for="region" label-cols-lg="4">
+										<b-form-input
+											name="region"
+											type="text"
+											v-model="entity.region"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="territory"
+									name="Territory"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input
+											name="territory"
+											type="text"
+											v-model="entity.territory"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="area_name"
+									name="Area"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+										<b-form-input
+											name="area_name"
+											type="text"
+											v-model="entity.area_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="ou_number"
+									name="OU Number"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
+										<b-form-input
+											name="ou_number"
+											type="text"
+											v-model="entity.ou_number"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<!-- <validation-provider
+									vid="rvp_name"
+									name="RVP"
+									:rules="{ required: false, max: 60 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="RVP" label-for="rvp_name" label-cols-lg="4">
+										<b-form-input
+											name="rvp_name"
+											type="text"
+											v-model="entity.rvp_name"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider> -->
+							</b-card-body>
 						</b-collapse>
+						<!-- end -->
+
+						<!-- Contacts Code from shubham_dev -->
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseContact
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Contact</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseContact" role="tabpanel">
+							<b-card-body>
+								<validation-provider
+									vid="phone"
+									name="Phone"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
+										<b-form-input
+											name="phone"
+											type="text"
+											v-model="entity.phone"
+											v-mask="'(###) ###-####'"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="fax"
+									name="Fax"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
+										<b-form-input
+											name="fax"
+											type="text"
+											v-model="entity.fax"
+											v-mask="'(###) ###-####'"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="email"
+									name="Email"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
+										<b-form-input
+											name="email"
+											type="email"
+											v-model="entity.email"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+								<validation-provider
+									vid="website"
+									name="Website"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
+										<b-form-input
+											name="website"
+											type="url"
+											v-model="entity.website"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<b-input-group-append>
+								  <b-button variant="primary" class="mb-1" @click="createNewForm">
+				                 	<font-awesome-icon icon="plus" fixed-width />
+				                 	<span>Add Contact</span>
+			                      </b-button>
+                                </b-input-group-append>
+
+								<form v-if="showForm" v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
+									<b-card body>
+										<validation-provider
+											vid="f_name"
+											name="First_Name"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
+												<b-form-input
+													name="f_name"
+													type="text"
+													v-model="form.first_name"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+											vid="l_name"
+											name="Last_Name"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
+												<b-form-input
+													name="l_name"
+													type="text"
+													v-model="form.last_name"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+											vid="title_id"
+											name="Main_Title"
+											:rules="{ required: true, numeric: true }"
+											v-slot="validationContext"
+										>
+											<b-form-group
+												label="Title"
+												label-for="title_id"
+												label-cols-lg="4"
+											>
+												<b-input-group>
+													<b-form-select
+														name="title_id"
+														v-model="form.title_id"
+														:options="titlename"
+														:disabled="saving || loadingtitlename"
+														:state="getValidationState(validationContext)"
+														value-field="id"
+														text-field="full_name"
+														
+													>
+													
+														<template #first>
+															<option  :value="null">
+															Please Select Title
+															</option>
+														</template>
+													</b-form-select>
+													<template #append>
+														<b-button
+															variant="primary"
+															@click="openCustomTitle"
+														>
+															<font-awesome-icon icon="plus" fixed-width />
+														</b-button>
+													</template>
+												</b-input-group>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+										<template>
+											<div>
+												<!-- Add BootstrapVue grid classes to create a row -->
+												<b-row>
+													<!-- Column for the dropdown and input field -->
+													<b-col md="4">
+														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+															<b-form-group label="Contact Number Type" label-for="type">
+																<!-- Wrapper for select and input fields -->
+																<div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
+																<!-- Dropdown (select) field -->
+																	<label :for="'contacType' + index"></label>
+																	<b-input-group  class="mb-3">
+																		<b-form-select
+																			name="conatct_id"
+																			v-model="form.contact_id"
+																			:options="contactTypes"
+																			:disabled="saving || loadingcontactTypes"
+																			:state="getValidationState(validationContext)"
+																			value-field="id"
+																			text-field="full_name"
+																			
+																		>
+																			<template #first>
+																				<option  :value="null">
+																				Please Select Contact Type
+																				</option>
+																			</template>
+																		</b-form-select>
+																	</b-input-group>
+																</div>
+															</b-form-group>
+														</validation-provider>
+													</b-col>
+													<b-col md="8">
+														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+														<b-form-group label="Contact Number" label-for="phone">
+															<b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
+															<b-form-input
+																:name="'phone' + index"
+																type="text"
+																v-model="form.phone"
+																v-mask="'(###) ###-####'"
+																:state="getValidationState(validationContext)"
+																:disabled="saving"
+															></b-form-input>
+
+															<!-- Button inside the input group to remove the corresponding field -->
+															<b-input-group-append>
+																<b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+																<font-awesome-icon icon="minus" fixed-width />
+																</b-button>
+																<!-- Button to add a new input field -->
+																<b-button variant="primary" @click="addInputField">
+															<font-awesome-icon icon="plus" fixed-width />
+														</b-button>
+															</b-input-group-append>
+															</b-input-group>
+
+															<b-form-invalid-feedback
+															v-for="error in validationContext.errors"
+															:key="error"
+															v-text="error"
+															></b-form-invalid-feedback>
+														</b-form-group>
+														
+														</validation-provider>
+													</b-col>
+												</b-row>
+											</div>
+										</template>
+               								
+
+										<validation-provider
+											vid="email"
+											name="Email"
+											:rules="{ required: false }"
+											v-slot="validationContext"
+										>
+											<b-form-group label="Email" label-for="email" label-cols-lg="4">
+												<b-form-input
+													name="email"
+													type="email"
+													v-model="form.email"
+													:state="getValidationState(validationContext)"
+													:disabled="saving"
+												/>
+												<b-form-invalid-feedback
+													v-for="error in validationContext.errors"
+													:key="error"
+													v-text="error"
+												/>
+											</b-form-group>
+										</validation-provider>
+										<b-footer class="d-flex justify-content-between">
+    <!-- Delete button with FontAwesome icon on the left -->
+    <b-button type="button" variant="danger"  @click="clearForm(index, form)">
+        <font-awesome-icon icon="trash" fixed-width />
+        <span>Delete</span>
+    </b-button>
+
+    <!-- Cancel button on the right -->
+    <b-button type="button" variant="light" @click="removeForm(index)">
+        <span>Cancel</span>
+    </b-button>
+</b-footer>
+
+	
+										<b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
+											<b-form-input
+											id="newCustomName"
+											name="newCustomeTitleName"
+											type="text"
+											v-model="form.title_id"
+											placeholder="Add custom Title"
+											:disabled="saving"
+											/>
+										</b-modal>
+									</b-card>
+								</form>
+							</b-card-body>
+						</b-collapse>
+						<!-- end -->
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -698,7 +1704,7 @@
 						</b-card-header>
 						<b-collapse id="collapseServices" role="tabpanel">
 							<b-card-body>
-								<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
 									<loading-indicator v-if="loadingServices && services.length <= 0" />
 									<b-form-checkbox-group
 										v-else-if="services.length > 0"
@@ -714,11 +1720,494 @@
 										No services added
 										<template #content> Create services to assign to this facility. </template>
 									</empty-result>
+								</b-form-group> -->
+
+								<!-- <b-form-group
+										label="Assigned Services"
+										label-for="entity.services._ids"
+										label-cols-lg="4"
+										
+									>
+										<services-search-multi
+											name="denial_reasons"
+											v-model="currentDenialReasons"
+											@add="addingDenialReason = true"
+											:disabled="saving"
+										/>
+									</b-form-group> -->
+
+									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4" class="mb-0" style="margin: 0;">
+									<loading-indicator v-if="loadingServices && services.length <= 0" />
+									<b-input-group>
+										<b-form-input type="text" name="service_ids" v-model="searchQuery"
+											:disabled="saving || loadingServices"
+											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
+										<!-- <b-input-group-append>
+											<b-input-group-text>
+												<font-awesome-icon icon="search" fixed-width />
+											</b-input-group-text>
+										</b-input-group-append> -->
+									</b-input-group>
+									<div class="mb-0" style="margin: 0;">
+										<!-- <b-list-group v-if="selectedServices.length > 0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id">
+												{{ service.name }}
+												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
+											</b-list-group-item>
+										</b-list-group> -->
+										<b-list-group v-if="selectedServices.length > 0" class="mb-0">
+											<b-list-group-item v-for="service in selectedServices" :key="service.id" class="mb-0">
+												<div class="d-flex justify-content-between align-items-center mb-0">
+													<div class="mb-0">{{ service.name }}</div>
+													<b-btn variant="danger" @click="deselectService(service)" size="sm">
+														<!-- <b-icon icon="x"></b-icon> -->
+														<!-- <font-awesome-icon icon="fa-xmark"  style="color:red"/> -->
+														<font-awesome-icon
+															icon="times"
+															fixed-width
+														/>
+													</b-btn>
+												</div>
+											</b-list-group-item>
+										</b-list-group>
+
+									</div>
+									<div v-if="filteredServices.length > 0" class="mb-0">
+										<b-list-group>
+											<b-list-group-item v-for="service in filteredServices" :key="service.id"
+												@click="selectService(service)">
+												{{ service.name }}
+											</b-list-group-item>
+										</b-list-group>
+									</div>
 								</b-form-group>
+								
+
+								<!-- Search and Add Services Section -->
+								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4"> -->
+								<!-- Custom search input for services -->
+								<!-- <loading-indicator v-if="loadingServices && availableServices.length <= 0" /> -->
+								<!-- <b-input-group>
+									<b-form-input
+									
+									v-model="searchQuery"
+									
+									:disabled="saving || loadingServices"
+									value-field="id"
+									text-field="name"
+									:placeholder="loadingServices ? 'Loading services...' : 'Search services...'"
+									></b-form-input>
+									<b-input-group-append>
+									<b-button @click="searchServices">Search</b-button>
+									</b-input-group-append>
+								</b-input-group> -->
+
+								 <!-- List of matching services -->
+								 <!-- <b-form-select
+									v-model="entity.services._ids"
+									:options="matchingServices"
+									:disabled="saving || loadingServices"
+									value-field="id"
+									text-field="name"
+									multiple
+								></b-form-select> -->
+
+
+								<!-- Button to add selected services -->
+								<!-- <b-button @click="addSelectedServices">Add Selected Services</b-button> -->
+							<!-- </b-form-group> -->
 							</b-card-body>
 						</b-collapse>
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseReceivingMethods
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>Receiving Methods</b-button>
+						</b-card-header>
+						<b-collapse id="collapseReceivingMethods" role="tabpanel">
+							<b-card-body>
+
+								<template>
+									<div>
+										<b-row>
+										<!-- Section for Receiving Emails -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4"> -->
+											<!-- Display entered emails in tabular format -->
+											<div>
+												<h6>Receiving Emails</h6>
+												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+												<template slot="cell(email)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No emails added</span>
+												</empty-result>
+											</div>
+
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopup" variant="primary">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+													<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+
+											<!-- Icon to open the pop-up -->
+											<!-- <b-button @click="openPopup" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button> -->
+
+											<!-- Pop-up for adding emails -->
+											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
+												<b-form @submit.prevent="addEmail">
+												<b-form-group label="Email" label-for="email">
+													<b-form-input v-model="newEmail.email" id="email" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newEmail.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+											
+											<!-- Icon to delete selected entries -->
+											<!-- <b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+											</b-button> -->
+
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisible" title="Delete Emails" @ok="deleteSelectedEmails" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+													<template #cell(email)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<span>{{ info.item.email }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+
+										<!-- Section for Receiving Faxes -->
+										<b-col md="6">
+											<!-- <b-form-group label="Receiving Faxes" label-for="r_fax" label-cols-lg="4"> -->
+											<!-- Display entered faxes in tabular format -->
+											<div>
+												<h6>Receiving Faxes</h6>
+												<b-table v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0" :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+												<template slot="cell(fax)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No faxes added</span>
+												</empty-result>
+											</div>
+
+											<!-- Icon to open the pop-up -->
+											<div class="d-flex justify-content-between">
+												<!-- Plus icon button on the left -->
+												<b-button @click="openPopupFax" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+											<!-- Pop-up for adding faxes -->
+											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
+												<b-form @submit.prevent="addFax">
+													<b-form-group label="Fax" label-for="fax">
+														<b-form-input v-model="newFax.fax" @input="formatFax" id="fax" required />
+													</b-form-group>
+													<b-form-group label="Description" label-for="description">
+														<b-form-input v-model="newFax.description" id="description" />
+													</b-form-group>
+													<b-button type="submit" variant="primary" class="mx-auto d-block">Ok</b-button>
+												</b-form>
+											</b-modal>
+
+
+
+
+											<!-- Pop-up for deleting selected entries -->
+											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes" @ok="deleteSelectedFaxes" ok-only>
+												<b-form>
+												<div> <!-- Wrap the b-table in a div -->
+													<b-table :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+													<template #cell(fax)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedFaxes" :value="info.item.fax" class="mr-2" />
+														<span>{{ info.item.fax }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedFaxes" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											<!-- </b-form-group> -->
+										</b-col>
+										</b-row>
+									</div>
+									</template>
+
+
+
+
+
+								<!-- <validation-provider
+									vid="r_fax"
+									name="Fax"
+									:rules="{ required: false, max: 250 }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Receiving Fax" label-for="r_fax" label-cols-lg="4">
+										<b-input-group>
+											<b-form-input
+												name="Fax"
+												type="text"
+												v-model="entity.receiving_fax"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+												placeholder="Enter Fax"
+											></b-form-input>
+											<b-input-group-append>
+												<b-button @click="addReceivingFax">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+											</b-input-group-append>
+										</b-input-group>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										></b-form-invalid-feedback>
+										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+											<b-list-group>
+												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
+													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
+														<span>{{ fax }}</span>
+														<b-button variant="danger" @click="removeReceivingFax(index)">
+															<font-awesome-icon icon="times" fixed-width />
+														</b-button>
+													</div>
+												</b-list-group-item>
+											</b-list-group>
+										</div>
+									</b-form-group>
+								</validation-provider> -->
+								
+
+
+							</b-card-body>
+						</b-collapse>
+
+						<!-- end Receiving Methods -->
+
+					<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
+					<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
+						class="text-left px-4 py-3 m-0">
+						NPI Information
+					</b-button>
+					</b-card-header>
+
+					<b-collapse id="collapseNpiInformation" role="tabpanel">
+						<b-card-body>
+							<div class="d-flex">
+								<div class="flex-grow-1 pr-3">
+									<!-- <h4 class="card-title">{{ entity.name }}</h4>
+									<h5 class="card-subtitle mb-4">{{ ` ${entity.state}, ${entity.city}` }}</h5> -->
+									<!-- <hr class="my-2"> -->
+									<div class="label-value-row">
+										<div class="label-text">NPI Number:</div>
+										<div class="text">{{ entity.npi_number }}</div>
+									</div>
+									<!-- <div class="label-value-row">
+										<div class="label-text">Doing Business As:</div>
+										<div class="text">{{ entity.othername }}</div>
+									</div> -->
+									<hr class="my-2">
+									<div class="label-value-row">
+										<div class="label-text">Enumeration Type:</div>
+										<div class="text">{{ ` ${entity.enumeration_type} Organization` }}</div>
+									</div>
+									
+									<div class="label-value-row">
+										<div class="label-text">Status</div>
+										<div class="text">{{ entity.active ? 'Active' : 'Inactive' }}</div>
+									</div>
+									<!-- <div class="label-value-row">
+										<div class="label-text">Organization Subpart ?	</div>
+										<div class="text">{{ entity.organizational_subpart }}</div>
+									</div> -->
+
+									<hr class="my-2">
+
+									<!-- <div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Location Address:</div>
+												<div class="text-primary">{{ `${entity.street_address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
+											</div> -->
+											<div class="d-flex">
+												<div class="flex-grow-1 pr-3">
+												<div class="label-value-row">
+													<div class="label-text">Location Address:</div>
+													<div class="text">{{ entity.address_2 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text">{{ entity.location_phone }}</div>
+											</div>
+											<hr class="my-1">
+											<div class="label-value-row">
+												<div class="label-text">Mailing Address:</div>
+												<div class="text">{{entity.address_1}}</div>
+											</div>
+											<!-- <div class="label-value-row">
+												<div class="label-text">Organization Subpart ?</div>
+												<div class="text-primary">{{ entity.organizational_subpart }}</div>
+											</div> -->
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text">{{ entity.mailing_phone }}</div>
+											</div>
+										</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Primary Taxonomy:</div>
+												<div class="text">{{ entity.primary_taxonomy }}</div>
+											</div>
+											<hr class="my-2">
+											<div class="label-value-row">
+												<div class="label-text">Additional Taxonomies:</div>
+												<div class="text">{{ processAdditionalTaxonomies(entity.additional_taxonomies) }}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</b-card-body>
+					</b-collapse>
 					</b-card>
 				</b-card-body>
+				
+
+				<!-- <b-card v-if="fromNPI" no-body> -->
+					<!-- <b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
+						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
+							class="text-left px-4 py-3 m-0">
+							<h6 class="mb-0">NPI Data</h6>
+						</b-button>
+					</b-card-header>
+					<b-collapse id="collapseNpiInformation" role="tabpanel">
+						<b-card-body>
+							<div class="d-flex">
+								<div class="flex-grow-1 pr-3">
+									<div class="label-value-row">
+										<div class="label-text">Other Name:</div>
+										<div class="text-primary">{{ entity.othername }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Enumeration Type:</div>
+										<div class="text-primary">{{ entity.enumeration_type }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Gender:</div>
+										<div class="text-primary">{{ entity.gender }}</div>
+									</div>
+									<div class="label-value-row">
+										<div class="label-text">Sole Proprietor ?</div>
+										<div class="text-primary">{{ entity.proprietor }}</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Location Address:</div>
+												<div class="text-primary">{{ entity.address_2 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text-primary">{{ entity.locationPhoneNumber }}</div>
+											</div>
+											<hr class="my-1">
+											<div class="label-value-row">
+												<div class="label-text">Mailing Address:</div>
+												<div class="text-primary">{{ entity.address_1 }}</div>
+											</div>
+											<div class="label-value-row">
+												<div class="label-text">Phone Number:</div>
+												<div class="text-primary">{{ entity.mailingPhoneNumber }}</div>
+											</div>
+										</div>
+									</div>
+
+
+									<hr class="my-2">
+
+									<div class="d-flex">
+										<div class="flex-grow-1 pr-3">
+											<div class="label-value-row">
+												<div class="label-text">Primary Taxonomy:</div>
+												<div class="text-primary">{{ entity.primaryTaxonomy }}</div>
+											</div>
+											<hr class="my-2">
+											<div class="label-value-row">
+												<div class="label-text">Additional Taxonomies:</div>
+												<div class="text-primary">{{ entity.additionalTaxonomies }}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</b-card-body>
+					</b-collapse> -->
+				<!-- </b-card> -->
 
 				<b-card-footer>
 					<b-row>
@@ -741,9 +2230,13 @@
 </template>
 
 <script type="text/javascript">
-import { mapGetters } from "vuex";
+import { mapGetters} from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
+import axios from "axios";
+import { ref} from "vue";
+// get All record
+const records = ref([]);
 
 export default {
 	name: "FacilityForm",
@@ -762,61 +2255,1118 @@ export default {
 			npiLookingUp: false,
 			npiSearched: false,
 			npiResults: [],
+			searchChain:'',
+			selectedChain: '',
+			filteredChains:[],
+			searchQuery: '',            // The search query entered by the user
+        	// availableServices: [],               // The list of all available services
+        	// matchingServices: [],       // The list of services matching the search query
+        	filteredServices: [], 
+			selectedServices: [],		 // The list of services selected by the user
+			// services: [],
+			showForm: false,
 			entity: {
 				id: this.id,
 				name: "",
-				disp_name:null,
+				display_name:null,
 				facility_type_id: null,
 				active: true,
 				phone: null,
 				fax: null,
 				email: null,
-				street_address_1: null,
-				street_address_2: null,
+				// street_address_1: null,
+				// street_address_2: null,
 				city: null,
 				state: null,
 				zip: null,
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
-				client_owned: false,
-				chain_name: null,
+				location_phone: null,
+				mailing_phone: null,
+				additional_taxonomies: null,
+				client_owned: true,
+				chain_name: '',
 				area_name: null,
 				ou_number: null,
 				territory: null,
-				rvp_name: null,
+				// rvp_name: null,
 				has_contract: false,
 				contract_start_date: null,
 				contract_end_date: null,
 				indemnification_days: null,
 				max_return_work_days: null,
-				services: {
-					_ids: [],
-				},
+				address_1: null,
+				address_2: null,
+				// taxonomy_code: null,
+				// taxonomy_desc: null,
+				// taxonomy_group: null,
+				// taxonomy_license:  null,
+				// taxonomy_state: null,
+				othername: null,
+				enumeration_type: null,
+				organizational_subpart:null,
+				services: [],
+				chains:[],
+				receiving_email: '', // For input
+            	receiving_emails: [], // For storing multiple emails
+				receiving_fax: '', // For input
+            	receiving_faxes: [], // For storing multiple faxes
+				// outgoing_emails: [],
+            	receiving_methods: [], 
+
+
 			},
+			service_ids: [],
+			forms: [],
+			myforms: [],
+			deletedForms: [],
+			titlename: [],
+			contactTypes: [],
+			inputFields: [{ selectedContactType: 'phone', phone: '' }],
+			displayedEmails: '',
+			displayedFaxes: '',
+			popupVisible: false,
+			popupVisibleFax: false,
+			deletePopupVisible: false,
+			deletePopupVisibleFax: false,
+			isFaxInputDisabled: false,
+			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
+			// allowedDigits: 10,
+			// existingFaxes: [] ,
+
+			newEmail: {
+				email: '',
+				description: '',
+			},
+			selectedEmails: [],
+			newFax: {
+				fax: '',
+				description: '',
+			},
+			selectedFaxes: [],
+			showDeleteIcon: false,
 		};
 	},
-	computed: mapGetters({
-		states: "states/states",
-		facilityTypes: "facilityTypes/all",
-		loadingFacilityTypes: "facilityTypes/loadingAll",
-		services: "services/all",
-		loadingServices: "services/loadingAll",
-	}),
+	computed: 
+	{
+		// concatenatedStreetAddress() {
+        // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
+    	// },
+		// formattedFax() {
+		// 	let numericFax = this.newFax.fax.replace(/\D/g, '');
+		// 	numericFax = numericFax.slice(0, this.allowedDigits);
+		// 	return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+		// 	},
+		fromNPI() {
+				if (this.entity.id !== null) {
+					return true;
+				}
+			},
+
+		...mapGetters({
+			states: "states/states",
+			facilityTypes: "facilityTypes/all",
+			loadingFacilityTypes: "facilityTypes/loadingAll",
+			services: "services/all",
+			loadingServices: "services/loadingAll",
+			chains: "chains/all",
+			loadingChains: "chains/loadingAll",
+		}),
+	},
 	mounted() {
 		this.getServices();
-
+		this.getChains();
+		this.TitleShow();
+    	this.fetchContactTypes();
+		this.listFacilityContacts();
 		if (this.id) {
 			this.refresh();
 		} else {
 			this.loading = false;
 		}
 	},
+	// created()
+	// {
+	// 	// this.addReceivingMethod();
+	// 	this.addEmail();
+	// },
+	// // Load selected services from database on component initialization
+	// created() {
+	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
+	// 	const facilityId = this.entity.id;
+
+	// 	// Retrieve previously selected services for the specific facility from localStorage
+	// 	const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
+
+	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
+	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
+	// 	},
+// 	async created() {
+//     // Fetch chains from your backend API
+//     try {
+// 		const url = "/client/api/getChains";
+// 		const response = await axios.get(url, {
+//         headers: {
+//           "Accept": "application/json",
+//         },
+//       });
+
+//       console.log("Response from API:", response)
+//     } 
+// 	catch (error) {
+//       console.error('Error fetching chains:', error);
+//     }
+//   },
+// 	async created() {
+//     const facilityId = this.entity.id;
+
+//     try {
+//       const url = "/client/api/serviceList";
+//       const response = await axios.get(url, {
+//         headers: {
+//           "Accept": "application/json",
+//         },
+//       });
+
+//       console.log("Response from API:", response);
+
+//       // Filter services for the specific facility
+//       const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
+
+//       // Set the filtered services to the selectedServices array
+//       this.selectedServices = servicesForFacility;
+
+//       console.log("Services for Facility:", this.selectedServices);
+//     } catch (error) {
+//       console.error("Error fetching services:", error);
+//     }
+//   },
+	// watch: {
+	// 	'newFax.fax'(newValue) {
+    //   // Format fax number when it changes
+    //   this.newFax.fax = this.formatFaxNumber(newValue);
+    // }
+	// },
+		
 	methods: {
+	// 	addReceivingMethod() {
+    //     // Assuming you have the necessary data in your component's data or computed properties
+	// 	const facilityId = this.entity.id;
+	// 		const data = {
+	// 			facility_id: facilityId,
+	// 			receiving_email_id: this.selectedReceivingEmailId,
+	// 			receiving_fax_id: this.selectedReceivingFaxId,
+	// 		};
+
+	// 		// Make an Axios POST request to store data
+	// 		axios.post('/facilities-receivingmethods/store', data)
+	// 			.then(response => {
+	// 				// Handle the success response as needed
+	// 				console.log(response.data);
+	// 			})
+	// 			.catch(error => {
+	// 				// Handle errors
+	// 				console.error(error);
+	// 			});
+    // },
+	
+		// async addReceivingMethod() {
+
+		// 	console.log("started");
+		// 	const facilityId = this.entity.id;
+		// 	const data = {
+		// 		facility_id: facilityId,
+		// 		receiving_email_id: this.selectedReceivingEmailId,
+		// 		receiving_fax_id: this.selectedReceivingFaxId,
+		// 	};
+		// 	// console.log(facilityId);
+			
+
+		// 	// Send a POST request to your controller to add the new type
+		// 	axios.post('/client/receivingMethods', data)
+		// 		.then((response) => {
+		// 			this.receiving_methods.push(response.data);
+		// 			console.log("check",response);
+
+		// 		})
+		// 		.catch((error) => {
+		// 			// Handle any errors, e.g., show an error message
+		// 			console.error('Error adding new type:', error);
+		// 		});
+		// 	},
+	
+	openPopupFax() {
+		this.popupVisibleFax = true;
+		},
+	closePopupFax() {
+		this.popupVisibleFax = false;
+		},
+	formatFax() {
+		const numericFax = this.newFax.fax.replace(/\D/g, '');
+
+		if (numericFax.length > 10) {
+		this.faxInputError = true; // Invalid fax number
+		// this.isFaxInputDisabled = true; // Disable the input field
+		} else {
+		this.newFax.fax = numericFax ? numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3') : '';
+		this.faxInputError = false;
+		// this.isFaxInputDisabled = false; // Enable the input field
+		}
+		},
+// 	addFax() {
+//     const newFax = { ...this.newFax };
+//     console.log("new:", newFax);
+
+//     // Check if receiving_faxes is defined, if not, initialize it as an empty array
+//     if (!Array.isArray(this.entity.receiving_faxes)) {
+//         this.$set(this.entity, 'receiving_faxes', []);
+//     }
+
+//     // Check if the fax number already exists
+//     if (this.entity.receiving_faxes.map((fax) => fax.fax).includes(this.newFax.fax)) {
+//         this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+//             title: 'Error',
+//             variant: 'danger',
+//             solid: true,
+//             autoHideDelay: 5000, // milliseconds
+//         });
+//         return;
+//     }
+
+//     // Add the new fax to the array
+//     this.existingFaxes.push(this.newFax.fax);
+//     this.entity.receiving_faxes.push(newFax);
+//     console.log('Before addFax:', this.entity.receiving_faxes);
+//     console.log('After addFax:', this.entity.receiving_faxes);
+
+//     // Clear the newFax object for the next entry
+//     this.newFax = { fax: '', description: '' };
+
+//     // Use $nextTick to ensure the DOM is updated
+//     this.$nextTick(() => {
+//         console.log("Receiving Faxes:", this.entity.receiving_faxes);
+//     });
+
+//     // Close the pop-up
+//     this.popupVisibleFax = false;
+// },
+
+async addFax() {
+    try {
+        const newFax = { ...this.newFax };
+        console.log("new:", newFax);
+		// Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Validate fax number format
+        const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+        if (!faxRegex.test(newFax.fax)) {
+            this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Check if receiving_faxes is defined, if not, initialize it as an empty array
+        if (!Array.isArray(this.entity.receiving_faxes)) {
+            this.$set(this.entity, 'receiving_faxes', []);
+        }
+
+        // Check if the fax number already exists
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+            this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
+                title: 'Error',
+                variant: 'danger',
+                solid: true,
+                autoHideDelay: 5000, // milliseconds
+            });
+            return;
+        }
+
+        // Add the new fax to the array
+        this.entity.receiving_faxes.push(newFax);
+
+        // Clear the newFax object for the next entry
+        this.newFax = { fax: '', description: '' };
+
+        // Close the pop-up
+        this.popupVisibleFax = false;
+
+        // Prepare the data to be sent in the POST request
+        const faxData = {
+            fax: newFax.fax,  // Use the updated fax number
+            description: newFax.description,
+        };
+        console.log("header:", faxData);
+
+        // Make a POST request to store the data in the database
+        const response = await axios.post('/client/receivingFaxes', faxData);
+        console.log('Axios Response:', response);
+
+        if (response.data.success) {
+            console.log('Fax saved successfully.');
+            this.saving = false;
+            this.$router.push({ name: 'receivingFaxes' });
+
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'primary',
+                    title: 'Fax Created!',
+                    message: 'New fax created.',
+                });
+            });
+
+            redirect_index();
+        } else {
+            this.saving = false;
+            this.errorMessage = response.data.message;
+            this.$nextTick(() => {
+                this.$store.dispatch('notify', {
+                    variant: 'danger',
+                    title: 'Fax Error',
+                    message: this.errorMessage,
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error creating fax:', error);
+    }
+},
+    openDeleteFaxPopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisibleFax = true;
+    },
+    closeDeleteFaxPopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisibleFax = false;
+      // Reset selectedFaxes array
+      this.selectedFaxes = [];
+    },
+    // deleteSelectedFaxes() {
+    //   // Add logic to delete selected faxes
+    //   // Update the displayedFaxes text
+    //   this.displayedFaxes = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedFaxes() {
+		// Add logic to delete selected faxes
+		console.log("Inside");
+		const updatedFaxes = this.entity.receiving_faxes.filter(
+		(fax) => !this.selectedFaxes.includes(fax.fax)
+		);
+		console.log("Deleted:",updatedFaxes);
+
+		// Update the receiving_faxes array with the updatedFaxes
+		this.entity.receiving_faxes = updatedFaxes;
+
+		// Reset selectedFaxes array
+		this.selectedFaxes = [];
+
+		// Close the delete popup
+		this.closeDeleteFaxPopup();
+	},
+//     addEmail() {
+//       // Add logic to add the new email to the list
+//       // Update the displayedEmails text
+// 	  this.displayedEmails = `
+//     <table border="1">
+//       <tr>
+//         <th>Email</th>
+//         <th>Description</th>
+//       </tr>
+//       <tr>
+//         <td>${this.newEmail.email}</td>
+//         <td>${this.newEmail.description}</td>
+//       </tr>
+//     </table>
+//   `;
+//       this.closePopup();
+//     },
+	// openPopup() {
+	// 	this.popupVisible = true;
+	// 	},
+	// closePopup() {
+	// 	this.popupVisible = false;
+	// 	},
+	openPopup() {
+		this.popupVisible = true;
+		},
+	closePopup() {
+		this.popupVisible = false;
+		},
+		
+	// async addEmail() {
+	// 	// Assuming newEmail is a valid object with email and description properties
+	// 	const newEmail = { ...this.newEmail };
+	// 	const email = newEmail.email;
+	// 	const description= newEmail.description;
+	// 	console.log("new:",newEmail);
+	// 	console.log("Receiving Emails:", this.entity.receiving_emails);
+	// 	// Prepare the data to be sent in the POST request
+	// 	// const emailData = {
+	// 	// 	email,
+	// 	// 	description,
+	// 	// 	};
+	// 	// console.log("before API", emailData);
+
+	// 	// Check if receiving_emails is defined, if not, initialize it as an empty array
+	// 	if (!Array.isArray(this.entity.receiving_emails)) {
+	// 		this.$set(this.entity, 'receiving_emails', []);
+	// 	}
+		
+	// 	// Add the new email to the array
+	// 	this.entity.receiving_emails.push(newEmail);
+
+	// 	// Clear the newEmail object for the next entry
+	// 	this.newEmail = { email: '', description: '' };
+		
+	// 	// Close the pop-up
+	// 	// this.closePopup();
+	// 	this.popupVisible = false;
+
+	// 	// Prepare the data to be sent in the POST request
+	// 	const emailData = {
+	// 		email,
+	// 		description,
+	// 		};
+	// 	console.log("before API", emailData);
+	// 	await axios.post('/client/receivingEmails', emailData)
+	// 		.then(response => {
+	// 			// const responseData = response.data.data;
+	// 			console.log("response:",response);
+	// 			if(response.data.success){
+	// 				console.log('email saved');
+	// 				this.saving = false;
+	// 				this.$router.push({
+	// 					name: "receivingEmails"
+	// 				});
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "primary",
+	// 						title: "Email Created!",
+	// 						message: `New email Created!.`,
+	// 					});
+	// 				});
+	// 				redirect_index()
+	// 			}else{
+	// 				this.saving = false;
+	// 				console.log('email already exists');
+	// 				this.errorMessage = response.data.message; 
+	// 				this.$nextTick(function () {
+	// 					this.$store.dispatch("notify", {
+	// 						variant: "danger",
+	// 						title: "Email Error",
+	// 						message: this.errorMessage,
+	// 					});
+	// 				});
+	// 			}
+	// 		})
+	// 		.catch(error => {
+	// 			console.log(error)
+	// 			// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
+	// 			// this.saving = false;
+	// 			// this.errorMessage = 'Error creating chain.'; 
+	// 			// this.$nextTick(function () {
+	// 			// 	this.$store.dispatch("notify", {
+	// 			// 		variant: "danger",
+	// 			// 		title: "Chain Error",
+	// 			// 		message: error,
+	// 			// 	});
+	// 			// });
+	// 		})
+
+	// 	// // Send a POST request to your controller to add the new type
+    //     // axios.post('/client/receivingEmails', { email , description})
+    //     //     .then((response) => {
+	// 	// 		console.log("inside API call");
+    //     //         // Handle the response, e.g., update the insuranceTypes list
+    //     //         this.entity.receiving_emails.push(response.data);
+
+    //     //         // // Close the modal
+    //     //         // this.$bvModal.hide('customAuditTypeModal');
+
+    //     //         // // Clear the input field
+    //     //         // this.newAuditType = '';
+	// 	// 		console.log("check",response);
+
+	// 	// 		window.location.reload();
+    //     //     })
+    //     //     .catch((error) => {
+    //     //         // Handle any errors, e.g., show an error message
+    //     //         console.error('Error adding new email:', error);
+    //     //     });
+
+	// 	// try {
+	// 	// 	const url = "/client/receivingEmails";
+	// 	// 	const data = {'receivingEmails':this.entity.receiving_emails}
+	// 	// 	console.log(data);
+	// 	// 	// const resp = await axios.post('/client/sendemail', data);
+	// 	// 	const response = await axios.post(url,data);
+	// 	// 	console.log("Response from API:", response.data);
+
+	// 	// 	}
+	// 	// 	 catch (error) {
+    //     //         console.error('Error storing data:', error);
+    //     //     }
+    //     //     // Clear the input for the next entry
+    //     //     this.entity.receiving_email = '';
+        
+
+	// 	// // Make a POST request to store the data in the database
+	// 	// axios.post('client/api/receivingEmails', {
+	// 	// receivingEmails: [newEmail] // Sending an array with a single email
+	// 	// })
+	// 	// .then(response => {
+	// 	// // Handle success response if needed
+	// 	// console.log('Data stored successfully:', response.data);
+	// 	// })
+	// 	// .catch(error => {
+	// 	// // Handle error if the data couldn't be stored
+	// 	// console.error('Error storing data:', error.response.data);
+	// 	// });
+	// },
+	async addEmail() {
+		const newEmail = { ...this.newEmail };
+		const email = newEmail.email;
+		const description = newEmail.description;
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Check if the email is in a valid format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+		if (!emailRegex.test(email)) {
+			this.$bvToast.toast('Error: Please enter a valid email address.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+		});
+		return;
+		}
+
+
+		// Check if receiving_emails is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.receiving_emails)) {
+			this.$set(this.entity, 'receiving_emails', []);
+		}
+
+		// // Check if the email already exists
+		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+		//     alert('Email address already exists. Please enter a different email.');
+		//     return;
+		// }
+		// Check if the email already exists
+		if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
+			this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
+				title: 'Error',
+				variant: 'danger',
+				solid: true,
+				autoHideDelay: 5000, // milliseconds
+			});
+			return;
+		}
+
+
+		// Add the new email to the array
+		this.entity.receiving_emails.push(newEmail);
+
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Close the pop-up
+		this.popupVisible = false;
+
+		// Prepare the data to be sent in the POST request
+		const emailData = {   
+			email,
+			description,
+		};
+		console.log("header:",emailData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingEmails', emailData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_emails", response.data);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				// Check if the expected properties are present
+				if (responseData.email && responseData.description && responseData.id) 
+				{
+				// if (response.data.success) {
+					console.log('Email saved successfully.');
+					this.saving = false;
+					// this.$router.push({ name: 'receivingEmails' });
+
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Email Created!',
+							message: 'New email created.',
+						});
+					});
+
+					// redirect_index();
+				// } else {
+				// 	this.saving = false;
+				// 	// console.log('Email already exists');
+				// 	this.errorMessage = response.data.message;
+				// 	this.$nextTick(() => {
+				// 		this.$store.dispatch('notify', {
+				// 			variant: 'danger',
+				// 			title: 'Email Error',
+				// 			message: this.errorMessage,
+				// 		});
+				// 	});
+				// }
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save email. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating email:', error);
+		}
+},
+
+    openDeletePopup() {
+      // Show checkboxes and delete icon
+      this.showDeleteIcon = true;
+      this.deletePopupVisible = true;
+    },
+    closeDeletePopup() {
+      // Hide checkboxes and delete icon
+      this.showDeleteIcon = false;
+      this.deletePopupVisible = false;
+      // Reset selectedEmails array
+      this.selectedEmails = [];
+    },
+    // deleteSelectedEmails() {
+    //   // Add logic to delete selected emails
+    //   // Update the displayedEmails text
+    //   this.displayedEmails = ''; // Update with your logic
+    //   this.closeDeletePopup();
+    // },
+	deleteSelectedEmails() {
+		// Add logic to delete selected emails
+		console.log("Inside");
+		const updatedEmails = this.entity.receiving_emails.filter(
+		(email) => !this.selectedEmails.includes(email.email)
+		);
+		console.log("Deleted:",updatedEmails);
+
+		// Update the receiving_emails array with the updatedEmails
+		this.entity.receiving_emails = updatedEmails;
+
+		// Reset selectedEmails array
+		this.selectedEmails = [];
+
+		// Close the delete popup
+		this.closeDeletePopup();
+	},
+
+	// 	async addReceivingEmail() {
+    //     // Trim the entered email and check if it's not empty
+    //     const trimmedEmail = this.entity.receiving_email.trim();
+	// 	console.log("Email:",trimmedEmail);
+    //     if (trimmedEmail !== '') {
+	// 		// Ensure that receiving_emails is an array before pushing
+	// 		if (!Array.isArray(this.entity.receiving_emails)) {
+    //         this.$set(this.entity, 'receiving_emails', []);
+    //     }
+
+    //         // Push the trimmed email to the receiving_emails array
+    //         this.entity.receiving_emails.push(trimmedEmail);
+
+	// 		console.log("Array:",this.entity.receiving_emails);
+
+	// 		// try {
+    //         //     // Make Axios POST request to store the data in the database
+    //         //     const response = await axios.post('/client/api/receivingEmails', {
+    //         //         receivingEmails: this.entity.receiving_emails
+    //         //     });
+
+	// 		// 	response.log("API call:",response);
+
+    //         //     // Assuming the server responds with the updated list of receiving emails
+    //         //     this.receivingEmails = response.data.receivingEmails;
+
+    //         // }
+	// 		try {
+	// 		const url = "/client/api/receivingEmails";
+	// 		const data = {'receivingEmails':this.entity.receiving_emails}
+	// 		console.log(data);
+	// 		// const resp = await axios.post('/client/sendemail', data);
+	// 		const response = await axios.post(url,data);
+	// 		console.log("Response from API:", response.data);
+
+	// 		}
+	// 		 catch (error) {
+    //             console.error('Error storing data:', error);
+    //         }
+    //         // Clear the input for the next entry
+    //         this.entity.receiving_email = '';
+    //     }
+	// },
+	// removeReceivingEmail(index) {
+    //     // Remove the email at the specified index from the receiving_emails array
+    //     this.entity.receiving_emails.splice(index, 1);
+    // },
+	// addReceivingFax() {
+    //     // Trim the entered fax and check if it's not empty
+    //     const trimmedFax = this.entity.receiving_fax.trim();
+	// 	console.log("Fax:",trimmedFax);
+    //     if (trimmedFax !== '') {
+	// 		// Ensure that receiving_emails is an array before pushing
+	// 		if (!Array.isArray(this.entity.receiving_faxes)) {
+    //         this.$set(this.entity, 'receiving_faxes', []);
+    //     }
+
+    //         // Push the trimmed email to the receiving_emails array
+    //         this.entity.receiving_faxes.push(trimmedFax);
+
+	// 		console.log("Array:",this.entity.receiving_faxes);
+    //         // Clear the input for the next entry
+    //         this.entity.receiving_fax = '';
+    //     }
+	// },
+	// removeReceivingFax(index) {
+    //     // Remove the email at the specified index from the receiving_emails array
+    //     this.entity.receiving_faxes.splice(index, 1);
+    // },
+		// Method to search and filter services based on the search query
+			// searchServices() {
+			// 	if (this.searchQuery === '') {
+			// 		// Show all services when the search query is empty
+			// 		this.matchingServices = this.services;
+			// 	} else {
+			// 		// Filter services based on the search query
+			// 		this.matchingServices = this.services.filter(service => {
+			// 			return service.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+			// 		});
+   			// 	}
+			// },
+
+		// Method to add the selected services to the entity
+		// addSelectedServices() {
+		// 	// Add the selected services to entity.services._ids
+		// 	this.entity.services._ids = this.selectedServices.map(service => service.id);
+
+		// 	// Clear the search and selected services
+		// 	this.searchQuery = '';
+		// 	this.selectedServices = [];
+		// 	},
+		
+		// filterServices() {
+		// 	// Implement the logic to filter Services based on the search term
+		// 	const searchTerm = this.searchQuery.toLowerCase();
+		// 	this.filteredServices = this.services.filter((service) =>
+		// 		service.name.toLowerCase().includes(searchTerm)
+		// 	);
+		// },
+		// filterChains(option, query) {
+		// 	return option.toLowerCase().includes(query.toLowerCase());
+		// },
+		processAdditionalTaxonomies(jsonString) {
+			// Check if jsonString is null or undefined
+			if (jsonString === null || jsonString === undefined || jsonString === "NONE") {
+			return '';  // or any default value you prefer
+			}
+
+			// Parse the JSON string into an array
+			const taxonomiesArray = JSON.parse(jsonString);
+
+			// Check if taxonomiesArray is an array
+			if (!Array.isArray(taxonomiesArray)) {
+			return '';  // or any default value you prefer
+			}
+
+			// Join the array elements into a string without quotes
+			const formattedTaxonomies = taxonomiesArray.join(', ');
+
+			return formattedTaxonomies;
+		},
+		filterChains() {
+			// Wait for chains to be loaded
+  			// await this.getChains();
+			// Implement the logic to filter chains based on the search term
+			// .trim().replace(/"/g,'')
+			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("chains:",records);
+			// console.log("Check", this.entity.chains);
+
+			// Filter chains, excluding the ones already selected
+			this.filteredChains = records.value.filter((chain) =>
+			chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
+			// && chain.chain_name.length <= maxLength
+			// !this.selectedChains.some(selected => selected.id === chain.id) &&
+			// !this.filteredChains.some(filtered => filtered.id === chain.id)
+    		);
+			console.log("Filtered:",this.filteredChains);
+
+			},
+			selectChain(chain) {
+			// Set the selected chain
+			// this.selectedChain = chain.chain_name;
+			// console.log("Selected Chain:",this.selectedChain);
+			// this.entity.chain_name = chain.chain_name;
+			// console.log(" chain_name:",this.entity.chain_name);
+
+			// // Clear the search term and filtered chains
+			// this.searchChain = '';
+			// this.filteredChains = [];
+
+
+			this.searchChain = chain.chain_name;
+			this.entity.chain_name = chain.chain_name;
+        	this.filteredChains = [];
+			},
+
+		filterServices() {
+			// Implement the logic to filter services based on the search term
+			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
+			console.log("Search:",searchTerm);
+			console.log("services:",this.services);
+			console.log("Check", this.entity.services);
+
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm)
+			// );
+
+			// // Filter services, excluding the ones already selected
+			// this.filteredServices = this.services.filter((service) =>
+			// 	service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
+			// );
+			// Filter services, excluding the ones already selected
+			this.filteredServices = this.services.filter((service) =>
+			service.name.toLowerCase().includes(searchTerm) &&
+			!this.selectedServices.some(selected => selected.id === service.id) &&
+			!this.filteredServices.some(filtered => filtered.id === service.id)
+    		);
+			console.log("Filtered:",this.filteredServices);
+
+			},
+		// 	deselectChain() {
+		// 	// Clear the selected chain
+		// 	this.selectedChain = null;
+
+		// 	// Clear or update this.entity.chain_name as needed
+		// 	this.entity.chain_name = '';
+		// },
+
+		async selectService(selectedService) {
+			// console.log('Selected Service:', selectedService);
+			// Check if the service ID is not already selected
+			// if (!this.entity.services._ids.includes(selectedService.id)) {
+			// 	// Push the selected service ID to the array
+			// 	this.entity.services._ids.push(selectedService.id);
+			// }
+
+			// const url = "/client/api/serviceList";
+				
+			// 	const response = await axios.get(url, {
+			// 	headers: {
+			// 		"Accept": "application/json",
+			// 		// You can add other headers here if needed
+			// 	},
+			// 	});
+
+			// console.log("Response from API:", response);
+			// // Check if the selected service is not already in the response data
+			// const serviceInResponse = response.data.find(service => service.service_id === selectedService.id);
+
+			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+			// if (serviceInResponse && !this.selectedServices.some(service => service.id === selectedService.id)) {
+				// Push the selected facility to the array
+				this.selectedServices.push(selectedService);
+
+				// // Save the updated selected services for the specific facility to localStorage
+				// const facilityId = this.entity.id;
+    			// localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
+				
+				console.log("selected array:",this.selectedServices);
+				this.entity.services.push(selectedService);
+				console.log("pushed:",this.entity.services);
+			}
+			const facilityId = this.entity.id;
+
+			try {
+			const url = "/client/api/serviceList";
+			const response = await axios.get(url, {
+				headers: {
+				"Accept": "application/json",
+				},
+			});
+
+			console.log("Response from API:", response.data);
+
+			response.data.facilityservices.forEach((item, index) => {
+    		console.log(`Element at index ${index}:`, item);
+
+			if (item.facility_id == facilityId) {
+				console.log("match found =", item.service_id);
+
+				response.data.services.forEach((i, index) => {
+					console.log(`service at index ${index}:`, i);
+					if (i.id == item.service_id) {
+						console.log("service found =", i.name);
+						// Check if the service is not already in selectedServices before pushing
+						if (!this.selectedServices.some(service => service.id === i.id)) {
+							this.selectedServices.push(i);
+							console.log("output", this.selectedServices);
+                }
+					}
+				});
+			}
+		});
+
+			// response.data.facilityservices.forEach((item, index) => {
+			// 	console.log(`Element at index ${index}:`, item);
+			// 	if(item.facility_id == facilityId){
+			// 		console.log("match found = ", item.service_id);
+			// 		response.data.services.foreach((i,index)=> {
+			// 			if(i.service_id == item.service_id){
+			// 				this.selectedServices.push(i.name);
+			// 				console.log("output", this.selectedServices);
+			// 			}
+			// 		});
+
+			// 		// this.selectedServices.push(item.service_id);
+			// 		// console.log("output", this.selectedServices);
+			// 	}
+			// 	});
+				// console.log("thiss insurance provider id", insid);
+
+			// Filter services for the specific facility
+			// const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
+			// const servicesForFacility = response.data.filter(entry => entry.facility_id === facilityId).map(entry => entry.service_id);
+			// console.log("from db:",servicesForFacility)
+
+			// // Set the filtered services to the selectedServices array
+			// this.selectedServices = servicesForFacility;
+
+			// console.log("Services for Facility:", this.selectedServices);
+			} catch (error) {
+			console.error("Error fetching services:", error);
+			}
+
+			// Clear the search term and filtered services
+			this.searchQuery = '';
+			// this.filteredServices = [];
+			 // Update the filtered services, excluding the selected service
+  			// this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+			// Update the filtered services, excluding all selected services
+			this.filteredServices = this.filteredServices.filter(service => !this.selectedServices.some(selected => selected.id === service.id));
+
+			},
+
+
+
+		// selectService(selectedService) {
+		// 	console.log('Selected Service:', selectedService);
+		// 	// Check if the facility is not already selected
+		// 	if (!this.selectedServices.some(service => service.id === selectedService.id)) {
+		// 		// Push the selected facility to the array
+		// 	this.selectedServices.push(selectedService);
+		// 	// console.log('Selected Services array:', this.selectedServices);
+		// 	this.entity.services._ids.push(selectedService);
+		// 	// console.log('check:', this.entity.services._ids);
+
+		// 	}
+
+		// 	// Clear the search term and filtered facilities
+		// 	this.searchQuery = '';
+		// 	this.filteredServices = [];
+		// },
+		deselectService(selectedService) {
+			// Remove the selected facility from the array
+			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
+		},
+		
 		getValidationState,
 		async getServices() {
 			await this.$store.dispatch("services/getAll");
+			//  this.availableServices = this.services; // Initialize availableServices with all services
 		},
+		// async getChains() {
+		// 	await this.$store.dispatch("chains/getAll");
+		// },
+		// async getChains() {
+		// 	console.log("Fetching chains...");
+		// 	// await this.$store.dispatch("chains/get");
+		// 	const facilityId = this.entity.id;
+		// 	await axios.get('/client/api/chainList')
+		// 	.then(response => {
+		// 		console.log("Response:",response.data);
+		// 	// // response data stored in records attribute to render as list
+		// 	// records.value = response.data;
+		// 		response.data.facilityChains.forEach((item, index) => {
+		// 		// console.log(`Element at index ${index}:`, item);
+
+		// 		if (item.facility_id == facilityId) {
+		// 			console.log("match found =", item.chain_id);
+		// 			console.log("log =", response.data.chains);
+
+		// 			response.data.chains.forEach((i, index) => {
+		// 				console.log(`chain at index ${index}:`, i);
+		// 				if (i.id == item.chain_id) {
+		// 					console.log("Item found =", i.chain_name);
+		// 					// Check if the service is not already in selectedServices before pushing
+		// 					// if (!this.selectedServices.some(service => service.id === i.id)) {
+		// 						// this.selectedServices.push(i);
+		// 						this.selectedChain = i.chain_name;
+		// 						console.log("output", this.selectedChain);
+		// 						// response data stored in records attribute to render as list
+		// 						records.value = response.data.chains;
+		// 						// }
+		// 				}
+		// 			});
+		// 		}
+		// 	});
+		// 	})
+		// 	.catch(error => {
+		// 		console.error(error);
+		// 	})
+		// 	.finally(() => {
+		// 		this.saving = false;
+		// 	});
+		// 	console.log("Chains fetched successfully.");
+		// 	},
+		async getChains() {
+			console.log("Fetching chains...");
+			// await this.$store.dispatch("chains/get");
+			await axios.get('/client/getChains')
+			.then(response => {
+				console.log("Response:",response.data);
+			// response data stored in records attribute to render as list
+			records.value = response.data;
+			})
+			.catch(error => {
+				console.error(error);
+			})
+			.finally(() => {
+				this.saving = false;
+			});
+			console.log("Chains fetched successfully.");
+			},
+
 		cancel() {
 			this.$emit("cancel");
 		},
@@ -843,9 +3393,10 @@ export default {
 				});
 
 				this.entity = response;
-				this.entity.services = {
-					_ids: response.services.map((service) => service.id),
-				};
+				// this.entity.services = {
+				// 	_ids: response.services.map((service) => service.id),
+				// };
+				this.service_ids = response.services.map((service) => service.id);
 				this.$emit("loaded", response);
 			} catch (e) {
 				this.$store.dispatch("apiError", {
@@ -857,16 +3408,109 @@ export default {
 				this.initialLoaded = true;
 			}
 		},
+		// async save() {
+		// 	try {
+		// 		this.saving = true;
+
+		// 		// const response = await save({
+		// 		// ...this.entity,
+		// 		// services: {
+		// 		// 	_ids: this.selectedServices.map(service => service.id),
+		// 		// },
+		// 		// });
+		// 		console.log("services=", services)
+				
+		// 		// const response = await this.$store.dispatch("facilities/save", this.entity);
+		// 		const response = await save({
+		// 			...this.entity,
+		// 			services: {
+		// 				_ids: this.services_ids,
+		// 			},
+		// 		});
+		// 		console.log("response=",response);
+
+		// 		// this.entity.services = this.selectedServices.map(service => service.id);
+		// 		// this.entity.services = this.selectedServices.map(service => service.id);
+
+		// 		this.$emit("saved", response);
+		// 		this.$emit("update:id", response.id);
+
+		// 		this.$store.dispatch("facilities/getAll");
+		// 		this.$store.dispatch("facilities/getActive");
+		// 	} catch (e) {
+		// 		if (e.response.data.errors) {
+		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+		// 		}
+
+		// 		this.$store.dispatch("apiError", {
+		// 			error: e,
+		// 			title: "Save Failed",
+		// 			message: "Error saving facility details. Please check for errors.",
+		// 			variant: "warning",
+		// 		});
+		// 	} finally {
+		// 		this.saving = false;
+		// 	}
+		// },
+		// async save() {
+		// 	try {
+		// 		this.saving = true;
+		// 		// console.log("Before Response=", response);
+		// 		// const response = await save({
+		// 		// 	...this.entity,
+		// 		// 	services: {
+		// 		// 		_ids: this.services_ids,
+		// 		// 	},
+		// 		// });
+		// // 		console.log("response=",response);
+
+		// 		const response = await this.$store.dispatch("facilities/save",{ ...this.entity, 
+		// 		services: {
+		// 				_ids: this.services_ids,
+		// 			}},);
+		// 		console.log("Response=", response);
+		// 		this.$emit("saved", response);
+		// 		this.$emit("update:id", response.id);
+
+		// 		this.$store.dispatch("facilities/getAll");
+		// 		this.$store.dispatch("facilities/getActive");
+		// 	} catch (e) {
+		// 		if (e.response.data.errors) {
+		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+		// 		}
+
+		// 		this.$store.dispatch("apiError", {
+		// 			error: e,
+		// 			title: "Save Failed",
+		// 			message: "Error saving facility details. Please check for errors.",
+		// 			variant: "warning",
+		// 		});
+		// 	} finally {
+		// 		this.saving = false;
+		// 	}
+		// },
 		async save() {
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
+
+				// const response = await save({
+				// 	...this.entity,
+				// 	services: {
+				// 		_ids: this.service_ids,
+				// 	},
+				// });
+				console.log("saved:", response);
+
 
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
 
 				this.$store.dispatch("facilities/getAll");
 				this.$store.dispatch("facilities/getActive");
+				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
+        		console.log('saving Response:', responsed);
+                console.log('Data saved successfully');
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -899,6 +3543,8 @@ export default {
 			this.entity.name = result.name;
 			this.entity.npi_number = result.number ?? "";
 			this.entity.npi_manual = false;
+			this.entity.othername=result.other_names.length > 0 ? `${result.other_names[0].organization_name ?? ""}`: "NONE";
+			this.entity.organizational_subpart= result.organizational_subpart;
 
 			const locationAddress = result.addresses.find((address) => address.address_purpose == "LOCATION");
 			if (locationAddress) {
@@ -925,6 +3571,168 @@ export default {
 			this.npiResults = [];
 			this.npiSearched = false;
 		},
-	},
+		createNewForm() {
+			 this.showForm = true;
+			const newForm = {
+			
+			f_name: null,
+			l_name: null,
+			title_id: null,
+			contact_id: null,
+			phone_no: null,
+			facility_name:this.entity.name
+			// ... other form fields ...
+			
+			// ... other form-specific data ...
+			};
+			// Push an empty object to the forms array
+			this.forms.push(newForm);
+			console.log("my form :",this.forms);
+        },
+		removeForm(index) {
+        
+			this.showForm = false;
+      },
+
+	  clearForm(index) {
+		console.log("my index: ", index);
+          console.log("my form value:",this.forms);
+		this.deletedForms.push(this.forms);
+
+		console.log("Deleted forms:", this.deletedForms);
+
+		console.log("my deleted data", this.myforms);
+
+		let deletedFormData = this.forms[index];
+
+		console.log("Deleted forms:", deletedFormData);
+
+// Iterate through each property of the form and set its value to null
+for (const prop in deletedFormData) {
+	if (deletedFormData.hasOwnProperty(prop)) {
+		deletedFormData[prop] = null;
+	}
+};
+console.log("my form before:",this.forms);
+
+this.forms.splice(index, 1);
+
+console.log("my form after deleted:",this.forms);
+      
+    },
+		
+		async TitleShow (){
+			try {
+					const url = "/client/facilityTitle";
+						
+						const response = await axios.get(url, {
+						headers: {
+							"Accept": "application/json",
+							// You can add other headers here if needed
+						},
+						
+						});
+						console.log("check =",response.data);
+					
+					if (response.data && Array.isArray(response.data)) {
+							for (let i = 0; i < response.data.length; i++) {
+							this.titlename.push(response.data[i].title);
+							}
+						}
+							console.log("Titlename:", this.titlename);
+				}catch (error) {
+					console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchContactTypes(){
+				try
+					{
+						const url = "/client/facilityTitle";
+							
+							const response = await axios.get(url, {
+							headers: {
+								"Accept": "application/json",
+								// You can add other headers here if needed
+							},
+							});
+							if (response.data && Array.isArray(response.data)) {
+								for (let i = 0; i < response.data.length; i++) {
+								this.contactTypes.push(response.data[i].contact_type);
+								}
+							}
+							console.log("contacttype:", this.contactTypes);
+					}
+				catch (error) 
+				{
+					console.error("Error fetching data:", error.message);
+				}
+			},
+	
+		async listFacilityContacts(){
+			try
+						{
+							const url = "/client/facilityContactList";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								if (response.data && Array.isArray(response.data)) {
+									response.data.forEach((item)=>{
+										if(item.facility_id == this.entity.id){
+											this.forms.push(item);
+										}
+									});
+								}
+							console.log("contact listed=", this.forms);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+},
 };
 </script>
+<style scoped>
+
+.small-empty-result {
+    height: 50px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .small-empty-result span {
+    font-size: 12px; /* Adjust the font size as needed */
+    margin-top: 5px; /* Add margin as needed */
+  }
+
+.custom-modal .modal-footer {
+    display: none;
+  }
+.compact-card {
+	margin-bottom: 0;
+}
+
+.label-value-row {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 0.2rem;
+}
+
+.label-text {
+	font-weight: bold;
+	display: inline-block;
+	width: 150px;
+	margin-right: 10px;
+}
+
+.text {
+	color: #101111d8;
+}
+</style>

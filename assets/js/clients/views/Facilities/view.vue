@@ -309,6 +309,7 @@ export default {
 			try {
 				this.loading = true;
 				this.entity = await GetFacility(this.$route.params.id);
+				console.log("Facility details :", this.entity);
 			} catch (e) {
 				this.$router.push({ name: "facilities" });
 			} finally {
