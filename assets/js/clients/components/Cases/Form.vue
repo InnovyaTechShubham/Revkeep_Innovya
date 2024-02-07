@@ -152,6 +152,7 @@
 												:state="getValidationState(validationContext)"
 												value-field="id"
 												text-field="name"
+												@change="logSelectedFacilityDetails"
 											>
 												<template #first>
 													<option :value="null">(None)</option>
@@ -188,16 +189,16 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
-										<b-form-input
-											name="facility_name"
-											v-model="entity.facility_name"
-											:disabled="saving"
-											readonly
-											:state="getValidationState(validationContext)"
-											type="text"
-											autocomplete="off"
-										/>
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+                                    <b-form-input
+                                        name="facility_name"
+                                        v-model="entity.facility_name"
+                                        :disabled="saving"
+                                        readonly
+                                        type="text"
+                                        autocomplete="off"
+                                    />
+                                </b-form-group>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -668,7 +669,7 @@
 							<b-card-body>
 								<b-row>	
 								<b-col cols="12" md="6" >
-                                 <p>Claim Billing Codes :</p>
+                                 <p class="font-weight-bold">Claim Billing Codes</p>
 								</b-col>
 							</b-row>
 						<b-row>	
@@ -781,7 +782,7 @@
 							</b-row>
 							<b-row>	
 								<b-col cols="12" md="6" >
-                                 <p>Claim Denial Codes :</p>
+                                 <p class="font-weight-bold">Claim Denial Codes</p>
 								</b-col>
 							</b-row>
 							<b-row>
@@ -1466,6 +1467,7 @@ export default {
 				insurance_type_id: null,
 				case_readmissions: [],
 				facility_id: null,
+				facility_name: null,
 				visit_number: null,
 				total_claim_amount: null,
 				disputed_amount: null,
@@ -1494,6 +1496,9 @@ export default {
 			disciplineIds: [],
 			insuranceTypesList:[],
 			displayNames:[],
+			facilities_status:null,
+			loadingFacilities: false,
+			facilities: [],
 		};
 	},
 	computed: {
@@ -1787,9 +1792,21 @@ export default {
 				// You can add other headers here if needed
 			},
 			});
-            
-			this.displayNames = response.data.map(facility => facility.display_name);
+			this.facilities = response.data; // save all facilities for later use
+      this.displayNames = this.facilities.map((facility) => facility.display_name);
+      console.log("display name:", this.displayNames);
 		},
+
+		logSelectedFacilityDetails() {
+      const selectedDisplayName = this.entity.facility_id;
+      const selectedFacility = this.facilities.find(
+        (facility) => facility.display_name === selectedDisplayName
+      );
+
+      if (selectedFacility) {
+		this.entity.facility_name = selectedFacility.facility_status;
+      }
+    },
 
 
 	},
