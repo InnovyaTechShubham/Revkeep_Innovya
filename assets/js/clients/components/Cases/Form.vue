@@ -147,7 +147,7 @@
 											<b-form-select
 												name="facility_id"
 												v-model="entity.facility_id"
-												:options="facilities"
+												:options="displayNames"
 												:disabled="saving || loadingFacilities"
 												:state="getValidationState(validationContext)"
 												value-field="id"
@@ -981,14 +981,14 @@
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
 											<b-form-input
-												name="total_claim_amount"
+												name="Paid Claim Amount"
 												type="number"
 												v-model="entity.total_claim_amount"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.0000000001"
 												maxlength="10"
 												autocomplete="off"
 											/>
@@ -1007,7 +1007,7 @@
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Disputed Amount" label-for="disputed_amount" label-cols-lg="4">
+									<b-form-group label="Audit Denial Amount " label-for="disputed_amount" label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
@@ -1020,7 +1020,7 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.00000000001"
 												maxlength="10"
 												autocomplete="off"
 											/>
@@ -1040,7 +1040,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Reimbursement Amount"
+										label="Contract Paid Amount Actual"
 										label-for="reimbursement_amount"
 										label-cols-lg="4"
 									>
@@ -1056,7 +1056,42 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.000000001"
+												maxlength="10"
+												autocomplete="off"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-input-group>
+									</b-form-group>
+								</validation-provider>
+								<validation-provider
+									vid="reimburse_amount"
+									name="Reimburse Amount"
+									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Contract Paid Amount Estimate"
+										label-for="reimburse_amount"
+										label-cols-lg="4"
+									>
+										<b-input-group>
+											<b-input-group-prepend is-text>
+												<font-awesome-icon icon="dollar-sign" fixed-width />
+											</b-input-group-prepend>
+											<b-form-input
+												name="reimburse_amount"
+												type="number"
+												v-model="entity.reimbursement_amount"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+												:min="0"
+												:max="currencyMax"
+												step="0.000000001"
 												maxlength="10"
 												autocomplete="off"
 											/>
@@ -1458,6 +1493,7 @@ export default {
 			maxDate: getTodaysDate(),
 			disciplineIds: [],
 			insuranceTypesList:[],
+			displayNames:[],
 		};
 	},
 	computed: {
@@ -1515,7 +1551,7 @@ export default {
 	},
 	mounted() {
 		this.additionalDataFetch();
-
+        this.facilityDetails();
 
 		if (this.id) {
 			this.refresh();
@@ -1741,6 +1777,21 @@ export default {
 			this.insuranceTypesList=response.data;
 
 		},
+        
+		async facilityDetails(){
+            const url = "/client/facilityList";
+			
+			const response = await axios.get(url, {
+			headers: {
+				"Accept": "application/json",
+				// You can add other headers here if needed
+			},
+			});
+            
+			this.displayNames = response.data.map(facility => facility.display_name);
+		},
+
+
 	},
 	watch: {
 		patientId: {
