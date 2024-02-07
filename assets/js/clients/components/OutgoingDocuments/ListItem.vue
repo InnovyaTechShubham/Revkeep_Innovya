@@ -43,7 +43,7 @@
 
 	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
 		               
-			        <span>{{ value.submit_to }}</span>
+			        <span>{{ value.name_of_submit_to }}</span>
 
 	  </td>
 	  <td class="col-md-1 center-both align-middle "   >
@@ -76,11 +76,10 @@
 									:icon="value.delivery_method_icon"
 									fixed-width
 								/>
-								<span v-if="value.delivery_method && value.delivery_method_label" class="mb-0">
+								<span v-if="value.delivery_method && value.delivery_method_label" :style="{ color: value.delivery_method === 'Manual' ? 'blue' : 'inherit' }" class="mb-0">
 									{{ value.delivery_method }}
 								</span>
-							</p>
-						
+							</p>			
 	  </td>
 	  <td class="col-md-1 center-both align-middle">
 		<b-dropdown right class="mb-0">
@@ -154,17 +153,27 @@
   
 </table>
 <b-modal id="manualDeliveryModal"  v-if="modalcount" hide-footer hide-header>
-      <div>
-		<h5>Manual Delivery Information</h5>
-	  <hr>
-	  </div>
+	<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h5 style="margin: 0;">Mail Delivery Information</h5>
+  <div>
+    <!-- Your custom cross icon button -->
+	<span aria-hidden="true" class="close custom-close" @click="cancelModal" style="cursor: pointer; font-size: 24px;">&times;</span>
+
+    
+  </div>
+</div>
+<hr>
+
+	 
       <div>
         <p><strong>Mail Notes:</strong> {{ this.storedData.mailNotes }}</p>
         <p><strong>Carrier:</strong> {{ this.storedData.carrier }}</p>
         <p><strong>Tracking:</strong> {{ this.storedData.tracking }}</p>
       </div>
-	 
-      <button @click="cancelModal" class="btn btn-secondary ">Cancel</button>
+	 <hr>
+	  <div class="text-center">
+    <button @click="cancelModal" class="btn btn-secondary">Cancel</button>
+  </div>
     
     </b-modal>
 </div>
@@ -194,7 +203,7 @@ export default {
 					progress_variant: "",
 					request_id: null,
 					facility_name: null,
-					submit_to: null,
+					name_of_submit_to: null,
 					mailNotes: null,
 					carrier: null,
 					tracking:null,
@@ -264,7 +273,6 @@ export default {
 	computed: {
 		patientName() {
 			console.log("value =", this.value);
-			console.log("mycase =", this.value.case);
 			return this.value.case?.patient?.full_name ?? "(Missing Name)";
 		},
 		facilityName() {
@@ -307,26 +315,32 @@ export default {
 	},
 	methods: {
 		async refresh() {
-			try {
-				this.loading = true;
-				this.error = false;
+    try {
+        this.loading = true;
+        this.error = false;
 
-				const response = await this.$store.dispatch("caseRequests/get", {
-					case_id: this.value.case_id,
-					id: this.value.request_id,
-				});
+        // Check if request_id is not null before making the request
+        if (this.value.request_id !== null) {
+            const response = await this.$store.dispatch("caseRequests/get", {
+                case_id: this.value.case_id,
+                id: this.value.request_id,
+            });
+            this.entity = response;
+            console.log("my request :", this.entity);
+        }
 
-				this.entity = response;
-			} catch (e) {
-				this.error = true;
-				this.$store.dispatch("apiError", {
-					error: e,
-					message: "Failed to find request",
-				});
-			} finally {
-				this.loading = false;
-			}
-		},
+    } catch (e) {
+        this.error = true;
+        this.$store.dispatch("apiError", {
+            error: e,
+            message: "Failed to find request",
+        });
+    } finally {
+        this.loading = false;
+    }
+},
+
+
 		async markDelivered() {
 			const response = await this.$store.dispatch("outgoingDocuments/delivered", {
 				id: this.value.id,
@@ -404,15 +418,16 @@ export default {
 				
 		},
 		navigateToAppeal() {
-			if (this.appealLevel) {
-        this.$router.push({
-          name: 'appeals.view',
-          params: { id: this.value.case_id, appeal_id: this.value.appeal_id },
-        });
-      } else {
-      this.$router.push({
+			if (this.value.request_id !== null) {
+       
+		  this.$router.push({
     name: 'caseRequests.view',
     params: { id: this.value.case_id, case_request_id: this.value.request_id },
+        });
+      } else {
+		this.$router.push({
+          name: 'appeals.view',
+          params: { id: this.value.case_id, appeal_id: this.value.appeal_id },
   });
 }
 },
@@ -464,4 +479,8 @@ preview() {
 .table{
 	cursor: pointer;
 }
+ .custom-close:hover {
+    background-color: red;
+    text-decoration: none; 
+  }
 </style>
