@@ -182,7 +182,7 @@
 								</div>
                         </b-col>
                         <b-col col="12" md="6">
-								<validation-provider
+								<!-- <validation-provider
 									vid="facility_status"
 									name="Facility Status"
 									:rules="{ required: false }"
@@ -204,7 +204,18 @@
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+									<b-form-input
+										name="facility_status"
+										v-model="entity.facility_name"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+									/>
+								</b-form-group>
+
 						</b-col>
 					</b-row>
 
@@ -972,7 +983,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Total Claim Amount"
+										label="Paid Claim Amount"
 										label-for="total_claim_amount"
 										label-cols-lg="4"
 									>
@@ -1076,7 +1087,7 @@
 								>
 									<b-form-group
 										label="Contract Paid Amount Estimate"
-										label-for="reimburse_amount"
+										label-for="contract_paid_amt_est"
 										label-cols-lg="4"
 									>
 										<b-input-group>
@@ -1084,9 +1095,9 @@
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
 											<b-form-input
-												name="reimburse_amount"
+												name="contract_paid_amt_est"
 												type="number"
-												v-model="entity.reimbursement_amount"
+												v-model="entity.contract_paid_amt_est"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 												:min="0"
@@ -1470,6 +1481,7 @@ export default {
 				total_claim_amount: null,
 				disputed_amount: null,
 				reimbursement_amount: null,
+				contract_paid_amt_est:null,
 				insurance_provider_id: null,
 				insurance_plan: null,
 				insurance_number: null,
@@ -1641,6 +1653,8 @@ export default {
 					total_claim_amount: Number.parseFloat(this.entity.total_claim_amount),
 					disputed_amount: Number.parseFloat(this.entity.disputed_amount),
 					reimbursement_amount: Number.parseFloat(this.entity.reimbursement_amount),
+					contract_paid_amt_est: Number.parseFloat(this.entity.contract_paid_amt_est),
+
 					visit_number: this.entity.visit_number,
 
 					admit_date: this.entity.admit_date,
