@@ -1124,4 +1124,35 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
+	// $builder->connect('/contracts', [
+    //     'controller' => 'FacilitiesContracts',
+    //     'action' => 'add',
+    //     '_method' => 'POST'
+    // ]);
+
+	$builder->connect('/contractbilltypelist', [
+		'controller' => 'ContractBillTypes',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/contracttypelist', [
+		'controller' => 'ContractTypes',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/ownershiptypelist', [
+		'controller' => 'ContractOwnershipTypes',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/serviceoperationlist', [
+		'controller' => 'ContractServiceOperations',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/contractinsurancelist', [
+		'controller' => 'ContractInsuranceTypes',
+		'action' => 'index',
+		
+	]);
 });

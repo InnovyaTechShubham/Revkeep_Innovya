@@ -1,0 +1,59 @@
+## contract_types
+INSERT INTO [revkeep_4].[dbo].[contract_types] ([contract_type])
+VALUES
+  ('Management Agreement'),
+  ('SNF - % Therapy Component'),
+  ('SNF - Flat Fee'),
+  ('SNF - Flat Fee (Part A)'),
+  ('SNF - Partnership Plus'),
+  ('SNF - Per Diem'),
+  ('SNF - Per Diem (SD)'),
+  ('SNF - Per Minute'),
+  ('SNF - Per Minute (SD)'),
+  ('SNF - Percent Facility Rate'),
+  ('SNF - Percent PDPM Therapy Component');
+
+## contract_ownership_types
+
+INSERT INTO [revkeep_4].[dbo].[contract_ownership_types] ([ownership_type])
+VALUES
+  ('Corporate Chain'),
+  ('County Owned'),
+  ('Hospital Owned'),
+  ('Independent'),
+  ('Managed'),
+  ('Management Company'),
+  ('Silver Stone Living');
+
+## contract_insurance_types
+INSERT INTO [revkeep_4].[dbo].[contract_insurance_types] ([insurance_type])
+VALUES
+  ('Medicare A'),
+  ('Medicare B'),
+  ('Managed A'),
+  ('Managed A PPS'),
+  ('Managed B'),
+  ('Commercial'),
+  ('Medicaid'),
+  ('Workers Comp'),
+  ('Auto'),
+  ('Military'),
+  ('Private Pay'),
+  ('Other');
+
+## contract_bill_types
+INSERT INTO [revkeep_4].[dbo].[contract_bill_types] ([bill_type])
+VALUES
+  ('Other'),
+  ('GHC'),
+  ('Synergy'),
+  ('Encore');
+
+
+## contract_service_operations
+INSERT INTO [revkeep_4].[dbo].[contract_service_operations] ([operation])
+VALUES
+  ('PT'),
+  ('OT'),
+  ('ST');
+

@@ -884,7 +884,11 @@
 											required="required"
 											value-field="value"
 											text-field="text"
-											/>
+											>
+											<!-- <template #first>
+												<option :value="null" />
+											</template> -->
+											</b-form-select>
 											<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -997,7 +1001,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.serviceOperations"
+									v-model="entity.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1012,31 +1016,29 @@
 								</validation-provider>
 
 								<b-card title="Contract Pricing Schedule" border-variant="light">
-
 								<b-row>
-								<b-col md="6">
-									<b-table :items="insurances.slice(0, 6)" :fields="fields">
-									<template v-slot:cell(rate)="data">
-										<div class="d-flex">
-										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
-										</div>
-									</template>
-									</b-table>
-								
-								</b-col>
+									<b-col md="6">
+										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="data">
+												<div class="d-flex">
+													<input type="text" v-model="data.item.rate" class="form-control" placeholder="Add rate in %" />
+												</div>
+											</template>
+										</b-table>
+									</b-col>
 
-								<b-col md="6">
-								<!-- <b-card title="Contract Pricing Schedule" border-variant="light"> -->
-									<b-table :items="insurances.slice(6, 12)" :fields="fields">
-									<template v-slot:cell(rate)="data">
-										<div class="d-flex">
-										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
-										</div>
-									</template>
-									</b-table>
-								</b-col>
-							</b-row>
-							</b-card>	
+									<b-col md="6">
+										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="data">
+												<div class="d-flex">
+													<input type="text" v-model="data.item.rate" class="form-control" placeholder="Add rate in %" />
+												</div>
+											</template>
+										</b-table>
+									</b-col>
+								</b-row>
+							</b-card>
+
 							
 							</b-card-body>
 						</b-collapse>
@@ -1467,13 +1469,15 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-				serviceOperations: [],
+				serviceOperation: null,
 				contract_bill_type: null,
 				contract_type: null,
 				ownership_type: null,
+				contract_insurance_type: null,
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
+				contract_rate:null,
 
 			},
 			billTypeOptions:[],
@@ -1504,55 +1508,55 @@ export default {
 			selectedFaxes: [],
 			showDeleteIcon: false,
 			serviceOperationsOptions: [
-				{ value: 'pt', text: 'PT' },
-				{ value: 'ot', text: 'OT' },
-				{ value: 'st', text: 'ST' },
+				// { value: 'pt', text: 'PT' },
+				// { value: 'ot', text: 'OT' },
+				// { value: 'st', text: 'ST' },
 			],
-			contractBillTypes: [
-			{ value: 'other', text: 'Other' },
-			{ value: 'ghc', text: 'GHC' },
-			{ value: 'synergy', text: 'Synergy' },
-			{ value: 'encore', text: 'Encore' },
-			],
+			contractBillTypes: [],
+			// { value: 'other', text: 'Other' },
+			// { value: 'ghc', text: 'GHC' },
+			// { value: 'synergy', text: 'Synergy' },
+			// { value: 'encore', text: 'Encore' },
+			
 			contractTypes: [
-			{ value: 'management_agreement', text: 'Management Agreement' },
-			{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
-			{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
-			{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
-			{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
-			{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
-			{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
-			{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
-			{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
-			{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
-			{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
+			// { value: 'management_agreement', text: 'Management Agreement' },
+			// { value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
+			// { value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
+			// { value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
+			// { value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
+			// { value: 'snf_per_diem', text: 'SNF - Per Diem' },
+			// { value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
+			// { value: 'snf_per_minute', text: 'SNF - Per Minute' },
+			// { value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
+			// { value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
+			// { value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
 			],
 			ownershipTypes: [
-			{ value: 'corporate_chain', text: 'Corporate Chain' },
-			{ value: 'county_owned', text: 'County Owned' },
-			{ value: 'hospital_owned', text: 'Hospital Owned' },
-			{ value: 'independent', text: 'Independent' },
-			{ value: 'managed', text: 'Managed' },
-			{ value: 'management_company', text: 'Management Company' },
-			{ value: 'silver_stone_living', text: 'Silver Stone Living' },
+			// { value: 'corporate_chain', text: 'Corporate Chain' },
+			// { value: 'county_owned', text: 'County Owned' },
+			// { value: 'hospital_owned', text: 'Hospital Owned' },
+			// { value: 'independent', text: 'Independent' },
+			// { value: 'managed', text: 'Managed' },
+			// { value: 'management_company', text: 'Management Company' },
+			// { value: 'silver_stone_living', text: 'Silver Stone Living' },
 		],
 
 			insurances: [
-				{ insurance_type: 'Medicare A', rate: '' },
-				{ insurance_type: 'Medicare B', rate: '' },
-				{ insurance_type: 'Managed A', rate: '' },
-				{ insurance_type: 'Managed A PPS', rate: '' },
-				{ insurance_type: 'Managed B', rate: '' },
-				{ insurance_type: 'Commercial', rate: '' },
-				{ insurance_type: 'Medicaid', rate: '' },
-				{ insurance_type: 'Workers Comp', rate: '' },
-				{ insurance_type: 'Auto', rate: '' },
-				{ insurance_type: 'Military', rate: '' },
-				{ insurance_type: 'Private Pay', rate: '' },
-				{ insurance_type: 'Other', rate: '' },
+				// { insurance_type: 'Medicare A', rate: '' },
+				// { insurance_type: 'Medicare B', rate: '' },
+				// { insurance_type: 'Managed A', rate: '' },
+				// { insurance_type: 'Managed A PPS', rate: '' },
+				// { insurance_type: 'Managed B', rate: '' },
+				// { insurance_type: 'Commercial', rate: '' },
+				// { insurance_type: 'Medicaid', rate: '' },
+				// { insurance_type: 'Workers Comp', rate: '' },
+				// { insurance_type: 'Auto', rate: '' },
+				// { insurance_type: 'Military', rate: '' },
+				// { insurance_type: 'Private Pay', rate: '' },
+				// { insurance_type: 'Other', rate: '' },
 		],
-    	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
-      { key: 'rate', label: 'Contract Rate (%)' },],
+    // 	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
+    //   { key: 'rate', label: 'Contract Rate (%)' },],
 	 };
 	},
 	computed: 
@@ -1598,6 +1602,12 @@ export default {
 		this.listFacilityContacts();
 		this.fetchFacilityStatus();
 		this.fetchFacilityBillType();
+		this.fetchContractBillTypes();
+		this.fetchContractTypes();
+		this.fetchOwnershipTypes();
+		this.fetchServiceOperations();
+		this.fetchInsurances();
+
 		
 		if (this.id) {
 			this.refresh();
@@ -1669,6 +1679,219 @@ export default {
 	// },
 		
 	methods: {
+		async addPricingSchedule() {
+		const newSchedule = { ...this.newSchedule };
+		const rate = newSchedule.rate;
+		const insuranceTypeId = newSchedule.insurance_type_id;
+		// Clear the  object for the next entry
+		this.newSchedule = { rate: '', insuranceTypeId: '' };
+
+		
+
+		// // Check if receiving_emails is defined, if not, initialize it as an empty array
+		// if (!Array.isArray(this.entity.receiving_emails)) {
+		// 	this.$set(this.entity, 'receiving_emails', []);
+		// }
+
+		
+
+
+		// Add the new email to the array
+		this.entity.receiving_emails.push(newEmail);
+
+		// Clear the newEmail object for the next entry
+		this.newEmail = { email: '', description: '' };
+
+		// Close the pop-up
+		this.popupVisible = false;
+
+		// Prepare the data to be sent in the POST request
+		const emailData = {   
+			email,
+			description,
+		};
+		console.log("header:",emailData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingEmails', emailData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_emails", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				console.log("id",responseData.id);
+				// Check if the expected properties are present
+				if (responseData.email && responseData.description && responseData.id) 
+				{
+				// if (response.data.success) {
+					console.log('Email saved successfully.');
+					this.saving = false;
+					// this.$router.push({ name: 'receivingEmails' });
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Email Created!',
+							message: 'New email created.',
+						});
+					});
+					await this.updateReceivingMethods(responseData.id, null);
+
+					// redirect_index();
+				// } else {
+				// 	this.saving = false;
+				// 	// console.log('Email already exists');
+				// 	this.errorMessage = response.data.message;
+				// 	this.$nextTick(() => {
+				// 		this.$store.dispatch('notify', {
+				// 			variant: 'danger',
+				// 			title: 'Email Error',
+				// 			message: this.errorMessage,
+				// 		});
+				// 	});
+				// }
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save email. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating email:', error);
+		}
+},
+		
+		async fetchInsurances(){
+			try
+						{
+							const url = "/client/contractinsurancelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("insurance types listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.insurances.push(item.insurance_type);
+							// });
+							this.insurances = response.data.map(item => ({
+							insurance_type: item.insurance_type,
+							rate: this.entity.contract_rate || '',
+						}));
+							console.log('ownership type options =' , this.insurances);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchServiceOperations(){
+			try
+						{
+							const url = "/client/serviceoperationlist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("service operations listed :", response);
+							response.data.forEach((item)=>{
+								this.serviceOperationsOptions.push(item.operation);
+							});
+							console.log('ownership type options =' , this.serviceOperationsOptions);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchOwnershipTypes(){
+			try
+						{
+							const url = "/client/ownershiptypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("ownership type listed :", response);
+							response.data.forEach((item)=>{
+								this.ownershipTypes.push(item.ownership_type);
+							});
+							console.log('ownership type options =' , this.ownershipTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+
+		async fetchContractTypes(){
+			try
+						{
+							const url = "/client/contracttypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("contract type listed :", response);
+							console.log("before",this.contractTypes)
+							response.data.forEach((item)=>{
+								this.contractTypes.push(item.contract_type);
+							});
+							console.log('contract type options =' , this.contractTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchContractBillTypes(){
+			try
+						{
+							const url = "/client/contractbilltypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("contract bill type listed :", response);
+							response.data.forEach((item)=>{
+								this.contractBillTypes.push(item.bill_type);
+							});
+							console.log('contract bill type options =' , this.contractBillTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+
+    
+
 
 		getTypeOptions(row) {
 		return row.typeOptions.concat(['Custom']);
