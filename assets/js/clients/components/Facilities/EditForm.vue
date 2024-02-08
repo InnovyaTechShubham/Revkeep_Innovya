@@ -184,33 +184,16 @@
 					</validation-provider>
 
 
-					<validation-provider
-									vid="has_contract"
-									name="Contract"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Contract"
-										label-for="has_contract"
-										label-cols-lg="4"
-										description="This facility is contracted."
-									>
-										<b-form-checkbox
-											name="has_contract"
-											v-model="entity.has_contract"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										>
-											Has Contract
-										</b-form-checkbox>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+					<b-form-group label="Bill Type" label-for="bill_type" label-cols-lg="4">
+							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+						</b-form-group>
+
+
+					
 					</b-col>
 
 					<!-- Second Column -->
@@ -274,6 +257,34 @@
 							</b-form-group>
 						</validation-provider>
 
+						<validation-provider
+									vid="has_contract"
+									name="Contract"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+						>
+							<b-form-group
+								label="Contract"
+								label-for="has_contract"
+								label-cols-lg="4"
+								description="This facility is contracted."
+							>
+									<b-form-checkbox
+										name="has_contract"
+										v-model="entity.has_contract"
+										:disabled="true"
+										:state="getValidationState(validationContext)"
+									>
+										Has Contract
+									</b-form-checkbox>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+							</b-form-group>
+						</validation-provider>
+
 						<!-- <validation-provider vid="ownership_type" name="Ownership Type" :rules="{ required: false, max: 2 }" v-slot="validationContext">
 							<b-form-group label="Bill Types" label-for="bill_type" label-cols-lg="4">
 								<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :state="getValidationState(validationContext)" :disabled="saving">
@@ -285,13 +296,13 @@
 							</b-form-group>
 						</validation-provider> -->
 
-						<b-form-group label="Bill Typed" label-for="bill_type" label-cols-lg="4">
+						<!-- <b-form-group label="Bill Typed" label-for="bill_type" label-cols-lg="4">
 							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
 								<template #first>
 									<option :value="null" />
 								</template>
 							</b-form-select>
-						</b-form-group>
+						</b-form-group> -->
 
 
 					</b-col>
@@ -1558,6 +1569,15 @@ export default {
     // 	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
     //   { key: 'rate', label: 'Contract Rate (%)' },],
 	 };
+	},
+	watch: {
+		'entity.bill_type': function(newBillType) {
+		if (newBillType === 'Synergy' || newBillType === 'Contract Bill Other') {
+			this.entity.has_contract = true;
+		} else {
+			this.entity.has_contract = false;
+		}
+		}
 	},
 	computed: 
 	{
