@@ -86,7 +86,7 @@ RUN npm install --cache /npm && npm run prod --cache /npm
 # RUN service apache2 restart
 
 # Symlink for improved static asset performance (not serving assets through php)
-RUN php bin/cake plugin assets symlink
+RUN php bin/cake.php plugin assets symlink
 
 # Run database migrations
 RUN php bin/cake migrations migrate
