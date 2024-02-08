@@ -48,6 +48,7 @@ export async function getAll(params) {
 	// alert('getAll fucntion called')
 	// alert(JSON.stringify(params))
 	// alert(params)
+	// /api/chains/all  ['get']
 	const response = await api.get(`${url}/all`, { params });
 	return response.data.data;
 }

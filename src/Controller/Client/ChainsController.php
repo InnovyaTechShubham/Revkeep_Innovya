@@ -7,6 +7,7 @@ use App\Model\Table\ChainsTable;
 use App\Model\Table\ChainOrganizationsTable;
 use App\Controller\AppController;
 use Cake\Network\Exception\MethodNotAllowedException;
+use Cake\ORM\TableRegistry;
 
 
 /**
@@ -75,9 +76,9 @@ class ChainsController extends AppController
                 // $chain_type = $this->request->getData('chain_type');
                 
 
-            //  get facility and services data
-            $facilityArray = $this->request->getData('Facility_data');
-            $serviceArray = $this->request->getData('Service_data');
+                //  get facility and services data
+                $facilityArray = $this->request->getData('Facility_data');
+                $serviceArray = $this->request->getData('Service_data');
 
 
                 $new = $type->newEntity([
@@ -89,29 +90,52 @@ class ChainsController extends AppController
                 if ($type->save($new)) {
                     $chainId = $new->id;
 
-                // Iterate over the arrays and create entries in chainOrganizations table
-                foreach ($facilityArray as $facilityId) {
-                    foreach ($serviceArray as $serviceId) {
-                        $newChainOrganization = $chainOrganizationsTable->newEntity([
-                            'chain_id' => $chainId,
-                            'facility_id' => $facilityId['id'],
-                            'service_id' => $serviceId['id'],
-                        ]);
-
-                        $chainOrganizationsTable->save($newChainOrganization);
+                    // Iterate over the arrays and create entries in chainOrganizations table
+                    if (!empty($facilityArray)) {
+                        foreach ($facilityArray as $facilityId) {
+                            $newChainOrganization = $chainOrganizationsTable->newEntity([
+                                'chain_id' => $chainId,
+                                'org_id' => $facilityId['id'],
+                                'desc' => 'Facility',
+                            ]);
+        
+                            $chainOrganizationsTable->save($newChainOrganization);
+                        }
+                    } 
+                    
+                    if(!empty($serviceArray)){
+                        foreach ($serviceArray as $serviceId) {
+                            $newChainOrganization = $chainOrganizationsTable->newEntity([
+                                'chain_id' => $chainId,
+                                'org_id' => $serviceId['id'],
+                                'desc' => 'Service',
+                            ]);
+                            
+                            $chainOrganizationsTable->save($newChainOrganization);
+                        }
                     }
-                }
+                    
+                    $response = [
+                        'success' => true,
+                        'message' => 'Document entry and related chainOrganizations entries saved.',
+                    ];
 
-                $response = [
-                    'success' => true,
-                    'message' => 'Document entry and related chainOrganizations entries saved.',
-                ];
-            } else {
-                $response = [
-                    'success' => false,
-                    'message' => 'Error saving data in Chains table.',
-                ];
+                    // Send the JSON response back to the client
+                    echo json_encode($response);
+                    // Optionally, you can use "die();" to terminate further script execution
+                    die();
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => 'Error saving data in Chains table.',
+                    ];
+                    // Send the JSON response back to the client
+                    echo json_encode($response);
+                    // Optionally, you can use "die();" to terminate further script execution
+                    die();
+                }
             }
+            
         }
     }
 
@@ -145,33 +169,31 @@ class ChainsController extends AppController
             // Retrieve a single record from the "chains" table based on the provided $id
             $record = $chainsTable->get($id);
 
-            // Fetch associated ChainOrganizations data with facilities
-            $chainOrganizationsTable = $this->getTableLocator()->get('ChainOrganizations');
-            $chainOrganizationsData = $chainOrganizationsTable->find()
-                ->select(['facility_id'])
-                ->where(['chain_id' => $id])
+            $chainOrganizationsTable = TableRegistry::getTableLocator()->get('ChainOrganizations');
+            $query = $chainOrganizationsTable->find('all')
                 ->contain([
-                    'Facilities' => ['fields' => ['id', 'name', 'facility_type_id']],
+                    'Facilities' => function ($q) {
+                        return $q->select(['id', 'name', 'facility_type_id']);
+                    },
                     'Services' => function ($q) {
                         return $q->select(['id', 'name']);
                     }
                 ])
-                ->toArray();
+                ->where(['ChainOrganizations.chain_id' => $id]);
 
+            $results = $query->all();
             // Add the fetched facility data to the response
-            $record->chain_organizations = $chainOrganizationsData;
+            $record->chain_organizations = $results;
+            // Return JSON response
+            $this->response = $this->response->withType('application/json')
+            ->withStringBody(json_encode($record));
+            return $this->response;
 
         } catch (\Cake\Datasource\Exception\RecordNotFoundException $e) {
             // Handle the case where the record is not found
             $this->response = $this->response->withStatus(404); // Not Found
             return $this->response;
         }
-
-        // Return JSON response
-        $this->response = $this->response->withType('application/json')
-                                        ->withStringBody(json_encode($record));
-        return $this->response;
-
     }
 
     public function editChain($id)
@@ -220,19 +242,30 @@ class ChainsController extends AppController
                 // $chainId = $chain->id;
 
                 // Deleting entries for the specified chain ID 
-                // TODO: REMOVE THE DELETE QUERY. Find alternate way to update all entries
                 $result = $chainOrganizationsTable->deleteAll(['chain_id' => $id]);
 
 
                 // Iterate over the arrays and create entries in chainOrganizations table
-                foreach ($facilityArray as $facilityId) {
+                if (!empty($facilityArray)) {
+                    foreach ($facilityArray as $facilityId) {
+                        $newChainOrganization = $chainOrganizationsTable->newEntity([
+                            'chain_id' => $id,
+                            'org_id' => $facilityId['id'],
+                            'desc' => 'Facility',
+                        ]);
+    
+                        $chainOrganizationsTable->save($newChainOrganization);
+                    }
+                } 
+                
+                if(!empty($serviceArray)){
                     foreach ($serviceArray as $serviceId) {
                         $newChainOrganization = $chainOrganizationsTable->newEntity([
                             'chain_id' => $id,
-                            'facility_id' => $facilityId['id'],
-                            'service_id' => $serviceId['id'],
+                            'org_id' => $serviceId['id'],
+                            'desc' => 'Service',
                         ]);
-
+                        
                         $chainOrganizationsTable->save($newChainOrganization);
                     }
                 }
@@ -263,6 +296,9 @@ class ChainsController extends AppController
 
 		try {
 			$this->Chains->deleteOrFail($record);
+            // delete related entries from chain_organization table
+            $chainOrganizationsTable = new ChainOrganizationsTable();
+            $result = $chainOrganizationsTable->deleteAll(['chain_id' => $id]);
 			$this->set('data', $record);
 			$this->set('success', true);
 		} catch (PersistenceFailedException $e) {
