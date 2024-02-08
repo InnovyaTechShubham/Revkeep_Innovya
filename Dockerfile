@@ -85,15 +85,6 @@ RUN npm install --cache /npm && npm run prod --cache /npm
 # Not needed
 # RUN service apache2 restart
 
-
-
-# Install CakePHP plugin using Composer
-RUN php composer.phar require lorenzo/audit-stash
-
-# Load the CakePHP plugin
-RUN php bin/cake.php plugin load AuditStash
-
-
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
 
