@@ -54,13 +54,14 @@ RUN docker-php-ext-configure intl \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy composer.phar into Docker build context
-COPY composer.phar /app
+COPY composer.phar /usr/local/bin/composer.phar
 
 # Set permissions for composer.phar
 RUN chmod +x /usr/local/bin/composer.phar
 
 # Install CakePHP plugin using Composer
-RUN php /app/composer.phar require lorenzo/audit-stash
+RUN php /usr/local/bin/composer.phar require lorenzo/audit-stash
+
 
 # Load the CakePHP plugin
 RUN php bin/cake.php plugin load AuditStash
