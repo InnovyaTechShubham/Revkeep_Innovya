@@ -53,6 +53,13 @@ RUN docker-php-ext-configure intl \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install CakePHP plugin using Composer
+RUN php composer.phar require lorenzo/audit-stash
+
+# Load the CakePHP plugin
+RUN php bin/cake.php plugin load AuditStash
+
+
 # STAGE 2
 FROM revkeep-base AS revkeep-build
 
@@ -84,6 +91,9 @@ RUN npm install --cache /npm && npm run prod --cache /npm
 # Restart apache to take all configuration changes.
 # Not needed
 # RUN service apache2 restart
+
+
+
 
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
