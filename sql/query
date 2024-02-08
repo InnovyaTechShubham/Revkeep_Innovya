@@ -1,5 +1,5 @@
 ## contract_types
-INSERT INTO [revkeep_4].[dbo].[contract_types] ([contract_type])
+INSERT INTO contract_types (contract_type)
 VALUES
   ('Management Agreement'),
   ('SNF - % Therapy Component'),
@@ -15,7 +15,7 @@ VALUES
 
 ## contract_ownership_types
 
-INSERT INTO [revkeep_4].[dbo].[contract_ownership_types] ([ownership_type])
+INSERT INTO contract_ownership_types (ownership_type)
 VALUES
   ('Corporate Chain'),
   ('County Owned'),
@@ -26,7 +26,7 @@ VALUES
   ('Silver Stone Living');
 
 ## contract_insurance_types
-INSERT INTO [revkeep_4].[dbo].[contract_insurance_types] ([insurance_type])
+INSERT INTO contract_insurance_types (insurance_type)
 VALUES
   ('Medicare A'),
   ('Medicare B'),
@@ -42,7 +42,7 @@ VALUES
   ('Other');
 
 ## contract_bill_types
-INSERT INTO [revkeep_4].[dbo].[contract_bill_types] ([bill_type])
+INSERT INTO contract_bill_types (bill_type)
 VALUES
   ('Other'),
   ('GHC'),
@@ -51,9 +51,25 @@ VALUES
 
 
 ## contract_service_operations
-INSERT INTO [revkeep_4].[dbo].[contract_service_operations] ([operation])
+INSERT INTO contract_service_operations (operation)
 VALUES
   ('PT'),
   ('OT'),
   ('ST');
 
+## facility_status
+INSERT INTO facility_status (status, created, modified)
+VALUES
+    ('Active', '2024-01-25 00:00:00.000', '2024-01-25 10:30:00.000'),
+    ('Inactive', '2024-01-26 00:00:00.000', '2024-01-26 09:45:00.000'),
+    ('Pending', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000');
+
+
+## facility_bill_type
+INSERT INTO facility_bill_type (bill_type, created, modified)
+VALUES
+    ('Direct Bill', '2024-01-25 00:00:00.000', '2024-01-25 10:30:00.000'),
+    ('Contract Bill', '2024-01-26 00:00:00.000', '2024-01-26 09:45:00.000'),
+    ('GHC', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000'),
+    ('Synergy', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000'),
+    ('Others', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000');
