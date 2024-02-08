@@ -53,8 +53,14 @@ RUN docker-php-ext-configure intl \
 # Install Composer using installation script
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Copy CakePHP application files into the container
+COPY . /var/www/html
+
+# Set the working directory to the CakePHP application directory
+WORKDIR /var/www/html
+
 # Install CakePHP plugin using Composer
-RUN composer require lorenzo/audit-stash
+RUN php /usr/local/bin/composer require lorenzo/audit-stash
 
 # Load the CakePHP plugin
 RUN php bin/cake.php plugin load AuditStash
@@ -86,6 +92,10 @@ RUN composer run post-install-cmd --no-interaction
 
 # Build front end assets
 RUN npm install --cache /npm && npm run prod --cache /npm
+
+# Restart apache to take all configuration changes.
+# Not needed
+# RUN service apache2 restart
 
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
