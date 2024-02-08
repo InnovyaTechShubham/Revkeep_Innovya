@@ -50,22 +50,14 @@ RUN docker-php-ext-configure intl \
     && docker-php-ext-install gd intl pdo pdo_pgsql opcache zip \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv opcache
 
-# Install Composer
+# Install Composer using installation script
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy composer.phar into Docker build context
-COPY composer.phar /usr/local/bin/composer.phar
-
-# Set permissions for composer.phar
-RUN chmod +x /usr/local/bin/composer.phar
-
 # Install CakePHP plugin using Composer
-RUN php /usr/local/bin/composer.phar require lorenzo/audit-stash
-
+RUN composer require lorenzo/audit-stash
 
 # Load the CakePHP plugin
 RUN php bin/cake.php plugin load AuditStash
-
 
 # STAGE 2
 FROM revkeep-base AS revkeep-build
@@ -94,10 +86,6 @@ RUN composer run post-install-cmd --no-interaction
 
 # Build front end assets
 RUN npm install --cache /npm && npm run prod --cache /npm
-
-# Restart apache to take all configuration changes.
-# Not needed
-# RUN service apache2 restart
 
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
