@@ -50,20 +50,8 @@ RUN docker-php-ext-configure intl \
     && docker-php-ext-install gd intl pdo pdo_pgsql opcache zip \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv opcache
 
-# Install Composer using installation script
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Copy CakePHP application files into the container
-COPY . /var/www/html
-
-# Set the working directory to the CakePHP application directory
-WORKDIR /var/www/html
-
-# Install CakePHP plugin using Composer
-RUN php /usr/local/bin/composer require lorenzo/audit-stash
-
-# Load the CakePHP plugin
-RUN php bin/cake.php plugin load AuditStash
 
 # STAGE 2
 FROM revkeep-base AS revkeep-build
