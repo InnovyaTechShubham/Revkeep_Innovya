@@ -32,7 +32,7 @@
             {{ value.agency.name }}
         </span>
     </p>
-    <p v-else  title="No Agency Provided">
+    <p v-else title="Agency" >
         
         <span class="font-weight-bold">{{ agencyName }}</span>
     </p>

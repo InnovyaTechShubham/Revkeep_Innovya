@@ -142,7 +142,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Facility" label-for="facility" label-cols-lg="4">
+									<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
 										<b-input-group>
 											<b-form-select
 												name="facility_id"
@@ -152,6 +152,7 @@
 												:state="getValidationState(validationContext)"
 												value-field="id"
 												text-field="name"
+												@change="logSelectedFacilityDetails"
 											>
 												<template #first>
 													<option :value="null">(None)</option>
@@ -182,29 +183,40 @@
 								</div>
                         </b-col>
                         <b-col col="12" md="6">
-								<validation-provider
+								<!-- <validation-provider
 									vid="facility_status"
 									name="Facility Status"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
-										<b-form-input
-											name="facility_name"
-											v-model="entity.facility_name"
-											:disabled="saving"
-											readonly
-											:state="getValidationState(validationContext)"
-											type="text"
-											autocomplete="off"
-										/>
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+                                    <b-form-input
+                                        name="facility_name"
+                                        v-model="entity.facility_name"
+                                        :disabled="saving"
+                                        readonly
+                                        type="text"
+                                        autocomplete="off"
+                                    />
+                                </b-form-group>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+									<b-form-input
+										name="facility_status"
+										v-model="entity.facility_name"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+									/>
+								</b-form-group>
+
 						</b-col>
 					</b-row>
 
@@ -668,7 +680,7 @@
 							<b-card-body>
 								<b-row>	
 								<b-col cols="12" md="6" >
-                                 <p>Claim Billing Codes :</p>
+                                 <p class="font-weight-bold">Claim Billing Codes</p>
 								</b-col>
 							</b-row>
 						<b-row>	
@@ -781,7 +793,7 @@
 							</b-row>
 							<b-row>	
 								<b-col cols="12" md="6" >
-                                 <p>Claim Denial Codes :</p>
+                                 <p class="font-weight-bold">Claim Denial Codes</p>
 								</b-col>
 							</b-row>
 							<b-row>
@@ -972,7 +984,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Total Claim Amount"
+										label="Paid Claim Amount"
 										label-for="total_claim_amount"
 										label-cols-lg="4"
 									>
@@ -1076,7 +1088,7 @@
 								>
 									<b-form-group
 										label="Contract Paid Amount Estimate"
-										label-for="reimburse_amount"
+										label-for="contract_paid_amt_est"
 										label-cols-lg="4"
 									>
 										<b-input-group>
@@ -1084,9 +1096,9 @@
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
 											<b-form-input
-												name="reimburse_amount"
+												name="contract_paid_amt_est"
 												type="number"
-												v-model="entity.reimbursement_amount"
+												v-model="entity.contract_paid_amt_est"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 												:min="0"
@@ -1466,10 +1478,12 @@ export default {
 				insurance_type_id: null,
 				case_readmissions: [],
 				facility_id: null,
+				facility_name: null,
 				visit_number: null,
 				total_claim_amount: null,
 				disputed_amount: null,
 				reimbursement_amount: null,
+				contract_paid_amt_est:null,
 				insurance_provider_id: null,
 				insurance_plan: null,
 				insurance_number: null,
@@ -1494,6 +1508,9 @@ export default {
 			disciplineIds: [],
 			insuranceTypesList:[],
 			displayNames:[],
+			facilities_status:null,
+			loadingFacilities: false,
+			facilities: [],
 		};
 	},
 	computed: {
@@ -1641,6 +1658,8 @@ export default {
 					total_claim_amount: Number.parseFloat(this.entity.total_claim_amount),
 					disputed_amount: Number.parseFloat(this.entity.disputed_amount),
 					reimbursement_amount: Number.parseFloat(this.entity.reimbursement_amount),
+					contract_paid_amt_est: Number.parseFloat(this.entity.contract_paid_amt_est),
+
 					visit_number: this.entity.visit_number,
 
 					admit_date: this.entity.admit_date,
@@ -1787,9 +1806,21 @@ export default {
 				// You can add other headers here if needed
 			},
 			});
-            
-			this.displayNames = response.data.map(facility => facility.display_name);
+			this.facilities = response.data; // save all facilities for later use
+      this.displayNames = this.facilities.map((facility) => facility.display_name);
+      console.log("display name:", this.displayNames);
 		},
+
+		logSelectedFacilityDetails() {
+      const selectedDisplayName = this.entity.facility_id;
+      const selectedFacility = this.facilities.find(
+        (facility) => facility.display_name === selectedDisplayName
+      );
+
+      if (selectedFacility) {
+		this.entity.facility_name = selectedFacility.facility_status;
+      }
+    },
 
 
 	},
