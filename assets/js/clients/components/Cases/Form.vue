@@ -1046,6 +1046,7 @@
 								</validation-provider>
 
 								<validation-provider
+								    v-if="iscontract"
 									vid="reimbursement_amount"
 									name="Reimbursement Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
@@ -1081,13 +1082,14 @@
 									</b-form-group>
 								</validation-provider>
 								<validation-provider
+								    v-if="iscontract"
 									vid="reimburse_amount"
 									name="Reimburse Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Paid Amount Estimate"
+										label="Contract Risk Amount(Calculated)"
 										label-for="contract_paid_amt_est"
 										label-cols-lg="4"
 									>
@@ -1106,6 +1108,7 @@
 												step="0.000000001"
 												maxlength="10"
 												autocomplete="off"
+												readonly
 											/>
 											<b-form-invalid-feedback
 												v-for="error in validationContext.errors"
@@ -1511,6 +1514,7 @@ export default {
 			facilities_status:null,
 			loadingFacilities: false,
 			facilities: [],
+			iscontract:null,
 		};
 	},
 	computed: {
@@ -1818,6 +1822,7 @@ export default {
       );
 
       if (selectedFacility) {
+		this.iscontract = selectedFacility.has_contract;
 		this.entity.facility_name = selectedFacility.facility_status;
       }
     },
