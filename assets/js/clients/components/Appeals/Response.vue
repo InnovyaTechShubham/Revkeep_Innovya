@@ -19,13 +19,8 @@
 						</p>
 						<b-list-group>
 							<draggable v-model="orderedList">
-								<b-list-group-item
-									:disabled="generating"
-									v-for="file in orderedList"
-									:key="file.key"
-									class="cursor-grabbable"
-									:variant="file.valid ? '' : 'light'"
-								>
+								<b-list-group-item :disabled="generating" v-for="file in orderedList" :key="file.key"
+									class="cursor-grabbable" :variant="file.valid ? '' : 'light'">
 									<div class="d-flex justify-content-start align-items-top">
 										<b-avatar icon variant="light" class="mr-2">
 											<font-awesome-icon icon="sort" fixed-width />
@@ -46,11 +41,7 @@
 												</p>
 											</div>
 											<div>
-												<b-button
-													variant="danger"
-													@click="removeFile(file)"
-													title="Remove File"
-												>
+												<b-button variant="danger" @click="removeFile(file)" title="Remove File">
 													<font-awesome-icon icon="remove" fixed-width />
 												</b-button>
 											</div>
@@ -65,11 +56,8 @@
 			<b-card-footer>
 				<b-row>
 					<b-col cols="12" class="text-right">
-						<b-button
-							variant="primary"
-							@click="generate"
-							:disabled="generating || !hasFiles || hasInvalidFiles"
-						>
+						<b-button variant="primary" @click="generate"
+							:disabled="generating || !hasFiles || hasInvalidFiles">
 							<span v-if="!generating">Create Packet</span>
 							<span v-else>
 								<font-awesome-icon icon="circle-notch" spin />
@@ -144,51 +132,43 @@
 							for manual delivery.
 						</b-alert> -->
 						<b-alert show v-if="!outgoingProfile" variant="warning">
-							
+
 						</b-alert>
 						<div v-else>
 							<!-- <h6>Primary Method: {{ agency.outgoing_primary_method_label }}</h6> -->
 							<b-list-group>
 
-<!-- <b-list-group-item v-if="outgoingProfile.full_mail_to_address">
+								<!-- <b-list-group-item v-if="outgoingProfile.full_mail_to_address">
 
-	<b-form-checkbox class="mr-3"
+									<b-form-checkbox class="mr-3" name="Mail" v-model="localValue.mail" :disabled="busy">
 
-		name="Mail"
+										Mail
 
-		v-model="localValue.mail"
+									</b-form-checkbox>
 
-		:disabled="busy"
+									<p v-if="outgoingProfile.mail_to_name" class="mb-0">
 
-	>
+										{{ outgoingProfile.mail_to_name }}
 
-		Mail
+									</p>
 
-	</b-form-checkbox>
+									<p v-if="outgoingProfile.mail_to_department" class="mb-0">
 
-	<p v-if="outgoingProfile.mail_to_name" class="mb-0">
+										{{ outgoingProfile.mail_to_department }}
 
-		{{ outgoingProfile.mail_to_name }}
+									</p>
 
-	</p>
+									<p v-if="outgoingProfile.full_mail_to_address" class="mb-0">
 
-	<p v-if="outgoingProfile.mail_to_department" class="mb-0">
+										{{ outgoingProfile.full_mail_to_address }}
 
-		{{ outgoingProfile.mail_to_department }}
+									</p>
 
-	</p>
 
-	<p v-if="outgoingProfile.full_mail_to_address" class="mb-0">
 
-		{{ outgoingProfile.full_mail_to_address }}
+								</b-list-group-item> -->
 
-	</p>
-
-	
-
-</b-list-group-item> -->
-
-<!-- <b-list-group-item class="clearfix" v-if="outgoingProfile.email">
+								<!-- <b-list-group-item class="clearfix" v-if="outgoingProfile.email">
 
 	
 
@@ -216,7 +196,7 @@
 
 </b-list-group-item> -->
 
-<!-- <b-list-group-item v-if="outgoingProfile.fax_number">
+								<!-- <b-list-group-item v-if="outgoingProfile.fax_number">
 
 	
 
@@ -244,7 +224,7 @@
 
 </b-list-group-item> -->
 
-<!-- <b-list-group-item v-if="outgoingProfile.electronic_website">
+								<!-- <b-list-group-item v-if="outgoingProfile.electronic_website">
 
 	<b-form-checkbox class="mr-3"
 
@@ -274,7 +254,7 @@
 
 
 
-</b-list-group>
+							</b-list-group>
 						</div>
 					</div>
 					<!-- <empty-result v-else icon="question-circle">
@@ -291,16 +271,16 @@
 							</p>
 						</template>
 					</empty-result> -->
-					<!-- Add Search Bar -->
-					<!-- <b-form-input v-model="searchText" placeholder="Search agency" class="mt-2"></b-form-input> -->
-					
-					<!-- Add Search Button -->
-					<!-- <b-col cols="12" class="text-right">
+								<!-- Add Search Bar -->
+								<!-- <b-form-input v-model="searchText" placeholder="Search agency" class="mt-2"></b-form-input> -->
+
+								<!-- Add Search Button -->
+								<!-- <b-col cols="12" class="text-right">
 						<b-button variant="primary">
 							Search
 						</b-button>
 					</b-col> -->
-					<!-- <b-button @click="delivery" variant="primary" class="text-right">Search</b-button> -->
+								<!-- <b-button @click="delivery" variant="primary" class="text-right">Search</b-button> 
 					<b-form-group label="Delivery Method"  label-cols-lg="4">
 						<b-form-select label=" Delivery Method " v-model="selectedOptionMethod" class="mt-2" @change="handleDeliveryMethodChange">
 							<option value="Email">Email</option>
@@ -313,180 +293,197 @@
 						</b-form-select>
 					</b-form-group> -->
 
-					<b-form-group label="Submit To" label-cols-lg="4">
-						<b-form-select label=" Submit To " v-model="selectedSubmitTo" class="mt-2"
-							@change="handleSubmitToChange">
-							<option value="facility">Facility</option>
-							<option value="agency">Agency</option>
-							<option value="user">User</option>
-						</b-form-select>
-					</b-form-group>
-
-					<!-- <div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Select User" label-cols-lg="4">
-							<b-form-select v-model="selectedUser" :options="userList"></b-form-select>
-						</b-form-group>
-					</div> -->
-
-					<!-- <div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Select User" label-cols-lg="4">
-							<b-input-group>
-								<b-form-select v-model="selectedUser" :options="filteredUserList"
-									class="mb-0"></b-form-select>
-								<b-input-group-append>
-									<b-input-group-text>
-										<font-awesome-icon icon="search" />
-									</b-input-group-text>
-								</b-input-group-append>
-							</b-input-group>
-						</b-form-group>
-					</div> -->
-					<div v-if="selectedSubmitTo === 'user'">
-						<b-form-group label="Search User" label-cols-lg="4">
-							<div class="position-relative">
-								<b-form-input v-model="searchUser" @input="handleUserSearch"
-									placeholder="Search user..."></b-form-input>
-								<!-- <b-button variant="outline-secondary" class="position-absolute"
-									style="top: 50%; right: 10px; transform: translateY(-50%);" @click="clearUserSearch">
-								</b-button> -->
-							</div>
-
-							<b-list-group v-if="searchResults.length > 0" class="search-results">
-								<b-list-group-item v-for="(user, index) in searchResults" :key="index"
-									@click="selectUser(user)">
-									{{ user.text }}
-								</b-list-group-item>
-							</b-list-group>
-						</b-form-group>
-					</div>
-
-					<!-- Inside the "Facility" block where you have the delivery method dropdown -->
-					<div v-if="selectedSubmitTo === 'facility'">
-						<b-form-group label="Facility Selected">
-							<b-form-input type="text" v-model="facilityName" disabled></b-form-input>
-						</b-form-group>
-						<b-form-group label="Delivery Method" label-cols-lg="4">
-							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-								:disabled="isFacilitySelected" @change="handleSubmitToChange">
-								<option value="Fax">Fax</option>
-								<option value="Email">Email</option>
-								<option value="Manual">Mail</option>
-							</b-form-select>
-						</b-form-group>
-
-						<b-form-group v-if="isFacilitySelected">
-							<b-alert show variant="warning">
-								No facility is selected. Please choose a facility.
-							</b-alert>
-						</b-form-group>
-
-						<!-- Dropdown for Fax -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && receivingFaxDetails.length > 0"
-							label="Select Fax" label-cols-lg="4">
-							<b-form-select v-model="selectedFax" :options="receivingFaxDetails" value-field="fax"
-								text-field="fax"></b-form-select>
-						</b-form-group>
-
-						<!-- Dropdown for Email -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Email' && receivingEmailDetails.length > 0"
-							label="Select Email" label-cols-lg="4">
-							<b-form-select v-model="selectedEmail" :options="receivingEmailDetails" value-field="email"
-								text-field="email"></b-form-select>
-						</b-form-group>
-					</div>
-
-					<b-form-group
-						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Email' && isEmailIdsEmpty">
-						<b-alert show variant="warning">
-							No email IDs are available for the facility. Please provide valid email IDs.
-						</b-alert>
-					</b-form-group>
-
-					<b-form-group
-						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Fax' && isFaxIdsEmpty">
-						<b-alert show variant="warning">
-							No fax IDs are available for the facility. Please provide valid fax IDs.
-						</b-alert>
-					</b-form-group>
+								<b-form-group label="Submit To" label-cols-lg="4">
+									<b-form-select label=" Submit To " v-model="selectedSubmitTo" class="mt-2"
+										@change="handleSubmitToChange">
+										<option value="facility">Facility</option>
+										<option value="agency">Agency</option>
+										<option value="user">User</option>
+									</b-form-select>
+								</b-form-group>
 
 
-					<div v-if="selectedSubmitTo === 'agency'">
-						<b-form-group label="Agency Selected">
-							<b-form-input type="text" v-model="agencyName" disabled></b-form-input>
-						</b-form-group>
-						<b-form-group label="Delivery Method" label-cols-lg="4">
-							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-								:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
-								<option value="Fax">Fax</option>
-								<option value="Email">Email</option>
-								<option value="Manual">Mail</option>
-							</b-form-select>
-						</b-form-group>
+								<div v-if="selectedSubmitTo === 'user'">
+									<b-form-group label="Search User" label-cols-lg="4">
+										<div class="position-relative">
+											<b-form-input v-model="searchUser" @input="handleUserSearch"
+												placeholder="Search user..."></b-form-input>
+										</div>
 
-						<b-form-group v-if="isAgencyNotSelected">
-							<b-alert show variant="warning">
-								Please select an agency before submitting.
-							</b-alert>
-						</b-form-group>
-
-						<!-- Dropdown for Email -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Email' && agencyEmailList.length > 0"
-							label="Select Email" label-cols-lg="4">
-							<b-form-select v-model="selectedFax" :options="getEmailOptions()" value-field="email"
-								text-field="displayText"></b-form-select>
-						</b-form-group>
-
-						<!-- Dropdown for Fax -->
-						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && agencyFaxList.length > 0" label="Select Fax"
-							label-cols-lg="4">
-							<b-form-select v-model="selectedEmail" :options="getFaxOptions()" value-field="fax"
-								text-field="displayText"></b-form-select>
-						</b-form-group>
-					</div>
-
-					<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
-						<!-- Render fields for User -->
-						<div class="row">
-							<!-- Carrier dropdown -->
-							<div class="col-md-6 form-group">
-								<label for="carrier">Carrier:</label>
-								<div class="input-group">
-									<select class="form-control" v-model="carrier">
-										<option value="FedEx">FedEx</option>
-										<option value="UPS">UPS</option>
-										<option value="USPS">USPS</option>
-									</select>
+										<b-list-group v-if="searchResults.length > 0" class="search-results">
+											<b-list-group-item v-for="(user, index) in searchResults" :key="index"
+												@click="selectUser(user)">
+												{{ user.text }}
+											</b-list-group-item>
+										</b-list-group>
+									</b-form-group>
 								</div>
-							</div>
 
-							<!-- Tracking# input -->
-							<div class="col-md-6 form-group">
-								<label for="trackingNumber">Tracking#:</label>
-								<input type="text" class="form-control" v-model="trackingNumber" />
-							</div>
-						</div>
+								<div v-if="selectedSubmitTo === 'facility'">
+									<b-form-group label="Facility Selected">
+										<b-form-input type="text" v-model="facilityName" disabled></b-form-input>
+									</b-form-group>
+									<b-form-group label="Delivery Method" label-cols-lg="4">
+										<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
+											:disabled="isFacilitySelected" @change="handleSubmitToChange">
+											<option value="Fax">Fax</option>
+											<option value="Email">Email</option>
+											<option value="Manual">Mail</option>
+										</b-form-select>
+									</b-form-group>
 
-						<!-- Add more fields as needed -->
+									<b-form-group v-if="isFacilitySelected">
+										<b-alert show variant="warning">
+											No facility is selected. Please choose a facility.
+										</b-alert>
+									</b-form-group>
 
-						<div class="form-group">
-							<label for="notes">Notes:</label>
-							<textarea class="form-control" v-model="notes"></textarea>
-						</div>
-					</div>
+									<!-- Dropdown for Fax -->
+									<b-form-group v-if="selectedDeliveryMethod === 'Fax' && receivingFaxDetails.length > 0"
+										label="Select Fax" label-cols-lg="4">
+										<b-form-select v-model="selectedFax" :options="receivingFaxDetails"
+											value-field="fax" text-field="displayText"></b-form-select>
+									</b-form-group>
+
+									<!-- Dropdown for Email -->
+									<b-form-group
+										v-if="selectedDeliveryMethod === 'Email' && receivingEmailDetails.length > 0"
+										label="Select Email" label-cols-lg="4">
+										<b-form-select v-model="selectedEmail" :options="receivingEmailDetails"
+											value-field="email" text-field="displayText"></b-form-select>
+									</b-form-group>
+								</div>
+
+								<b-form-group
+									v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Email' && isEmailIdsEmpty">
+									<b-alert show variant="warning">
+										No email IDs are available for the facility. Please provide valid email IDs.
+									</b-alert>
+								</b-form-group>
+
+								<b-form-group
+									v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Fax' && isFaxIdsEmpty">
+									<b-alert show variant="warning">
+										No fax IDs are available for the facility. Please provide valid fax IDs.
+									</b-alert>
+								</b-form-group>
+
+								<!-- Selected Submit To is Agency -->
+								<div v-if="selectedSubmitTo === 'agency'">
+									<b-form-group label="Select Agency">
+										<b-form-select v-model="selectedAgencyId" :options="getFilteredAgencyOptions"
+											value-field="id" text-field="name" @change="handleAgencySelection" filter>
+										</b-form-select>
+									</b-form-group>
+
+									<b-form-group label="Delivery Method" label-cols-lg="4">
+										<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
+											:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
+											<option value="Fax">Fax</option>
+											<option value="Email">Email</option>
+											<option value="Manual">Mail</option>
+										</b-form-select>
+									</b-form-group>
 
 
-					<b-row>
-						<b-col cols="12" >
+									<b-form-group v-if="selectedDeliveryMethod === 'Email'" label="Select Email"
+										label-cols-lg="4">
+										<div style="display: flex; align-items: center;">
+											<b-form-select v-model="selectedEmail" :options="getEmailOptions()"
+												value-field="email" text-field="displayText"
+												@change="updateSelectedContactDescription"></b-form-select>
+											<b-button variant="primary" @click="openEmailModal"
+												style="margin-left: 10px;">+</b-button>
+										</div>
+									</b-form-group>
 
-							<b-form-input v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd" v-model="searchText"  :placeholder="selectedOptionText" class="mt-2"  @input="handleInputChange"></b-form-input>
-							 <p v-for="(result, index) in matchFound"
-									:key="index"
-									@click="selectResult(result)">
-									<span class="result-span">{{ result }}</span>
-							</p>
+									<b-form-group v-if="selectedDeliveryMethod === 'Fax'" label="Select Fax"
+										label-cols-lg="4">
+										<div style="display: flex; align-items: center;">
+											<div class="flex-grow-1 mr-2">
+												<b-form-select v-model="selectedFax" :options="getFaxOptions()"
+													value-field="fax" text-field="displayText"
+													@change="updateSelectedContactDescription"></b-form-select>
+											</div>
+											<b-button variant="primary" @click="openFaxModal">+</b-button>
+										</div>
+									</b-form-group>
 
-							<!-- for displaying the mail opetions when mail is selected as delivery method -->
-							<!-- <b-form-group label="Services" v-if="selectedOptionMethodMail">
+									<!-- Seperate Description -->
+									<b-form-group
+										v-if="(selectedDeliveryMethod === 'Email' || selectedDeliveryMethod === 'Fax') && selectedContactDescription !== ''"
+										label="Description" label-cols-lg="4">
+										<b-form-input :value="selectedContactDescription" disabled></b-form-input>
+									</b-form-group>
+
+								</div>
+								<!-- Email Modal for saving Agency email -->
+								<b-modal v-model="isEmailModalOpen" title="Add Email" @ok="addNewEmail">
+									<b-form-group label="Email">
+										<b-form-input v-model="newEmail" type="email" required></b-form-input>
+									</b-form-group>
+									<b-form-group label="Description">
+										<b-form-input v-model="newEmailDescription"></b-form-input>
+									</b-form-group>
+								</b-modal>
+
+								<!-- Fax Modal for saving Agency Fax -->
+								<b-modal v-model="isFaxModalOpen" title="Add Fax" @ok="addNewFax">
+									<b-form-group label="Fax">
+										<b-form-input v-model="newFax" type="tel" v-mask="'(###) ###-####'"
+											required></b-form-input>
+									</b-form-group>
+									<b-form-group label="Description">
+										<b-form-input v-model="newFaxDescription"></b-form-input>
+									</b-form-group>
+								</b-modal>
+
+								<!-- Selected Delivery Method as Manual -->
+
+								<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
+									<!-- Render fields for User -->
+									<div class="row">
+										<!-- Carrier dropdown -->
+										<div class="col-md-6 form-group">
+											<label for="carrier">Carrier:</label>
+											<div class="input-group">
+												<select class="form-control" v-model="carrier">
+													<option value="FedEx">FedEx</option>
+													<option value="UPS">UPS</option>
+													<option value="USPS">USPS</option>
+												</select>
+											</div>
+										</div>
+
+										<!-- Tracking# input -->
+										<div class="col-md-6 form-group">
+											<label for="trackingNumber">Tracking#:</label>
+											<input type="text" class="form-control" v-model="trackingNumber" />
+										</div>
+									</div>
+
+									<!-- Add more fields as needed -->
+
+									<div class="form-group">
+										<label for="notes">Notes:</label>
+										<textarea class="form-control" v-model="notes"></textarea>
+									</div>
+								</div>
+
+
+								<b-row>
+									<b-col cols="12">
+
+										<b-form-input
+											v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd"
+											v-model="searchText" :placeholder="selectedOptionText" class="mt-2"
+											@input="handleInputChange"></b-form-input>
+										<p v-for="(result, index) in matchFound" :key="index" @click="selectResult(result)">
+											<span class="result-span">{{ result }}</span>
+										</p>
+
+										<!-- for displaying the mail opetions when mail is selected as delivery method -->
+										<!-- <b-form-group label="Services" v-if="selectedOptionMethodMail">
 								<b-form-radio-group v-model="mailServices">
 									<b-form-radio value="UPS">UPS</b-form-radio>
 									<b-form-radio value="FedEX">FedEX</b-form-radio>
@@ -500,17 +497,19 @@
 							<b-form-group label="Expected Delivery Date" v-if="selectedOptionMethodMail">
 								<b-form-input type="date" v-model="mailExpectedDeliveryDate" class="mt-2"></b-form-input>
 							</b-form-group> -->
-							<b-form-group  v-if="selectedOptionMethodMail">
-								<b-form-checkbox v-model="packageSentViaSnailMail">Package Sent via Snail Mail</b-form-checkbox>
-							</b-form-group> 
-							<!-- <b-form-checkbox v-model="packageSentViaSnailMail" v-if="selectedOptionMethodMail">Package Sent via Snail Mail</b-form-checkbox> -->
+
+										<!-- <b-form-group v-if="selectedOptionMethodMail">
+								<b-form-checkbox v-model="packageSentViaSnailMail">Package Sent via Snail
+									Mail</b-form-checkbox>
+							</b-form-group>
+							<b-form-checkbox v-model="packageSentViaSnailMail" v-if="selectedOptionMethodMail">Package Sent via Snail Mail</b-form-checkbox>
 							<b-form-group label="Notes" v-if="selectedOptionMethodMail">
 								<b-form-input type="text" v-model="mailNotes" class="mt-2"></b-form-input>
-							</b-form-group>
+							</b-form-group> -->
 
-							<!-- For rendering FTP Input -->
-							
-							<b-form-group label="FTP Portal URL" v-if="selectedOptionMethodFtp">
+										<!-- For rendering FTP Input -->
+
+										<!-- <b-form-group label="FTP Portal URL" v-if="selectedOptionMethodFtp">
 								<b-form-input type="text" v-model="config.portalUrlFtp" class="mt-2"></b-form-input>
 							</b-form-group>
 							<b-form-group label="Username" v-if="selectedOptionMethodFtp">
@@ -518,12 +517,13 @@
 							</b-form-group>
 							<b-form-group label="Password" v-if="selectedOptionMethodFtp">
 								<b-form-input type="password" v-model="config.passwordFtp" class="mt-2"></b-form-input>
-							</b-form-group>
+							</b-form-group> -->
 
 
-							<!-- For rendering ESMD Input -->
-							<b-form-group label="Select Agency" v-if="selectedOptionMethodEsmd">
-								<b-form-select v-model="selectedAgency" :options="agencyList" value-field="id" text-field="name"></b-form-select>
+										<!-- For rendering ESMD Input -->
+										<!-- <b-form-group label="Select Agency" v-if="selectedOptionMethodEsmd">
+								<b-form-select v-model="selectedAgency" :options="agencyList" value-field="id"
+									text-field="name"></b-form-select>
 							</b-form-group>
 							<b-form-group label="ESMD Portal URL" v-if="selectedOptionMethodEsmd">
 								<b-form-input type="text" v-model="portalUrlEsmd" class="mt-2"></b-form-input>
@@ -533,12 +533,9 @@
 							</b-form-group>
 							<b-form-group label="Password" v-if="selectedOptionMethodEsmd">
 								<b-form-input type="text" v-model="passwordEsmd" class="mt-2"></b-form-input>
-							</b-form-group>
-							
+							</b-form-group> -->
 
-
-
-							<!-- <b-dropdown v-if="matchFound.length > 0" no-caret>
+										<!-- <b-dropdown v-if="matchFound.length > 0" no-caret>
 								
 								<b-dropdown-item
 									v-for="(result, index) in matchFound"
@@ -549,7 +546,7 @@
 								</b-dropdown-item>
 							</b-dropdown> -->
 
-							<!-- <b-dropdown v-b-toggle.myDropdown no-caret>
+										<!-- <b-dropdown v-b-toggle.myDropdown no-caret>
 								<b-dropdown-item
 									v-for="(result, index) in matchFound"
 									:key="index"
@@ -558,23 +555,19 @@
 									{{ result }}
 								</b-dropdown-item>
 							</b-dropdown> -->
-
-
-
-
-						</b-col>
-						<!-- Add Search Button -->
-						<!-- <b-col cols="2" class="text-right mt-2">
+									</b-col>
+									<!-- Add Search Button -->
+									<!-- <b-col cols="2" class="text-right mt-2">
 							<b-button variant="primary">
 								Search
 							</b-button>
 						</b-col> -->
-						<!-- <b-col cols="10">
+									<!-- <b-col cols="10">
 							<ul>
 								<li v-for="option,i in matchFound" :key="i">{{ option }}</li>
 							</ul>
 						</b-col> -->
-						<!-- <div class="d-flex justify-content-between align-items-center">
+									<!-- <div class="d-flex justify-content-between align-items-center">
 							<div>
 								<span v-for="option,i in matchFound" :key="i" class="mb-0">
 									
@@ -585,14 +578,14 @@
 								
 							</div> -->
 
-							<!-- <div v-if="data.age != null && data.age != undefined">
+									<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-					 	<!-- </div> -->
-					</b-row>
-					<b-row>
-						<!-- <div class="d-flex justify-content-between align-items-center">
+									<!-- </div> -->
+								</b-row>
+								<b-row>
+									<!-- <div class="d-flex justify-content-between align-items-center">
 							<div>
 								<span v-for="option,i in matchFound" :key="i" class="mb-0">
 									
@@ -603,12 +596,12 @@
 								
 							</div> -->
 
-							<!-- <div v-if="data.age != null && data.age != undefined">
+									<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-					 	<!-- </div> -->
-						 <!-- <b-col cols="12" >
+									<!-- </div> -->
+									<!-- <b-col cols="12" >
 							<div  class="suggestions">
 								
 									<div v-for="option,i in matchFound" :key="i" class="d-flex justify-content-between align-items-center suggestion-item">
@@ -621,22 +614,22 @@
 								
 							</div>
 						</b-col> -->
-					</b-row>
-					<!-- <b-row>
+								</b-row>
+								<!-- <b-row>
 								<b-col cols="6">
 									<b-dropdown  variant="btn btn-secondary"  class="dropdown-container">
 										<template #button-content>
 											<span>Delivery Method</span> -->
-											<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
+								<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
 											<span v-if="selectedOptionL2 && appeal.appeal_level.order_number==2">: {{ selectedOptionL2 }}</span>
 											<span v-if="selectedOptionL3 && appeal.appeal_level.order_number==3">: {{ selectedOptionL3 }}</span>
 											<span v-if="selectedOptionL4 && appeal.appeal_level.order_number==4">: {{ selectedOptionL4 }}</span>
 											<span v-if="selectedOptionL5 && appeal.appeal_level.order_number==5">: {{ selectedOptionL5 }}</span>
 											<span v-if="selectedOptionL6 && appeal.appeal_level.order_number==6">: {{ selectedOptionL6 }}</span>-->
-											<!-- <span >: {{ selectedOption}}</span> 
+								<!-- <span >: {{ selectedOption}}</span> 
 										</template> -->
-										<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
-										<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
+								<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
+								<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Fax')">Fax</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Website')">Website</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Contact Number')">Contact Number</b-dropdown-item>
@@ -652,7 +645,7 @@
 									/>
 								</b-col> -->
 
-									<!-- Display filtered results based on the search query -->
+								<!-- Display filtered results based on the search query -->
 								<!-- <b-col cols="12">
 									<ul>
 										<li v-for="option in filteredOptions" :key="option">{{ option }}</li>
@@ -672,7 +665,7 @@
 							<font-awesome-icon icon="chevron-right" fixed-width />
 						</b-button>
 					</b-col>
-					
+
 				</b-row>
 			</b-card-footer>
 		</b-tab>
@@ -723,47 +716,35 @@
 	height: 100%;
 	/* Take the maximum available height */
 	box-sizing: border-box;
-	/* Include border and padding in the width and height calculation */
 }
 
 /* Style for Submit To dropdown */
 .b-form-select {
 	width: 100%;
-	/* Take the maximum available width */
 }
 
 /* Style for carrier, tracking, and notes */
 label {
 	margin-top: 10px;
-	/* Add some top margin for better spacing */
 	display: block;
-	/* Make labels block-level for proper alignment */
 }
 
 input[type="text"],
 textarea {
 	width: 100%;
-	/* Take the maximum available width */
 	padding: 8px;
-	/* Adjust padding as needed */
 	box-sizing: border-box;
-	/* Include padding in the width calculation */
 	margin-bottom: 10px;
-	/* Add some bottom margin for better spacing */
 }
 
-/* Add more styles as needed */
 
-/* Style for mailNotes (example) */
+
+/* Style for mailNotes */
 .b-form-input[type="text"] {
 	width: 100%;
-	/* Take the maximum available width */
 	padding: 8px;
-	/* Adjust padding as needed */
 	box-sizing: border-box;
-	/* Include padding in the width calculation */
 	margin-bottom: 10px;
-	/* Add some bottom margin for better spacing */
 }
 
 .search-results {
@@ -837,7 +818,18 @@ export default {
 		},
 	},
 	computed: {
-
+		filteredAgencyOptions() {
+			const query = this.searchQuery.toLowerCase();
+			return this.agencyOptions.filter(agency => agency.name.toLowerCase().includes(query));
+		},
+		getFilteredAgencyOptions() {
+			if (!this.agencyList || this.agencyList.length === 0) {
+				return [];
+			}
+			
+			const regex = new RegExp(this.searchQuery.trim(), 'i');
+			return this.agencyList.filter(agency => regex.test(agency.name));
+		},
 		isFacilitySelected() {
 			return this.selectedSubmitTo === 'facility' && this.facility_id === null;
 		},
@@ -912,8 +904,8 @@ export default {
 			return this.selectedOption.filter(option =>
 				option.toLowerCase().includes(lowerSearchQuery)
 			);
-    	},
-		
+		},
+
 	},
 	data() {
 		return {
@@ -924,7 +916,7 @@ export default {
 			submitting: false,
 			submitted: false,
 			orderedList: this.allFiles,
-			selectedOption:null,
+			selectedOption: null,
 			searchQuery: '',
 			selectedOptionMethod: null,
 			email: [
@@ -935,25 +927,25 @@ export default {
 				'check@gmail.com',
 				// Add more email values as needed
 			],
-			selectedOptionText:'',
-         	matchFound: [],
-			mail:['abcd','efgh','1234'],
-			selectedOptionMethodMail:null,
-			contact_no:['1234','5678','8910'],
-			website:['revkeep.com', 'revkeep.innovyatech.com'],
-			fax:['1234567890','23456787788'],
-			searchText:null,
-			deliveryMethodDetails : null,
-			mailServices:null,
-			mailTrackingID:null,
-			mailExpectedDeliveryDate:null,
-			selectedOptionMethodMail:null,
-			mailNotes:null,
-			packageSentViaSnailMail:null,
+			selectedOptionText: '',
+			matchFound: [],
+			mail: ['abcd', 'efgh', '1234'],
+			selectedOptionMethodMail: null,
+			contact_no: ['1234', '5678', '8910'],
+			website: ['revkeep.com', 'revkeep.innovyatech.com'],
+			fax: ['1234567890', '23456787788'],
+			searchText: null,
+			deliveryMethodDetails: null,
+			mailServices: null,
+			mailTrackingID: null,
+			mailExpectedDeliveryDate: null,
+			selectedOptionMethodMail: null,
+			mailNotes: null,
+			packageSentViaSnailMail: null,
 			config: {
-			portalUrlFtp:"",
-			usernameFtp:"",
-			passwordFtp:"",
+				portalUrlFtp: "",
+				usernameFtp: "",
+				passwordFtp: "",
 			},
 			selectedOptionMethodFtp: false,
 			selectedOptionMethodEsmd: false,
@@ -997,6 +989,20 @@ export default {
 			agencyName: '',
 			facilityName: '',
 			MultiAgencyContact: [],
+			name_of_submit_to: '',
+			submit_to: '',
+			selectedAgencyId: null,
+			isEmailModalOpen: false,
+			isFaxModalOpen: false,
+			newEmail: '',  // Field to store the new email entered by the user in the modal
+			newEmailDescription: '',
+			newFax: '',
+			newFaxDescription: '',
+			searchQuery: '',
+			selectedContactDescription: '',
+			selectedEmail: null,
+			selectedFax: null,
+
 		};
 
 	},
@@ -1007,7 +1013,7 @@ export default {
 		this.MultiAgencyContactList();
 		this.fetchuserlist();
 		this.AgencyList();
-		this.AppealList();
+		// this.AppealList();
 		this.CaseList();
 		this.facilityemailList();
 		this.facilityfaxList();
@@ -1016,18 +1022,145 @@ export default {
 
 	},
 	methods: {
+		updateSelectedContactDescription() {
+			console.log("inside");
+			if (this.selectedDeliveryMethod === 'Email') {
+				this.selectedContactDescription = this.agencyEmailDesc[this.agencyEmailList.indexOf(this.selectedEmail)];
+			} else if (this.selectedDeliveryMethod === 'Fax') {
+				this.selectedContactDescription = this.agencyFaxDesc[this.agencyFaxList.indexOf(this.selectedFax)];
+			}
+			console.log("contact desc", this.selectedContactDescription);
+		},
+
+		selectAgency(agency) {
+			this.selectedAgencyId = agency.id;
+			this.selectedAgencyName = agency.name;
+			// Call any other method or perform any action needed after selecting an agency
+		},
+		openEmailModal() {
+			// Assuming you have a boolean data property to control the visibility of the email modal
+			this.isEmailModalOpen = true;
+		},
+
+		openFaxModal() {
+			// Assuming you have a boolean data property to control the visibility of the fax modal
+			this.isFaxModalOpen = true;
+		},
+
+		handleAgencySelection(selectedAgencyId) {
+			// Update selectedAgencyId when an agency is selected from the dropdown
+			this.selectedAgencyId = selectedAgencyId;
+			console.log("Selected agency id newest", this.selectedAgencyId)
+			this.AppealList();
+		},
+		getAgencyOptions() {
+			return this.agencyList.map(agency => ({ id: agency.id, name: agency.name }));
+		},
+		getSelectedFaxDetailsForFacility() {
+			if (this.selectedDeliveryMethod === 'Fax' && this.receivingFaxDetails.length > 0) {
+				const selectedFaxDetails = this.receivingFaxDetails.find(fax => fax.fax === this.selectedFax);
+				return selectedFaxDetails || {};
+			}
+			console.log("getSelectedFaxDetailsForFacility", selectedFaxDetails);
+			return {};
+		},
+
+		// Method to get selected email details for facility
+		getSelectedEmailDetailsForFacility() {
+			if (this.selectedDeliveryMethod === 'Email' && this.receivingEmailDetails.length > 0) {
+				const selectedEmailDetails = this.receivingEmailDetails.find(email => email.email === this.selectedEmail);
+				return selectedEmailDetails || {};
+			}
+			return {};
+		},
+
+		// Method to get selected fax details for agency
+		getSelectedFaxDetailsForAgency() {
+			if (this.selectedDeliveryMethod === 'Fax' && this.agencyFaxList.length > 0) {
+				const selectedFaxDetails = this.agencyFaxList.find(fax => fax.fax === this.selectedFax);
+				return selectedFaxDetails || {};
+			}
+			return {};
+		},
+
+		// Method to get selected email details for agency
+		getSelectedEmailDetailsForAgency() {
+			if (this.selectedDeliveryMethod === 'Email' && this.agencyEmailList.length > 0) {
+				const selectedEmailDetails = this.agencyEmailList.find(email => email.email === this.selectedEmail);
+				return selectedEmailDetails || {};
+			}
+			return {};
+		},
+
 		getEmailOptions() {
 			return this.agencyEmailList.map(email => ({
 				email: email,
-				displayText: `${email} (${this.agencyEmailDesc[this.agencyEmailList.indexOf(email)]})`
+				displayText: `${email}` //(${this.agencyEmailDesc[this.agencyEmailList.indexOf(email)]}) to concatenate desc with the email in options 
 			}));
 		},
 
 		getFaxOptions() {
 			return this.agencyFaxList.map(fax => ({
 				fax: fax,
-				displayText: `${fax} (${this.agencyFaxDesc[this.agencyFaxList.indexOf(fax)]})`
+				displayText: `${fax}` //(${this.agencyFaxDesc[this.agencyFaxList.indexOf(fax)]}) to concatenate desc to fax options
 			}));
+		},
+		async addNewEmail() {
+			try {
+				const data = {
+					id: this.selectedAgencyId,
+					name: "NULL",
+					contacts: [
+						{ type: 'email', value: this.newEmail, description: this.newEmailDescription },
+						// Fax with null value
+						//{ type: 'fax', value: "NULL", description: "NULL" }
+					]
+				};
+				console.log("data sent", data);
+
+				// Call your backend API to save the data
+				const response = await axios.post('/client/multipleagencycontact', data);
+				console.log("request sent");
+
+				// Handle the response as needed
+				console.log("Data sent successfully", response);
+				this.$emit("savedWithFacilities", response);
+				window.location.reload(true); // hard refresh
+			} catch (error) {
+				// Handle any errors that occur during the API call
+				console.error('Error saving data:', error);
+				// You may want to show an error message to the user
+			}
+		},
+
+		async addNewFax() {
+			try {
+				// Prepare data to be sent to the backend API
+				const data = {
+					id: this.selectedAgencyId,
+					name: "NULL",
+					contacts: [
+						// New email entered by the user
+						//{ type: 'email', value: "NULL", description: "NULL" },
+						// Fax with null value
+						{ type: 'fax', value: this.newFax, description: this.newFaxDescription }
+					]
+				};
+				console.log("data sent", data);
+
+				// Call your backend API to save the data
+				const response = await axios.post('/client/multipleagencycontact', data);
+				console.log("request sent");
+
+				// Handle the response as needed
+				console.log("Data sent successfully", response);
+				this.$emit("savedWithFacilities", response);
+				window.location.reload(true);  // hard refresh
+			} catch (error) {
+				// Handle any errors that occur during the API call
+				console.error('Error saving data:', error);
+				// You may want to show an error message to the user
+			}
 		},
 
 		async CaseList() {
@@ -1160,18 +1293,34 @@ export default {
 					// Get fax numbers for the IDs inside faxIds array
 					this.receivingFaxDetails = this.faxList
 						.filter(item => this.faxIds.includes(item.id))
-						.map(item => item.fax);
+						.map(item => ({ fax: item.fax, description: item.description }));
 
 					// Get email addresses for the IDs inside emailIds array
 					this.receivingEmailDetails = this.emailList
 						.filter(item => this.emailIds.includes(item.id))
-						.map(item => item.email);
+						.map(item => ({ email: item.email, description: item.description }));
 
 					// Extract facility name based on facility_id
 					let facility = this.facilityList.find(item => item.id === this.facility_id);
 
 					// Store facility name in this.facilityName
 					this.facilityName = facility ? facility.name : 'Unknown Facility';
+
+					this.receivingFaxDetails = this.faxList
+						.filter(item => this.faxIds.includes(item.id))
+						.map(item => ({
+							fax: item.fax,
+							description: item.description,
+							displayText: `${item.fax} (${item.description})` // Format for display in dropdown
+						}));
+
+					this.receivingEmailDetails = this.emailList
+						.filter(item => this.emailIds.includes(item.id))
+						.map(item => ({
+							email: item.email,
+							description: item.description,
+							displayText: `${item.email} (${item.description})` // Format for display in dropdown
+						}));
 
 					// Log the details for verification
 					console.log("Receiving Email Details:", this.receivingEmailDetails);
@@ -1184,6 +1333,7 @@ export default {
 				console.error("Error fetching facility receiving data:", error);
 			}
 		},
+
 		async AgencyList() {
 			try {
 				const url = "/client/agencyList";
@@ -1200,48 +1350,6 @@ export default {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
-
-		// async AppealList() {
-		// 	try {
-		// 		const url = "/client/appealList";
-
-		// 		// Fetch data from the server
-		// 		const response = await axios.get(url, {
-		// 			headers: {
-		// 				"Accept": "application/json",
-		// 			},
-		// 		});
-
-		// 		const insid = this.value.id;
-		// 		console.log("appeal id", insid);
-
-		// 		// Find the appeal with matching id
-		// 		let selectedAppeal = response.data.find(appeal => appeal.id === insid);
-		// 		console.log("checking selected Appeal", selectedAppeal)
-		// 		if (selectedAppeal) {
-		// 			// Find agency with matching id
-		// 			const selectedAgency = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-		// 			console.log("selected agency ", selectedAgency);
-		// 			this.agencyid = this.agencyList.find(agency => agency.id === selectedAppeal.agency_id);
-		// 			console.log("agency id ", this.agencyid.id);
-		// 			if (selectedAgency) {
-		// 				// Update selected agency email and fax
-		// 				this.selectedAgencyEmail = selectedAgency.contact_email;
-		// 				this.selectedAgencyFax = selectedAgency.contact_fax;
-		// 				this.agencyName = selectedAgency.name;
-		// 			}
-		// 		}
-
-		// 		console.log("RESPONSE appeal = ", response.data);
-		// 		console.log("Selected Agency Email:", this.selectedAgencyEmail);
-		// 		console.log("Selected Agency Fax:", this.selectedAgencyFax);
-		// 		console.log("Selected Agency Name:", this.agencyName);
-		// 	} catch (error) {
-		// 		console.error("Error fetching client facilities:", error);
-		// 	}
-		// },
-
-
 		async AppealList() {
 			try {
 				const url = "/client/appealList";
@@ -1255,10 +1363,16 @@ export default {
 
 				const insid = this.value.id;
 				console.log("appeal id", insid);
+				console.log("selected agency id", this.selectedAgencyId);
 
+				// const selectedAgencyId = this.selectedAgencyId || this.agencyList[0].id; // Use the selected agency or the first agency as default
+				
 				// Find the appeal with matching id
 				let selectedAppeal = response.data.find(appeal => appeal.id === insid);
 				console.log("checking selected Appeal", selectedAppeal);
+
+				const selectedAgencyId = selectedAppeal.agency_id;
+       			 console.log("in appeal agency selected", selectedAgencyId);
 
 				if (selectedAppeal) {
 					// Convert reactive data to plain JavaScript object
@@ -1268,7 +1382,7 @@ export default {
 					console.log("MultiAgencyContact:", multiAgencyContactData);
 
 					// Find all agencies with matching id in MultiAgencyContact
-					const matchingAgencies = multiAgencyContactData.filter(agency => agency.agency_id === selectedAppeal.agency_id);
+					const matchingAgencies = multiAgencyContactData.filter(agency => agency.agency_id === this.selectedAgencyId);
 					console.log("matching agencies ", matchingAgencies);
 
 					if (matchingAgencies.length > 0) {
@@ -1281,17 +1395,18 @@ export default {
 						this.agencyEmailList = matchingAgencies.map(agency => agency.agency_email).filter(email => email !== "NULL");
 						this.agencyFaxList = matchingAgencies.map(agency => agency.agency_fax).filter(fax => fax !== null);
 						this.agencyEmailDesc = matchingAgencies.map(agency => agency.desc_email);
-						this.agencyFaxDesc = matchingAgencies.map(agency => agency.desc_fax);
+						this.agencyFaxDesc = matchingAgencies.map(agency => agency.desc_fax).filter(fax => fax !== null);;
 					} else {
 						console.log("No matching agencies found for the provided agency_id");
 					}
+
 				}
 				console.log("Selected Agency Email:", this.selectedAgencyEmail);
 				console.log("Selected Agency Fax:", this.selectedAgencyFax);
 				console.log("Selected Agency Name:", this.agencyName);
 				console.log("Email List:", this.agencyEmailList);
 				console.log("Fax List:", this.agencyFaxList);
-				console.log("Desc Fax:", this.agencyFaxDesc);
+				console.log("Desc Email:", this.agencyEmailDesc);
 			} catch (error) {
 				console.error("Error fetching client facilities:", error);
 			}
@@ -1309,8 +1424,8 @@ export default {
 			this.searchUser = user.text; // Set the search bar value
 			this.searchResults = []; // Clear the search results
 			console.log("selected user id", this.selectedUser);
+			console.log("selected user name", this.searchUser);
 		},
-
 		async fetchuserlist() {
 			try {
 				const url = "/client/userslist";
@@ -1333,8 +1448,6 @@ export default {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
-
-
 		handleSubmitToChange() {
 			// Handle any logic when the "Submit To" dropdown changes
 			// For example, you might want to reset some fields based on the selected option
@@ -1399,33 +1512,6 @@ export default {
 				this.generating = false;
 			}
 		},
-//         async upload() {
-// 		const insid=this.value.id;
-// 		console.log("appeal id", insid);
-			
-//   try {
-//     // Use Axios to make a request to your PHP backend
-// 	console.log("ftpuload initiated");
-//     const resp = await axios.post("/client/ftpp", {
-// 		insid,
-// 		ftpPortalUrl: this.config.portalUrlFtp,
-// 		ftpUsername: this.config.usernameFtp,
-// 		ftpPassword: this.config.passwordFtp,
-//     });
-
-// 	this.$bvToast.toast('File successfully uploaded!', {
-//             title: 'Success',
-//             variant: 'success',
-//             autoHideDelay: 5000,
-//         });
-// 	console.log("yes", resp);
-//   } catch (e) {
-// 	console.log(e);
-//   } finally {
-//     console.log(1);
-//   }
-// },
-
 		async submitPacket() {
 			try {
 				console.log('Send email initiated');
@@ -1440,6 +1526,50 @@ export default {
 			}
 			try {
 				this.submitting = true;
+
+				if (this.selectedSubmitTo === 'facility') {
+					this.name_of_submit_to = 'Facility';
+					this.submit_to = this.facilityName;
+				} else if (this.selectedSubmitTo === 'agency') {
+					this.name_of_submit_to = 'Agency';
+					this.submit_to = this.agencyName;
+				} else if (this.selectedSubmitTo === 'user') {
+					this.name_of_submit_to = 'User';
+					this.submit_to = this.searchUser; // Assuming selectedUser contains the user's name
+				}
+
+				// code for adding selected email and fax in the respective columns 
+
+				//  Check if the selected submitTo is 'facility' and delivery method is 'Fax'
+				// if (this.selectedSubmitTo === 'facility' && this.selectedDeliveryMethod === 'Fax') {
+				// 	// Assuming you have a method to get the selected fax details for the facility
+				// 	const selectedFaxDetails = this.getSelectedFaxDetailsForFacility();
+				// 	this.faxData = selectedFaxDetails;
+				// }
+
+				//  Check if the selected submitTo is 'facility' and delivery method is 'Email'
+
+				// if (this.selectedSubmitTo === 'facility' && this.selectedDeliveryMethod === 'Email') {
+				// 	// Assuming you have a method to get the selected email details for the facility
+				// 	const selectedEmailDetails = this.getSelectedEmailDetailsForFacility();
+				// 	this.emailData = selectedEmailDetails;
+				// }
+
+				//  Check if the selected submitTo is 'agency' and delivery method is 'Fax'
+
+				// if (this.selectedSubmitTo === 'agency' && this.selectedDeliveryMethod === 'Fax') {
+				// 	// Assuming you have a method to get the selected fax details for the agency
+				// 	const selectedFaxDetails = this.getSelectedFaxDetailsForAgency();
+				// 	this.faxData = selectedFaxDetails;
+				// }
+
+				//  Check if the selected submitTo is 'agency' and delivery method is 'Email'
+
+				// if (this.selectedSubmitTo === 'agency' && this.selectedDeliveryMethod === 'Email') {
+				// 	// Assuming you have a method to get the selected email details for the agency
+				// 	const selectedEmailDetails = this.getSelectedEmailDetailsForAgency();
+				// 	this.emailData = selectedEmailDetails;
+				// }
 
 				const response = await this.$store.dispatch("appealPackets/submit", {
 					id: this.value.id,
@@ -1484,109 +1614,112 @@ export default {
 					delivery_method: this.selectedDeliveryMethod,
 					carrier: this.carrier,
 					tracking: this.trackingNumber,
+					name_of_submit_to: this.name_of_submit_to,
+					submit_to: this.submit_to,
+					facility_name: this.facilityName,
 				};
+				console.log("sent data", postData);
 				axios.post('/client/outgoingDetails', postData)
-				.then(response => {
-				// Handle the successful response here
-				console.log('Success:', response.data);
-				})
-				.catch(error => {
-				// Handle any errors that occur during the request
-				console.error('Error:', error);
-				});
+					.then(response => {
+						// Handle the successful response here
+						console.log('Success:', response.data);
+					})
+					.catch(error => {
+						// Handle any errors that occur during the request
+						console.error('Error:', error);
+					});
 				// For FTP UPLOAD
-				const insid=this.value.id;
+				const insid = this.value.id;
 				console.log("appeal id", insid);
-			
-		try {
-			// Use Axios to make a request to your PHP backend
-			console.log("ftpuload initiated");
-			const resp = await axios.post("/client/ftpp", {
-				insid,
-				ftpPortalUrl: this.config.portalUrlFtp,
-				ftpUsername: this.config.usernameFtp,
-				ftpPassword: this.config.passwordFtp,
-			});
 
-			this.$bvToast.toast('File successfully uploaded!', {
-					title: 'Success',
-					variant: 'success',
-					autoHideDelay: 5000,
-				});
-			console.log("yes", resp);
-		} catch (e) {
-			console.log(e);
-		} finally {
-			console.log(1);
-		}
-     	}
-	    },
-		updateStatus(selectedStatus) 
-		{
-        // Call your function with the selected status and appealId
-        // For example, you can make an API request here or update the local data
-        console.log(`Selected status: ${selectedStatus}`);
-		this.selectedOption = selectedStatus;
-		// if(appealOrder==1)
-		// {
-		// 	this.selectedOptionL1=selectedStatus;
-		// }
-		// else if(appealOrder==2){
-		// 	this.selectedOptionL2=selectedStatus;
-		// }
-		// else if(appealOrder==3){
-		// 	this.selectedOptionL3=selectedStatus;
-		// }
-		// else if(appealOrder==4){
-		// 	this.selectedOptionL4=selectedStatus;
-		// }
-		// else if(appealOrder==5){
-		// 	this.selectedOptionL5=selectedStatus;
-		// }
-		// else if(appealOrder==6){
-		// 	this.selectedOptionL6=selectedStatus;
-		// }
-		// else if(appealOrder==7){
-		// 	this.selectedOptionL7=selectedStatus;
-		// }
-		
-        // Call your function with the selectedStatus and appealId as arguments
-        // e.g., this.yourFunction(selectedStatus, appealId);
-        },
-		async test(){
-			try{
+				try {
+					// Use Axios to make a request to your PHP backend
+					console.log("ftpuload initiated");
+					const resp = await axios.post("/client/ftpp", {
+						insid,
+						ftpPortalUrl: this.config.portalUrlFtp,
+						ftpUsername: this.config.usernameFtp,
+						ftpPassword: this.config.passwordFtp,
+					});
+
+					this.$bvToast.toast('File successfully uploaded!', {
+						title: 'Success',
+						variant: 'success',
+						autoHideDelay: 5000,
+					});
+					console.log("yes", resp);
+				} catch (e) {
+					console.log(e);
+				} finally {
+					console.log(1);
+				}
+			}
+		},
+		updateStatus(selectedStatus) {
+			// Call your function with the selected status and appealId
+			// For example, you can make an API request here or update the local data
+			console.log(`Selected status: ${selectedStatus}`);
+			this.selectedOption = selectedStatus;
+			// if(appealOrder==1)
+			// {
+			// 	this.selectedOptionL1=selectedStatus;
+			// }
+			// else if(appealOrder==2){
+			// 	this.selectedOptionL2=selectedStatus;
+			// }
+			// else if(appealOrder==3){
+			// 	this.selectedOptionL3=selectedStatus;
+			// }
+			// else if(appealOrder==4){
+			// 	this.selectedOptionL4=selectedStatus;
+			// }
+			// else if(appealOrder==5){
+			// 	this.selectedOptionL5=selectedStatus;
+			// }
+			// else if(appealOrder==6){
+			// 	this.selectedOptionL6=selectedStatus;
+			// }
+			// else if(appealOrder==7){
+			// 	this.selectedOptionL7=selectedStatus;
+			// }
+
+			// Call your function with the selectedStatus and appealId as arguments
+			// e.g., this.yourFunction(selectedStatus, appealId);
+		},
+		async test() {
+			try {
 				let url = "/client/outgoing";
 				const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-				},
+					headers: {
+						"Accept": "application/json",
+					},
 				});
-				console.log("RESPONSE = ",response);
+				console.log("RESPONSE = ", response);
 
 				// for fetching agency details from agency table
 				url = "/client/agencyList";
 				const responseAgency = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-				},
+					headers: {
+						"Accept": "application/json",
+					},
 				});
 				//for storing agency list for rendering
-				responseAgency.data.forEach((item,index)=> {
-					this.agencyList.push({id:item.id , name:item.name })
+				responseAgency.data.forEach((item, index) => {
+					this.agencyList.push({ id: item.id, name: item.name })
 				});
-				console.log("RESPONSE Agency = ",this.agencyList);
-				try{
-					response.data.forEach((item,index)=> {
-						if(item.email !=null){
+				console.log("RESPONSE Agency = ", this.agencyList);
+				try {
+					response.data.forEach((item, index) => {
+						if (item.email != null) {
 							this.email.push(item.email);
 						}
 					})
 				}
-				catch(error){
+				catch (error) {
 
 				}
 			}
-			catch (error){
+			catch (error) {
 				console.log(error);
 			}
 		},
@@ -1635,139 +1768,132 @@ export default {
 
 		},
 		handleInputChange() {
-      		// This method is called whenever the input changes
+			// This method is called whenever the input changes
 
-      		console.log('Text entered:', this.searchText);
+			console.log('Text entered:', this.searchText);
 			this.matchFound = [];
 
 			//for filtering email values
-			if(this.selectedOptionMethod=='Email'){
-			for (const emailValue of this.email)
-			{   if(this.searchText==''){
-				break;
-			}
-				if (emailValue.includes(this.searchText)) 
-				{
-					this.matchFound.push(emailValue);
-					console.log("match found = " , this.matchFound);
-					this.emailData=null;
-					// Exit the loop if a match is found
+			if (this.selectedOptionMethod == 'Email') {
+				for (const emailValue of this.email) {
+					if (this.searchText == '') {
+						break;
+					}
+					if (emailValue.includes(this.searchText)) {
+						this.matchFound.push(emailValue);
+						console.log("match found = ", this.matchFound);
+						this.emailData = null;
+						// Exit the loop if a match is found
+					}
+					else {
+						this.emailData = this.searchText;
+						console.log("EMAIL = ", this.emailData);
+					}
 				}
-				else{
-					this.emailData=this.searchText;
-					console.log("EMAIL = ", this.emailData);
-				}
-		   	 }
 			}
 
 			//for filtering FAX values
-			if(this.selectedOptionMethod=='Fax'){
-			for (const faxValue of this.fax)
-			{   if(this.searchText==''){
-				break;
-			}
-				if (faxValue.includes(this.searchText)) 
-				{
-					this.matchFound.push(faxValue);
-					console.log("match found = " , this.matchFound);
-					this.faxData=null;
-					// Exit the loop if a match is found
+			if (this.selectedOptionMethod == 'Fax') {
+				for (const faxValue of this.fax) {
+					if (this.searchText == '') {
+						break;
+					}
+					if (faxValue.includes(this.searchText)) {
+						this.matchFound.push(faxValue);
+						console.log("match found = ", this.matchFound);
+						this.faxData = null;
+						// Exit the loop if a match is found
+					}
+					else {
+						this.faxData = this.searchText;
+					}
 				}
-				else{
-					this.faxData=this.searchText;
-				}
-		   	 }
 			}
 
 			//for filtering Website values
-			if(this.selectedOptionMethod=='Website'){
-			for (const websiteValue of this.website)
-			{   if(this.searchText==''){
-				break;
-			}
-				if (websiteValue.includes(this.searchText)) 
-				{
-					this.matchFound.push(websiteValue);
-					console.log("match found = " , this.matchFound);
-					this.websiteData=null;
-					// Exit the loop if a match is found
+			if (this.selectedOptionMethod == 'Website') {
+				for (const websiteValue of this.website) {
+					if (this.searchText == '') {
+						break;
+					}
+					if (websiteValue.includes(this.searchText)) {
+						this.matchFound.push(websiteValue);
+						console.log("match found = ", this.matchFound);
+						this.websiteData = null;
+						// Exit the loop if a match is found
+					}
+					else {
+						this.websiteData = this.searchText;
+					}
 				}
-				else{
-					this.websiteData=this.searchText;
-				}
-		   	 }
 			}
 
 			//for filtering contact number values
-			if(this.selectedOptionMethod=='Contact Number'){
-			for (const contact_noValue of this.contact_no)
-			{   if(this.searchText==''){
-				break;
-			}
-				if (contact_noValue.includes(this.searchText)) 
-				{
-					this.matchFound.push(contact_noValue);
-					console.log("match found = " , this.matchFound);
-					this.contactNoData=null;
-					// Exit the loop if a match is found
+			if (this.selectedOptionMethod == 'Contact Number') {
+				for (const contact_noValue of this.contact_no) {
+					if (this.searchText == '') {
+						break;
+					}
+					if (contact_noValue.includes(this.searchText)) {
+						this.matchFound.push(contact_noValue);
+						console.log("match found = ", this.matchFound);
+						this.contactNoData = null;
+						// Exit the loop if a match is found
+					}
+					else {
+						this.contactNoData = this.searchText;
+					}
 				}
-				else{
-					this.contactNoData=this.searchText;
-				}
-		   	 }
 			}
 
 			//for filtering MAIL values
-			if(this.selectedOptionMethod=='Mail'){
-			for (const mailValue of this.mail)
-			{   if(this.searchText==''){
-				break;
-			}
-				if (mailValue.includes(this.searchText)) 
-				{
-					this.matchFound.push(mailValue);
-					console.log("match found = " , this.matchFound);
-					this.mailData=null;
-					// Exit the loop if a match is found
+			if (this.selectedOptionMethod == 'Mail') {
+				for (const mailValue of this.mail) {
+					if (this.searchText == '') {
+						break;
+					}
+					if (mailValue.includes(this.searchText)) {
+						this.matchFound.push(mailValue);
+						console.log("match found = ", this.matchFound);
+						this.mailData = null;
+						// Exit the loop if a match is found
+					}
+					else {
+						this.mailData = this.searchText;
+					}
 				}
-				else{
-					this.mailData=this.searchText;
-				}
-		   	 }
 			}
-    	},
+		},
 		selectResult(result) {
-      // Handle the selection of a result, e.g., update the input field
-      this.searchText = result;
-      this.matchFound = []; // Hide the dropdown
-	  console.log("Delivery method =", this.selectedOptionMethod);
-	  console.log("Delivery details = ", result);
-	  console.log("Services =", this.mailServices );
-	  console.log("Tracking ID =", this.mailTrackingID);
-	  console.log("Exp Dlv Date =",this.mailExpectedDeliveryDate);
-	  console.log("Package send through mail" , this.packageSentViaSnailMail);
-	  console.log("Notes =", this.mailNotes);
-	  console.log("Selected agency =", this.selectedAgency);
-	  this.deliveryMethodDetails = result;
+			// Handle the selection of a result, e.g., update the input field
+			this.searchText = result;
+			this.matchFound = []; // Hide the dropdown
+			console.log("Delivery method =", this.selectedOptionMethod);
+			console.log("Delivery details = ", result);
+			console.log("Services =", this.mailServices);
+			console.log("Tracking ID =", this.mailTrackingID);
+			console.log("Exp Dlv Date =", this.mailExpectedDeliveryDate);
+			console.log("Package send through mail", this.packageSentViaSnailMail);
+			console.log("Notes =", this.mailNotes);
+			console.log("Selected agency =", this.selectedAgency);
+			this.deliveryMethodDetails = result;
 
-	  if(this.selectedOptionMethod=='Email' && this.emailData==null){
-		this.emailData = this.deliveryMethodDetails;
-	  }
-	  else if(this.selectedOptionMethod=='Fax'){
-		this.faxData = this.deliveryMethodDetails;
-	  }
-	  else if(this.selectedOptionMethod=='Website'){
-		this.websiteData = this.deliveryMethodDetails;
-	  }
-	  else if(this.selectedOptionMethod=='Contact Number'){
-		this.contactNumberData = this.deliveryMethodDetails;
-	  }
-	  //if Mail is selected then this.packageSentViaSnailMail this.mailNotes 
-	  // if FTP is selected then this.portalUrlFtp this.usernameFtp this.passwordFtp
-	  // if ESMD is selected then this.selectedAgency this.portalUrlEsmd this.usernameEsmd this.passwordEsmd
-	  
-    },
-	
+			if (this.selectedOptionMethod == 'Email' && this.emailData == null) {
+				this.emailData = this.deliveryMethodDetails;
+			}
+			else if (this.selectedOptionMethod == 'Fax') {
+				this.faxData = this.deliveryMethodDetails;
+			}
+			else if (this.selectedOptionMethod == 'Website') {
+				this.websiteData = this.deliveryMethodDetails;
+			}
+			else if (this.selectedOptionMethod == 'Contact Number') {
+				this.contactNumberData = this.deliveryMethodDetails;
+			}
+			//if Mail is selected then this.packageSentViaSnailMail this.mailNotes 
+			// if FTP is selected then this.portalUrlFtp this.usernameFtp this.passwordFtp
+			// if ESMD is selected then this.selectedAgency this.portalUrlEsmd this.usernameEsmd this.passwordEsmd
+		},
 	},
 	watch: {
 		allFiles(newVal, oldVal) {
