@@ -13,7 +13,7 @@
 							<validation-provider
 								vid="disp_name"
 								name="display_name"
-								:rules="{ required: false, max: 60 }"
+								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
 								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
@@ -22,6 +22,7 @@
 										type="text"
 										v-model="entity.display_name"
 										:state="getValidationState(validationContext)"
+										required="required"
 										
 									/>
 									<b-form-invalid-feedback
@@ -103,7 +104,6 @@
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
-							required="required"
 							value-field="value"
 							text-field="text"
 							/>
@@ -882,7 +882,7 @@
 										<validation-provider
 										vid="contract_bill_type"
 										name="Contract Bill Type"
-										:rules="{ required: true }"
+										:rules="{ required: false }"
 										v-slot="validationContext"
 										>
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
@@ -892,7 +892,6 @@
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
-											required="required"
 											value-field="value"
 											text-field="text"
 											>
@@ -1014,7 +1013,6 @@
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
-									required="required"
 									/>
 									<b-form-invalid-feedback
 									v-for="error in validationContext.errors"
@@ -1027,7 +1025,7 @@
 								<b-card title="Contract Pricing Schedule" border-variant="light">
 								<b-row>
 									<b-col md="6">
-										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_type', 'contract_rate']">
+										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
 												<div class="d-flex">
 													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
@@ -1038,7 +1036,7 @@
 									</b-col>
 
 									<b-col md="6">
-										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_type', 'contract_rate']">
+										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
 												<div class="d-flex">
 													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
@@ -1133,10 +1131,10 @@
 												<h6>Outgoing Emails</h6>
 												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
 												<template slot="cell(email)" slot-scope="info">
-													{{ info.value }}
+													{{ info.item.email }}
 												</template>
 												<template slot="cell(description)" slot-scope="info">
-													{{ info.value }}
+													{{ info.item.description }}
 												</template>
 												</b-table>
 												<empty-result v-else class="small-empty-result">
@@ -1560,18 +1558,7 @@ export default {
 			selectedInsuranceId: null,
 
 			insurances: [
-				// { insurance_type: 'Medicare A', rate: '' },
-				// { insurance_type: 'Medicare B', rate: '' },
-				// { insurance_type: 'Managed A', rate: '' },
-				// { insurance_type: 'Managed A PPS', rate: '' },
-				// { insurance_type: 'Managed B', rate: '' },
-				// { insurance_type: 'Commercial', rate: '' },
-				// { insurance_type: 'Medicaid', rate: '' },
-				// { insurance_type: 'Workers Comp', rate: '' },
-				// { insurance_type: 'Auto', rate: '' },
-				// { insurance_type: 'Military', rate: '' },
-				// { insurance_type: 'Private Pay', rate: '' },
-				// { insurance_type: 'Other', rate: '' },
+				
 		],
     // 	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
     //   { key: 'rate', label: 'Contract Rate (%)' },],
@@ -1588,22 +1575,7 @@ export default {
 	},
 	computed: 
 	{
-	// 	tableFields() {
-    //   return [
-    //     { key: 'label', label: 'Contract Pricing Schedule' },
-    //     { key: 'selectedType', label: 'Type' },
-    //     { key: 'selectedValue', label: 'Value' },
-    //     { key: 'contractRate', label: 'Contract Rate' },
-    //   ];
-    // },
-		// concatenatedStreetAddress() {
-        // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
-    	// },
-		// formattedFax() {
-		// 	let numericFax = this.newFax.fax.replace(/\D/g, '');
-		// 	numericFax = numericFax.slice(0, this.allowedDigits);
-		// 	return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-		// 	},
+	
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -1621,7 +1593,6 @@ export default {
 		}),
 	},
 	mounted() {
-		// this.addReceivingMethod();
 		this.getServices();
 		this.getChains();
 		this.TitleShow();
@@ -1634,6 +1605,10 @@ export default {
 		this.fetchOwnershipTypes();
 		this.fetchServiceOperations();
 		this.fetchInsurances();
+		this.fetchReceivingEmails();
+		this.fetchReceivingFaxes();
+
+
 
 		
 		if (this.id) {
@@ -1642,69 +1617,7 @@ export default {
 			this.loading = false;
 		}
 	},
-	// created()
-	// {
-	// 	// this.addReceivingMethod();
-	// 	this.addEmail();
-	// },
-	// // Load selected services from database on component initialization
-	// created() {
-	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
-	// 	const facilityId = this.entity.id;
-
-	// 	// Retrieve previously selected services for the specific facility from localStorage
-	// 	const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
-
-	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
-	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
-	// 	},
-// 	async created() {
-//     // Fetch chains from your backend API
-//     try {
-// 		const url = "/client/api/getChains";
-// 		const response = await axios.get(url, {
-//         headers: {
-//           "Accept": "application/json",
-//         },
-//       });
-
-//       console.log("Response from API:", response)
-//     } 
-// 	catch (error) {
-//       console.error('Error fetching chains:', error);
-//     }
-//   },
-// 	async created() {
-//     const facilityId = this.entity.id;
-
-//     try {
-//       const url = "/client/api/serviceList";
-//       const response = await axios.get(url, {
-//         headers: {
-//           "Accept": "application/json",
-//         },
-//       });
-
-//       console.log("Response from API:", response);
-
-//       // Filter services for the specific facility
-//       const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
-
-//       // Set the filtered services to the selectedServices array
-//       this.selectedServices = servicesForFacility;
-
-//       console.log("Services for Facility:", this.selectedServices);
-//     } catch (error) {
-//       console.error("Error fetching services:", error);
-//     }
-//   },
-	// watch: {
-	// 	'newFax.fax'(newValue) {
-    //   // Format fax number when it changes
-    //   this.newFax.fax = this.formatFaxNumber(newValue);
-    // }
-	// },
-		
+	
 	methods: {
 		// updateSelectedInsuranceId(id) {
 		// 	this.selectedInsuranceId = id;
@@ -1725,52 +1638,7 @@ export default {
 
 			this.entity.pricing_schedules.push(this.insuranceRates);
 			console.log("final",this.entity.pricing_schedules);
-			
-		// 	// Ensure that this.entity.newSchedule is an array
-		// 	if (!Array.isArray(this.entity.newSchedule)) {
-		// 		this.$set(this.entity, 'newSchedule', []);
-		// 		}
-
-		// 	console.log("newSchedule1", this.entity.newSchedule);
-
-		// 	this.entity.pricing_schedules.forEach((pricingSchedule) => {
-		// 	const newpricingSchedule = {
-		// 		ins_id: pricingSchedule.id,
-		// 		rate: pricingSchedule.rate,
-		// 		facility_id: pricingSchedule.facility_id
-		// 	};
-
-		// 	console.log("newSchedule", newpricingSchedule);
-		// });
-					
 		
-			// const newpricingSchedule = { ...this.entity.newSchedule };
-			// newpricingSchedule.ins_id = this.entity.pricing_schedules.id;
-			// console.log("check",newpricingSchedule.ins_id);
-			// newpricingSchedule.rate = this.entity.pricing_schedules.rate;
-			// newpricingSchedule.facility_id = this.entity.pricing_schedules.facility_id;
-			// console.log("newSchedule", newpricingSchedule);
-			
-			// const insuranceTypeId = this.selectedInsuranceId;
-			// const facilityId = this.entity.id;
-			// // Clear the  object for the next entry
-			// this.newSchedule = { rate: '', insuranceTypeId: '' };
-
-			// // Add the new  to the array
-			// this.entity.pricing_schedules.push(newSchedule);
-
-			// console.log("Schedule:",this.entity.pricing_schedules);
-
-			// // Clear the newEmail object for the next entry
-			// this.newSchedule = { rate: '', insuranceTypeId: '' };
-
-			// Prepare the data to be sent in the POST request
-			// const scheduleData = {   
-			// 	rate,
-			// 	insuranceTypeId,
-			// };
-			// console.log("header:",newpricingSchedule);
-			// Declare newpricingSchedule outside the loop
 			try {
 				// Make a POST request to store the data in the database
 				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
@@ -1778,51 +1646,7 @@ export default {
 				await this.$nextTick();
 				this.$emit("pricing_schedules", response);
 				console.log("Emitted data:", response.data);
-				// Check for a successful status code (2xx)
-				// if (response.status >= 200 && response.status < 300) {
-				// // Parse the JSON response
-				// 	const responseData = response.data;
-				// 	console.log("id",responseData.id);
-				// 	// Check if the expected properties are present
-				// 	if (responseData.email && responseData.description && responseData.id) 
-				// 	{
-				// 	// if (response.data.success) {
-				// 		console.log('Email saved successfully.');
-				// 		this.saving = false;
-				// 		// this.$router.push({ name: 'receivingEmails' });
-				// 		this.$nextTick(() => {
-				// 			this.$store.dispatch('notify', {
-				// 				variant: 'primary',
-				// 				title: 'Email Created!',
-				// 				message: 'New email created.',
-				// 			});
-				// 		});
-				// 		await this.updateReceivingMethods(responseData.id, null);
-
-				// 		// redirect_index();
-				// 	// } else {
-				// 	// 	this.saving = false;
-				// 	// 	// console.log('Email already exists');
-				// 	// 	this.errorMessage = response.data.message;
-				// 	// 	this.$nextTick(() => {
-				// 	// 		this.$store.dispatch('notify', {
-				// 	// 			variant: 'danger',
-				// 	// 			title: 'Email Error',
-				// 	// 			message: this.errorMessage,
-				// 	// 		});
-				// 	// 	});
-				// 	// }
-				// } else {
-				// 	// Server response is missing expected properties
-				// 	console.error('Invalid server response:', responseData);
-				// }
-				// } else {
-				// // Server indicates failure with a non-successful status code
-				// console.error('Failed to save email. Status:', response.status);
-				// // You can handle different status codes as needed
-				// // For example, if it's a validation error, show a different notification
-				// // Or if it's a server error, show an error message
-				// }
+				
 			} catch (error) {
 				console.error('Error creating schedule:', error);
 			}
@@ -1846,7 +1670,7 @@ export default {
 							// });
 							this.insurances = response.data.map(item => ({
 							id:item.id,
-							insurance_type: item.insurance_type,
+							insurance_rate_type: item.insurance_type,
 							rate: this.entity.contract_rate || '',
 							facility_id: this.entity.id
 						}));
@@ -2233,166 +2057,86 @@ async addFax() {
 		// Close the delete popup
 		this.closeDeleteFaxPopup();
 	},
-//     addEmail() {
-//       // Add logic to add the new email to the list
-//       // Update the displayedEmails text
-// 	  this.displayedEmails = `
-//     <table border="1">
-//       <tr>
-//         <th>Email</th>
-//         <th>Description</th>
-//       </tr>
-//       <tr>
-//         <td>${this.newEmail.email}</td>
-//         <td>${this.newEmail.description}</td>
-//       </tr>
-//     </table>
-//   `;
-//       this.closePopup();
-//     },
-	// openPopup() {
-	// 	this.popupVisible = true;
-	// 	},
-	// closePopup() {
-	// 	this.popupVisible = false;
-	// 	},
 	openPopup() {
 		this.popupVisible = true;
 		},
-	closePopup() {
+		closePopup() {
 		this.popupVisible = false;
 		},
-		
-	// async addEmail() {
-	// 	// Assuming newEmail is a valid object with email and description properties
-	// 	const newEmail = { ...this.newEmail };
-	// 	const email = newEmail.email;
-	// 	const description= newEmail.description;
-	// 	console.log("new:",newEmail);
-	// 	console.log("Receiving Emails:", this.entity.receiving_emails);
-	// 	// Prepare the data to be sent in the POST request
-	// 	// const emailData = {
-	// 	// 	email,
-	// 	// 	description,
-	// 	// 	};
-	// 	// console.log("before API", emailData);
 
-	// 	// Check if receiving_emails is defined, if not, initialize it as an empty array
-	// 	if (!Array.isArray(this.entity.receiving_emails)) {
-	// 		this.$set(this.entity, 'receiving_emails', []);
-	// 	}
-		
-	// 	// Add the new email to the array
-	// 	this.entity.receiving_emails.push(newEmail);
+	async fetchReceivingFaxes(){
+			try
+						{
+							const url = "/client/receivingfaxlist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("receiving faxes listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.entity.receiving_emails.push(item.receiving_email);
+							// });
 
-	// 	// Clear the newEmail object for the next entry
-	// 	this.newEmail = { email: '', description: '' };
-		
-	// 	// Close the pop-up
-	// 	// this.closePopup();
-	// 	this.popupVisible = false;
+							if (response.data && Array.isArray(response.data)) {
+								// for (let i = 0; i < response.data.length; i++) {
+								// 	const { email, description } = response.data[i];
+        						// 	this.entity.receiving_emails.push({ email, description });
+								// }
+								this.$set(this.entity, 'receiving_faxes', response.data.map(item => ({ fax: item.fax, description: item.description })));
+							}
+							// Use nextTick to ensure the rendering has completed
+							this.$nextTick(() => {
+								console.log('receiving faxes =' , this.entity.receiving_faxes);
+							});
+							// console.log('receiving emails =' , this.entity.receiving_emails);
+							
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+	async fetchReceivingEmails(){
+			try
+						{
+							const url = "/client/receivingemaillist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("receiving emails listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.entity.receiving_emails.push(item.receiving_email);
+							// });
 
-	// 	// Prepare the data to be sent in the POST request
-	// 	const emailData = {
-	// 		email,
-	// 		description,
-	// 		};
-	// 	console.log("before API", emailData);
-	// 	await axios.post('/client/receivingEmails', emailData)
-	// 		.then(response => {
-	// 			// const responseData = response.data.data;
-	// 			console.log("response:",response);
-	// 			if(response.data.success){
-	// 				console.log('email saved');
-	// 				this.saving = false;
-	// 				this.$router.push({
-	// 					name: "receivingEmails"
-	// 				});
-	// 				this.$nextTick(function () {
-	// 					this.$store.dispatch("notify", {
-	// 						variant: "primary",
-	// 						title: "Email Created!",
-	// 						message: `New email Created!.`,
-	// 					});
-	// 				});
-	// 				redirect_index()
-	// 			}else{
-	// 				this.saving = false;
-	// 				console.log('email already exists');
-	// 				this.errorMessage = response.data.message; 
-	// 				this.$nextTick(function () {
-	// 					this.$store.dispatch("notify", {
-	// 						variant: "danger",
-	// 						title: "Email Error",
-	// 						message: this.errorMessage,
-	// 					});
-	// 				});
-	// 			}
-	// 		})
-	// 		.catch(error => {
-	// 			console.log(error)
-	// 			// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
-	// 			// this.saving = false;
-	// 			// this.errorMessage = 'Error creating chain.'; 
-	// 			// this.$nextTick(function () {
-	// 			// 	this.$store.dispatch("notify", {
-	// 			// 		variant: "danger",
-	// 			// 		title: "Chain Error",
-	// 			// 		message: error,
-	// 			// 	});
-	// 			// });
-	// 		})
+							if (response.data && Array.isArray(response.data)) {
+								// for (let i = 0; i < response.data.length; i++) {
+								// 	const { email, description } = response.data[i];
+        						// 	this.entity.receiving_emails.push({ email, description });
+								// }
+								this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ email: item.email, description: item.description })));
+							}
+							// Use nextTick to ensure the rendering has completed
+							this.$nextTick(() => {
+								console.log('receiving emails =' , this.entity.receiving_emails);
+							});
+							// console.log('receiving emails =' , this.entity.receiving_emails);
+							
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
 
-	// 	// // Send a POST request to your controller to add the new type
-    //     // axios.post('/client/receivingEmails', { email , description})
-    //     //     .then((response) => {
-	// 	// 		console.log("inside API call");
-    //     //         // Handle the response, e.g., update the insuranceTypes list
-    //     //         this.entity.receiving_emails.push(response.data);
-
-    //     //         // // Close the modal
-    //     //         // this.$bvModal.hide('customAuditTypeModal');
-
-    //     //         // // Clear the input field
-    //     //         // this.newAuditType = '';
-	// 	// 		console.log("check",response);
-
-	// 	// 		window.location.reload();
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         // Handle any errors, e.g., show an error message
-    //     //         console.error('Error adding new email:', error);
-    //     //     });
-
-	// 	// try {
-	// 	// 	const url = "/client/receivingEmails";
-	// 	// 	const data = {'receivingEmails':this.entity.receiving_emails}
-	// 	// 	console.log(data);
-	// 	// 	// const resp = await axios.post('/client/sendemail', data);
-	// 	// 	const response = await axios.post(url,data);
-	// 	// 	console.log("Response from API:", response.data);
-
-	// 	// 	}
-	// 	// 	 catch (error) {
-    //     //         console.error('Error storing data:', error);
-    //     //     }
-    //     //     // Clear the input for the next entry
-    //     //     this.entity.receiving_email = '';
-        
-
-	// 	// // Make a POST request to store the data in the database
-	// 	// axios.post('client/api/receivingEmails', {
-	// 	// receivingEmails: [newEmail] // Sending an array with a single email
-	// 	// })
-	// 	// .then(response => {
-	// 	// // Handle success response if needed
-	// 	// console.log('Data stored successfully:', response.data);
-	// 	// })
-	// 	// .catch(error => {
-	// 	// // Handle error if the data couldn't be stored
-	// 	// console.error('Error storing data:', error.response.data);
-	// 	// });
-	// },
 	async addEmail() {
 		const newEmail = { ...this.newEmail };
 		const email = newEmail.email;

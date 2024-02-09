@@ -72,5 +72,17 @@ class ReceivingFaxesController extends AppController
     }
 
     }
+
+    public function index()
+    {
+        $this->facilityReceivingFaxes = new ReceivingFaxesTable();
+
+        $receivingFaxes = $this->facilityReceivingFaxes->find()->toArray();
+
+        $response = $this->response->withType('application/json');
+        $response = $response->withStringBody(json_encode($receivingFaxes));
+        
+        return $response;
+    }
     
 }

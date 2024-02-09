@@ -62,7 +62,7 @@
 							<validation-provider
 								vid="disp_name"
 								name="display_name"
-								:rules="{ required: false, max: 60 }"
+								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
 								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
@@ -71,6 +71,7 @@
 										type="text"
 										v-model="entity.display_name"
 										:state="getValidationState(validationContext)"
+										required="required"
 										
 									/>
 									<b-form-invalid-feedback

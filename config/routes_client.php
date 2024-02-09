@@ -1162,4 +1162,16 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         '_method' => 'POST'
     ]);
 
+	$builder->connect('/receivingemaillist', [
+		'controller' => 'ReceivingEmails',
+		'action' => 'index',
+		
+	]);
+
+	$builder->connect('/receivingfaxlist', [
+		'controller' => 'ReceivingFaxes',
+		'action' => 'index',
+		
+	]);
+
 });
