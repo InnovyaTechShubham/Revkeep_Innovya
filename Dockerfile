@@ -3,6 +3,9 @@
 FROM node:16-bullseye AS node
 FROM php:8.1-apache-bullseye AS revkeep-base
 
+# Set COMPOSER_ALLOW_SUPERUSER to allow Composer plugins to run
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Node.JS Setup
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
@@ -80,10 +83,6 @@ RUN composer run post-install-cmd --no-interaction
 
 # Build front end assets
 RUN npm install --cache /npm && npm run prod --cache /npm
-
-# Restart apache to take all configuration changes.
-# Not needed
-# RUN service apache2 restart
 
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
