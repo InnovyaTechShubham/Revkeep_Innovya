@@ -1594,7 +1594,7 @@ export default {
     try {
         const newFax = { ...this.newFax };
         console.log("new:", newFax);
-		const fax = newFax.email;
+		const fax = newFax.fax;
 		const description = newFax.description;
 		// Clear the newFax object for the next entry
         this.newFax = { fax: '', description: '' };
