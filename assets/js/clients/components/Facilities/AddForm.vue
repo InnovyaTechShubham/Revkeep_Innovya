@@ -2050,10 +2050,14 @@ export default {
                   
 				console.log("post data :", this.forms);
 				// await axios.post('/client/facilityAddForms', this.forms );
+				try{
 				const responsed = await axios.post('/client/facilityAddForms', this.forms);
         		console.log('saving Response:', responsed);
-				
                 console.log('Data saved successfully');
+				}catch(err){
+					console.log('An error occured while saving the form data: ', err);
+				}
+
 			} 
 			catch (e) {
 				if (e.response.data.errors) {
@@ -2171,7 +2175,7 @@ export default {
 			title_id: null,
 			contact_id: null,
 			phone_no: null,
-			facility_name:this.entity.name
+			facility_name:this.entity.display_name
 			// ... other form fields ...
 			
 			// ... other form-specific data ...
