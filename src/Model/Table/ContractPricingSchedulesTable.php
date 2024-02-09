@@ -14,5 +14,9 @@ class ContractPricingSchedulesTable extends Table
             'foreignKey' => 'insurance_type_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Facilities', [
+            'foreignKey' => 'facility_id',
+            'joinType' => 'INNER',
+        ]);
     }
 }

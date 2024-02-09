@@ -93,7 +93,7 @@
 						<validation-provider
 						vid="ownership_type"
 						name="Ownership Type"
-						:rules="{ required: true }"
+						:rules="{ required: false }"
 						v-slot="validationContext"
 						>
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
@@ -947,7 +947,6 @@
 										<validation-provider
 										vid="contract_type"
 										name="Contract Type"
-										:rules="{ required: true }"
 										v-slot="validationContext"
 										>
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
@@ -957,7 +956,6 @@
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
-											required="required"
 											value-field="value"
 											text-field="text"
 											direction="down"
@@ -1006,7 +1004,7 @@
 								<validation-provider
 								vid="service_operations"
 								name="Service Operations"
-								:rules="{ required: true }"
+								:rules="{ required: false }"
 								v-slot="validationContext"
 								>
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
@@ -1030,9 +1028,10 @@
 								<b-row>
 									<b-col md="6">
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_type', 'contract_rate']">
-											<template v-slot:cell(contract_rate)="data">
+											<template v-slot:cell(contract_rate)="info">
 												<div class="d-flex">
-													<input type="text" v-model="data.item.rate" class="form-control" placeholder="Add rate in %" />
+													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
+												
 												</div>
 											</template>
 										</b-table>
@@ -1040,9 +1039,9 @@
 
 									<b-col md="6">
 										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_type', 'contract_rate']">
-											<template v-slot:cell(contract_rate)="data">
+											<template v-slot:cell(contract_rate)="info">
 												<div class="d-flex">
-													<input type="text" v-model="data.item.rate" class="form-control" placeholder="Add rate in %" />
+													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
 												</div>
 											</template>
 										</b-table>
@@ -1480,6 +1479,12 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
+				pricing_schedules: [],
+				newSchedule: {
+				ins_id: '',
+				rate: '',
+				facility_id: ''
+			},
 				serviceOperation: null,
 				contract_bill_type: null,
 				contract_type: null,
@@ -1488,7 +1493,6 @@ export default {
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
-				contract_rate:null,
 
 			},
 			billTypeOptions:[],
@@ -1551,6 +1555,9 @@ export default {
 			// { value: 'management_company', text: 'Management Company' },
 			// { value: 'silver_stone_living', text: 'Silver Stone Living' },
 		],
+			
+			insuranceRates: {},
+			selectedInsuranceId: null,
 
 			insurances: [
 				// { insurance_type: 'Medicare A', rate: '' },
@@ -1699,93 +1706,126 @@ export default {
 	// },
 		
 	methods: {
-		async addPricingSchedule() {
-		const newSchedule = { ...this.newSchedule };
-		const rate = newSchedule.rate;
-		const insuranceTypeId = newSchedule.insurance_type_id;
-		// Clear the  object for the next entry
-		this.newSchedule = { rate: '', insuranceTypeId: '' };
+		// updateSelectedInsuranceId(id) {
+		// 	this.selectedInsuranceId = id;
+		// },
+		async addPricingSchedule(obj) {
+			console.log("inside");
+			this.insuranceRates= obj ;
+			// const facilityId = facility_id;
+			console.log("ins:",this.insuranceRates);
 
+			 // Ensure that this.entity.pricing_schedules is an array
+			 if (!Array.isArray(this.entity.pricing_schedules)) {
+				this.$set(this.entity, 'pricing_schedules', []);
+				}
+			// console.log("before",this.entity.pricing_schedules);
+			let newpricingSchedule;
+
+
+			this.entity.pricing_schedules.push(this.insuranceRates);
+			console.log("final",this.entity.pricing_schedules);
+			
+		// 	// Ensure that this.entity.newSchedule is an array
+		// 	if (!Array.isArray(this.entity.newSchedule)) {
+		// 		this.$set(this.entity, 'newSchedule', []);
+		// 		}
+
+		// 	console.log("newSchedule1", this.entity.newSchedule);
+
+		// 	this.entity.pricing_schedules.forEach((pricingSchedule) => {
+		// 	const newpricingSchedule = {
+		// 		ins_id: pricingSchedule.id,
+		// 		rate: pricingSchedule.rate,
+		// 		facility_id: pricingSchedule.facility_id
+		// 	};
+
+		// 	console.log("newSchedule", newpricingSchedule);
+		// });
+					
 		
+			// const newpricingSchedule = { ...this.entity.newSchedule };
+			// newpricingSchedule.ins_id = this.entity.pricing_schedules.id;
+			// console.log("check",newpricingSchedule.ins_id);
+			// newpricingSchedule.rate = this.entity.pricing_schedules.rate;
+			// newpricingSchedule.facility_id = this.entity.pricing_schedules.facility_id;
+			// console.log("newSchedule", newpricingSchedule);
+			
+			// const insuranceTypeId = this.selectedInsuranceId;
+			// const facilityId = this.entity.id;
+			// // Clear the  object for the next entry
+			// this.newSchedule = { rate: '', insuranceTypeId: '' };
 
-		// // Check if receiving_emails is defined, if not, initialize it as an empty array
-		// if (!Array.isArray(this.entity.receiving_emails)) {
-		// 	this.$set(this.entity, 'receiving_emails', []);
-		// }
+			// // Add the new  to the array
+			// this.entity.pricing_schedules.push(newSchedule);
 
-		
+			// console.log("Schedule:",this.entity.pricing_schedules);
 
+			// // Clear the newEmail object for the next entry
+			// this.newSchedule = { rate: '', insuranceTypeId: '' };
 
-		// Add the new email to the array
-		this.entity.receiving_emails.push(newEmail);
-
-		// Clear the newEmail object for the next entry
-		this.newEmail = { email: '', description: '' };
-
-		// Close the pop-up
-		this.popupVisible = false;
-
-		// Prepare the data to be sent in the POST request
-		const emailData = {   
-			email,
-			description,
-		};
-		console.log("header:",emailData);
-		try {
-			// Make a POST request to store the data in the database
-			const response = await axios.post('/client/receivingEmails', emailData);
-			console.log('Axios Response:', response);
-			await this.$nextTick();
-			this.$emit("Receiving_emails", response);
-			console.log("Emitted data:", response.data);
-			// Check for a successful status code (2xx)
-			if (response.status >= 200 && response.status < 300) {
-			// Parse the JSON response
-				const responseData = response.data;
-				console.log("id",responseData.id);
-				// Check if the expected properties are present
-				if (responseData.email && responseData.description && responseData.id) 
-				{
-				// if (response.data.success) {
-					console.log('Email saved successfully.');
-					this.saving = false;
-					// this.$router.push({ name: 'receivingEmails' });
-					this.$nextTick(() => {
-						this.$store.dispatch('notify', {
-							variant: 'primary',
-							title: 'Email Created!',
-							message: 'New email created.',
-						});
-					});
-					await this.updateReceivingMethods(responseData.id, null);
-
-					// redirect_index();
-				// } else {
-				// 	this.saving = false;
-				// 	// console.log('Email already exists');
-				// 	this.errorMessage = response.data.message;
-				// 	this.$nextTick(() => {
-				// 		this.$store.dispatch('notify', {
-				// 			variant: 'danger',
-				// 			title: 'Email Error',
-				// 			message: this.errorMessage,
+			// Prepare the data to be sent in the POST request
+			// const scheduleData = {   
+			// 	rate,
+			// 	insuranceTypeId,
+			// };
+			// console.log("header:",newpricingSchedule);
+			// Declare newpricingSchedule outside the loop
+			try {
+				// Make a POST request to store the data in the database
+				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
+				console.log('Axios Response:', response);
+				await this.$nextTick();
+				this.$emit("pricing_schedules", response);
+				console.log("Emitted data:", response.data);
+				// Check for a successful status code (2xx)
+				// if (response.status >= 200 && response.status < 300) {
+				// // Parse the JSON response
+				// 	const responseData = response.data;
+				// 	console.log("id",responseData.id);
+				// 	// Check if the expected properties are present
+				// 	if (responseData.email && responseData.description && responseData.id) 
+				// 	{
+				// 	// if (response.data.success) {
+				// 		console.log('Email saved successfully.');
+				// 		this.saving = false;
+				// 		// this.$router.push({ name: 'receivingEmails' });
+				// 		this.$nextTick(() => {
+				// 			this.$store.dispatch('notify', {
+				// 				variant: 'primary',
+				// 				title: 'Email Created!',
+				// 				message: 'New email created.',
+				// 			});
 				// 		});
-				// 	});
+				// 		await this.updateReceivingMethods(responseData.id, null);
+
+				// 		// redirect_index();
+				// 	// } else {
+				// 	// 	this.saving = false;
+				// 	// 	// console.log('Email already exists');
+				// 	// 	this.errorMessage = response.data.message;
+				// 	// 	this.$nextTick(() => {
+				// 	// 		this.$store.dispatch('notify', {
+				// 	// 			variant: 'danger',
+				// 	// 			title: 'Email Error',
+				// 	// 			message: this.errorMessage,
+				// 	// 		});
+				// 	// 	});
+				// 	// }
+				// } else {
+				// 	// Server response is missing expected properties
+				// 	console.error('Invalid server response:', responseData);
 				// }
-			} else {
-				// Server response is missing expected properties
-				console.error('Invalid server response:', responseData);
+				// } else {
+				// // Server indicates failure with a non-successful status code
+				// console.error('Failed to save email. Status:', response.status);
+				// // You can handle different status codes as needed
+				// // For example, if it's a validation error, show a different notification
+				// // Or if it's a server error, show an error message
+				// }
+			} catch (error) {
+				console.error('Error creating schedule:', error);
 			}
-			} else {
-			// Server indicates failure with a non-successful status code
-			console.error('Failed to save email. Status:', response.status);
-			// You can handle different status codes as needed
-			// For example, if it's a validation error, show a different notification
-			// Or if it's a server error, show an error message
-			}
-		} catch (error) {
-			console.error('Error creating email:', error);
-		}
 },
 		
 		async fetchInsurances(){
@@ -1805,8 +1845,10 @@ export default {
 							// 	this.insurances.push(item.insurance_type);
 							// });
 							this.insurances = response.data.map(item => ({
+							id:item.id,
 							insurance_type: item.insurance_type,
 							rate: this.entity.contract_rate || '',
+							facility_id: this.entity.id
 						}));
 							console.log('ownership type options =' , this.insurances);
 						}
@@ -3016,10 +3058,11 @@ async addFax() {
 		// 	}
 		// },
 		async save() {
+			// console.log("Check:",JSON.stringify(this.insuranceRates));
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-
+				await this.addPricingSchedule(response.id);
 				// const response = await save({
 				// 	...this.entity,
 				// 	services: {

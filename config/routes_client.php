@@ -1155,4 +1155,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
+
+	$builder->connect('/contractpricingschedule', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
 });
