@@ -104,8 +104,8 @@
 					</b-row>
 				</b-card>
 			</b-container>
-			<!-- hide/show list button -->
-			<button v-if="!isEmpty" class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'HideList' : 'ShowList' }}</strong></button>
+
+			 <button class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'HideList' : 'ShowList' }}</strong></button> 
 			<b-container fluid  class="h-100 px-0 overflow-hidden">
 				<b-row no-gutters class="justify-content-center h-100">
 					<b-col cols="12" xl="2" class="d-none d-xl-block">

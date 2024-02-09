@@ -12,7 +12,7 @@
 					title="Edit"
 				>
 					<font-awesome-icon icon="edit" fixed-width />
-					<span>Edit1</span>
+					<span>Edit</span>
 				</b-button>
 
 				<b-dropdown variant="secondary" right title="More Options">
@@ -62,15 +62,15 @@
 
 			<b-card no-body class="shadow-sm">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab>
+					<b-tab no-body active lazy>
 						<template #title>Details</template>
 						<b-row>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Details</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
 										<tr>
-											<th>Type</th>
+											<th>Main Type</th>
 											<td>
 												<span v-if="entity.facility_type && entity.facility_type.name">
 													{{ entity.facility_type.name }}
@@ -115,10 +115,28 @@
 											</td>
 										</tr>
 										<tr>
-											<th>RVP</th>
+											<th>Division</th>
 											<td>
-												<span v-if="entity.rvp_name">
-													{{ entity.rvp_name }}
+												<span v-if="entity.division">
+													{{ entity.division }}
+												</span>
+												<span v-else class="text-muted">&mdash;</span>
+											</td>
+										</tr>
+										<tr>
+											<th>Region</th>
+											<td>
+												<span v-if="entity.region">
+													{{ entity.region }}
+												</span>
+												<span v-else class="text-muted">&mdash;</span>
+											</td>
+										</tr>
+										<tr>
+											<th>Display Name</th>
+											<td>
+												<span v-if="entity.display_name">
+													{{ entity.display_name }}
 												</span>
 												<span v-else class="text-muted">&mdash;</span>
 											</td>
@@ -126,7 +144,8 @@
 									</table>
 								</div>
 							</b-col>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
+								<b-col cols="5" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Contact</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
@@ -169,8 +188,51 @@
 										</td>
 									</table>
 								</div>
+								
+								<h6 class="h6 text-uppercase font-weight-bold text-muted mt-5">Receiving Information</h6>
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0">
+
+										<tr>
+											<th>Emails</th>
+											<td>
+												<!-- <span v-if="entity.receiving_emails && Array.isArray(entity.receiving_emails) && entity.receiving_emails.length > 0">
+													{{ entity.receiving_emails.map(emailObj => `${emailObj.email}(${emailObj.description})`).join(', ') }}
+												</span> -->
+												<span v-if="receivingEmails && Array.isArray(receivingEmails) && receivingEmails.length > 0">
+													{{ receivingEmails.map(emailObj => `${emailObj.email}(${emailObj.description})`).join(', ') }}
+												</span>
+												<span v-else class="text-muted"> &mdash; </span>
+											</td>
+										</tr>
+									<!-- <tr><th>Emails</th></tr> -->
+									<!-- <tr v-if="entity.receiving_emails && entity.receiving_emails.length > 0" v-for="email in entity.receiving_emails" :key="email.index"> -->
+																			<!-- <td class="text-center"> -->
+																				<!-- <b-link :to="{ name: 'services.view', params: { id: service.id } }" class="font-weight-bold text-decoration-none"> -->
+																					<!-- {{ receiving_emails.email }} -->
+																				<!-- </b-link> -->
+																			<!-- </td> -->
+																		<!-- </tr>
+																		<tr v-else>
+																			<td class="text-muted">No emails</td>
+																		</tr> -->
+
+									<tr>
+            <th>Faxes</th>
+            <td>
+                <span v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
+                    {{ entity.receiving_faxes.map(faxObj => `(${faxObj.fax}) ${faxObj.description}`).join(', ') }}
+                </span>
+                <span v-else class="text-muted"> &mdash; </span>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
 							</b-col>
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+							<!-- <b-col cols="12" sm="6" lg="6" class="mb-4"> -->
+								<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Contract</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
@@ -230,8 +292,75 @@
 									</table>
 								</div>
 							</b-col>
+							<!-- <b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2 text-center">
+    <h6 class="h6 text-uppercase font-weight-bold text-muted">Receiving Information</h6>
 
-							<b-col cols="12" sm="6" lg="6" class="mb-4">
+    <div class="table-responsive">
+        <table class="table table-sm table-headers-muted table-data-right mb-0 mx-auto">
+            <tbody>
+                <tr v-if="entity.receivingInfo && entity.receivingInfo.email">
+                    <th>Email</th>
+                    <td class="align-middle">
+                        <span v-if="entity.receivingInfo.email">
+                            <a
+                                :href="'mailto:' + entity.receivingInfo.email"
+                                class="font-weight-bold text-decoration-none"
+                            >{{ entity.receivingInfo.email }}</a>
+                        </span>
+                        <span v-else class="text-muted"> &mdash; </span>
+                    </td>
+                </tr>
+                <tr v-if="entity.receivingInfo && entity.receivingInfo.fax">
+                    <th>Fax</th>
+                    <td class="align-middle">
+                        <span v-if="entity.receivingInfo.fax">
+                            <a
+                                :href="$filters.linkTel(entity.receivingInfo.fax)"
+                                class="font-weight-bold text-decoration-none"
+                            >{{ $filters.formatPhone(entity.receivingInfo.fax) }}</a>
+                        </span>
+                        <span v-else class="text-muted"> &mdash; </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+	</b-col> -->
+							<!-- <b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2">
+								<h6 class="h6 text-uppercase font-weight-bold text-muted">Receiving Information</h6>
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0">
+
+										<tr>
+											<th>Fax</th>
+											<td>
+												<span v-if="entity.fax">
+													<a
+														:href="$filters.linkTel(entity.fax)"
+														class="font-weight-bold text-decoration-none"
+														>{{ $filters.formatPhone(entity.fax) }}</a
+													>
+												</span>
+												<span v-else class="text-muted"> &mdash; </span>
+											</td>
+										</tr>
+										<th>Email</th>
+										<td>
+											<span v-if="entity.email">
+												<a
+													:href="'mailto:' + entity.email"
+													class="font-weight-bold text-decoration-none"
+													>{{ entity.email }}</a
+												>
+											</span>
+											<span v-else class="text-muted"> &mdash; </span>
+										</td>
+									</table>
+								</div>
+							</b-col> -->
+
+							<!-- <b-col cols="10" sm="6" lg="6" class="mb-4"> -->
+								<!-- <b-col cols="10" sm="5" lg="5" class="mb-0 ml-4 mt-2">
 								<h6 class="h6 text-uppercase font-weight-bold text-muted">Services</h6>
 
 								<b-list-group v-if="entity.services && entity.services.length > 0">
@@ -244,10 +373,35 @@
 									</b-list-group-item>
 								</b-list-group>
 								<empty-result v-else> No services assigned </empty-result>
+							</b-col> -->
+							<b-col cols="10" sm="5" lg="5" class="mb-4 ml-4 mt-2" :sm-offset="5" :lg-offset="5">
+								<h6 class="h6 text-uppercase font-weight-bold text-muted">Services</h6>
+
+								<div class="table-responsive">
+									<table class="table table-sm table-headers-muted table-data-right mb-0 mx-auto">
+										<tbody>
+											<tr v-if="entity.services && entity.services.length > 0" v-for="service in entity.services" :key="service.index">
+												<td class="text-center">
+													<b-link :to="{ name: 'services.view', params: { id: service.id } }" class="font-weight-bold text-decoration-none">
+														{{ service.name }}
+													</b-link>
+												</td>
+											</tr>
+											<tr v-else>
+												<td class="text-muted">No services assigned</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</b-col>
+
+
+
+
+
 						</b-row>
 					</b-tab>
-					<b-tab no-body active lazy>
+					<b-tab no-body  lazy>
 						<template #title>Cases</template>
 						<case-index
 							ref="caseList"
@@ -272,6 +426,7 @@ import { get as GetFacility, destroy as DeleteFacility } from "@/clients/service
 
 import CaseForm from "@/clients/components/Cases/Form.vue";
 import CaseIndex from "@/clients/components/Cases/Index.vue";
+import axios from "axios";
 
 export default {
 	name: "FacilityView",
@@ -287,8 +442,64 @@ export default {
 				name: null,
 				active: null,
 				full_address: null,
+				// receiving_faxes: [], // For storing multiple faxes
+            	// receiving_emails: [], // For storing multiple emails
+
 			},
 			similar: [],
+			receivingEmails: [],
+			// entity: {
+			// 	id: this.id,
+			// 	name: "",
+			// 	display_name:null,
+			// 	facility_type_id: null,
+			// 	active: true,
+			// 	phone: null,
+			// 	fax: null,
+			// 	email: null,
+			// 	// street_address_1: null,
+			// 	// street_address_2: null,
+			// 	city: null,
+			// 	state: null,
+			// 	zip: null,
+			// 	npi_number: null,
+			// 	npi_manual: null,
+			// 	primary_taxonomy: null,
+			// 	location_phone: null,
+			// 	mailing_phone: null,
+			// 	additional_taxonomies: null,
+			// 	client_owned: true,
+			// 	chain_name: '',
+			// 	area_name: null,
+			// 	ou_number: null,
+			// 	territory: null,
+			// 	// rvp_name: null,
+			// 	has_contract: false,
+			// 	contract_start_date: null,
+			// 	contract_end_date: null,
+			// 	indemnification_days: null,
+			// 	max_return_work_days: null,
+			// 	address_1: null,
+			// 	address_2: null,
+			// 	// taxonomy_code: null,
+			// 	// taxonomy_desc: null,
+			// 	// taxonomy_group: null,
+			// 	// taxonomy_license:  null,
+			// 	// taxonomy_state: null,
+			// 	othername: null,
+			// 	enumeration_type: null,
+			// 	organizational_subpart:null,
+			// 	services: [],
+			// 	chains:[],
+			// 	receiving_email: '', // For input
+            // 	receiving_emails: [], // For storing multiple emails
+			// 	receiving_fax: '', // For input
+            // 	receiving_faxes: [], // For storing multiple faxes
+			// 	// outgoing_emails: [],
+            // 	receiving_methods: [], 
+
+
+			// },
 		};
 	},
 	computed: {
@@ -303,8 +514,29 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		this.fetchReceivingEmails();
+		// this.addEmail();
+		// console.log('entity:', this.entity);
+        // console.log('entity.receiving_emails:', this.entity.receiving_emails);
+        // console.log('Array.isArray(entity.receiving_emails):', Array.isArray(this.entity.receiving_emails));
+        // console.log('entity.receiving_emails.length:', this.entity.receiving_emails.length);
+		// this.$emit('Receiving_emails', [{ email: 'test@example.com', description: 'test' }]);
 	},
+	created() {
+		console.log("Component created");
+		// Listen for the emitted event
+		// this.$root.$on('Receiving_emails', this.updateReceivingEmails);
+  	},
 	methods: {
+		async fetchReceivingEmails() {
+			try {
+				const response = await axios.get('/client/fetchReceivingEmails');
+				this.receivingEmails = response.data.receivingEmails;
+				console.log("API",this.receivingEmails);
+			} catch (error) {
+				console.error('Error fetching receiving emails:', error);
+			}
+			},
 		async refresh() {
 			try {
 				this.loading = true;

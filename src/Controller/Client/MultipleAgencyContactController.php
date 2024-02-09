@@ -17,7 +17,7 @@ class MultipleAgencyContactController extends AppController
                 
                 // Get data from the request
                 $data = $this->request->getData();
-                $filePath = 'C:\xampp\htdocs\Insurace-provider-Merged\example.json';
+                
                 
 
                 // Process contacts
@@ -38,10 +38,8 @@ class MultipleAgencyContactController extends AppController
                         $multiAgencyContactsTable->agency_fax = null;
                         $multiAgencyContactsTable->desc_fax = null;
                     }
-                    $jsonContent = json_encode($multiAgencyContactsTable, JSON_PRETTY_PRINT);
-                $file = fopen($filePath, 'w');
-                fwrite($file, $jsonContent);
-                fclose($file);
+                   
+                
                     if (!$MultiAgencyContactsTableobj->save($multiAgencyContactsTable)) {
                         throw new \Exception('Error saving contact data');
                     }

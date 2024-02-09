@@ -23,10 +23,10 @@ class AddSubmitColumnsToOutgoingDocuments extends AbstractMigration
         ]);
 
         // Add 'request_id' column
-        $table->addColumn('request_id', 'integer', [
-            'default' => null,
-            'null' => true,
-        ]);
+      // $table->addColumn('request_id', 'integer', [
+          // 'default' => null,
+          // 'null' => true,
+       // ]);
 
         // Add 'submit_to' column
         $table->addColumn('submit_to', 'string', [

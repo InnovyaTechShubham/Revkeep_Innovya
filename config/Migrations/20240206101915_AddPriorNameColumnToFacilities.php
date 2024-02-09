@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class AddEmailColumnToOutgoingDocuments extends AbstractMigration
+class AddPriorNameColumnToFacilities extends AbstractMigration
 {
     /**
      * Change Method.
@@ -14,12 +14,12 @@ class AddEmailColumnToOutgoingDocuments extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('outgoing_documents');
-        $table
-        ->addColumn('email', 'string', [
+        $table = $this->table('facilities');
+        $table->addColumn('prior_name', 'string', [
             'default' => null,
+            'limit' => 255,
             'null' => true,
-        ])
-        ->update();
+        ]);
+        $table->update();
     }
 }

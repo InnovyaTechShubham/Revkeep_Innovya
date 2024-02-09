@@ -33,14 +33,7 @@ interface NpiServiceInterface
 	//  * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	//  */
 	// public function searchOrganizationByName(string $name, bool $exact = false): array;
-	// /**
-	//  * Lookup by name for organization matches in the NPI Registry
-	//  *
-	//  * @param string $name
-	//  * @param bool $exact
-	//  * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
-	//  */
-	// public function searchOrganizationByName(string $name, bool $exact = false): array;
+
 
 	// /**
 	//  * Lookup by name for organization matches in the NPI Registry with state filter
@@ -53,13 +46,12 @@ interface NpiServiceInterface
 	//  * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	//  */
 	// public function searchOrganizationByNameAndState(string $name, string $state, bool $exact = false): array;
+
 	/**
 	 * Lookup organization in the NPI Registry with name or state or city or zip 
 	 *
 	 * @param string $name
 	 * @param string $state
-	 * @param string $city
-	 * @param string $zip
 	 * @param bool $exact
 	 * @return array<\App\Lib\NpiUtility\NpiOrganizationResult>
 	 */

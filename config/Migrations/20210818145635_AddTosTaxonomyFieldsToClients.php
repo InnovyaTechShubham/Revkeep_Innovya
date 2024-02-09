@@ -23,8 +23,9 @@ class AddTosTaxonomyFieldsToClients extends AbstractMigration
             ])
             ->addColumn('primary_taxonomy', 'string', [
                 'default' => null,
-                'limit' => 50,
+                'limit' => 255,
                 'null' => true,
+                
             ])
             ->save();
     }

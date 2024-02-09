@@ -235,9 +235,6 @@ class NpiUtility
 	}
 
 	/**
-	 * TO DO : ADD A CHECK IF FIRST NAME IS LESS THAN TWO CHARACTERS DONT ADD * OR THIS ERROR FROM NPPES WILL POP UP 
-	 * WILDCARDS REQUIRE AT LEAST TWO LEADING CHARACTERS
-	 * 
 	 * Lookup by individual name for people in the NPI Registry
 	 *
 	 * @param string $Npinumber
@@ -254,7 +251,7 @@ class NpiUtility
 		return self::sendRequest([
 			'enumeration_type' => self::ENUMERATION_TYPE_INDIVIDUAL,
 			//'Npi_number' => $npiNumber,
-			'first_name' => $firstName . "*",
+			'first_name' => $firstName,
 			'last_name' => $lastName,
 			'state' => $state,
 			'city' => $city,
