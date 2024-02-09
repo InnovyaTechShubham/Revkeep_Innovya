@@ -1934,7 +1934,9 @@ export default {
 		},
 		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
-
+			console.log('inside updateRecievingMethods');
+			console.log('receivingEmailId',receivingEmailId);
+			console.log('receivingFaxId',receivingFaxId);
 			// Determine if receivingEmailId or receivingFaxId is provided
 			const data = {
 				facility_id: facilityId,
@@ -1943,28 +1945,18 @@ export default {
 			};
 			console.log("Payload",data);
 
-			// try {
-			// 	// const response = await axios.post('/client/receivingMethods', data);
-			// 	await axios.post('/client/receivingMethods', data)
-            //     .then(response => {
-            //         // const responseData = response.data.data;
-			// 		console.log("success");
-			// 	});
-			// 	// console.log('Receiving methods updated:', responseData);
-			// } catch (error) {
-			// 	console.error('Error updating receiving methods:', error);
-			// }
 			try {
-				const response = await axios.post('/client/receivingMethods', data, {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+				// const response = await axios.post('/client/receivingMethods', data, {
+				// 	headers: {
+				// 		'Content-Type': 'application/json',
+				// 	},
+				// });
+				const response = await axios.post('/client/receivingMethods', data);
 				console.log('Receiving methods updated:', response.data);
 			} catch (error) {
 				console.error('Error updating receiving methods:', error);
 			}
-	},
+		},
 	// 	addReceivingMethod() {
     //     // Assuming you have the necessary data in your component's data or computed properties
 	// 	const facilityId = this.entity.id;
@@ -2073,6 +2065,8 @@ async addFax() {
         console.log("new:", newFax);
 		const fax = newFax.fax;
 		const description = newFax.description;
+		console.log('fax',fax);
+		console.log('description',description);
 		// Clear the newFax object for the next entry
         this.newFax = { fax: '', description: '' };
 
@@ -2114,19 +2108,20 @@ async addFax() {
         this.popupVisibleFax = false;
 
         // Prepare the data to be sent in the POST request
-        const faxData = {
-            fax,
-            description,
-        };
-        console.log("header:", faxData);
+        // Prepare the data to be sent in the POST request
+		const faxData = {
+			fax,
+			description,
+		};
+		console.log("header:", faxData);
 		try {
-        // Make a POST request to store the data in the database
-        const response = await axios.post('/client/receivingFaxes', faxData);
-        console.log('Axios Response:', response);
-		await this.$nextTick();
-		this.$emit("Receiving_faxes", response);
-		console.log("Emitted data:", response.data);
-		// Check for a successful status code (2xx)
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingFaxes', faxData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_faxes", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
 		if (response.status >= 200 && response.status < 300) {
 			// Parse the JSON response
 				const responseData = response.data;
@@ -2135,7 +2130,8 @@ async addFax() {
 				{
 					console.log('Fax saved successfully.');
 					this.saving = false;
-					
+					await this.updateReceivingMethods(null, responseData.id);
+
 					this.$nextTick(() => {
 						this.$store.dispatch('notify', {
 							variant: 'primary',
@@ -2143,8 +2139,7 @@ async addFax() {
 							message: 'New fax created.',
 						});
 					});
-					await this.updateReceivingMethods(null, responseData.id);
-
+					
 					
 			} else {
 				// Server response is missing expected properties
