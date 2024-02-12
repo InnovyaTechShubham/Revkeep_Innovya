@@ -124,13 +124,13 @@
 														placeholder="Level"
 														aria-readonly="true"
 													/> -->
-													<b-input-group-prepend>
+													<b-input-group-prepend class="ml-auto">
 														<b-button
 															variant="danger"
 															@click="removeAppealLevel(appealLevel, index)"
 															title="Remove this level"
 														>
-															<font-awesome-icon icon="times" fixed-width />
+															<font-awesome-icon icon="trash" fixed-width />
 														</b-button>
 													</b-input-group-prepend>
 												</b-input-group>
@@ -499,9 +499,11 @@
 								>Address</b-button
 							>
 						</b-card-header> -->
-						<!-- <b-collapse id="collapseAddress" role="tabpanel"> -->
-							<b-card-body>
-								<h5 class="h5 mb-4 text-uppercase font-weight-bold">Address</h5>
+						<!-- <b-collapse id="collapseAddress" role="tabpanel"> 
+							<b-card-body> -->
+								<h5 class="h5 font-weight-bold">Address</h5>
+							<b-row >	
+								<b-col class="md-6">
 								<b-form-group label="Address" label-for="street_address_1" label-cols-lg="4">
 									<validation-provider
 										vid="street_address_1"
@@ -524,7 +526,8 @@
 											v-text="error"
 										/>
 									</validation-provider>
-									<validation-provider
+							
+								<!--	<validation-provider
 										vid="street_address_2"
 										name="Street Address (Continued)"
 										:rules="{ required: false, max: 50 }"
@@ -544,9 +547,10 @@
 											:key="error"
 											v-text="error"
 										/>
-									</validation-provider>
+									</validation-provider> -->
 								</b-form-group>
-
+							</b-col>
+							<b-col class="md-6">
 								<validation-provider
 									vid="city"
 									name="City"
@@ -568,7 +572,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+							</b-col>
+							</b-row>
+						<b-row>
+							<b-col class="md-6">
 								<validation-provider
 									vid="state"
 									name="State"
@@ -596,7 +603,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+							</b-col>	
+                            <b-col class="md-6">
 								<validation-provider
 									vid="zip"
 									name="Zip"
@@ -618,8 +626,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-							</b-card-body>
-						<!-- </b-collapse> -->
+							</b-col>
+							</b-row>	
+							<!--</b-card-body>
+						 </b-collapse> -->
 					</b-card>
 					<b-card>
 
@@ -633,9 +643,11 @@
 								>Contact</b-button
 							>
 						</b-card-header> -->
-						<!-- <b-collapse id="collapseContact" role="tabpanel"> -->
-							<b-card-body>
-								<h5 class="h5 mb-4 text-uppercase font-weight-bold">Contact Information</h5>
+						<!-- <b-collapse id="collapseContact" role="tabpanel">
+							<b-card-body> -->
+								<h5 class="h5 font-weight-bold">Contact Information</h5>
+							<b-row>
+								<b-col class="md-6">	
 								<validation-provider
 									vid="phone"
 									name="Phone"
@@ -658,7 +670,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+                            </b-col>
+                            <b-col class="md-6">
 								<validation-provider
 									vid="fax"
 									name="Fax"
@@ -681,7 +694,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+                   </b-col>
+				   </b-row>
+				   <b-row>
+                           <b-col class="md-6">
 								<validation-provider
 									vid="email"
 									name="Email"
@@ -703,7 +719,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+                       </b-col>
+                        <b-col class="md-6">
 								<validation-provider
 								vid="additionalContact"
 								name="Additional Contact Method"
@@ -725,8 +742,10 @@
 									/>
 								</b-form-group>
        					 </validation-provider>
-							</b-card-body>
-						<!-- </b-collapse> -->
+						 </b-col>
+						</b-row>
+							<!--</b-card-body>
+						 </b-collapse> -->
 					</b-card>
 				</b-card-body>
 
@@ -1043,9 +1062,9 @@ export default {
 			}
 
 			// Modify the entity name based on the selected state
-			if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-			this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
-			}
+			//if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+			//this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+			//}
 
 			// Populate the insurance_types array with the selected insurance types
 			this.entity.insurance_types = this.audittype_data.map(id => {

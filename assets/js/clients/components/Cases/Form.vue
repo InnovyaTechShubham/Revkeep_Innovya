@@ -142,7 +142,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Facility" label-for="facility" label-cols-lg="4">
+									<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
 										<b-input-group>
 											<b-form-select
 												name="facility_id"
@@ -1046,6 +1046,7 @@
 								</validation-provider>
 
 								<validation-provider
+								    v-if="iscontract"
 									vid="reimbursement_amount"
 									name="Reimbursement Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
@@ -1081,6 +1082,7 @@
 									</b-form-group>
 								</validation-provider>
 								<validation-provider
+								    v-if="iscontract"
 									vid="reimburse_amount"
 									name="Reimburse Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
@@ -1088,7 +1090,7 @@
 								>
 									<b-form-group
 										label="Contract Paid Amount Estimate"
-										label-for="contract_paid_amt_est"
+										label-for="reimburse_amount"
 										label-cols-lg="4"
 									>
 										<b-input-group>
@@ -1106,6 +1108,7 @@
 												step="0.000000001"
 												maxlength="10"
 												autocomplete="off"
+												readonly
 											/>
 											<b-form-invalid-feedback
 												v-for="error in validationContext.errors"
@@ -1508,9 +1511,6 @@ export default {
 			disciplineIds: [],
 			insuranceTypesList:[],
 			displayNames:[],
-			facilities_status:null,
-			loadingFacilities: false,
-			facilities: [],
 		};
 	},
 	computed: {
@@ -1818,6 +1818,7 @@ export default {
       );
 
       if (selectedFacility) {
+		this.iscontract = selectedFacility.has_contract;
 		this.entity.facility_name = selectedFacility.facility_status;
       }
     },
