@@ -5,565 +5,310 @@
 			<b-card no-body>
 				<slot name="header"></slot>
 
+				
+                <!--Main Section start-->
 				<b-card-body>
-					<validation-provider
-						vid="name"
-						name="Name"
-						:rules="{ required: true, min: 2, max: 170 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Name" label-for="name" label-cols-lg="4">
-							<b-input-group>
-								<b-form-input
-									autofocus
-									name="name"
-									size="lg"
-									type="text"
-									v-model="entity.name"
-									:state="getValidationState(validationContext)"
-									:disabled="saving"
-									:readonly=true
-								/>
-								<!-- <b-input-group-append>
-									<b-button
-										variant="primary"
-										@click="npiLookup"
-										:disabled="npiLookingUp || !entity.name"
-										>NPI Search</b-button
-									>
-								</b-input-group-append> -->
-								<b-form-invalid-feedback
-									v-for="error in validationContext.errors"
-									:key="error"
-									v-text="error"
-								/>
-							</b-input-group>
-						</b-form-group>
-					</validation-provider>
-
-					<!-- <b-list-group v-if="npiResults.length > 0">
-						<div v-for="npiResult in npiResults" :key="npiResult.number">
-							<NPIOrganization :value="npiResult" v-slot="{ name, number, primaryAddress, value }">
-								<b-list-group-item>
-									<div class="d-flex justify-content-between align-items-top">
-										<div>
-											<h6 class="h6">{{ name }}</h6>
-											<p class="text-muted">{{ number }}</p>
-											<div v-if="primaryAddress">
-												<div v-if="primaryAddress.address_1">
-													{{ primaryAddress.address_1 }}
-												</div>
-												<div v-if="primaryAddress.address_2">
-													{{ primaryAddress.address_2 }}
-												</div>
-												<div>
-													<span v-if="primaryAddress.city">{{ primaryAddress.city }}</span>
-													<span v-if="primaryAddress.state"
-														>, {{ primaryAddress.state }}</span
-													>
-													<span v-if="primaryAddress.postal_code">
-														{{ primaryAddress.postal_code }}</span
-													>
-												</div>
-											</div>
-										</div>
-										<div>
-											<b-button @click="selectedNpiResult(value)">Select</b-button>
-										</div>
-									</div>
-								</b-list-group-item>
-							</NPIOrganization>
-						</div>
-					</b-list-group> -->
-					<!-- <empty-result v-else-if="npiSearched && npiResults.length <= 0">
-						No Results
-						<template #content>
-							No organizations were found in the NPI Registry matching what you provided.
-						</template>
-					</empty-result>
-					<loading-indicator v-else-if="npiLookingUp" /> -->
-				</b-card-body>
-                
-				<b-card-body>
-
-					<validation-provider
-						vid="disp_name"
-						name="display_name"
-						:rules="{ required: false, max: 60 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Display Name" label-for="disp_name" label-cols-lg="4">
-							<b-form-input
-								name="disp_name"
-								type="text"
-								v-model="entity.display_name"
-								:state="getValidationState(validationContext)"
-								
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
+					<b-row>
+						<b-col md="6">
+							<validation-provider
+								vid="disp_name"
+								name="display_name"
+								:rules="{ required: false, max: 60 }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
+									<b-form-input
+										name="disp_name"
+										type="text"
+										v-model="entity.display_name"
+										:state="getValidationState(validationContext)"
+										
+									/>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+						<b-col md="6">
+							<validation-provider
+								vid="pri_name"
+								name="prior_name"
+								:rules="{ required: false, max: 60 }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Prior Name" label-for="pri_name" label-cols-lg="4">
+									<b-form-input
+										name="pri_name"
+										type="text"
+										v-model="entity.prior_name"
+										:state="getValidationState(validationContext)"
+										
+									/>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+					</b-row>
+					<div>
+					<b-row>
+					<!-- First Column -->
+					<b-col md="6">
+						<!-- Facility Type -->
+						<validation-provider
 						vid="facility_type_id"
 						name="Facility Type"
 						:rules="{ required: true }"
 						v-slot="validationContext"
-					>
-						<b-form-group label="Main Type" label-for="facility_type_id" label-cols-lg="4">
-							<b-form-select
-								name="facility_type_id"
-								v-model="entity.facility_type_id"
-								:state="getValidationState(validationContext)"
-								:options="facilityTypes"
-								:disabled="saving || loadingFacilityTypes"
-								required="required"
-								value-field="id"
-								text-field="name"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="street_address_1"
-						name="Street Address"
-						:rules="{ required: false, max: 50 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Location Address" label-for="street_address_1" label-cols-lg="4">
-							<b-form-input
-								name="street_address_1"
-								type="text"
-								v-model="entity.address_2"
-								placeholder=""
-								class="rounded-b-0"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-								:readonly=true
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="city"
-						name="City"
-						:rules="{ required: false, max: 50 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="City" label-for="city" label-cols-lg="4">
-							<b-form-input
-								name="city"
-								type="text"
-								v-model="entity.city"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-								:readonly=true
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="state"
-						name="State"
-						:rules="{ required: false, max: 2 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="State" label-for="state" label-cols-lg="4">
-							<b-form-select
-								name="state"
-								v-model="entity.state"
-								:options="states"
-								value-field="abbreviation"
-								text-field="name"
-								:state="getValidationState(validationContext)"
-								:disabled=true
-								
-							>
-								<template #first>
-									<option :value="null" />
-								</template>
-							</b-form-select>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="zip"
-						name="Zip"
-						:rules="{ required: false, max: 20, alpha_num: true }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
-							<b-form-input
-								name="zip"
-								type="text"
-								v-model="entity.zip"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-								:readonly=true
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<!-- <validation-provider
-						vid="area_name"
-						name="Area"
-						:rules="{ required: false, max: 60 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Location Address" label-for="area_name" label-cols-lg="4">
-							<b-form-input
-								name="area_name"
-								type="text"
-								v-model="entity.area_name"
-								:state="getValidationState(validationContext)"
-								:disabled="saving|| fromnNPI"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="city"
-						name="City"
-						:rules="{ required: false, max: 50 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="City" label-for="city" label-cols-lg="4">
-							<b-form-input
-								name="city"
-								type="text"
-								v-model="entity.city"
-								:state="getValidationState(validationContext)"
-								:disabled="saving|| fromnNPI"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="state"
-						name="State"
-						:rules="{ required: false, max: 2 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="State" label-for="state" label-cols-lg="4">
-							<b-form-select
-								name="state"
-								v-model="entity.state"
-								:options="states"
-								value-field="abbreviation"
-								text-field="name"
-								:state="getValidationState(validationContext)"
-								:disabled="saving|| fromnNPI"
-							>
-								<template #first>
-									<option :value="null" />
-								</template>
-							</b-form-select>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="zip"
-						name="Zip"
-						:rules="{ required: false, max: 20, alpha_num: true }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
-							<b-form-input
-								name="zip"
-								type="text"
-								v-model="entity.zip"
-								:state="getValidationState(validationContext)"
-								:disabled="saving|| fromnNPI"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="ou_number"
-						name="OU Number"
-						:rules="{ required: false, max: 60 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
-							<b-form-input
-								name="ou_number"
-								type="text"
-								v-model="entity.ou_number"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="territory"
-						name="Territory"
-						:rules="{ required: false, max: 60 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-							<b-form-input
-								name="territory"
-								type="text"
-								v-model="entity.territory"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-
-					<validation-provider
-						vid="rvp_name"
-						name="RVP"
-						:rules="{ required: false, max: 60 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="RVP" label-for="rvp_name" label-cols-lg="4">
-							<b-form-input
-								name="rvp_name"
-								type="text"
-								v-model="entity.rvp_name"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
-							/>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider> -->
-
-					<validation-provider
-						vid="active"
-						name="Active"
-						:rules="{ required: false }"
-						v-slot="validationContext"
-					>
-						<b-form-group
-							label="Active"
-							label-for="active"
-							label-cols-lg="4"
-							description="Inactive facilities will not show up in dropdown lists."
 						>
-							<b-form-checkbox name="active" v-model="entity.active" :disabled="saving"
-								>Active</b-form-checkbox
-							>
+						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="4">
+							<b-form-select
+							name="facility_type_id"
+							v-model="entity.facility_type_id"
+							:state="getValidationState(validationContext)"
+							:options="facilityTypes"
+							:disabled="saving || loadingFacilityTypes"
+							required="required"
+							value-field="id"
+							text-field="name"
+							/>
 							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
+							v-for="error in validationContext.errors"
+							:key="error"
+							v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+						</validation-provider>
+					</b-col>
 
-                    <validation-provider
-						vid="client_owned"
-						name="Owned"
-						:rules="{ required: false }"
+					<!-- Second Column -->
+					<b-col md="6">
+						<!-- Ownership Type -->
+						<validation-provider
+						vid="ownership_type"
+						name="Ownership Type"
+						:rules="{ required: true }"
 						v-slot="validationContext"
-					>
-						<b-form-group
-							label="Owned"
-							label-for="client_owned"
-							label-cols-lg="4"
-							description="Facility is owned/provided by client."
 						>
-							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving"
-								>Owned</b-form-checkbox
-							>
-							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
-							/>
-						</b-form-group>
-					</validation-provider>
-					
-					<!-- <validation-provider
-						vid="chain_name"
-						name="Chain"
-						:rules="{ required: false, max: 250 }"
-						v-slot="validationContext"
-					>
-						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-							<b-form-input
-								name="chain_name"
-								type="text"
-								v-model="entity.chain_name"
-								:state="getValidationState(validationContext)"
-								:disabled="saving"
+						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
+							<b-form-select
+							name="ownership_type"
+							v-model="entity.ownership_type"
+							:state="getValidationState(validationContext)"
+							:options="ownershipTypes"
+							:disabled="saving"
+							required="required"
+							value-field="value"
+							text-field="text"
 							/>
 							<b-form-invalid-feedback
-								v-for="error in validationContext.errors"
-								:key="error"
-								v-text="error"
+							v-for="error in validationContext.errors"
+							:key="error"
+							v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider> -->
-					<!-- <validation-provider
-					vid="chain_name"
-					name="Chain"
-					:rules="{ required: false, max: 250 }"
-					v-slot="validationContext"
-				>
-					<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-					<b-form-select
-						v-model="entity.chain_name"
-						:state="getValidationState(validationContext)"
-						:disabled="saving"
-						:filter="filterChains"
-					>
-						<option v-for="chain in chains" :key="chain.id" :value="chain.chain_name">
-						{{ chain.chain_name }}
-						</option>
-					</b-form-select>
-					<b-form-invalid-feedback
-						v-for="error in validationContext.errors"
-						:key="error"
-						v-text="error"
-					/>
-					</b-form-group>
-				</validation-provider> -->
-				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-					<b-input-group>
-						<b-form-input type="text" name="chain_name" v-model="searchChain"
-							:disabled="saving"
-							placeholder="Search for a Chain..." @input="filterChains" />
-						<b-input-group-append>
-							<b-input-group-text>
-								<font-awesome-icon icon="search" fixed-width />
-							</b-input-group-text>
-						</b-input-group-append>
-					</b-input-group>
-					<div class="mb-0" style="margin: 0;">
-						
-					
-						<b-list-group v-if="selectedChain">
-							<b-list-group-item class="mb-0">
-								<div class="d-flex justify-content-between align-items-center mb-0">
-								<div class="mb-0">{{ selectedChain }}</div>
-								<b-btn variant="danger" @click="deselectChain" size="sm">
-									<font-awesome-icon icon="times" fixed-width />
-								</b-btn>
-								</div>
-							</b-list-group-item>
-							</b-list-group>
-
-
-					</div>
-					<div v-if="filteredChains.length > 0" class="mb-0">
-						<b-list-group>
-							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-								@click="selectChain(chain)">
-								{{ chain.chain_name }}
-							</b-list-group-item>
-						</b-list-group>
-					</div>
-				</b-form-group> -->
-
-				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-					<b-input-group>
-						<b-form-input type="text" name="chain_name" v-model="selectedChain"
-							:disabled="saving"
-							placeholder="Search for a Chain..." @input="filterChains" />
-						<b-input-group-append>
-							<b-input-group-text>
-								<font-awesome-icon icon="search" fixed-width />
-							</b-input-group-text>
-						</b-input-group-append>
-					</b-input-group>
-					<div class="mb-0" style="margin: 0;">
-						<b-list-group v-if="filteredChains.length > 0">
-							<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-								@click="selectChain(chain)">
-								{{ chain.chain_name }}
-							</b-list-group-item>
-						</b-list-group>
-					</div>  
-				</b-form-group> --> 
-				
-				<!-- <b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-				<b-input-group>
-					<b-form-input type="text" name="chain_name" v-model="selectedChain"
-						:disabled="saving"
-						placeholder="Search for a Chain..." @input="filterChains" />
-					<b-input-group-append>
-						<b-input-group-text>
-							<font-awesome-icon icon="search" fixed-width />
-						</b-input-group-text>
-					</b-input-group-append>
-				</b-input-group>
-				<div class="mb-0" style="margin: 0;">
-					<b-list-group v-if="filteredChains.length > 0">
-						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-							@click="selectChain(chain)">
-							{{ chain.chain_name }}
-						</b-list-group-item>
-					</b-list-group>
+						</validation-provider>
+					</b-col>
+					</b-row>
 				</div>
-			</b-form-group> -->
 
-			<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+
+					<b-row>
+					<!-- First Column -->
+					<b-col md="6">
+						<!-- Address 1 -->
+						<validation-provider vid="street_address_1" name="Street Address" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="Address1" label-for="street_address_1" label-cols-lg="4">
+							<b-form-input name="street_address_1" type="text" v-model="entity.address_2" placeholder="Street address" class="rounded-b-0" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- City -->
+						<validation-provider vid="city" name="City" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="City" label-for="city" label-cols-lg="4">
+							<b-form-input name="city" type="text" v-model="entity.city" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- Zip -->
+						<validation-provider vid="zip" name="Zip" :rules="{ required: false, max: 20, alpha_num: true }" v-slot="validationContext">
+						<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
+							<b-form-input name="zip" type="text" v-model="entity.zip" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<validation-provider
+									vid="original_start_date"
+									name="Original Start Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.original_start_date"
+											name="original_start_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+						<!-- Active -->
+						
+					<!-- <validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
+						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
+						<b-form-checkbox name="active" v-model="entity.active" :disabled="saving">Active</b-form-checkbox>
+						<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+					</validation-provider> -->
+
+					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
+						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
+							<b-form-select v-model="entity.facility_status" :options="facilityStatus" :disabled="saving"></b-form-select>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+					</validation-provider>
+
+
+					<b-form-group label="Bill Type" label-for="bill_type" label-cols-lg="4">
+							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+						</b-form-group>
+
+
+					
+					</b-col>
+
+					<!-- Second Column -->
+					<b-col md="6">
+
+						<!-- Address 2 -->
+						<validation-provider vid="street_address_2" name="Street Address" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="Address2" label-for="street_address_2" label-cols-lg="4">
+							<b-form-input name="street_address_2" type="text" v-model="entity.street_address_2" placeholder="Suite, unit, floor, etc..." class="rounded-b-0" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- State -->
+						<validation-provider vid="state" name="State" :rules="{ required: false, max: 2 }" v-slot="validationContext">
+						<b-form-group label="State" label-for="state" label-cols-lg="4">
+							<b-form-select name="state" v-model="entity.state" :options="states" value-field="abbreviation" text-field="name" :state="getValidationState(validationContext)" :disabled="saving">
+							<template #first>
+								<option :value="null" />
+							</template>
+							</b-form-select>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<!-- County -->
+						<validation-provider vid="county" name="County" :rules="{ required: false, max: 50 }" v-slot="validationContext">
+						<b-form-group label="County" label-for="county" label-cols-lg="4">
+							<b-form-input name="county" type="text" v-model="entity.county" :state="getValidationState(validationContext)" :disabled="saving" />
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+						</b-form-group>
+						</validation-provider>
+
+						<validation-provider
+									vid="term_date"
+									name="Term Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="entity.term_date"
+											name="term_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+						</b-form-group>
+						</validation-provider>
+
+						 <!-- Owned -->
+						<validation-provider vid="client_owned" name="Owned" :rules="{ required: false }" v-slot="validationContext">
+							<b-form-group label="Owned" label-for="client_owned" label-cols-lg="4" description="Facility is owned/provided by the client.">
+							<b-form-checkbox name="client_owned" v-model="entity.client_owned" :disabled="saving">Owned</b-form-checkbox>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+							</b-form-group>
+						</validation-provider>
+
+						<validation-provider
+									vid="has_contract"
+									name="Contract"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+						>
+							<b-form-group
+								label="Contract"
+								label-for="has_contract"
+								label-cols-lg="4"
+								description="This facility is contracted."
+							>
+									<b-form-checkbox
+										name="has_contract"
+										v-model="entity.has_contract"
+										:disabled="true"
+										:state="getValidationState(validationContext)"
+									>
+										Has Contract
+									</b-form-checkbox>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+							</b-form-group>
+						</validation-provider>
+
+						<!-- <validation-provider vid="ownership_type" name="Ownership Type" :rules="{ required: false, max: 2 }" v-slot="validationContext">
+							<b-form-group label="Bill Types" label-for="bill_type" label-cols-lg="4">
+								<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :state="getValidationState(validationContext)" :disabled="saving">
+									<template #first>
+										<option :value="null" />
+									</template>
+								</b-form-select>
+								<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+							</b-form-group>
+						</validation-provider> -->
+
+						<!-- <b-form-group label="Bill Typed" label-for="bill_type" label-cols-lg="4">
+							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
+								<template #first>
+									<option :value="null" />
+								</template>
+							</b-form-select>
+						</b-form-group> -->
+
+
+					</b-col>
+					</b-row>
+					
+			<b-form-group label="Chain" label-for="chain_name" label-cols-lg="2">
 				<b-input-group>
 					<b-form-input type="text" name="chain_name" v-model="searchChain"
 						:disabled="saving"
@@ -584,445 +329,12 @@
 				</div>
 			</b-form-group>
 
-
-
-
-
-
-
-
 				</b-card-body>
+				<!--Main section end-->
 
-				<!-- <b-card-body> -->
-				<!--	<h6 class="text-muted">Optional</h6>  -->
-					<!-- <b-card no-body> -->
-						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseAddress
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Address</b-button
-							>
-						</b-card-header> -->
-						<!-- <b-collapse id="collapseAddress" role="tabpanel">
-							<b-card-body>
-								<b-form-group label="Address" label-for="street_address_1" label-cols-lg="4">
-									<validation-provider
-										vid="street_address_1"
-										name="Street Address"
-										:rules="{ required: false, max: 50 }"
-										v-slot="validationContext"
-									>
-										<b-form-input
-											name="street_address_1"
-											type="text"
-											v-model="entity.street_address_1"
-											placeholder=""
-											class="rounded-b-0"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</validation-provider>
-									
-									<validation-provider
-										vid="street_address_2"
-										name="Street Address (Continued)"
-										:rules="{ required: false, max: 50 }"
-										v-slot="validationContext"
-									>
-										<b-form-input
-											name="street_address_2"
-											type="text"
-											v-model="entity.street_address_2"
-											placeholder=""
-											class="rounded-t-0"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</validation-provider>
-								</b-form-group>
-
-								<validation-provider
-									vid="city"
-									name="City"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="City" label-for="city" label-cols-lg="4">
-										<b-form-input
-											name="city"
-											type="text"
-											v-model="entity.city"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="state"
-									name="State"
-									:rules="{ required: false, max: 2 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="State" label-for="state" label-cols-lg="4">
-										<b-form-select
-											name="state"
-											v-model="entity.state"
-											:options="states"
-											value-field="abbreviation"
-											text-field="name"
-											:state="getValidationState(validationContext)"
-											:disabled=true
-										>
-											<template #first>
-												<option :value="null" />
-											</template>
-										</b-form-select>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="zip"
-									name="Zip"
-									:rules="{ required: false, max: 20, alpha_num: true }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Zip" label-for="zip" label-cols-lg="4">
-										<b-form-input
-											name="zip"
-											type="text"
-											v-model="entity.zip"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-							</b-card-body>
-						</b-collapse> -->
-
-						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseContact
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Contact</b-button
-							>
-						</b-card-header> -->
-						<!-- <b-collapse id="collapseContact" role="tabpanel">
-							<b-card-body>
-								<validation-provider
-									vid="phone"
-									name="Phone"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Phone" label-for="phone" label-cols-lg="4">
-										<b-form-input
-											name="phone"
-											type="text"
-											v-model="entity.phone"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="fax"
-									name="Fax"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Fax" label-for="fax" label-cols-lg="4">
-										<b-form-input
-											name="fax"
-											type="text"
-											v-model="entity.fax"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="email"
-									name="Email"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Email" label-for="email" label-cols-lg="4">
-										<b-form-input
-											name="email"
-											type="email"
-											v-model="entity.email"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-							</b-card-body>
-						</b-collapse> -->
-
-						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseContract
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Contract</b-button
-							>
-						</b-card-header> -->
-						<!-- <b-collapse id="collapseContract" role="tabpanel">
-							<b-card-body>
-								<validation-provider
-									vid="client_owned"
-									name="Owned"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Owned"
-										label-for="client_owned"
-										label-cols-lg="4"
-										description="Your organization owns this facility."
-									>
-										<b-form-checkbox
-											name="client_owned"
-											v-model="entity.client_owned"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										>
-											Owned
-										</b-form-checkbox>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="has_contract"
-									name="Contract"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Contract"
-										label-for="has_contract"
-										label-cols-lg="4"
-										description="This facility is contracted."
-									>
-										<b-form-checkbox
-											name="has_contract"
-											v-model="entity.has_contract"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										>
-											Has Contract
-										</b-form-checkbox>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="contract_start_date"
-									name="Contract Start Date"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Start Date" label-for="contract_start_date" label-cols-lg="4">
-										<b-form-input
-											type="date"
-											v-model="entity.contract_start_date"
-											name="contract_start_date"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="contract_end_date"
-									name="Contract End Date"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="End Date" label-for="contract_end_date" label-cols-lg="4">
-										<b-form-input
-											type="date"
-											v-model="entity.contract_end_date"
-											name="contract_end_date"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="indemnification_days"
-									name="Indemnification Days"
-									:rules="{ required: false, min: 0, max: 365 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Indemnification Days"
-										label-for="indemnification_days"
-										label-cols-lg="4"
-										description="Days exceeded for Indemnification"
-									>
-										<b-form-input
-											name="indemnification_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.indemnification_days"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="max_return_work_days"
-									name="Max Return Days"
-									:rules="{ required: false, min: 0, max: 365 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Max Return Days"
-										label-for="max_return_work_days"
-										label-cols-lg="4"
-										description="Maximum days to return work to facility"
-									>
-										<b-form-input
-											name="max_return_work_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.max_return_work_days"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-							</b-card-body>
-						</b-collapse> -->
-
-						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseServices
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Services</b-button
-							>
-						</b-card-header> -->
-						<!-- <b-collapse id="collapseServices" role="tabpanel">
-							<b-card-body>
-								<b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
-									<loading-indicator v-if="loadingServices && services.length <= 0" />
-									<b-form-checkbox-group
-										v-else-if="services.length > 0"
-										stacked
-										name="services_ids"
-										v-model="entity.services._ids"
-										:options="services"
-										:disabled="saving || loadingServices"
-										value-field="id"
-										text-field="name"
-									/>
-									<empty-result v-else>
-										No services added
-										<template #content> Create services to assign to this facility. </template>
-									</empty-result>
-								</b-form-group>
-							</b-card-body>
-						</b-collapse> -->
-					<!-- </b-card>
-				</b-card-body> -->
-
-				<b-card-body>
-					<!-- <h6 class="text-muted">Optional</h6> -->
-					<b-card no-body>
+				<!-- Details section start-->
+				<b-card no-body>
+					
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1035,164 +347,149 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<!-- <validation-provider
-									vid="chain_name"
-									name="Chain"
-									:rules="{ required: false, max: 250 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
-										<b-form-input
-											name="chain_name"
-											type="text"
-											v-model="entity.chain_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider> -->
+								<b-row>
+									<b-col md="4">
+										<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
+									</validation-provider>
+									</b-col>
+									<b-col md="4">
+										<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+									<b-col md="4">
+										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+								</b-row>
 
-								<validation-provider
-									vid="division"
-									name="Division"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Division" label-for="division" label-cols-lg="4">
-										<b-form-input
-											name="division"
-											type="text"
-											v-model="entity.division"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
 
-								<validation-provider
-									vid="region"
-									name="Region"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Region" label-for="region" label-cols-lg="4">
-										<b-form-input
-											name="region"
-											type="text"
-											v-model="entity.region"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+									<!-- Region -->
+									<!-- <validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
+									</validation-provider> -->
 
-								<validation-provider
-									vid="territory"
-									name="Territory"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-										<b-form-input
-											name="territory"
-											type="text"
-											v-model="entity.territory"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+									<!-- Division -->
+									<validation-provider vid="division" name="Division" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Division" label-for="division" label-cols-lg="4">
+											<b-form-input name="division" type="text" v-model="entity.division" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
+									</validation-provider>
+									
 
-								<validation-provider
-									vid="area_name"
-									name="Area"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-										<b-form-input
-											name="area_name"
-											type="text"
-											v-model="entity.area_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="ou_number"
-									name="OU Number"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
+									<!-- OU Number -->
+									<validation-provider vid="ou_number" name="OU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
 									<b-form-group label="OU Number" label-for="ou_number" label-cols-lg="4">
-										<b-form-input
-											name="ou_number"
-											type="text"
-											v-model="entity.ou_number"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+										<b-form-input name="ou_number" type="text" v-model="entity.ou_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 									</b-form-group>
-								</validation-provider>
+									</validation-provider>
+								</b-col>
 
-								<!-- <validation-provider
-									vid="rvp_name"
-									name="RVP"
-									:rules="{ required: false, max: 60 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="RVP" label-for="rvp_name" label-cols-lg="4">
-										<b-form-input
-											name="rvp_name"
-											type="text"
-											v-model="entity.rvp_name"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+								<!-- Second Column -->
+								
+								
+									<b-col md="6">
+									
+									<!-- Territory -->
+									<!-- <validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 									</b-form-group>
-								</validation-provider> -->
+									</validation-provider> -->
+
+									<!-- Area -->
+									<!-- <validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+										<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider> -->
+
+									<!--  Internal Owner -->
+									<validation-provider vid="int_owner" name="Internal Owner" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Internal Owners" label-for="int_owner" label-cols-lg="4">
+										<b-form-input name="int_owner" type="text" v-model="entity.internal_owner" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+									<!-- BU Number -->
+									<validation-provider vid="bu_number" name="BU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
+										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+								</b-col>
+								</b-row>
+								<p class="font-weight-bold">No of Bed</p>
+								<b-row>
+                                    <!-- Skilled Field -->
+                                      <b-col md="3">
+                                          <validation-provider vid="skilled" name="Skilled" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                              <b-form-group label="Skilled" label-for="skilled" label-cols-lg="4">
+                                                  <b-form-input name="skilled" type="text" v-model="entity.skilled" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                  <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                              </b-form-group>
+                                          </validation-provider>
+                                      </b-col>
+
+                                     <!-- LTC Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ltc" name="LTC" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="LTC" label-for="ltc" label-cols-lg="4">
+                                                 <b-form-input name="ltc" type="text" v-model="entity.ltc" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+
+                                     <!-- AI Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ai" name="AI" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="AI" label-for="ai" label-cols-lg="4">
+                                                 <b-form-input name="ai" type="text" v-model="entity.ai" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+
+                                     <!-- IL Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="il" name="IL" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="IL" label-for="il" label-cols-lg="4">
+                                                 <b-form-input name="il" type="text" v-model="entity.il" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+                                </b-row>
+
+								
 							</b-card-body>
 						</b-collapse>
-						<!-- end -->
+						<!-- Details section end  -->
 
-						<!-- Contacts Code from shubham_dev -->
+						<!-- Contact section start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1297,11 +594,11 @@
 								<b-input-group-append>
 								  <b-button variant="primary" class="mb-1" @click="createNewForm">
 				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contact</span>
+				                 	<span>Add Contacts</span>
 			                      </b-button>
                                 </b-input-group-append>
 
-								<form v-if="showForm" v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
+								<form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
 									<b-card body>
 										<validation-provider
 											vid="f_name"
@@ -1371,7 +668,7 @@
 													>
 													
 														<template #first>
-															<option  :value="null">
+															<option disabled v-if="!hastitlename" :value="null">
 															Please Select Title
 															</option>
 														</template>
@@ -1416,7 +713,7 @@
 																			
 																		>
 																			<template #first>
-																				<option  :value="null">
+																				<option disabled v-if="!hascontactTypes" :value="null">
 																				Please Select Contact Type
 																				</option>
 																			</template>
@@ -1487,17 +784,13 @@
 											</b-form-group>
 										</validation-provider>
 										<b-footer class="d-flex justify-content-between">
-    <!-- Delete button with FontAwesome icon on the left -->
-    <b-button type="button" variant="danger"  @click="clearForm(index, form)">
-        <font-awesome-icon icon="trash" fixed-width />
-        <span>Delete</span>
-    </b-button>
-
-    <!-- Cancel button on the right -->
-    <b-button type="button" variant="light" @click="removeForm(index)">
-        <span>Cancel</span>
-    </b-button>
-</b-footer>
+											<b-button type="button" variant="danger" @click="deleteform(index, id)" class="mr-auto">
+                                                <span>Delete</span>
+	                                        </b-button>
+                                            <b-button type="button" variant="light" @click="removeForm(index)"  class="ml-auto">
+                                                <span>Cancel</span>
+                                            </b-button>
+                                        </b-footer>
 
 	
 										<b-modal id="customTitle" title="Add Custom Title " @ok="addCustomTitleName">
@@ -1514,8 +807,9 @@
 								</form>
 							</b-card-body>
 						</b-collapse>
-						<!-- end -->
+						<!-- Contact section end-->
 
+						<!-- Contract Section Start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1528,54 +822,24 @@
 						</b-card-header>
 						<b-collapse id="collapseContract" role="tabpanel">
 							<b-card-body>
+							<b-row>
+							<!-- First Column -->
+							<b-col md="6">
 								<validation-provider
-									vid="client_owned"
-									name="Owned"
+									vid="active"
+									name="Active"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Owned"
-										label-for="client_owned"
+										label="Contract Status"
+										label-for="active"
 										label-cols-lg="4"
-										description="Your organization owns this facility."
+										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox
-											name="client_owned"
-											v-model="entity.client_owned"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
+										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
+											>Active</b-form-checkbox
 										>
-											Owned
-										</b-form-checkbox>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-
-								<validation-provider
-									vid="has_contract"
-									name="Contract"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Contract"
-										label-for="has_contract"
-										label-cols-lg="4"
-										description="This facility is contracted."
-									>
-										<b-form-checkbox
-											name="has_contract"
-											v-model="entity.has_contract"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										>
-											Has Contract
-										</b-form-checkbox>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -1590,7 +854,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Start Date" label-for="contract_start_date" label-cols-lg="4">
+									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_start_date"
@@ -1606,13 +870,17 @@
 									</b-form-group>
 								</validation-provider>
 
+							</b-col>
+
+							<!-- Second Column -->
+							<b-col md="6">
 								<validation-provider
 									vid="contract_end_date"
 									name="Contract End Date"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="End Date" label-for="contract_end_date" label-cols-lg="4">
+									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
 											v-model="entity.contract_end_date"
@@ -1629,25 +897,16 @@
 								</validation-provider>
 
 								<validation-provider
-									vid="indemnification_days"
-									name="Indemnification Days"
-									:rules="{ required: false, min: 0, max: 365 }"
+									vid="renewal_date"
+									name="Renewal Date"
+									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group
-										label="Indemnification Days"
-										label-for="indemnification_days"
-										label-cols-lg="4"
-										description="Days exceeded for Indemnification"
-									>
+									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
-											name="indemnification_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.indemnification_days"
+											type="date"
+											v-model="entity.renewal_date"
+											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -1658,40 +917,189 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+
+								</b-col>
+								</b-row>
+
+									<b-row>
+									<!-- First Column -->
+									<b-col md="6">
+										<!-- Contract Bill Type -->
+										<validation-provider
+										vid="contract_bill_type"
+										name="Contract Bill Type"
+										:rules="{ required: true }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_bill_type"
+											v-model="entity.contract_bill_type"
+											:state="getValidationState(validationContext)"
+											:options="contractBillTypes"
+											:disabled="saving"
+											required="required"
+											value-field="value"
+											text-field="text"
+											/>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="indemnification_days"
+										name="Indemnification Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Indemnification Days"
+											label-for="indemnification_days"
+											label-cols-lg="4"
+											description="Days exceeded for Indemnification"
+										>
+											<b-form-input
+												name="indemnification_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="entity.indemnification_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+
+									</b-col>
+
+									<!-- Second Column -->
+									<b-col md="6">
+										<!-- Contract Type -->
+										<validation-provider
+										vid="contract_type"
+										name="Contract Type"
+										:rules="{ required: true }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_type"
+											v-model="entity.contract_type"
+											:state="getValidationState(validationContext)"
+											:options="contractTypes"
+											:disabled="saving"
+											required="required"
+											value-field="value"
+											text-field="text"
+											direction="down"
+											/>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="max_return_work_days"
+										name="Max Return Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Max Return Days"
+											label-for="max_return_work_days"
+											label-cols-lg="4"
+											description="Maximum days to return work to facility"
+										>
+											<b-form-input
+												name="max_return_work_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="entity.max_return_work_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									</b-col>
+								</b-row>
 
 								<validation-provider
-									vid="max_return_work_days"
-									name="Max Return Days"
-									:rules="{ required: false, min: 0, max: 365 }"
-									v-slot="validationContext"
+								vid="service_operations"
+								name="Service Operations"
+								:rules="{ required: true }"
+								v-slot="validationContext"
 								>
-									<b-form-group
-										label="Max Return Days"
-										label-for="max_return_work_days"
-										label-cols-lg="4"
-										description="Maximum days to return work to facility"
-									>
-										<b-form-input
-											name="max_return_work_days"
-											type="number"
-											step="1"
-											min="0"
-											max="365"
-											default="30"
-											v-model="entity.max_return_work_days"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
+								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
+									<b-form-checkbox-group
+									id="service_operations"
+									v-model="entity.serviceOperations"
+									:options="serviceOperationsOptions"
+									:state="getValidationState(validationContext)"
+									:disabled="saving"
+									required="required"
+									/>
+									<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+									/>
+								</b-form-group>
 								</validation-provider>
+
+								<b-card title="Contract Pricing Schedule" border-variant="light">
+
+								<b-row>
+								<b-col md="6">
+									<b-table :items="insurances.slice(0, 6)" :fields="fields">
+									<template v-slot:cell(rate)="data">
+										<div class="d-flex">
+										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
+										</div>
+									</template>
+									</b-table>
+								
+								</b-col>
+
+								<b-col md="6">
+								<!-- <b-card title="Contract Pricing Schedule" border-variant="light"> -->
+									<b-table :items="insurances.slice(6, 12)" :fields="fields">
+									<template v-slot:cell(rate)="data">
+										<div class="d-flex">
+										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
+										</div>
+									</template>
+									</b-table>
+								</b-col>
+							</b-row>
+							</b-card>	
+							
 							</b-card-body>
 						</b-collapse>
+						<!-- Contract Section End-->
 
+						<!--Service section start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1704,37 +1112,6 @@
 						</b-card-header>
 						<b-collapse id="collapseServices" role="tabpanel">
 							<b-card-body>
-								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4">
-									<loading-indicator v-if="loadingServices && services.length <= 0" />
-									<b-form-checkbox-group
-										v-else-if="services.length > 0"
-										stacked
-										name="services_ids"
-										v-model="entity.services._ids"
-										:options="services"
-										:disabled="saving || loadingServices"
-										value-field="id"
-										text-field="name"
-									/>
-									<empty-result v-else>
-										No services added
-										<template #content> Create services to assign to this facility. </template>
-									</empty-result>
-								</b-form-group> -->
-
-								<!-- <b-form-group
-										label="Assigned Services"
-										label-for="entity.services._ids"
-										label-cols-lg="4"
-										
-									>
-										<services-search-multi
-											name="denial_reasons"
-											v-model="currentDenialReasons"
-											@add="addingDenialReason = true"
-											:disabled="saving"
-										/>
-									</b-form-group> -->
 
 									<b-form-group label="Assigned Services" label-for="service_ids" label-cols-lg="4" class="mb-0" style="margin: 0;">
 									<loading-indicator v-if="loadingServices && services.length <= 0" />
@@ -1742,26 +1119,16 @@
 										<b-form-input type="text" name="service_ids" v-model="searchQuery"
 											:disabled="saving || loadingServices"
 											placeholder="Search for a Service..." @input="filterServices" class="mb-0" />
-										<!-- <b-input-group-append>
-											<b-input-group-text>
-												<font-awesome-icon icon="search" fixed-width />
-											</b-input-group-text>
-										</b-input-group-append> -->
+										
 									</b-input-group>
 									<div class="mb-0" style="margin: 0;">
-										<!-- <b-list-group v-if="selectedServices.length > 0">
-											<b-list-group-item v-for="service in selectedServices" :key="service.id">
-												{{ service.name }}
-												<b-btn @click="deselectService(service)" size="sm" variant="danger">Remove</b-btn>
-											</b-list-group-item>
-										</b-list-group> -->
+										
 										<b-list-group v-if="selectedServices.length > 0" class="mb-0">
 											<b-list-group-item v-for="service in selectedServices" :key="service.id" class="mb-0">
 												<div class="d-flex justify-content-between align-items-center mb-0">
 													<div class="mb-0">{{ service.name }}</div>
 													<b-btn variant="danger" @click="deselectService(service)" size="sm">
-														<!-- <b-icon icon="x"></b-icon> -->
-														<!-- <font-awesome-icon icon="fa-xmark"  style="color:red"/> -->
+														
 														<font-awesome-icon
 															icon="times"
 															fixed-width
@@ -1783,41 +1150,11 @@
 								</b-form-group>
 								
 
-								<!-- Search and Add Services Section -->
-								<!-- <b-form-group label="Assigned Services" label-for="services_ids" label-cols-lg="4"> -->
-								<!-- Custom search input for services -->
-								<!-- <loading-indicator v-if="loadingServices && availableServices.length <= 0" /> -->
-								<!-- <b-input-group>
-									<b-form-input
-									
-									v-model="searchQuery"
-									
-									:disabled="saving || loadingServices"
-									value-field="id"
-									text-field="name"
-									:placeholder="loadingServices ? 'Loading services...' : 'Search services...'"
-									></b-form-input>
-									<b-input-group-append>
-									<b-button @click="searchServices">Search</b-button>
-									</b-input-group-append>
-								</b-input-group> -->
-
-								 <!-- List of matching services -->
-								 <!-- <b-form-select
-									v-model="entity.services._ids"
-									:options="matchingServices"
-									:disabled="saving || loadingServices"
-									value-field="id"
-									text-field="name"
-									multiple
-								></b-form-select> -->
-
-
-								<!-- Button to add selected services -->
-								<!-- <b-button @click="addSelectedServices">Add Selected Services</b-button> -->
-							<!-- </b-form-group> -->
 							</b-card-body>
 						</b-collapse>
+						<!--Service section End-->
+
+						<!--Receiving Methods section start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -1825,7 +1162,7 @@
 								variant="light"
 								role="tab"
 								class="text-left px-4 py-3 m-0"
-							>Receiving Methods</b-button>
+							>Outgoing Methods</b-button>
 						</b-card-header>
 						<b-collapse id="collapseReceivingMethods" role="tabpanel">
 							<b-card-body>
@@ -1835,10 +1172,10 @@
 										<b-row>
 										<!-- Section for Receiving Emails -->
 										<b-col md="6">
-											<!-- <b-form-group label="Receiving Emails" label-for="r_email" label-cols-lg="4"> -->
+											
 											<!-- Display entered emails in tabular format -->
 											<div>
-												<h6>Receiving Emails</h6>
+												<h6>Outgoing Emails</h6>
 												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
 												<template slot="cell(email)" slot-scope="info">
 													{{ info.value }}
@@ -1863,12 +1200,6 @@
 												</b-button>
 											</div>
 
-
-											<!-- Icon to open the pop-up -->
-											<!-- <b-button @click="openPopup" variant="primary">
-												<font-awesome-icon icon="plus" fixed-width />
-											</b-button> -->
-
 											<!-- Pop-up for adding emails -->
 											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
 												<b-form @submit.prevent="addEmail">
@@ -1881,11 +1212,6 @@
 												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
 												</b-form>
 											</b-modal>
-											
-											<!-- Icon to delete selected entries -->
-											<!-- <b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
-												<font-awesome-icon icon="trash" fixed-width />
-											</b-button> -->
 
 
 											<!-- Pop-up for deleting selected entries -->
@@ -1914,10 +1240,10 @@
 
 										<!-- Section for Receiving Faxes -->
 										<b-col md="6">
-											<!-- <b-form-group label="Receiving Faxes" label-for="r_fax" label-cols-lg="4"> -->
+											
 											<!-- Display entered faxes in tabular format -->
 											<div>
-												<h6>Receiving Faxes</h6>
+												<h6>Outgoing Faxes</h6>
 												<b-table v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0" :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
 												<template slot="cell(fax)" slot-scope="info">
 													{{ info.value }}
@@ -1985,52 +1311,6 @@
 										</b-row>
 									</div>
 									</template>
-
-
-
-
-
-								<!-- <validation-provider
-									vid="r_fax"
-									name="Fax"
-									:rules="{ required: false, max: 250 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Receiving Fax" label-for="r_fax" label-cols-lg="4">
-										<b-input-group>
-											<b-form-input
-												name="Fax"
-												type="text"
-												v-model="entity.receiving_fax"
-												:state="getValidationState(validationContext)"
-												:disabled="saving"
-												placeholder="Enter Fax"
-											></b-form-input>
-											<b-input-group-append>
-												<b-button @click="addReceivingFax">
-													<font-awesome-icon icon="plus" fixed-width />
-												</b-button>
-											</b-input-group-append>
-										</b-input-group>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										></b-form-invalid-feedback>
-										<div v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
-											<b-list-group>
-												<b-list-group-item v-for="(fax, index) in entity.receiving_faxes" :key="index">
-													<div class="d-flex justify-content-between align-items-center mb-0 mt-0">
-														<span>{{ fax }}</span>
-														<b-button variant="danger" @click="removeReceivingFax(index)">
-															<font-awesome-icon icon="times" fixed-width />
-														</b-button>
-													</div>
-												</b-list-group-item>
-											</b-list-group>
-										</div>
-									</b-form-group>
-								</validation-provider> -->
 								
 
 
@@ -2038,6 +1318,8 @@
 						</b-collapse>
 
 						<!-- end Receiving Methods -->
+
+						<!--NPI information section start-->
 
 					<b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
 					<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
@@ -2050,17 +1332,14 @@
 						<b-card-body>
 							<div class="d-flex">
 								<div class="flex-grow-1 pr-3">
-									<!-- <h4 class="card-title">{{ entity.name }}</h4>
-									<h5 class="card-subtitle mb-4">{{ ` ${entity.state}, ${entity.city}` }}</h5> -->
-									<!-- <hr class="my-2"> -->
+									<div class="label-value-row">
+										<div class="label-text">Name:</div>
+										<div class="text">{{ entity.name }}</div>
+									</div>
 									<div class="label-value-row">
 										<div class="label-text">NPI Number:</div>
 										<div class="text">{{ entity.npi_number }}</div>
 									</div>
-									<!-- <div class="label-value-row">
-										<div class="label-text">Doing Business As:</div>
-										<div class="text">{{ entity.othername }}</div>
-									</div> -->
 									<hr class="my-2">
 									<div class="label-value-row">
 										<div class="label-text">Enumeration Type:</div>
@@ -2071,19 +1350,11 @@
 										<div class="label-text">Status</div>
 										<div class="text">{{ entity.active ? 'Active' : 'Inactive' }}</div>
 									</div>
-									<!-- <div class="label-value-row">
-										<div class="label-text">Organization Subpart ?	</div>
-										<div class="text">{{ entity.organizational_subpart }}</div>
-									</div> -->
+									
 
 									<hr class="my-2">
 
-									<!-- <div class="d-flex">
-										<div class="flex-grow-1 pr-3">
-											<div class="label-value-row">
-												<div class="label-text">Location Address:</div>
-												<div class="text-primary">{{ `${entity.street_address_1}, ${entity.street_address_2}, ${entity.city}, ${entity.state}, ${entity.zip}` }}</div>
-											</div> -->
+									
 											<div class="d-flex">
 												<div class="flex-grow-1 pr-3">
 												<div class="label-value-row">
@@ -2130,85 +1401,13 @@
 							</div>
 						</b-card-body>
 					</b-collapse>
+
+					<!--NPI information section end-->
+				
 					</b-card>
-				</b-card-body>
 				
 
-				<!-- <b-card v-if="fromNPI" no-body> -->
-					<!-- <b-card-header v-if="fromNPI" header-tag="header" role="tab" class="p-0">
-						<b-button block v-b-toggle.collapseNpiInformation variant="light" role="tab"
-							class="text-left px-4 py-3 m-0">
-							<h6 class="mb-0">NPI Data</h6>
-						</b-button>
-					</b-card-header>
-					<b-collapse id="collapseNpiInformation" role="tabpanel">
-						<b-card-body>
-							<div class="d-flex">
-								<div class="flex-grow-1 pr-3">
-									<div class="label-value-row">
-										<div class="label-text">Other Name:</div>
-										<div class="text-primary">{{ entity.othername }}</div>
-									</div>
-									<div class="label-value-row">
-										<div class="label-text">Enumeration Type:</div>
-										<div class="text-primary">{{ entity.enumeration_type }}</div>
-									</div>
-									<div class="label-value-row">
-										<div class="label-text">Gender:</div>
-										<div class="text-primary">{{ entity.gender }}</div>
-									</div>
-									<div class="label-value-row">
-										<div class="label-text">Sole Proprietor ?</div>
-										<div class="text-primary">{{ entity.proprietor }}</div>
-									</div>
-
-
-									<hr class="my-2">
-
-									<div class="d-flex">
-										<div class="flex-grow-1 pr-3">
-											<div class="label-value-row">
-												<div class="label-text">Location Address:</div>
-												<div class="text-primary">{{ entity.address_2 }}</div>
-											</div>
-											<div class="label-value-row">
-												<div class="label-text">Phone Number:</div>
-												<div class="text-primary">{{ entity.locationPhoneNumber }}</div>
-											</div>
-											<hr class="my-1">
-											<div class="label-value-row">
-												<div class="label-text">Mailing Address:</div>
-												<div class="text-primary">{{ entity.address_1 }}</div>
-											</div>
-											<div class="label-value-row">
-												<div class="label-text">Phone Number:</div>
-												<div class="text-primary">{{ entity.mailingPhoneNumber }}</div>
-											</div>
-										</div>
-									</div>
-
-
-									<hr class="my-2">
-
-									<div class="d-flex">
-										<div class="flex-grow-1 pr-3">
-											<div class="label-value-row">
-												<div class="label-text">Primary Taxonomy:</div>
-												<div class="text-primary">{{ entity.primaryTaxonomy }}</div>
-											</div>
-											<hr class="my-2">
-											<div class="label-value-row">
-												<div class="label-text">Additional Taxonomies:</div>
-												<div class="text-primary">{{ entity.additionalTaxonomies }}</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</b-card-body>
-					</b-collapse> -->
-				<!-- </b-card> -->
-
+				
 				<b-card-footer>
 					<b-row>
 						<b-col cols="12" md="6" xl="4" class="mb-4 mb-md-0">
@@ -2264,21 +1463,27 @@ export default {
         	filteredServices: [], 
 			selectedServices: [],		 // The list of services selected by the user
 			// services: [],
-			showForm: false,
 			entity: {
 				id: this.id,
 				name: "",
 				display_name:null,
+				prior_name:null,
 				facility_type_id: null,
 				active: true,
+				contract_status:true,
 				phone: null,
 				fax: null,
 				email: null,
+				website: null,
+				f_name: null,
+				l_name: null,
+				title_id: null,
 				// street_address_1: null,
-				// street_address_2: null,
+				street_address_2: null,
 				city: null,
 				state: null,
 				zip: null,
+				county: null,
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
@@ -2289,13 +1494,22 @@ export default {
 				chain_name: '',
 				area_name: null,
 				ou_number: null,
+				bu_number: null,
 				territory: null,
+				skilled: null,
+				ltc: null,
+				ai: null,
+				il: null,
 				// rvp_name: null,
 				has_contract: false,
 				contract_start_date: null,
 				contract_end_date: null,
+				original_start_date: null,
+				term_date: null,
+				renewal_date: null,
 				indemnification_days: null,
 				max_return_work_days: null,
+				// service_operations: null,
 				address_1: null,
 				address_2: null,
 				// taxonomy_code: null,
@@ -2314,18 +1528,23 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-
+				serviceOperations: [],
+				contract_bill_type: null,
+				contract_type: null,
+				ownership_type: null,
+				facility_status:null,
+				internal_owner:null,
+				bill_type:null,
 
 			},
+			billTypeOptions:[],
+			facilityStatus:[],
 			service_ids: [],
 			forms: [],
-			myforms: [],
-			deletedForms: [],
+			deletedFormData: [],
 			titlename: [],
 			contactTypes: [],
 			inputFields: [{ selectedContactType: 'phone', phone: '' }],
-			displayedEmails: '',
-			displayedFaxes: '',
 			popupVisible: false,
 			popupVisibleFax: false,
 			deletePopupVisible: false,
@@ -2346,10 +1565,77 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
-		};
+			serviceOperationsOptions: [
+				{ value: 'pt', text: 'PT' },
+				{ value: 'ot', text: 'OT' },
+				{ value: 'st', text: 'ST' },
+			],
+			contractBillTypes: [
+			{ value: 'other', text: 'Other' },
+			{ value: 'ghc', text: 'GHC' },
+			{ value: 'synergy', text: 'Synergy' },
+			{ value: 'encore', text: 'Encore' },
+			],
+			contractTypes: [
+			{ value: 'management_agreement', text: 'Management Agreement' },
+			{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
+			{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
+			{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
+			{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
+			{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
+			{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
+			{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
+			{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
+			{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
+			{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
+			],
+			ownershipTypes: [
+			{ value: 'corporate_chain', text: 'Corporate Chain' },
+			{ value: 'county_owned', text: 'County Owned' },
+			{ value: 'hospital_owned', text: 'Hospital Owned' },
+			{ value: 'independent', text: 'Independent' },
+			{ value: 'managed', text: 'Managed' },
+			{ value: 'management_company', text: 'Management Company' },
+			{ value: 'silver_stone_living', text: 'Silver Stone Living' },
+		],
+
+			insurances: [
+				{ insurance_type: 'Medicare A', rate: '' },
+				{ insurance_type: 'Medicare B', rate: '' },
+				{ insurance_type: 'Managed A', rate: '' },
+				{ insurance_type: 'Managed A PPS', rate: '' },
+				{ insurance_type: 'Managed B', rate: '' },
+				{ insurance_type: 'Commercial', rate: '' },
+				{ insurance_type: 'Medicaid', rate: '' },
+				{ insurance_type: 'Workers Comp', rate: '' },
+				{ insurance_type: 'Auto', rate: '' },
+				{ insurance_type: 'Military', rate: '' },
+				{ insurance_type: 'Private Pay', rate: '' },
+				{ insurance_type: 'Other', rate: '' },
+		],
+    	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
+      { key: 'rate', label: 'Contract Rate (%)' },],
+	 };
+	},
+	watch: {
+		'entity.bill_type': function(newBillType) {
+		if (newBillType === 'Synergy' || newBillType === 'Contract Bill Other') {
+			this.entity.has_contract = true;
+		} else {
+			this.entity.has_contract = false;
+		}
+		}
 	},
 	computed: 
 	{
+	// 	tableFields() {
+    //   return [
+    //     { key: 'label', label: 'Contract Pricing Schedule' },
+    //     { key: 'selectedType', label: 'Type' },
+    //     { key: 'selectedValue', label: 'Value' },
+    //     { key: 'contractRate', label: 'Contract Rate' },
+    //   ];
+    // },
 		// concatenatedStreetAddress() {
         // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
     	// },
@@ -2370,16 +1656,20 @@ export default {
 			loadingFacilityTypes: "facilityTypes/loadingAll",
 			services: "services/all",
 			loadingServices: "services/loadingAll",
-			chains: "chains/all",
-			loadingChains: "chains/loadingAll",
+			// chains: "chains/all",
+			// loadingChains: "chains/loadingAll",
 		}),
 	},
 	mounted() {
+		// this.addReceivingMethod();
 		this.getServices();
 		this.getChains();
 		this.TitleShow();
     	this.fetchContactTypes();
 		this.listFacilityContacts();
+		this.fetchFacilityStatus();
+		this.fetchFacilityBillType();
+		
 		if (this.id) {
 			this.refresh();
 		} else {
@@ -2450,6 +1740,59 @@ export default {
 	// },
 		
 	methods: {
+
+		getTypeOptions(row) {
+		return row.typeOptions.concat(['Custom']);
+		},
+		getValueOptions(row) {
+		return row.valueOptions.concat(['Custom']);
+		},
+
+		getPlaceholder(selectedValue) {
+		// You can customize the placeholder based on the selected value
+		if (selectedValue === 'per_min') {
+			return '$0.00/min';
+		} else if (selectedValue === 'per_hour') {
+			return '$0.00/hr';
+		} else if (selectedValue === 'per_diem') {
+			return '$0.00/diem';
+		} else {
+			return 'Enter rate...';
+		}
+		},
+		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
+			const facilityId = this.entity.id;
+
+			// Determine if receivingEmailId or receivingFaxId is provided
+			const data = {
+				facility_id: facilityId,
+				receiving_email_id: receivingEmailId || null,
+				receiving_fax_id: receivingFaxId || null,
+			};
+			console.log("Payload",data);
+
+			// try {
+			// 	// const response = await axios.post('/client/receivingMethods', data);
+			// 	await axios.post('/client/receivingMethods', data)
+            //     .then(response => {
+            //         // const responseData = response.data.data;
+			// 		console.log("success");
+			// 	});
+			// 	// console.log('Receiving methods updated:', responseData);
+			// } catch (error) {
+			// 	console.error('Error updating receiving methods:', error);
+			// }
+			try {
+				const response = await axios.post('/client/receivingMethods', data, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+				console.log('Receiving methods updated:', response.data);
+			} catch (error) {
+				console.error('Error updating receiving methods:', error);
+			}
+	},
 	// 	addReceivingMethod() {
     //     // Assuming you have the necessary data in your component's data or computed properties
 	// 	const facilityId = this.entity.id;
@@ -2553,15 +1896,17 @@ export default {
 // },
 
 async addFax() {
-    try {
+    
         const newFax = { ...this.newFax };
         console.log("new:", newFax);
+		const fax = newFax.fax;
+		const description = newFax.description;
 		// Clear the newFax object for the next entry
         this.newFax = { fax: '', description: '' };
 
         // Validate fax number format
         const faxRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-        if (!faxRegex.test(newFax.fax)) {
+        if (!faxRegex.test(fax)) {
             this.$bvToast.toast('Error: Please enter a valid fax number. (Format: (123) 456-7890)', {
                 title: 'Error',
                 variant: 'danger',
@@ -2577,7 +1922,7 @@ async addFax() {
         }
 
         // Check if the fax number already exists
-        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === newFax.fax)) {
+        if (this.entity.receiving_faxes.some(existingFax => existingFax.fax === fax)) {
             this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
                 title: 'Error',
                 variant: 'danger',
@@ -2598,43 +1943,51 @@ async addFax() {
 
         // Prepare the data to be sent in the POST request
         const faxData = {
-            fax: newFax.fax,  // Use the updated fax number
-            description: newFax.description,
+            fax,
+            description,
         };
         console.log("header:", faxData);
-
+		try {
         // Make a POST request to store the data in the database
         const response = await axios.post('/client/receivingFaxes', faxData);
         console.log('Axios Response:', response);
+		await this.$nextTick();
+		this.$emit("Receiving_faxes", response);
+		console.log("Emitted data:", response.data);
+		// Check for a successful status code (2xx)
+		if (response.status >= 200 && response.status < 300) {
+			// Parse the JSON response
+				const responseData = response.data;
+				// Check if the expected properties are present
+				if (responseData.fax && responseData.description && responseData.id) 
+				{
+					console.log('Fax saved successfully.');
+					this.saving = false;
+					
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Fax Created!',
+							message: 'New fax created.',
+						});
+					});
+					await this.updateReceivingMethods(null, responseData.id);
 
-        if (response.data.success) {
-            console.log('Fax saved successfully.');
-            this.saving = false;
-            this.$router.push({ name: 'receivingFaxes' });
-
-            this.$nextTick(() => {
-                this.$store.dispatch('notify', {
-                    variant: 'primary',
-                    title: 'Fax Created!',
-                    message: 'New fax created.',
-                });
-            });
-
-            redirect_index();
-        } else {
-            this.saving = false;
-            this.errorMessage = response.data.message;
-            this.$nextTick(() => {
-                this.$store.dispatch('notify', {
-                    variant: 'danger',
-                    title: 'Fax Error',
-                    message: this.errorMessage,
-                });
-            });
-        }
-    } catch (error) {
-        console.error('Error creating fax:', error);
-    }
+					
+			} else {
+				// Server response is missing expected properties
+				console.error('Invalid server response:', responseData);
+			}
+			} else {
+			// Server indicates failure with a non-successful status code
+			console.error('Failed to save fax. Status:', response.status);
+			// You can handle different status codes as needed
+			// For example, if it's a validation error, show a different notification
+			// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			console.error('Error creating fax:', error);
+		}
 },
     openDeleteFaxPopup() {
       // Show checkboxes and delete icon
@@ -2894,12 +2247,13 @@ async addFax() {
 			const response = await axios.post('/client/receivingEmails', emailData);
 			console.log('Axios Response:', response);
 			await this.$nextTick();
-			this.$emit("Receiving_emails", response.data);
+			this.$emit("Receiving_emails", response);
 			console.log("Emitted data:", response.data);
 			// Check for a successful status code (2xx)
 			if (response.status >= 200 && response.status < 300) {
 			// Parse the JSON response
 				const responseData = response.data;
+				console.log("id",responseData.id);
 				// Check if the expected properties are present
 				if (responseData.email && responseData.description && responseData.id) 
 				{
@@ -2907,7 +2261,6 @@ async addFax() {
 					console.log('Email saved successfully.');
 					this.saving = false;
 					// this.$router.push({ name: 'receivingEmails' });
-
 					this.$nextTick(() => {
 						this.$store.dispatch('notify', {
 							variant: 'primary',
@@ -2915,6 +2268,7 @@ async addFax() {
 							message: 'New email created.',
 						});
 					});
+					await this.updateReceivingMethods(responseData.id, null);
 
 					// redirect_index();
 				// } else {
@@ -3122,7 +2476,7 @@ async addFax() {
 			console.log("Filtered:",this.filteredChains);
 
 			},
-			selectChain(chain) {
+		selectChain(chain) {
 			// Set the selected chain
 			// this.selectedChain = chain.chain_name;
 			// console.log("Selected Chain:",this.selectedChain);
@@ -3139,7 +2493,7 @@ async addFax() {
         	this.filteredChains = [];
 			},
 
-		filterServices() {
+	filterServices() {
 			// Implement the logic to filter services based on the search term
 			const searchTerm = this.searchQuery ? this.searchQuery.toLowerCase() : '';
 			console.log("Search:",searchTerm);
@@ -3171,7 +2525,7 @@ async addFax() {
 		// 	this.entity.chain_name = '';
 		// },
 
-		async selectService(selectedService) {
+	async selectService(selectedService) {
 			// console.log('Selected Service:', selectedService);
 			// Check if the service ID is not already selected
 			// if (!this.entity.services._ids.includes(selectedService.id)) {
@@ -3572,7 +2926,6 @@ async addFax() {
 			this.npiSearched = false;
 		},
 		createNewForm() {
-			 this.showForm = true;
 			const newForm = {
 			
 			f_name: null,
@@ -3589,38 +2942,6 @@ async addFax() {
 			this.forms.push(newForm);
 			console.log("my form :",this.forms);
         },
-		removeForm(index) {
-        
-			this.showForm = false;
-      },
-
-	  clearForm(index) {
-		console.log("my index: ", index);
-          console.log("my form value:",this.forms);
-		this.deletedForms.push(this.forms);
-
-		console.log("Deleted forms:", this.deletedForms);
-
-		console.log("my deleted data", this.myforms);
-
-		let deletedFormData = this.forms[index];
-
-		console.log("Deleted forms:", deletedFormData);
-
-// Iterate through each property of the form and set its value to null
-for (const prop in deletedFormData) {
-	if (deletedFormData.hasOwnProperty(prop)) {
-		deletedFormData[prop] = null;
-	}
-};
-console.log("my form before:",this.forms);
-
-this.forms.splice(index, 1);
-
-console.log("my form after deleted:",this.forms);
-      
-    },
-		
 		async TitleShow (){
 			try {
 					const url = "/client/facilityTitle";
@@ -3644,6 +2965,7 @@ console.log("my form after deleted:",this.forms);
 					console.error("Error fetching data:", error.message);
 					}
 		},
+		
 		async fetchContactTypes(){
 				try
 					{
@@ -3682,11 +3004,91 @@ console.log("my form after deleted:",this.forms);
 								if (response.data && Array.isArray(response.data)) {
 									response.data.forEach((item)=>{
 										if(item.facility_id == this.entity.id){
+											console.log("my form :", item);
 											this.forms.push(item);
 										}
+
 									});
 								}
-							console.log("contact listed=", this.forms);
+							console.log("contact listed :", this.forms);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+	     
+		deleteform(index, id) {
+			const url = "/client/facilityContactList";
+			this.deletedFormData = this.forms[index];
+			this.postDeleteForm();
+        axios.delete(`${url}/${id}/edit`)
+      .then(response => {
+		console.log(`Form with ID ${id} deleted successfully. Data:`, this.deletedFormData);
+      
+        // If the deletion was successful, remove the form from the UI
+        this.forms.splice(index, 1);
+      })
+      .catch(error => {
+        console.error('Error deleting form:', error);
+        // Handle the error appropriately (e.g., show an error message)
+      });
+  },
+   
+
+  async postDeleteForm() {
+    try {
+        const response = await axios.post('/client/facilityAddForms', this.deletedFormData);
+        console.log('Saving Response:', response);
+    } catch (error) {
+        console.error("Error posting data:", error.message);
+    }
+},
+
+
+
+
+		
+		async fetchFacilityStatus(){
+			try
+						{
+							const url = "/client/facilitystatuslist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("facility statuses listed :", response);
+							response.data.forEach((item)=>{
+								this.facilityStatus.push(item.status);
+							});
+							console.log('status option =' , this.facilityStatus);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchFacilityBillType(){
+			try
+						{
+							const url = "/client/facilitybilltypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("facility bill type listed :", response);
+							response.data.forEach((item)=>{
+								this.billTypeOptions.push(item.bill_type);
+							});
+							console.log('bill type options =' , this.billTypeOptions);
 						}
 					catch (error) 
 					{
@@ -3736,3 +3138,4 @@ console.log("my form after deleted:",this.forms);
 	color: #101111d8;
 }
 </style>
+

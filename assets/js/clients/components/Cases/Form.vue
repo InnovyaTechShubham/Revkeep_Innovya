@@ -1089,8 +1089,8 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Risk Amount(Calculated)"
-										label-for="contract_paid_amt_est"
+										label="Contract Paid Amount Estimate"
+										label-for="reimburse_amount"
 										label-cols-lg="4"
 									>
 										<b-input-group>
@@ -1511,10 +1511,6 @@ export default {
 			disciplineIds: [],
 			insuranceTypesList:[],
 			displayNames:[],
-			facilities_status:null,
-			loadingFacilities: false,
-			facilities: [],
-			iscontract:null,
 		};
 	},
 	computed: {
