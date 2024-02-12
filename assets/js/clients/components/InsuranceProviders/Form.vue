@@ -124,13 +124,13 @@
 														placeholder="Level"
 														aria-readonly="true"
 													/> -->
-													<b-input-group-prepend>
+													<b-input-group-prepend class="ml-auto">
 														<b-button
 															variant="danger"
 															@click="removeAppealLevel(appealLevel, index)"
 															title="Remove this level"
 														>
-															<font-awesome-icon icon="times" fixed-width />
+															<font-awesome-icon icon="trash" fixed-width />
 														</b-button>
 													</b-input-group-prepend>
 												</b-input-group>
@@ -1043,9 +1043,9 @@ export default {
 			}
 
 			// Modify the entity name based on the selected state
-			if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-			this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
-			}
+			//if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+			//this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+			//}
 
 			// Populate the insurance_types array with the selected insurance types
 			this.entity.insurance_types = this.audittype_data.map(id => {
