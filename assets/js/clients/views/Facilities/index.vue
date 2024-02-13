@@ -95,9 +95,24 @@
 								</b-avatar>
 								<b-row class="flex-fill">
 									<b-col cols="12" class="text-left">
+										<div class="d-flex ">
 										<h6 class="h6 font-weight-bold mb-1">
-											{{ result.name }}
+											{{ result.display_name }}
 										</h6>
+									<div >
+										<b-badge pill v-if="result.facility_status.toLowerCase() === 'active'" variant="primary" title="active" class="ml-2 d-flex align-items-center">
+                                        {{ result.facility_status }}
+                                         </b-badge>
+
+                                        <b-badge pill v-else-if="result.facility_status.toLowerCase() === 'inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
+                                            {{ result.facility_status }}
+                                        </b-badge>
+
+                                        <b-badge pill v-else variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
+                                            {{ result.facility_status }}
+                                        </b-badge>
+									 </div>
+									</div>
 										<p v-if="result.chain_name" class="small mb-1 text-muted" title="Chain">
 											<font-awesome-icon icon="link" fixed-width class="d-none d-sm-inline" />
 											{{ result.chain_name }}
