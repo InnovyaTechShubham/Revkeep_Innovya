@@ -347,36 +347,22 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<b-row>
-									<b-col md="4">
-										<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+								<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="2">
 											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
 											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 										</b-form-group>
-									</validation-provider>
-									</b-col>
-									<b-col md="4">
-										<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
-										</validation-provider>
-									</b-col>
-									<b-col md="4">
-										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
-										</validation-provider>
-									</b-col>
-								</b-row>
+								</validation-provider>
 
 								<b-row>
 								<!-- First Column -->
 								<b-col md="6">
+									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+									</validation-provider>
 
 									<!-- Region -->
 									<!-- <validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
@@ -408,6 +394,12 @@
 								
 								
 									<b-col md="6">
+										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
 									
 									<!-- Territory -->
 									<!-- <validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
@@ -447,8 +439,8 @@
 						</b-collapse>
 						<!-- Details section end  -->
 
-						<!-- Contact section start-->
-						<b-card-header header-tag="header" role="tab" class="p-0">
+												<!-- Contact section start-->
+												<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseContact
@@ -460,287 +452,299 @@
 						</b-card-header>
 						<b-collapse id="collapseContact" role="tabpanel">
 							<b-card-body>
-								<validation-provider
-									vid="phone"
-									name="Phone"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
-										<b-form-input
-											name="phone"
-											type="text"
-											v-model="entity.phone"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
+									<validation-provider
+										vid="phone"
+										name="Phone"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
+											<b-form-input
+												name="phone"
+												type="text"
+												v-model="entity.phone"
+												v-mask="'(###) ###-####'"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
 
-								<validation-provider
-									vid="fax"
-									name="Fax"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
-										<b-form-input
-											name="fax"
-											type="text"
-											v-model="entity.fax"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+									<validation-provider
+										vid="email"
+										name="Email"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
+											<b-form-input
+												name="email"
+												type="email"
+												v-model="entity.email"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									
+								</b-col>
 
-								<validation-provider
-									vid="email"
-									name="Email"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
-										<b-form-input
-											name="email"
-											type="email"
-											v-model="entity.email"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								<validation-provider
-									vid="website"
-									name="Website"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
-										<b-form-input
-											name="website"
-											type="url"
-											v-model="entity.website"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+								<!-- Second Column -->
+								<b-col md="6">
+									<validation-provider
+										vid="website"
+										name="Website"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
+											<b-form-input
+												name="website"
+												type="url"
+												v-model="entity.website"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+
+									<validation-provider
+										vid="fax"
+										name="Fax"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
+											<b-form-input
+												name="fax"
+												type="text"
+												v-model="entity.fax"
+												v-mask="'(###) ###-####'"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+								</b-col>
+								</b-row>
 
 								<b-input-group-append>
-								  <b-button variant="primary" class="mb-1" @click="createNewForm">
-				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contacts</span>
-			                      </b-button>
-                                </b-input-group-append>
+									<b-button variant="primary" class="mb-1" @click="createNewForm">
+									   <font-awesome-icon icon="plus" fixed-width />
+									   <span>Add Contacts</span>
+									</b-button>
+								  </b-input-group-append>
 
-								<form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
+								  <form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
 									<b-card body>
-										<validation-provider
-											vid="f_name"
-											name="First_Name"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
-												<b-form-input
-													name="f_name"
-													type="text"
-													v-model="form.first_name"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-
-										<validation-provider
-											vid="l_name"
-											name="Last_Name"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
-												<b-form-input
-													name="l_name"
-													type="text"
-													v-model="form.last_name"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-
-										<validation-provider
-											vid="title_id"
-											name="Main_Title"
-											:rules="{ required: true, numeric: true }"
-											v-slot="validationContext"
-										>
-											<b-form-group
-												label="Title"
-												label-for="title_id"
-												label-cols-lg="4"
-											>
-												<b-input-group>
-													<b-form-select
-														name="title_id"
-														v-model="form.title_id"
-														:options="titlename"
-														:disabled="saving || loadingtitlename"
-														:state="getValidationState(validationContext)"
-														value-field="id"
-														text-field="full_name"
-														
+										<b-row>
+											<!-- First Column -->
+											<b-col md="2">
+												<validation-provider
+													vid="title_id"
+													name="Main_Title"
+													:rules="{ required: true, numeric: true }"
+													v-slot="validationContext"
+												>
+													<b-form-group
+														label="Title"
+														label-for="title_id"
+														label-cols-lg="4"
 													>
-													
-														<template #first>
-															<option disabled v-if="!hastitlename" :value="null">
-															Please Select Title
-															</option>
-														</template>
-													</b-form-select>
-													<template #append>
-														<b-button
-															variant="primary"
-															@click="openCustomTitle"
-														>
-															<font-awesome-icon icon="plus" fixed-width />
-														</b-button>
-													</template>
-												</b-input-group>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-										<template>
-											<div>
-												<!-- Add BootstrapVue grid classes to create a row -->
-												<b-row>
-													<!-- Column for the dropdown and input field -->
-													<b-col md="4">
-														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-															<b-form-group label="Contact Number Type" label-for="type">
-																<!-- Wrapper for select and input fields -->
-																<div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
-																<!-- Dropdown (select) field -->
-																	<label :for="'contacType' + index"></label>
-																	<b-input-group  class="mb-3">
-																		<b-form-select
-																			name="conatct_id"
-																			v-model="form.contact_id"
-																			:options="contactTypes"
-																			:disabled="saving || loadingcontactTypes"
-																			:state="getValidationState(validationContext)"
-																			value-field="id"
-																			text-field="full_name"
-																			
-																		>
-																			<template #first>
-																				<option disabled v-if="!hascontactTypes" :value="null">
-																				Please Select Contact Type
-																				</option>
-																			</template>
-																		</b-form-select>
-																	</b-input-group>
-																</div>
-															</b-form-group>
-														</validation-provider>
-													</b-col>
-													<b-col md="8">
-														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-														<b-form-group label="Contact Number" label-for="phone">
-															<b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
-															<b-form-input
-																:name="'phone' + index"
-																type="text"
-																v-model="form.phone"
-																v-mask="'(###) ###-####'"
+														<b-input-group>
+															<b-form-select
+																name="title_id"
+																v-model="form.title_id"
+																:options="titlename"
+																:disabled="saving || loadingtitlename"
 																:state="getValidationState(validationContext)"
-																:disabled="saving"
-															></b-form-input>
-
-															<!-- Button inside the input group to remove the corresponding field -->
-															<b-input-group-append>
-																<b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
-																<font-awesome-icon icon="minus" fixed-width />
+																value-field="id"
+																text-field="full_name"
+																
+															>
+															
+																<template #first>
+																	<option disabled v-if="!hastitlename" :value="null">
+																	Please Select Title
+																	</option>
+																</template>
+															</b-form-select>
+															<template #append>
+																<b-button
+																	variant="primary"
+																	@click="openCustomTitle"
+																>
+																	<font-awesome-icon icon="plus" fixed-width />
 																</b-button>
-																<!-- Button to add a new input field -->
-																<b-button variant="primary" @click="addInputField">
-															<font-awesome-icon icon="plus" fixed-width />
-														</b-button>
-															</b-input-group-append>
-															</b-input-group>
-
-															<b-form-invalid-feedback
+															</template>
+														</b-input-group>
+														<b-form-invalid-feedback
 															v-for="error in validationContext.errors"
 															:key="error"
 															v-text="error"
-															></b-form-invalid-feedback>
-														</b-form-group>
-														
-														</validation-provider>
-													</b-col>
-												</b-row>
-											</div>
-										</template>
-               								
+														/>
+													</b-form-group>
+												</validation-provider>
+												
+													
+																<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+																	<b-form-group label="Contact Number Type" label-for="type">
+																		<!-- Wrapper for select and input fields -->
+																		<div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
+																		<!-- Dropdown (select) field -->
+																			<label :for="'contacType' + index"></label>
+																			<b-input-group  class="mb-3">
+																				<b-form-select
+																					name="conatct_id"
+																					v-model="form.contact_id"
+																					:options="contactTypes"
+																					:disabled="saving || loadingcontactTypes"
+																					:state="getValidationState(validationContext)"
+																					value-field="id"
+																					text-field="full_name"
+																					
+																				>
+																					<template #first>
+																						<option disabled v-if="!hascontactTypes" :value="null">
+																						Please Select Contact Type
+																						</option>
+																					</template>
+																				</b-form-select>
+																			</b-input-group>
+																		</div>
+																	</b-form-group>
+																</validation-provider>
+															</b-col>
 
-										<validation-provider
-											vid="email"
-											name="Email"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="Email" label-for="email" label-cols-lg="4">
-												<b-form-input
-													name="email"
-													type="email"
-													v-model="form.email"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
+															<!-- Second Column -->
+															<b-col md="5">
+																<validation-provider
+																vid="f_name"
+																name="First_Name"
+																:rules="{ required: false }"
+																v-slot="validationContext"
+															>
+																<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
+																	<b-form-input
+																		name="f_name"
+																		type="text"
+																		v-model="form.first_name"
+																		:state="getValidationState(validationContext)"
+																		:disabled="saving"
+																	/>
+																	<b-form-invalid-feedback
+																		v-for="error in validationContext.errors"
+																		:key="error"
+																		v-text="error"
+																	/>
+																</b-form-group>
+															</validation-provider>
+
+															<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+																			<b-form-group label="Contact Number" label-for="phone">
+																				<b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
+																				<b-form-input
+																					:name="'phone' + index"
+																					type="text"
+																					v-model="form.phone"
+																					v-mask="'(###) ###-####'"
+																					:state="getValidationState(validationContext)"
+																					:disabled="saving"
+																				></b-form-input>
+
+																				<!-- Button inside the input group to remove the corresponding field -->
+																				<b-input-group-append>
+																					<b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+																					<font-awesome-icon icon="minus" fixed-width />
+																					</b-button>
+																					<!-- Button to add a new input field -->
+																					<b-button variant="primary" @click="addInputField">
+																				<font-awesome-icon icon="plus" fixed-width />
+																			</b-button>
+																				</b-input-group-append>
+																				</b-input-group>
+
+																				<b-form-invalid-feedback
+																				v-for="error in validationContext.errors"
+																				:key="error"
+																				v-text="error"
+																				></b-form-invalid-feedback>
+																			</b-form-group>
+																			
+																			</validation-provider>
+																</b-col>
+																<!-- Third Column -->
+																<b-col md="5">
+																<validation-provider
+																	vid="l_name"
+																	name="Last_Name"
+																	:rules="{ required: false }"
+																	v-slot="validationContext"
+																>
+																	<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
+																		<b-form-input
+																			name="l_name"
+																			type="text"
+																			v-model="form.last_name"
+																			:state="getValidationState(validationContext)"
+																			:disabled="saving"
+																		/>
+																		<b-form-invalid-feedback
+																			v-for="error in validationContext.errors"
+																			:key="error"
+																			v-text="error"
+																		/>
+																	</b-form-group>
+																</validation-provider>
+
+																<validation-provider
+																	vid="email"
+																	name="Email"
+																	:rules="{ required: false }"
+																	v-slot="validationContext"
+																>
+																	<b-form-group label="Email" label-for="email" label-cols-lg="4">
+																		<b-form-input
+																			name="email"
+																			type="email"
+																			v-model="form.email"
+																			:state="getValidationState(validationContext)"
+																			:disabled="saving"
+																		/>
+																		<b-form-invalid-feedback
+																			v-for="error in validationContext.errors"
+																			:key="error"
+																			v-text="error"
+																		/>
+																	</b-form-group>
+																</validation-provider>
+																</b-col>
+
+														</b-row>
+											
 										<b-card-footer class="d-flex justify-content-end">
 												<b-button type="button" variant="light"  @click="removeForm(index)">
 												<span>Cancel</span>
@@ -758,7 +762,7 @@
 											/>
 										</b-modal>
 									</b-card>
-								</form>
+								  </form>
 							</b-card-body>
 						</b-collapse>
 						<!-- Contact section end-->
@@ -1607,7 +1611,7 @@ export default {
 		this.fetchInsurances();
 		this.fetchReceivingEmails();
 		this.fetchReceivingFaxes();
-		
+
 		if (this.id) {
 			this.refresh();
 		} else {
