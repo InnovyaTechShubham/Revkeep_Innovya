@@ -27,14 +27,14 @@ class FacilitiesReceivingMethodsController extends AppController
 
         // Add more fields as needed
 
-         // Insert debugging code
-         $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
+        //  // Insert debugging code
+        //  $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
         
         
-         $jsonContent = json_encode($receivingEmailId, JSON_PRETTY_PRINT);
-         $file = fopen($filePath, 'w');
-         fwrite($file, $jsonContent);
-         fclose($file);
+        //  $jsonContent = json_encode($receivingEmailId, JSON_PRETTY_PRINT);
+        //  $file = fopen($filePath, 'w');
+        //  fwrite($file, $jsonContent);
+        //  fclose($file);
 
         // Validate the data (you can add more validations here)
         if (empty($facilityId)) {

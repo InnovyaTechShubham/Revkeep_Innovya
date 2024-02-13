@@ -1607,9 +1607,6 @@ export default {
 		this.fetchInsurances();
 		this.fetchReceivingEmails();
 		this.fetchReceivingFaxes();
-
-
-
 		
 		if (this.id) {
 			this.refresh();
@@ -1775,9 +1772,6 @@ export default {
 						console.error("Error fetching data:", error.message);
 					}
 		},
-
-    
-
 
 		getTypeOptions(row) {
 		return row.typeOptions.concat(['Custom']);
@@ -2214,6 +2208,8 @@ async addFax() {
 					console.log('Email saved successfully.');
 					this.saving = false;
 					// this.$router.push({ name: 'receivingEmails' });
+					await this.updateReceivingMethods(responseData.id, null);
+
 					this.$nextTick(() => {
 						this.$store.dispatch('notify', {
 							variant: 'primary',
@@ -2221,7 +2217,6 @@ async addFax() {
 							message: 'New email created.',
 						});
 					});
-					await this.updateReceivingMethods(responseData.id, null);
 
 					// redirect_index();
 				// } else {
