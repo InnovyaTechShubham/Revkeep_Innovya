@@ -27,6 +27,8 @@ class FacilityAddFormController extends AppController
             
             try{
                 $facilitiesName = (string)$data[0]['facility_name'];
+                // Adding a delay of 2 seconds so that new facility is added in database & it's id is available for this method to execute
+                sleep(2);
                 $facility = $facilitiesTable->find()
                     ->where(['name' => $facilitiesName])
                     ->first(); 
@@ -63,9 +65,9 @@ class FacilityAddFormController extends AppController
             }
         catch (\Exception $e){
             $responseMessage = ['error' => $e->getMessage()];
-            return $this->response
-                        ->withType('application/json')
-                        ->withStringBody(json_encode($responseMessage));
+            // return $this->response
+            //             ->withType('application/json')
+            //             ->withStringBody(json_encode($responseMessage));
         }
             return $this->response->withType('application/json')
                             ->withStringBody(json_encode($responseMessage));

@@ -142,7 +142,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Facility" label-for="facility" label-cols-lg="4">
+									<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
 										<b-input-group>
 											<b-form-select
 												name="facility_id"
@@ -975,6 +975,7 @@
 								</validation-provider>
 
 								<validation-provider
+								    v-if="iscontract"
 									vid="reimbursement_amount"
 									name="Reimbursement Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
@@ -997,9 +998,47 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.000000001"
 												maxlength="10"
 												autocomplete="off"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-input-group>
+									</b-form-group>
+								</validation-provider>
+								<validation-provider
+								    v-if="iscontract"
+									vid="reimburse_amount"
+									name="Reimburse Amount"
+									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Contract Paid Amount Estimate"
+										label-for="reimburse_amount"
+										label-cols-lg="4"
+									>
+										<b-input-group>
+											<b-input-group-prepend is-text>
+												<font-awesome-icon icon="dollar-sign" fixed-width />
+											</b-input-group-prepend>
+											<b-form-input
+												name="contract_paid_amt_est"
+												type="number"
+												v-model="entity.contract_paid_amt_est"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+												:min="0"
+												:max="currencyMax"
+												step="0.000000001"
+
+												maxlength="10"
+												autocomplete="off"
+												readonly
 											/>
 											<b-form-invalid-feedback
 												v-for="error in validationContext.errors"
@@ -1399,6 +1438,8 @@ export default {
 			maxDate: getTodaysDate(),
 			disciplineIds: [],
 			insuranceTypesList:[],
+			displayNames:[],
+
 		};
 	},
 	computed: {
@@ -1682,6 +1723,33 @@ export default {
 			this.insuranceTypesList=response.data;
 
 		},
+        
+		async facilityDetails(){
+            const url = "/client/facilityList";
+			
+			const response = await axios.get(url, {
+			headers: {
+				"Accept": "application/json",
+				// You can add other headers here if needed
+			},
+			});
+			this.facilities = response.data; // save all facilities for later use
+      this.displayNames = this.facilities.map((facility) => facility.display_name);
+      console.log("display name:", this.displayNames);
+		},
+
+		logSelectedFacilityDetails() {
+      const selectedDisplayName = this.entity.facility_id;
+      const selectedFacility = this.facilities.find(
+        (facility) => facility.display_name === selectedDisplayName
+      );
+
+      if (selectedFacility) {
+		this.iscontract = selectedFacility.has_contract;
+		this.entity.facility_name = selectedFacility.facility_status;
+      }
+    },
+
 	},
 	watch: {
 		patientId: {

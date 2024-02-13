@@ -481,6 +481,49 @@
 								</b-col>
 								</b-row>
 
+								<p class="font-weight-bold">No of Bed</p>
+                                <b-row>
+                                    <!-- Skilled Field -->
+                                      <b-col md="3">
+                                          <validation-provider vid="skilled" name="Skilled" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                              <b-form-group label="Skilled" label-for="skilled" label-cols-lg="4">
+                                                  <b-form-input name="skilled" type="text" v-model="entity.skilled" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                  <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                              </b-form-group>
+                                          </validation-provider>
+                                      </b-col>
+ 
+                                     <!-- LTC Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ltc" name="LTC" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="LTC" label-for="ltc" label-cols-lg="4">
+                                                 <b-form-input name="ltc" type="text" v-model="entity.ltc" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- AI Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ai" name="AI" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="AI" label-for="ai" label-cols-lg="4">
+                                                 <b-form-input name="ai" type="text" v-model="entity.ai" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- IL Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="il" name="IL" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="IL" label-for="il" label-cols-lg="4">
+                                                 <b-form-input name="il" type="text" v-model="entity.il" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+                                </b-row>
+
 								
 							</b-card-body>
 						</b-collapse>
@@ -1429,7 +1472,10 @@ export default {
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
-
+				skilled: null,
+                ltc: null,
+                ai: null,
+                il: null,
 			},
 			billTypeOptions:[],
 			facilityStatus:[],
@@ -2288,10 +2334,14 @@ export default {
                   
 				console.log("post data :", this.forms);
 				// await axios.post('/client/facilityAddForms', this.forms );
+				try{
 				const responsed = await axios.post('/client/facilityAddForms', this.forms);
         		console.log('saving Response:', responsed);
-				
                 console.log('Data saved successfully');
+				}catch(err){
+					console.log('An error occured while saving the form data: ', err);
+				}
+
 			} 
 			catch (e) {
 				if (e.response.data.errors) {
@@ -2409,7 +2459,7 @@ export default {
 			title_id: null,
 			contact_id: null,
 			phone_no: null,
-			facility_name:this.entity.name
+			facility_name:this.entity.display_name
 			// ... other form fields ...
 			
 			// ... other form-specific data ...
