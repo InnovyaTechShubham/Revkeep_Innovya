@@ -995,6 +995,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	$builder->connect('/facilityContactList', [
 		'controller' => 'FacilityContactList',
 		'action' => 'index',
+		'_method' => 'POST'
 	]);
 	$builder->connect('/multiplefacility', [
 		'controller' => 'Multiplefacility',

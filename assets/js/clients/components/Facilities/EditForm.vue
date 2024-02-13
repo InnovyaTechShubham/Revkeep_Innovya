@@ -16,7 +16,7 @@
 								:rules="{ required: false, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Account Name1" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -2988,17 +2988,14 @@ async addFax() {
 						{
 							const url = "/client/facilityContactList";
 								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
+							const data = {id:this.entity.id}
+							const response = await axios.post(url,data );
 								if (response.data && Array.isArray(response.data)) {
 									response.data.forEach((item)=>{
-										if(item.facility_id == this.entity.id){
-											this.forms.push(item);
-										}
+										// if(item.facility_id == this.entity.id){
+										// 	this.forms.push(item);
+										// }
+										this.forms.push(item);
 
 									});
 								}
