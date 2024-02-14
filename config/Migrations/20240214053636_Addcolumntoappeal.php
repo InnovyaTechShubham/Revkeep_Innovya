@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class AddStatusToCaseRequests extends AbstractMigration
+class Addcolumntoappeal extends AbstractMigration
 {
     /**
      * Change Method.
@@ -14,12 +14,14 @@ class AddStatusToCaseRequests extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('case_requests');
-        $table->addColumn('status', 'string', [
+        $table = $this->table('appeals');
+
+        $table->addColumn('received_facilitydate', 'date', [
             'default' => null,
-            'limit' => 255,
-            'null' => false,
+            'null' => true,
         ]);
+        
+        
         $table->update();
     }
 }

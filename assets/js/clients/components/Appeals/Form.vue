@@ -905,6 +905,7 @@ export default {
 					agency_id: null,
 					priority: null,
 					audit_identifier: null,
+					received_facilitydate: null,
 				};
 			},
 		},

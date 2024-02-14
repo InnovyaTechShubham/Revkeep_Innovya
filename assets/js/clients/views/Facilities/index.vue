@@ -100,15 +100,13 @@
 											{{ result.display_name }}
 										</h6>
 									<div >
-										<b-badge pill v-if="result.facility_status.toLowerCase() === 'active'" variant="primary" title="active" class="ml-2 d-flex align-items-center">
-                                        {{ result.facility_status }}
-                                         </b-badge>
+										
 
-                                        <b-badge pill v-else-if="result.facility_status.toLowerCase() === 'inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
+                                        <b-badge pill v-if="result.facility_status === 'Inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
                                             {{ result.facility_status }}
                                         </b-badge>
 
-                                        <b-badge pill v-else variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
+                                        <b-badge pill v-else-if="result.facility_status === 'Pending'" variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
                                             {{ result.facility_status }}
                                         </b-badge>
 									 </div>
