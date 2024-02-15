@@ -1174,4 +1174,22 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		
 	]);
 
+	$builder->connect('/deletereceivingemail/{id}', [
+		'controller' => 'ReceivingEmails', 
+		'action' => 'delete'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
+
+	$builder->connect('/deletereceivingfax/{id}', [
+		'controller' => 'ReceivingFaxes', 
+		'action' => 'delete'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
+
+	$builder->connect('/facilitytypes', [
+		'controller' => 'FacilityTypes',
+		'action' => 'index',
+		
+	]);
+
 });
