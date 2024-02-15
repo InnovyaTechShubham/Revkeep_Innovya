@@ -839,7 +839,7 @@
 			<b-nav card-header tabs > 
                  
 				<b-nav-item
-						v-for="appeal in caseEntity.appeals"
+						v-for="appeal in sortedAppeals"
 						:key="'appeal_' + appeal.id"
 						:to="{ name: 'appeals.view', params: { id: caseEntity.id, appeal_id: appeal.id } }"
 						:title="
@@ -984,6 +984,10 @@ export default {
 
 			return "case";
 		},
+		sortedAppeals() {
+        // Assuming appeals is an array in your caseEntity
+        return this.caseEntity.appeals.slice().sort((a, b) => a.id - b.id);
+    },
 		currentAppeal() {
 			return this.caseEntity.appeals.find((appeal) => appeal.id == this.$route.params.appeal_id);
 		},

@@ -92,7 +92,7 @@
 						<dd class="col-7">
 							<div v-if="appeal.completed">
 								<div>{{ $filters.formatDate(appeal.completed) }}</div>
-								<div class="small-text-muted">{{ $filters.fromNow(appeal.completed) }}</div>
+								<!--<div class="small-text-muted">{{ $filters.fromNow(appeal.completed) }}</div>-->
 
 								<div
 									v-if="appeal.completed_by_user && appeal.completed_by_user.full_name"

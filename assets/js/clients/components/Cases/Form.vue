@@ -1053,7 +1053,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Paid Amount Actual"
+										label="Contract Risk Amount(Actual)"
 										label-for="reimbursement_amount"
 										label-cols-lg="4"
 									>
@@ -1072,6 +1072,7 @@
 												step="0.000000001"
 												maxlength="10"
 												autocomplete="off"
+												readonly
 											/>
 											<b-form-invalid-feedback
 												v-for="error in validationContext.errors"
@@ -1089,7 +1090,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Paid Amount Estimate"
+										label="Contract Risk Amount(Calculated)"
 										label-for="reimburse_amount"
 										label-cols-lg="4"
 									>
