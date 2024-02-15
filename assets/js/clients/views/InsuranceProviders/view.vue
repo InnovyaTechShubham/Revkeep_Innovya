@@ -63,7 +63,9 @@
 
 			<b-card no-body class="shadow-sm mb-4">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab no-body lazy active title="Details">
+
+					<b-tab lazy active title="Details">
+
 						<b-row>
 							<b-col cols="12" md="6" class="mb-4">
 								<b-card no-body class="shadow-sm">
@@ -135,7 +137,9 @@
 							</b-col>
 						</b-row>
 					</b-tab>
-					<b-tab no-body lazy  title="Cases">
+
+					<b-tab no-body lazy title="Cases">
+
 						<case-index
 							ref="caseList"
 							hide-insurance-provider

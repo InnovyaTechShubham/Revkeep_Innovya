@@ -341,41 +341,104 @@
 									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 								</b-form-group>
 								</validation-provider>
+
+								<!-- Territory -->
+								<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
 							</b-col>
 
 							<!-- Second Column -->
 							
 							
-								<b-col md="6">
+							<b-col md="6">
+									
+									<!-- Territory
+									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider> -->
+
+									<!-- Area -->
 									<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-										<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-											<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
-											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-										</b-form-group>
+									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+										<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
 									</validation-provider>
 
-								<!--  Internal Owner -->
-								<validation-provider vid="int_owner" name="Internal Owner" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-								<b-form-group label="Internal Owners" label-for="int_owner" label-cols-lg="4">
-									<b-form-input name="int_owner" type="text" v-model="entity.internal_owner" :state="getValidationState(validationContext)" :disabled="saving" />
-									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-								</b-form-group>
-								</validation-provider>
-								<!-- BU Number -->
-								<validation-provider vid="bu_number" name="BU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-								<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
-									<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
-									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-								</b-form-group>
-								</validation-provider>
-							</b-col>
+									<!--  Internal Owner -->
+									<validation-provider vid="int_owner" name="Internal Owner" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="Internal Owners" label-for="int_owner" label-cols-lg="4">
+										<b-form-input name="int_owner" type="text" v-model="entity.internal_owner" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+									<!-- BU Number -->
+									<validation-provider vid="bu_number" name="BU Number" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+									<b-form-group label="BU Number" label-for="bu_number" label-cols-lg="4">
+										<b-form-input name="bu_number" type="text" v-model="entity.bu_number" :state="getValidationState(validationContext)" :disabled="saving" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+									</b-form-group>
+									</validation-provider>
+								</b-col>
 							</b-row>
+							<p class="font-weight-bold">No of Bed</p>
+                                <b-row>
+                                    <!-- Skilled Field -->
+                                      <b-col md="3">
+                                          <validation-provider vid="skilled" name="Skilled" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                              <b-form-group label="Skilled" label-for="skilled" label-cols-lg="4">
+                                                  <b-form-input name="skilled" type="text" v-model="entity.skilled" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                  <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                              </b-form-group>
+                                          </validation-provider>
+                                      </b-col>
+ 
+                                     <!-- LTC Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ltc" name="LTC" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="LTC" label-for="ltc" label-cols-lg="4">
+                                                 <b-form-input name="ltc" type="text" v-model="entity.ltc" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- AI Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ai" name="AI" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="AI" label-for="ai" label-cols-lg="4">
+                                                 <b-form-input name="ai" type="text" v-model="entity.ai" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- IL Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="il" name="IL" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="IL" label-for="il" label-cols-lg="4">
+                                                 <b-form-input name="il" type="text" v-model="entity.il" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+                                </b-row>
+
+
 
 							
 						</b-card-body>
 					</b-collapse>
 					<!-- Details section end  -->
 
+								
 						<!-- Contact section start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 						<b-button
@@ -1334,7 +1397,10 @@ export default {
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
-
+				skilled: null,
+                ltc: null,
+                ai: null,
+                il: null,
 			},
 			billTypeOptions:[],
 			facilityStatus:[],
@@ -2182,10 +2248,14 @@ export default {
                   
 				console.log("post data :", this.forms);
 				// await axios.post('/client/facilityAddForms', this.forms );
+				try{
 				const responsed = await axios.post('/client/facilityAddForms', this.forms);
         		console.log('saving Response:', responsed);
-				
                 console.log('Data saved successfully');
+				}catch(err){
+					console.log('An error occured while saving the form data: ', err);
+				}
+
 			} 
 			catch (e) {
 				if (e.response.data.errors) {
@@ -2303,7 +2373,9 @@ export default {
 			title_id: null,
 			contact_id: null,
 			phone_no: null,
+
 			facility_name:this.entity.name
+
 			
 			};
 			// Push an empty object to the forms array

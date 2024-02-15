@@ -853,6 +853,308 @@
 							</b-tab>
 						</b-tabs>
 					</b-card>
+
+
+
+					<!-- <b-card-header header-tag="header" role="tab"  class="text-left px-4 py-3 m-0 p-0">Outgoing Methods</b-card-header>
+							<b-card-body>
+								<template>
+									<div>
+										<b-row>
+										<b-col md="6">
+											<div>
+												<h6>Outgoing Emails</h6>
+												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+												<template slot="cell(email)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No emails added</span>
+												</empty-result>
+											</div>
+
+											
+											<b-button @click="openPopup" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button>
+
+											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
+												<b-form @submit.prevent="addEmail">
+												<b-form-group label="Email" label-for="email">
+													<b-form-input v-model="newEmail.email" id="email" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newEmail.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+
+											
+											<b-button @click="openDeletePopup" variant="danger" v-if="entity.receiving_emails && entity.receiving_emails.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+											</b-button>
+
+											
+											<b-modal v-model="deletePopupVisible" title="Delete Emails" @ok="deleteSelectedEmails" ok-only>
+												<b-form>
+												<div> 
+													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
+													<template #cell(email)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<span>{{ info.item.email }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											
+										</b-col>
+
+										
+										<b-col md="6">
+											
+											<div>
+												<h6>Outgoing Faxes</h6>
+												<b-table v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0" :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+												<template slot="cell(fax)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												<template slot="cell(description)" slot-scope="info">
+													{{ info.value }}
+												</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+												<span>No faxes added</span>
+												</empty-result>
+											</div>
+
+											
+											<div class="d-flex justify-content-between">
+												
+												<b-button @click="openPopupFax" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+												
+												<b-button @click="openDeleteFaxPopup" variant="danger" v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0" class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+										
+											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
+												<b-form @submit.prevent="addFax">
+												<b-form-group label="Fax" label-for="fax">
+													<b-form-input v-model="newFax.fax" id="fax" required />
+												</b-form-group>
+												<b-form-group label="Description" label-for="description">
+													<b-form-input v-model="newFax.description" id="description" />
+												</b-form-group>
+												<b-button type="submit" variant="primary" class="mx-auto d-block"> Ok</b-button>
+												</b-form>
+											</b-modal>
+
+											
+											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes" @ok="deleteSelectedFaxes" ok-only>
+												<b-form>
+												<div> 
+													<b-table :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
+													<template #cell(fax)="info">
+														<div class="d-flex align-items-center">
+														<b-form-checkbox v-model="selectedFaxes" :value="info.item.fax" class="mr-2" />
+														<span>{{ info.item.fax }}</span>
+														</div>
+													</template>
+													<template #cell(description)="info">
+														{{ info.value }}
+													</template>
+													</b-table>
+												</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+												<b-button @click="deleteSelectedFaxes" variant="primary" class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+											
+										</b-col>
+										</b-row>
+									</div>
+									</template>
+							</b-card-body> -->
+					<b-card>
+						<b-card-body>
+							<h5 class="h5 mb-4 text-uppercase font-weight-bold">Outgoing Methods</h5>
+							<template>
+								<div>
+									<b-row>
+										<b-col md="6">
+											<div>
+												<h6>Outgoing Emails</h6>
+												<b-table
+													v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0"
+													:items="entity.receiving_emails" :fields="['email', 'description']"
+													striped hover>
+													<template slot="cell(email)" slot-scope="info">
+														{{ info.value }}
+													</template>
+													<template slot="cell(description)" slot-scope="info">
+														{{ info.value }}
+													</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+													<span>No emails added</span>
+												</empty-result>
+											</div>
+
+
+											<b-button @click="openPopup" variant="primary">
+												<font-awesome-icon icon="plus" fixed-width />
+											</b-button>
+
+											<b-modal v-model="popupVisible" title="Add Email" hide-footer>
+												<b-form @submit.prevent="addEmail">
+													<b-form-group label="Email" label-for="email">
+														<b-form-input v-model="newEmail.email" id="email" required />
+													</b-form-group>
+													<b-form-group label="Description" label-for="description">
+														<b-form-input v-model="newEmail.description" id="description" />
+													</b-form-group>
+													<b-button type="submit" variant="primary" class="mx-auto d-block">
+														Ok</b-button>
+												</b-form>
+											</b-modal>
+
+
+											<b-button @click="openDeletePopup" variant="danger"
+												v-if="entity.receiving_emails && entity.receiving_emails.length > 0"
+												class="mr-8">
+												<font-awesome-icon icon="trash" fixed-width />
+											</b-button>
+
+
+											<b-modal v-model="deletePopupVisible" title="Delete Emails"
+												@ok="deleteSelectedEmails" ok-only>
+												<b-form>
+													<div>
+														<b-table :items="entity.receiving_emails"
+															:fields="['email', 'description']" striped hover>
+															<template #cell(email)="info">
+																<div class="d-flex align-items-center">
+																	<b-form-checkbox v-model="selectedEmails"
+																		:value="info.item.email" class="mr-2" />
+																	<span>{{ info.item.email }}</span>
+																</div>
+															</template>
+															<template #cell(description)="info">
+																{{ info.value }}
+															</template>
+														</b-table>
+													</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+													<b-button @click="deleteSelectedEmails" variant="primary"
+														class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+
+										</b-col>
+
+
+										<b-col md="6">
+
+											<div>
+												<h6>Outgoing Faxes</h6>
+												<b-table
+													v-if="entity && entity.receiving_faxes && entity.receiving_faxes.length > 0"
+													:items="entity.receiving_faxes" :fields="['fax', 'description']" striped
+													hover>
+													<template slot="cell(fax)" slot-scope="info">
+														{{ info.value }}
+													</template>
+													<template slot="cell(description)" slot-scope="info">
+														{{ info.value }}
+													</template>
+												</b-table>
+												<empty-result v-else class="small-empty-result">
+													<span>No faxes added</span>
+												</empty-result>
+											</div>
+
+
+											<div class="d-flex justify-content-between">
+
+												<b-button @click="openPopupFax" variant="primary">
+													<font-awesome-icon icon="plus" fixed-width />
+												</b-button>
+
+
+												<b-button @click="openDeleteFaxPopup" variant="danger"
+													v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0"
+													class="mr-8">
+													<font-awesome-icon icon="trash" fixed-width />
+												</b-button>
+											</div>
+
+
+											<b-modal v-model="popupVisibleFax" title="Add Fax" hide-footer>
+												<b-form @submit.prevent="addFax">
+													<b-form-group label="Fax" label-for="fax">
+														<b-form-input v-model="newFax.fax" id="fax" required
+															v-mask="'(###) ###-####'" />
+													</b-form-group>
+													<b-form-group label="Description" label-for="description">
+														<b-form-input v-model="newFax.description" id="description" />
+													</b-form-group>
+													<b-button type="submit" variant="primary" class="mx-auto d-block">
+														Ok</b-button>
+												</b-form>
+											</b-modal>
+
+
+											<b-modal v-model="deletePopupVisibleFax" title="Delete Faxes"
+												@ok="deleteSelectedFaxes" ok-only>
+												<b-form>
+													<div>
+														<b-table :items="entity.receiving_faxes"
+															:fields="['fax', 'description']" striped hover>
+															<template #cell(fax)="info">
+																<div class="d-flex align-items-center">
+																	<b-form-checkbox v-model="selectedFaxes"
+																		:value="info.item.fax" class="mr-2" />
+																	<span>{{ info.item.fax }}</span>
+																</div>
+															</template>
+															<template #cell(description)="info">
+																{{ info.value }}
+															</template>
+														</b-table>
+													</div>
+												</b-form>
+												<template #modal-footer="{ ok }">
+													<b-button @click="deleteSelectedFaxes" variant="primary"
+														class="mx-auto d-block">OK</b-button>
+												</template>
+											</b-modal>
+
+										</b-col>
+									</b-row>
+								</div>
+							</template>
+						</b-card-body>
+					</b-card>
 				</b-card-body>
 
 				<b-card-footer>
@@ -913,9 +1215,37 @@ export default {
 				"outgoing_MAIL",
 				"outgoing_CONTACT"
 			],
+
+			receiving_email: '', // For input
+			receiving_emails: [], // For storing multiple emails
+			receiving_fax: '', // For input
+			receiving_faxes: [], // For storing multiple emails
+			outgoing_emails: [],
+			displayedEmails: '',
+			displayedFaxes: '',
+			popupVisible: false,
+			popupVisibleFax: false,
+			deletePopupVisible: false,
+			deletePopupVisibleFax: false,
+			MultiAgencyContact: [],
+
+			newEmail: {
+				email: '',
+				description: '',
+			},
+			selectedEmails: [],
+			newFax: {
+				fax: '',
+				description: '',
+			},
+			selectedFaxes: [],
+			showDeleteIcon: false,
+
+
 		};
 	},
 	mounted() {
+		this.MultiAgencyContactList();
 		if (this.id) {
 			this.refresh();
 		} else {
@@ -923,6 +1253,211 @@ export default {
 		}
 	},
 	methods: {
+
+		async MultiAgencyContactList() {
+			console.log("started");
+			try {
+				const url = "/client/multiagencycontactlist";
+
+				// Fetch data from the server
+				const response = await axios.get(url, {
+					headers: {
+						"Accept": "application/json",
+					},
+				});
+				// Clear existing data in receiving_emails and receiving_faxes arrays
+				this.entity.receiving_emails = [];
+				this.entity.receiving_faxes = [];
+
+				// Filter contacts based on the agency ID
+				const filteredContacts = response.data.filter(contact => contact.agency_id === this.id);
+
+				// Iterate over the filtered contacts and populate email and fax arrays
+				filteredContacts.forEach(contact => {
+					if (contact.agency_email != "NULL" ) {
+						this.entity.receiving_emails.push({ email: contact.agency_email, description: contact.desc_email });
+					}
+					if (contact.agency_fax) {
+						this.entity.receiving_faxes.push({ fax: contact.agency_fax, description: contact.desc_fax });
+					}
+				});
+				console.log("fetched");
+			} catch (error) {
+				console.error("Error fetching multi agency contact:", error);
+			}
+		},
+
+		openPopupFax() {
+			this.popupVisibleFax = true;
+		},
+		closePopupFax() {
+			this.popupVisibleFax = false;
+		},
+
+		addFax() {
+			// Assuming newFax is a valid object with fax and description properties
+			const newFax = { ...this.newFax };
+			console.log("new:", newFax);
+			console.log("Receiving Faxes:", this.entity.receiving_faxes);
+
+			// Check if receiving_faxes is defined, if not, initialize it as an empty array
+			if (!Array.isArray(this.entity.receiving_faxes)) {
+				this.$set(this.entity, 'receiving_faxes', []);
+			}
+
+			// Add the new fax to the array
+			this.entity.receiving_faxes.push(newFax);
+
+			// Clear the newFax object for the next entry
+			this.newFax = { fax: '', description: '' };
+
+			// Close the pop-up
+			// this.closeFaxPopup();
+			this.popupVisibleFax = false;
+		},
+		openDeleteFaxPopup() {
+			// Show checkboxes and delete icon
+			this.showDeleteIcon = true;
+			this.deletePopupVisibleFax = true;
+		},
+		closeDeleteFaxPopup() {
+			// Hide checkboxes and delete icon
+			this.showDeleteIcon = false;
+			this.deletePopupVisibleFax = false;
+			// Reset selectedFaxes array
+			this.selectedFaxes = [];
+		},
+		deleteSelectedFaxes() {
+			// Add logic to delete selected faxes
+			console.log("Inside");
+			const updatedFaxes = this.entity.receiving_faxes.filter(
+				(fax) => !this.selectedFaxes.includes(fax.fax)
+			);
+			console.log("Deleted:", updatedFaxes);
+
+			// Update the receiving_faxes array with the updatedFaxes
+			this.entity.receiving_faxes = updatedFaxes;
+
+			// Reset selectedFaxes array
+			this.selectedFaxes = [];
+
+			// Close the delete popup
+			this.closeDeleteFaxPopup();
+		},
+		openPopup() {
+			this.popupVisible = true;
+		},
+		closePopup() {
+			this.popupVisible = false;
+		},
+
+		async addEmail() {
+			// Assuming newEmail is a valid object with email and description properties
+			const newEmail = { ...this.newEmail };
+			const email = newEmail.email;
+			const description = newEmail.description;
+			console.log("new:", newEmail);
+			console.log("Receiving Emails:", this.entity.receiving_emails);
+			// Prepare the data to be sent in the POST request
+			// const emailData = {
+			// 	email,
+			// 	description,
+			// 	};
+			// console.log("before API", emailData);
+
+			// Check if receiving_emails is defined, if not, initialize it as an empty array
+			if (!Array.isArray(this.entity.receiving_emails)) {
+				this.$set(this.entity, 'receiving_emails', []);
+			}
+
+			// Add the new email to the array
+			this.entity.receiving_emails.push(newEmail);
+
+			// Clear the newEmail object for the next entry
+			this.newEmail = { email: '', description: '' };
+
+			// Close the pop-up
+			// this.closePopup();
+			this.popupVisible = false;
+
+			// Prepare the data to be sent in the POST request
+			const emailData = {
+				email,
+				description,
+			};
+			console.log("before API", emailData);
+			// await axios.post('/client/receivingEmails', emailData)
+			// 	.then(response => {
+			// 		// const responseData = response.data.data;
+			// 		console.log("response:", response);
+			// 		if (response.data.success) {
+			// 			console.log('email saved');
+			// 			this.saving = false;
+			// 			this.$router.push({
+			// 				name: "receivingEmails"
+			// 			});
+			// 			this.$nextTick(function () {
+			// 				this.$store.dispatch("notify", {
+			// 					variant: "primary",
+			// 					title: "Email Created!",
+			// 					message: `New email Created!.`,
+			// 				});
+			// 			});
+			// 			redirect_index()
+			// 		} else {
+			// 			this.saving = false;
+			// 			console.log('email already exists');
+			// 			this.errorMessage = response.data.message;
+			// 			this.$nextTick(function () {
+			// 				this.$store.dispatch("notify", {
+			// 					variant: "danger",
+			// 					title: "Email Error",
+			// 					message: this.errorMessage,
+			// 				});
+			// 			});
+			// 		}
+			// 	})
+			// 	.catch(error => {
+			// 		console.log(error)
+			// 		// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
+			// 		// this.saving = false;
+			// 		// this.errorMessage = 'Error creating chain.'; 
+			// 		// this.$nextTick(function () {
+			// 		// 	this.$store.dispatch("notify", {
+			// 		// 		variant: "danger",
+			// 		// 		title: "Chain Error",
+			// 		// 		message: error,
+			// 		// 	});
+			// 		// });
+			// 	})
+
+		},
+		openDeletePopup() {
+			// Show checkboxes and delete icon
+			this.showDeleteIcon = true;
+			this.deletePopupVisible = true;
+		},
+		closeDeletePopup() {
+			// Hide checkboxes and delete icon
+			this.showDeleteIcon = false;
+			this.deletePopupVisible = false;
+			// Reset selectedEmails array
+			this.selectedEmails = [];
+		},
+		deleteSelectedEmails() {
+			// Add logic to delete selected emails
+			console.log("Inside");
+			const updatedEmails = this.entity.receiving_emails.filter(
+				(email) => !this.selectedEmails.includes(email.email)
+			);
+			console.log("Deleted:", updatedEmails);
+			// Update the receiving_emails array with the updatedEmails
+			this.entity.receiving_emails = updatedEmails;
+			// Reset selectedEmails array
+			this.selectedEmails = [];
+			this.closeDeletePopup();
+		},
+
 		getValidationState,
 		cancel(e) {
 			if (e) {
@@ -949,14 +1484,94 @@ export default {
 				this.loading = false;
 			}
 		},
+		// 		async save() {
+		// 			try {
+		// 				this.saving = true;
+
+		// 				const response = await save(this.entity);
+		// 				console.log(response.id);
+		// 				this.$emit("saved", response);
+		// 				this.$emit("update:id", response.id);
+		// 			} catch (e) {
+		// 				if (e.response.data.errors) {
+		// 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+		// 				}
+
+		// 				this.$store.dispatch("apiError", {
+		// 					error: e,
+		// 					title: "Save Failed",
+		// 					message: "Error saving agency details. Please check for errors.",
+		// 					variant: "warning",
+		// 				});
+		// 			} finally {
+		// 				this.saving = false;
+		// 			}
+
+		// 	// 	try {
+		//     //     // Prepare data to be sent to the backend API
+		//     //     const data = {
+		//     //       id: this.id,
+		//     //       name: this.entity.name,
+		//     //       emails: this.entity.receiving_emails.map(email => ({
+		//     //         email: email.email,
+		//     //         description: email.description
+		//     //       })),
+		//     //       faxes: this.entity.receiving_faxes.map(fax => ({
+		//     //         fax: fax.fax,
+		//     //         description: fax.description
+		//     //       }))
+		//     //     };
+		// 	// 	console.log("data sent", data);
+		//     //     // Call your backend API to save the data
+		//     //     const response = await axios.post('/client/multipleagencycontact', data);
+		// 	// 	//const response = await axios.post('/client/multiplefacility', data);
+		// 	// 	console.log("request sent")
+		//     //     // Handle the response as needed
+		//     //     console.log("Data sent successfully", response);
+		// 	// 	this.$emit("savedWithFacilities", response);
+		//     //   } catch (error) {
+		//     //     // Handle any errors that occur during the API call
+		//     //     console.error('Error saving data:', error);
+		//     //     // You may want to show an error message to the user
+		//     //   }
+		// 	try {
+
+		//     // Prepare data to be sent to the backend API
+		//     const data = {
+		//         id: this.id,
+		//         name: this.entity.name,
+		//         contacts: [
+		//             ...this.entity.receiving_emails.map(email => ({ type: 'email', value: email.email, description: email.description })),
+		//             ...this.entity.receiving_faxes.map(fax => ({ type: 'fax', value: fax.fax, description: fax.description }))
+		//         ]
+		//     };
+		//     console.log("data sent", data);
+
+		//     // Call your backend API to save the data
+		//     const response = await axios.post('/client/multipleagencycontact', data);
+		//     console.log("request sent");
+
+		//     // Handle the response as needed
+		//     console.log("Data sent successfully", response);
+		//     this.$emit("savedWithFacilities", response);
+		// } catch (error) {
+		//     // Handle any errors that occur during the API call
+		//     console.error('Error saving data:', error);
+		//     // You may want to show an error message to the user
+		// }
+		//     },
+
 		async save() {
 			try {
 				this.saving = true;
-
 				const response = await save(this.entity);
-
+				console.log(response.id);
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
+
+				// Call the new async function with the response.id as a parameter
+				await this.newAsyncFunction(response.id);
+
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -972,7 +1587,39 @@ export default {
 				this.saving = false;
 			}
 		},
+
+	
+
+
+		async newAsyncFunction(id) {
+			try {
+				// Prepare data to be sent to the backend API
+				const data = {
+					id: id,
+					name: this.entity.name,
+					contacts: [
+						...this.entity.receiving_emails.map(email => ({ type: 'email', value: email.email, description: email.description })),
+						...this.entity.receiving_faxes.map(fax => ({ type: 'fax', value: fax.fax, description: fax.description }))
+					]
+				};
+				console.log("data sent", data);
+
+				// Call your backend API to save the data
+				const response = await axios.post('/client/multipleagencycontact', data);
+				console.log("request sent");
+
+				// Handle the response as needed
+				console.log("Data sent successfully", response);
+				this.$emit("savedWithFacilities", response);
+			} catch (error) {
+				// Handle any errors that occur during the API call
+				console.error('Error saving data:', error);
+				// You may want to show an error message to the user
+			}
+		},
 	},
+
+
 	watch: {
 		entity: {
 			deep: true,

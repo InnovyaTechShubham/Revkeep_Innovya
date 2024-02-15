@@ -146,6 +146,30 @@
 						</b-form-group>
 					</validation-provider>
 					<validation-provider
+                        vid="received_facilitydates"
+                        name="Received by Facility"
+                        :rules="{ required: true }"
+                        v-slot="validationContext"
+                    >
+                        <b-form-group label="Received by Facility" label-for="received_facilitydates" label-cols-lg="4">
+                            <b-form-input
+                                type="date"
+                                v-model="entity.received_facilitydate"
+                                name="received_facilitydates"
+                                required="required"
+                                :disabled="saving"
+                                :state="getValidationState(validationContext)"
+                                :min="minDate"
+                                :max="today"
+                            />
+                            <b-form-invalid-feedback
+                                v-for="error in validationContext.errors"
+                                :key="error"
+                                v-text="error"
+                            />
+                        </b-form-group>
+                    </validation-provider>
+					<validation-provider
 						vid="days_to_decision"
 						name="Days to Decision"
 						:rules="{ required: true, min: 0, max: 365 }"
@@ -610,7 +634,7 @@
 				
 
 				<b-card-body>
-					<h6 class="text-muted">Optional</h6>
+					<!-- <h6 class="text-muted">Optional</h6> -->
 					<b-card no-body>
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -794,6 +818,22 @@
 								</empty-result>
 							</b-card-body>
 						</b-collapse>
+						<b-card-header header-tag="header" role="tab" class="p-0">
+                            <b-button
+                                block
+                                v-b-toggle.collapseFinancial
+                                variant="light"
+                                role="tab"
+                                class="text-left px-4 py-3 m-0"
+                            >
+                             Level Financial Details
+                            </b-button>
+                        </b-card-header>
+                        <b-collapse id="collapseFinancial" role="tabpanel">
+                            <b-card-body>
+                                <p>Here is Our Financial Details</p>
+                            </b-card-body>
+                        </b-collapse>
 					</b-card>
 				</b-card-body>
 
@@ -864,6 +904,7 @@ export default {
 					agency_id: null,
 					priority: null,
 					audit_identifier: null,
+					received_facilitydate: null,
 				};
 			},
 		},
@@ -1119,6 +1160,7 @@ export default {
 					agency_id: this.entity.agency_id,
 					audit_identifier: this.entity.audit_identifier,
 					priority: this.entity.priority,
+					received_facilitydate: this.entity.received_facilitydate,
 				});
 
 				this.saving = false;

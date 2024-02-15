@@ -375,7 +375,48 @@
 									</validation-provider>
 								</b-col>
 								</b-row>
-
+								<p class="font-weight-bold">No of Bed</p>
+                                <b-row>
+                                    <!-- Skilled Field -->
+                                      <b-col md="3">
+                                          <validation-provider vid="skilled" name="Skilled" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                              <b-form-group label="Skilled" label-for="skilled" label-cols-lg="4">
+                                                  <b-form-input name="skilled" type="text" v-model="entity.skilled" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                  <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                              </b-form-group>
+                                          </validation-provider>
+                                      </b-col>
+ 
+                                     <!-- LTC Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ltc" name="LTC" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="LTC" label-for="ltc" label-cols-lg="4">
+                                                 <b-form-input name="ltc" type="text" v-model="entity.ltc" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- AI Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="ai" name="AI" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="AI" label-for="ai" label-cols-lg="4">
+                                                 <b-form-input name="ai" type="text" v-model="entity.ai" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+ 
+                                     <!-- IL Field -->
+                                     <b-col md="3">
+                                         <validation-provider vid="il" name="IL" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+                                             <b-form-group label="IL" label-for="il" label-cols-lg="4">
+                                                 <b-form-input name="il" type="text" v-model="entity.il" :state="getValidationState(validationContext)" :disabled="saving" />
+                                                 <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+                                             </b-form-group>
+                                         </validation-provider>
+                                     </b-col>
+                                </b-row>
 								
 							</b-card-body>
 						</b-collapse>
@@ -1443,7 +1484,10 @@ export default {
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
-
+				skilled: null,
+                ltc: null,
+                ai: null,
+                il: null,
 			},
 			billTypeOptions:[],
 			facilityStatus:[],
@@ -2942,17 +2986,14 @@ async addFax() {
 						{
 							const url = "/client/facilityContactList";
 								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
+							const data = {id:this.entity.id}
+							const response = await axios.post(url,data );
 								if (response.data && Array.isArray(response.data)) {
 									response.data.forEach((item)=>{
-										if(item.facility_id == this.entity.id){
-											this.forms.push(item);
-										}
+										// if(item.facility_id == this.entity.id){
+										// 	this.forms.push(item);
+										// }
+										this.forms.push(item);
 
 									});
 								}
