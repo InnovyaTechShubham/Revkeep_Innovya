@@ -32,22 +32,25 @@
         <b-button @click="showDetails = !showDetails" variant="secondary">
             <span v-if="showDetails">Hide Details</span>
             <span v-else>Level Details</span>
-            <font-awesome-icon :icon="showDetails ? 'arrow-up' : 'arrow-down'" />
         </b-button>
     </b-col>
 
 	<b-col class="text-right mb-4  ">
-        <b-button @click="openRequest" v-if="isButton" variant="secondary">
-            <span>Show Request</span>
-        </b-button>
-        <b-button
-            variant="primary"
-            @click="openForm"
-            :disabled="isRequest || addingRequest"
-        >
-            <span v-if="isRequest || addingRequest">Hide Request</span>
-            <span v-else>Add Request</span>
-        </b-button>	
+        
+		<b-dropdown variant="secondary" right>
+            <template #button-content>
+                <span>Request</span>
+            </template>
+
+            <b-dropdown-item @click="openRequest" v-if="isButton">
+                <span>Show Request</span>
+            </b-dropdown-item>
+
+            <b-dropdown-item  @click="openForm"
+            :disabled="isRequest || addingRequest">
+                <span>Add Request</span>
+            </b-dropdown-item>    
+        </b-dropdown>
     </b-col>
 
     <b-col class="text-left mb-4">
@@ -119,7 +122,7 @@
 		<!--for add request -->
 		<b-row v-if="addingRequest" class="my-2">
 			<b-col cols="6">
-				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
+				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false; isAppeal = true">
 					<template #header>
 						<b-card-header>
 							<div class="d-flex justify-content-between align-items-center">
@@ -399,7 +402,7 @@
 						<b-card-footer>
 					<b-row>
 						<b-col cols="12" md="6" xl="4" class="mb-4 mb-md-0">
-							<b-button v-if="!disableCancel" block variant="light" @click="remove">Cancel</b-button>
+							<b-button v-if="!disableCancel" block variant="light" @click="remove">Close</b-button>
 						</b-col>
 						<b-col cols="12" md="6" offset-xl="4" xl="4">
 							<b-button
@@ -1615,6 +1618,7 @@ export default {
     },
     openForm() {
       this.addingRequest=true;
+	  this.isAppeal = false;
     },
 	addedRequest() {
       this.addingRequest = false;
@@ -1629,7 +1633,7 @@ export default {
 	   this.isAppeal = true;
 	   this.isButton = true;
     },
-     openRequest(){
+    openRequest(){
 		this.isButton = false;
 		this.isRequest = true;
 		this.isAppeal = false;
