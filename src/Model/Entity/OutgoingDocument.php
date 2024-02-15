@@ -144,11 +144,11 @@ class OutgoingDocument extends Entity
 	{
 		switch ($this->status_message) {
 			case self::STATUS_NEW:
-				return 'Sent';
+				return 'Pending';
 			case self::STATUS_QUEUED:
 				return 'Queued';
 			case self::STATUS_CANCELLED:
-				return 'Failed';
+				return 'Cancelled';
 			case self::STATUS_DELIVERED:
 				return 'Delivered';
 			case self::STATUS_FAILED:

@@ -37,12 +37,12 @@ export default {
 	methods: {
 		toIndex() {
 			this.$router.push({
-				name: "chains",
+				name: "services",
 			});
 		},
 		toView(entity) {
 			this.$router.push({
-				name: "chains.view",
+				name: "services.view",
 				params: {
 					id: entity.id,
 				},

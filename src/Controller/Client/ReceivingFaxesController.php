@@ -47,15 +47,15 @@ class ReceivingFaxesController extends AppController
         $receivingEntry->description = $description;
         $receivingEntry->created_at = ' ';
 
-        // Insert debugging code
-        $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
+        // // Insert debugging code
+        // $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
         
         
-        $jsonContent = json_encode($receivingEntry, JSON_PRETTY_PRINT);
-        // echo $jsonContent;
-        $file = fopen($filePath, 'w');
-        fwrite($file, $jsonContent);
-        fclose($file);
+        // $jsonContent = json_encode($receivingEntry, JSON_PRETTY_PRINT);
+        // // echo $jsonContent;
+        // $file = fopen($filePath, 'w');
+        // fwrite($file, $jsonContent);
+        // fclose($file);
         try{
            
             $ReceivingFaxesTable->save($receivingEntry);
@@ -71,6 +71,18 @@ class ReceivingFaxesController extends AppController
                     ->withStringBody(json_encode($responseMessage));
     }
 
+    }
+
+    public function index()
+    {
+        $this->facilityReceivingFaxes = new ReceivingFaxesTable();
+
+        $receivingFaxes = $this->facilityReceivingFaxes->find()->toArray();
+
+        $response = $this->response->withType('application/json');
+        $response = $response->withStringBody(json_encode($receivingFaxes));
+        
+        return $response;
     }
     
 }

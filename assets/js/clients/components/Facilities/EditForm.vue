@@ -13,15 +13,16 @@
 							<validation-provider
 								vid="disp_name"
 								name="display_name"
-								:rules="{ required: false, max: 60 }"
+								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name1" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
 										v-model="entity.display_name"
 										:state="getValidationState(validationContext)"
+										required="required"
 										
 									/>
 									<b-form-invalid-feedback
@@ -73,7 +74,7 @@
 							v-model="entity.facility_type_id"
 							:state="getValidationState(validationContext)"
 							:options="facilityTypes"
-							:disabled="saving || loadingFacilityTypes"
+							:disabled="saving"
 							required="required"
 							value-field="id"
 							text-field="name"
@@ -93,7 +94,7 @@
 						<validation-provider
 						vid="ownership_type"
 						name="Ownership Type"
-						:rules="{ required: true }"
+						:rules="{ required: false }"
 						v-slot="validationContext"
 						>
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
@@ -103,7 +104,6 @@
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
-							required="required"
 							value-field="value"
 							text-field="text"
 							/>
@@ -167,14 +167,9 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+
 						<!-- Active -->
 						
-					<!-- <validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
-						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
-						<b-form-checkbox name="active" v-model="entity.active" :disabled="saving">Active</b-form-checkbox>
-						<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-						</b-form-group>
-					</validation-provider> -->
 
 					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
 						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
@@ -227,25 +222,17 @@
 						</b-form-group>
 						</validation-provider>
 
-						<validation-provider
-									vid="term_date"
-									name="Term Date"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
-										<b-form-input
-											type="date"
-											v-model="entity.term_date"
-											name="term_date"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+						<validation-provider vid="term_date" name="Term Date" :rules="{ required: false }" v-slot="validationContext">
+						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+							<b-form-input
+							type="date"
+							v-model="entity.term_date"
+							name="term_date"
+							:disabled="saving"
+							:state="getValidationState(validationContext)"
+							:style="{ color: entity.facility_status === 'Inactive' ? 'red' : 'inherit' }"
+							/>
+							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
 						</validation-provider>
 
@@ -285,25 +272,7 @@
 							</b-form-group>
 						</validation-provider>
 
-						<!-- <validation-provider vid="ownership_type" name="Ownership Type" :rules="{ required: false, max: 2 }" v-slot="validationContext">
-							<b-form-group label="Bill Types" label-for="bill_type" label-cols-lg="4">
-								<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :state="getValidationState(validationContext)" :disabled="saving">
-									<template #first>
-										<option :value="null" />
-									</template>
-								</b-form-select>
-								<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-							</b-form-group>
-						</validation-provider> -->
-
-						<!-- <b-form-group label="Bill Typed" label-for="bill_type" label-cols-lg="4">
-							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
-								<template #first>
-									<option :value="null" />
-								</template>
-							</b-form-select>
-						</b-form-group> -->
-
+						
 
 					</b-col>
 					</b-row>
@@ -313,11 +282,6 @@
 					<b-form-input type="text" name="chain_name" v-model="searchChain"
 						:disabled="saving"
 						placeholder="Search for a Chain..." @input="filterChains" />
-					<!-- <b-input-group-append>
-						<b-input-group-text>
-							<font-awesome-icon icon="search" fixed-width />
-						</b-input-group-text>
-					</b-input-group-append> -->
 				</b-input-group>
 				<div class="mb-0" style="margin: 0;">
 					<b-list-group v-if="filteredChains.length > 0">
@@ -347,44 +311,23 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<b-row>
-									<b-col md="4">
-										<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+								<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="2">
 											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
 											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 										</b-form-group>
-									</validation-provider>
-									</b-col>
-									<b-col md="4">
-										<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
-										</validation-provider>
-									</b-col>
-									<b-col md="4">
-										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
-										</validation-provider>
-									</b-col>
-								</b-row>
+								</validation-provider>
 
 								<b-row>
 								<!-- First Column -->
 								<b-col md="6">
+									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+									</validation-provider>
 
-									<!-- Region -->
-									<!-- <validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-										<b-form-group label="Region" label-for="region" label-cols-lg="4">
-											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
-											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-										</b-form-group>
-									</validation-provider> -->
 
 									<!-- Division -->
 									<validation-provider vid="division" name="Division" :rules="{ required: false, max: 60 }" v-slot="validationContext">
@@ -408,22 +351,13 @@
 								
 								
 									<b-col md="6">
-									
-									<!-- Territory -->
-									<!-- <validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
-										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-									</b-form-group>
-									</validation-provider> -->
-
-									<!-- Area -->
-									<!-- <validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-									<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-										<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
-										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-									</b-form-group>
-									</validation-provider> -->
+										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+			
 
 									<!--  Internal Owner -->
 									<validation-provider vid="int_owner" name="Internal Owner" :rules="{ required: false, max: 60 }" v-slot="validationContext">
@@ -490,298 +424,314 @@
 
 						<!-- Contact section start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseContact
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-								>Contact</b-button
-							>
+						<b-button
+							block
+							v-b-toggle.collapseContact
+							variant="light"
+							role="tab"
+							class="text-left px-4 py-3 m-0"
+							>Contact</b-button
+						>
 						</b-card-header>
 						<b-collapse id="collapseContact" role="tabpanel">
 							<b-card-body>
-								<validation-provider
-									vid="phone"
-									name="Phone"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
-										<b-form-input
-											name="phone"
-											type="text"
-											v-model="entity.phone"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+								<b-row>
+								<!-- First Column -->
+								<b-col md="6">
+									<validation-provider
+										vid="phone"
+										name="Phone"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Phone" label-for="phone" label-cols-lg="4">
+											<b-form-input
+												name="phone"
+												type="text"
+												v-model="entity.phone"
+												v-mask="'(###) ###-####'"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
 
-								<validation-provider
-									vid="fax"
-									name="Fax"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
-										<b-form-input
-											name="fax"
-											type="text"
-											v-model="entity.fax"
-											v-mask="'(###) ###-####'"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+									<validation-provider
+										vid="email"
+										name="Email"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
+											<b-form-input
+												name="email"
+												type="email"
+												v-model="entity.email"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									
+								</b-col>
 
-								<validation-provider
-									vid="email"
-									name="Email"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Email" label-for="email" label-cols-lg="4">
-										<b-form-input
-											name="email"
-											type="email"
-											v-model="entity.email"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								<validation-provider
-									vid="website"
-									name="Website"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
-										<b-form-input
-											name="website"
-											type="url"
-											v-model="entity.website"
-											:state="getValidationState(validationContext)"
-											:disabled="saving"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+								<!-- Second Column -->
+								<b-col md="6">
+									<validation-provider
+										vid="website"
+										name="Website"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Website" label-for="website" label-cols-lg="4">
+											<b-form-input
+												name="website"
+												type="url"
+												v-model="entity.website"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+
+									<validation-provider
+										vid="fax"
+										name="Fax"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group label="Main Fax" label-for="fax" label-cols-lg="4">
+											<b-form-input
+												name="fax"
+												type="text"
+												v-model="entity.fax"
+												v-mask="'(###) ###-####'"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+								</b-col>
+								</b-row>
 
 								<b-input-group-append>
-								  <b-button variant="primary" class="mb-1" @click="createNewForm">
-				                 	<font-awesome-icon icon="plus" fixed-width />
-				                 	<span>Add Contacts</span>
-			                      </b-button>
-                                </b-input-group-append>
+									<b-button variant="primary" class="mb-1" @click="createNewForm">
+									   <font-awesome-icon icon="plus" fixed-width />
+									   <span>Add Contacts</span>
+									</b-button>
+								  </b-input-group-append>
 
-								<form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
+								  <form v-for="(form, index) in forms" :key="`form-${index}`" class="mb-2">
 									<b-card body>
-										<validation-provider
-											vid="f_name"
-											name="First_Name"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
-												<b-form-input
-													name="f_name"
-													type="text"
-													v-model="form.first_name"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-
-										<validation-provider
-											vid="l_name"
-											name="Last_Name"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
-												<b-form-input
-													name="l_name"
-													type="text"
-													v-model="form.last_name"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-
-										<validation-provider
-											vid="title_id"
-											name="Main_Title"
-											:rules="{ required: true, numeric: true }"
-											v-slot="validationContext"
-										>
-											<b-form-group
-												label="Title"
-												label-for="title_id"
-												label-cols-lg="4"
-											>
-												<b-input-group>
-													<b-form-select
-														name="title_id"
-														v-model="form.title_id"
-														:options="titlename"
-														:disabled="saving || loadingtitlename"
-														:state="getValidationState(validationContext)"
-														value-field="id"
-														text-field="full_name"
-														
+										<b-row>
+											<!-- First Column -->
+											<b-col md="4">
+												<validation-provider
+													vid="title_id"
+													name="Main_Title"
+													:rules="{ required: true, numeric: true }"
+													v-slot="validationContext"
+												>
+													<b-form-group
+														label="Title"
+														label-for="title_id"
+														label-cols-lg="4"
 													>
-													
-														<template #first>
-															<option disabled v-if="!hastitlename" :value="null">
-															Please Select Title
-															</option>
-														</template>
-													</b-form-select>
-													<template #append>
-														<b-button
-															variant="primary"
-															@click="openCustomTitle"
-														>
-															<font-awesome-icon icon="plus" fixed-width />
-														</b-button>
-													</template>
-												</b-input-group>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
-										<template>
-											<div>
-												<!-- Add BootstrapVue grid classes to create a row -->
-												<b-row>
-													<!-- Column for the dropdown and input field -->
-													<b-col md="4">
-														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-															<b-form-group label="Contact Number Type" label-for="type">
-																<!-- Wrapper for select and input fields -->
-																<div class="d-flex align-items-end" v-for="(field, index) in inputFields" :key="index">
-																<!-- Dropdown (select) field -->
-																	<label :for="'contacType' + index"></label>
-																	<b-input-group  class="mb-3">
-																		<b-form-select
-																			name="conatct_id"
-																			v-model="form.contact_id"
-																			:options="contactTypes"
-																			:disabled="saving || loadingcontactTypes"
-																			:state="getValidationState(validationContext)"
-																			value-field="id"
-																			text-field="full_name"
-																			
-																		>
-																			<template #first>
-																				<option disabled v-if="!hascontactTypes" :value="null">
-																				Please Select Contact Type
-																				</option>
-																			</template>
-																		</b-form-select>
-																	</b-input-group>
-																</div>
-															</b-form-group>
-														</validation-provider>
-													</b-col>
-													<b-col md="8">
-														<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
-														<b-form-group label="Contact Number" label-for="phone">
-															<b-input-group v-for="(inputField, index) in inputFields" :key="index" class="mb-3">
-															<b-form-input
-																:name="'phone' + index"
-																type="text"
-																v-model="form.phone"
-																v-mask="'(###) ###-####'"
+														<b-input-group>
+															<b-form-select
+																name="title_id"
+																v-model="form.title_id"
+																:options="titlename"
+																:disabled="saving || loadingtitlename"
 																:state="getValidationState(validationContext)"
-																:disabled="saving"
-															></b-form-input>
-
-															<!-- Button inside the input group to remove the corresponding field -->
-															<b-input-group-append>
-																<b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
-																<font-awesome-icon icon="minus" fixed-width />
+																value-field="id"
+																text-field="full_name"
+																
+															>
+															
+																<template #first>
+																	<option disabled v-if="!hastitlename" :value="null">
+																	Please Select Title
+																	</option>
+																</template>
+															</b-form-select>
+															<template #append>
+																<b-button
+																	variant="primary"
+																	@click="openCustomTitle"
+																>
+																	<font-awesome-icon icon="plus" fixed-width />
 																</b-button>
-																<!-- Button to add a new input field -->
-																<b-button variant="primary" @click="addInputField">
-															<font-awesome-icon icon="plus" fixed-width />
-														</b-button>
-															</b-input-group-append>
-															</b-input-group>
-
-															<b-form-invalid-feedback
+															</template>
+														</b-input-group>
+														<b-form-invalid-feedback
 															v-for="error in validationContext.errors"
 															:key="error"
 															v-text="error"
-															></b-form-invalid-feedback>
-														</b-form-group>
-														
-														</validation-provider>
-													</b-col>
-												</b-row>
-											</div>
-										</template>
-               								
+														/>
+													</b-form-group>
+												</validation-provider>
+												
+													
+												<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+																<div class="d-flex align-items-end">
+																	<b-form-group label="Contact Number Type" label-for="type" label-cols-lg="4">
+																	<!-- Dropdown (select) field -->
+																	<b-input-group class="mb-3">
+																		<label :for="'contacType' + index"></label>
+																		<b-form-select
+																		name="conatct_id"
+																		v-model="form.contact_id"
+																		:options="contactTypes"
+																		:disabled="saving || loadingcontactTypes"
+																		:state="getValidationState(validationContext)"
+																		value-field="id"
+																		text-field="full_name"
+																		>
+																		<template #first>
+																			<option disabled v-if="!hascontactTypes" :value="null">
+																			Please Select Contact Type
+																			</option>
+																		</template>
+																		</b-form-select>
+																	</b-input-group>
+																	</b-form-group>
+																</div>
+																</validation-provider>
 
-										<validation-provider
-											vid="email"
-											name="Email"
-											:rules="{ required: false }"
-											v-slot="validationContext"
-										>
-											<b-form-group label="Email" label-for="email" label-cols-lg="4">
-												<b-form-input
-													name="email"
-													type="email"
-													v-model="form.email"
-													:state="getValidationState(validationContext)"
-													:disabled="saving"
-												/>
-												<b-form-invalid-feedback
-													v-for="error in validationContext.errors"
-													:key="error"
-													v-text="error"
-												/>
-											</b-form-group>
-										</validation-provider>
+															</b-col>
+
+															<!-- Second Column -->
+															<b-col md="4">
+																<validation-provider
+																vid="f_name"
+																name="First_Name"
+																:rules="{ required: false }"
+																v-slot="validationContext"
+															>
+																<b-form-group label="First Name" label-for="f_name" label-cols-lg="4">
+																	<b-form-input
+																		name="f_name"
+																		type="text"
+																		v-model="form.first_name"
+																		:state="getValidationState(validationContext)"
+																		:disabled="saving"
+																	/>
+																	<b-form-invalid-feedback
+																		v-for="error in validationContext.errors"
+																		:key="error"
+																		v-text="error"
+																	/>
+																</b-form-group>
+															</validation-provider>
+
+															<validation-provider vid="phone" name="Phone" :rules="{ required: false }" v-slot="validationContext">
+    <div class="mb-3 d-flex align-items-end">
+        <label :for="'phone' + index" class="mr-2" label-cols-lg="4">Contact Number</label>
+        <b-input-group style="width: 100%;">
+            <b-form-input
+                :name="'phone' + index"
+                type="text"
+                v-model="form.phone"
+                v-mask="'(###) ###-####'"
+                :state="getValidationState(validationContext)"
+                :disabled="saving"
+            ></b-form-input>
+
+            <!-- Button inside the input group to remove the corresponding field -->
+            <b-input-group-append>
+                <b-button variant="danger" @click="removeInputField(index)" v-if="inputFields.length > 1">
+                    <font-awesome-icon icon="minus" fixed-width />
+                </b-button>
+                <!-- Button to add a new input field -->
+                <b-button variant="primary" @click="addInputField">
+                    <font-awesome-icon icon="plus" fixed-width />
+                </b-button>
+            </b-input-group-append>
+        </b-input-group>
+
+        <b-form-invalid-feedback
+            v-for="error in validationContext.errors"
+            :key="error"
+            v-text="error"
+        ></b-form-invalid-feedback>
+    </div>
+</validation-provider>
+
+
+
+
+
+																</b-col>
+																<!-- Third Column -->
+																<b-col md="4">
+																<validation-provider
+																	vid="l_name"
+																	name="Last_Name"
+																	:rules="{ required: false }"
+																	v-slot="validationContext"
+																>
+																	<b-form-group label="Last Name" label-for="l_name" label-cols-lg="4">
+																		<b-form-input
+																			name="l_name"
+																			type="text"
+																			v-model="form.last_name"
+																			:state="getValidationState(validationContext)"
+																			:disabled="saving"
+																		/>
+																		<b-form-invalid-feedback
+																			v-for="error in validationContext.errors"
+																			:key="error"
+																			v-text="error"
+																		/>
+																	</b-form-group>
+																</validation-provider>
+
+																<validation-provider
+																	vid="email"
+																	name="Email"
+																	:rules="{ required: false }"
+																	v-slot="validationContext"
+																>
+																	<b-form-group label="Email" label-for="email" label-cols-lg="4">
+																		<b-form-input
+																			name="email"
+																			type="email"
+																			v-model="form.email"
+																			:state="getValidationState(validationContext)"
+																			:disabled="saving"
+																		/>
+																		<b-form-invalid-feedback
+																			v-for="error in validationContext.errors"
+																			:key="error"
+																			v-text="error"
+																		/>
+																	</b-form-group>
+																</validation-provider>
+																</b-col>
+
+														</b-row>
+											
 										<b-card-footer class="d-flex justify-content-end">
 												<b-button type="button" variant="light"  @click="removeForm(index)">
 												<span>Cancel</span>
@@ -799,7 +749,7 @@
 											/>
 										</b-modal>
 									</b-card>
-								</form>
+								  </form>
 							</b-card-body>
 						</b-collapse>
 						<!-- Contact section end-->
@@ -844,16 +794,16 @@
 								</validation-provider>
 
 								<validation-provider
-									vid="contract_start_date"
-									name="Contract Start Date"
+									vid="contract_end_date"
+									name="Contract End Date"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
+									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_start_date"
-											name="contract_start_date"
+											v-model="entity.contract_end_date"
+											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -865,21 +815,23 @@
 									</b-form-group>
 								</validation-provider>
 
+								
+
 							</b-col>
 
 							<!-- Second Column -->
 							<b-col md="6">
 								<validation-provider
-									vid="contract_end_date"
-									name="Contract End Date"
+									vid="contract_start_date"
+									name="Contract Start Date"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
+									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_end_date"
-											name="contract_end_date"
+											v-model="entity.contract_start_date"
+											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
 										/>
@@ -923,7 +875,7 @@
 										<validation-provider
 										vid="contract_bill_type"
 										name="Contract Bill Type"
-										:rules="{ required: true }"
+										:rules="{ required: false }"
 										v-slot="validationContext"
 										>
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
@@ -933,10 +885,13 @@
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
-											required="required"
 											value-field="value"
 											text-field="text"
-											/>
+											>
+											<!-- <template #first>
+												<option :value="null" />
+											</template> -->
+											</b-form-select>
 											<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
@@ -984,7 +939,6 @@
 										<validation-provider
 										vid="contract_type"
 										name="Contract Type"
-										:rules="{ required: true }"
 										v-slot="validationContext"
 										>
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
@@ -994,7 +948,6 @@
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
-											required="required"
 											value-field="value"
 											text-field="text"
 											direction="down"
@@ -1043,17 +996,16 @@
 								<validation-provider
 								vid="service_operations"
 								name="Service Operations"
-								:rules="{ required: true }"
+								:rules="{ required: false }"
 								v-slot="validationContext"
 								>
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.serviceOperations"
+									v-model="entity.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
-									required="required"
 									/>
 									<b-form-invalid-feedback
 									v-for="error in validationContext.errors"
@@ -1064,31 +1016,30 @@
 								</validation-provider>
 
 								<b-card title="Contract Pricing Schedule" border-variant="light">
-
 								<b-row>
-								<b-col md="6">
-									<b-table :items="insurances.slice(0, 6)" :fields="fields">
-									<template v-slot:cell(rate)="data">
-										<div class="d-flex">
-										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
-										</div>
-									</template>
-									</b-table>
-								
-								</b-col>
+									<b-col md="6">
+										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="info">
+												<div class="d-flex">
+													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
+												
+												</div>
+											</template>
+										</b-table>
+									</b-col>
 
-								<b-col md="6">
-								<!-- <b-card title="Contract Pricing Schedule" border-variant="light"> -->
-									<b-table :items="insurances.slice(6, 12)" :fields="fields">
-									<template v-slot:cell(rate)="data">
-										<div class="d-flex">
-										<input type="text" v-model="data.value" class="form-control" placeholder="Add rate in %" />
-										</div>
-									</template>
-									</b-table>
-								</b-col>
-							</b-row>
-							</b-card>	
+									<b-col md="6">
+										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="info">
+												<div class="d-flex">
+													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
+												</div>
+											</template>
+										</b-table>
+									</b-col>
+								</b-row>
+							</b-card>
+
 							
 							</b-card-body>
 						</b-collapse>
@@ -1173,10 +1124,10 @@
 												<h6>Outgoing Emails</h6>
 												<b-table v-if="entity && entity.receiving_emails && entity.receiving_emails.length > 0" :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
 												<template slot="cell(email)" slot-scope="info">
-													{{ info.value }}
+													{{ info.item.email }}
 												</template>
 												<template slot="cell(description)" slot-scope="info">
-													{{ info.value }}
+													{{ info.item.description }}
 												</template>
 												</b-table>
 												<empty-result v-else class="small-empty-result">
@@ -1519,10 +1470,17 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-				serviceOperations: [],
+				pricing_schedules: [],
+				newSchedule: {
+				ins_id: '',
+				rate: '',
+				facility_id: ''
+			},
+				serviceOperation: null,
 				contract_bill_type: null,
 				contract_type: null,
 				ownership_type: null,
+				contract_insurance_type: null,
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
@@ -1559,55 +1517,47 @@ export default {
 			selectedFaxes: [],
 			showDeleteIcon: false,
 			serviceOperationsOptions: [
-				{ value: 'pt', text: 'PT' },
-				{ value: 'ot', text: 'OT' },
-				{ value: 'st', text: 'ST' },
+				// { value: 'pt', text: 'PT' },
+				// { value: 'ot', text: 'OT' },
+				// { value: 'st', text: 'ST' },
 			],
-			contractBillTypes: [
-			{ value: 'other', text: 'Other' },
-			{ value: 'ghc', text: 'GHC' },
-			{ value: 'synergy', text: 'Synergy' },
-			{ value: 'encore', text: 'Encore' },
-			],
+			contractBillTypes: [],
+			// { value: 'other', text: 'Other' },
+			// { value: 'ghc', text: 'GHC' },
+			// { value: 'synergy', text: 'Synergy' },
+			// { value: 'encore', text: 'Encore' },
+			
 			contractTypes: [
-			{ value: 'management_agreement', text: 'Management Agreement' },
-			{ value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
-			{ value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
-			{ value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
-			{ value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
-			{ value: 'snf_per_diem', text: 'SNF - Per Diem' },
-			{ value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
-			{ value: 'snf_per_minute', text: 'SNF - Per Minute' },
-			{ value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
-			{ value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
-			{ value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
+			// { value: 'management_agreement', text: 'Management Agreement' },
+			// { value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
+			// { value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
+			// { value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
+			// { value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
+			// { value: 'snf_per_diem', text: 'SNF - Per Diem' },
+			// { value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
+			// { value: 'snf_per_minute', text: 'SNF - Per Minute' },
+			// { value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
+			// { value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
+			// { value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
 			],
 			ownershipTypes: [
-			{ value: 'corporate_chain', text: 'Corporate Chain' },
-			{ value: 'county_owned', text: 'County Owned' },
-			{ value: 'hospital_owned', text: 'Hospital Owned' },
-			{ value: 'independent', text: 'Independent' },
-			{ value: 'managed', text: 'Managed' },
-			{ value: 'management_company', text: 'Management Company' },
-			{ value: 'silver_stone_living', text: 'Silver Stone Living' },
+			// { value: 'corporate_chain', text: 'Corporate Chain' },
+			// { value: 'county_owned', text: 'County Owned' },
+			// { value: 'hospital_owned', text: 'Hospital Owned' },
+			// { value: 'independent', text: 'Independent' },
+			// { value: 'managed', text: 'Managed' },
+			// { value: 'management_company', text: 'Management Company' },
+			// { value: 'silver_stone_living', text: 'Silver Stone Living' },
 		],
+			
+			insuranceRates: {},
+			selectedInsuranceId: null,
 
 			insurances: [
-				{ insurance_type: 'Medicare A', rate: '' },
-				{ insurance_type: 'Medicare B', rate: '' },
-				{ insurance_type: 'Managed A', rate: '' },
-				{ insurance_type: 'Managed A PPS', rate: '' },
-				{ insurance_type: 'Managed B', rate: '' },
-				{ insurance_type: 'Commercial', rate: '' },
-				{ insurance_type: 'Medicaid', rate: '' },
-				{ insurance_type: 'Workers Comp', rate: '' },
-				{ insurance_type: 'Auto', rate: '' },
-				{ insurance_type: 'Military', rate: '' },
-				{ insurance_type: 'Private Pay', rate: '' },
-				{ insurance_type: 'Other', rate: '' },
+				
 		],
-    	fields: [{ key: 'insurance_type', label: 'Insurance Type' },
-      { key: 'rate', label: 'Contract Rate (%)' },],
+		facilityTypes:[],
+   
 	 };
 	},
 	watch: {
@@ -1621,22 +1571,7 @@ export default {
 	},
 	computed: 
 	{
-	// 	tableFields() {
-    //   return [
-    //     { key: 'label', label: 'Contract Pricing Schedule' },
-    //     { key: 'selectedType', label: 'Type' },
-    //     { key: 'selectedValue', label: 'Value' },
-    //     { key: 'contractRate', label: 'Contract Rate' },
-    //   ];
-    // },
-		// concatenatedStreetAddress() {
-        // return `${this.entity.street_address_1 || ''} ${this.entity.street_address_2 || ''}`.trim();
-    	// },
-		// formattedFax() {
-		// 	let numericFax = this.newFax.fax.replace(/\D/g, '');
-		// 	numericFax = numericFax.slice(0, this.allowedDigits);
-		// 	return numericFax.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-		// 	},
+	
 		fromNPI() {
 				if (this.entity.id !== null) {
 					return true;
@@ -1645,8 +1580,8 @@ export default {
 
 		...mapGetters({
 			states: "states/states",
-			facilityTypes: "facilityTypes/all",
-			loadingFacilityTypes: "facilityTypes/loadingAll",
+			// facilityTypes: "facilityTypes/all",
+			// loadingFacilityTypes: "facilityTypes/loadingAll",
 			services: "services/all",
 			loadingServices: "services/loadingAll",
 			// chains: "chains/all",
@@ -1654,7 +1589,6 @@ export default {
 		}),
 	},
 	mounted() {
-		// this.addReceivingMethod();
 		this.getServices();
 		this.getChains();
 		this.TitleShow();
@@ -1662,77 +1596,202 @@ export default {
 		this.listFacilityContacts();
 		this.fetchFacilityStatus();
 		this.fetchFacilityBillType();
-		
+		this.fetchContractBillTypes();
+		this.fetchContractTypes();
+		this.fetchOwnershipTypes();
+		this.fetchServiceOperations();
+		this.fetchInsurances();
+		this.fetchReceivingEmails();
+		this.fetchReceivingFaxes();
+		this.fetchFacilityType();
+
+
 		if (this.id) {
 			this.refresh();
 		} else {
 			this.loading = false;
 		}
 	},
-	// created()
-	// {
-	// 	// this.addReceivingMethod();
-	// 	this.addEmail();
-	// },
-	// // Load selected services from database on component initialization
-	// created() {
-	// 	// Assuming you have a unique identifier for the facility, replace 'facilityId' with the actual identifier
-	// 	const facilityId = this.entity.id;
-
-	// 	// Retrieve previously selected services for the specific facility from localStorage
-	// 	const storedServices = localStorage.getItem(`selectedServices_${facilityId}`);
-
-	// 	// Initialize selectedServices array with the retrieved values or an empty array if none
-	// 	this.selectedServices = storedServices ? JSON.parse(storedServices) : [];
-	// 	},
-// 	async created() {
-//     // Fetch chains from your backend API
-//     try {
-// 		const url = "/client/api/getChains";
-// 		const response = await axios.get(url, {
-//         headers: {
-//           "Accept": "application/json",
-//         },
-//       });
-
-//       console.log("Response from API:", response)
-//     } 
-// 	catch (error) {
-//       console.error('Error fetching chains:', error);
-//     }
-//   },
-// 	async created() {
-//     const facilityId = this.entity.id;
-
-//     try {
-//       const url = "/client/api/serviceList";
-//       const response = await axios.get(url, {
-//         headers: {
-//           "Accept": "application/json",
-//         },
-//       });
-
-//       console.log("Response from API:", response);
-
-//       // Filter services for the specific facility
-//       const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
-
-//       // Set the filtered services to the selectedServices array
-//       this.selectedServices = servicesForFacility;
-
-//       console.log("Services for Facility:", this.selectedServices);
-//     } catch (error) {
-//       console.error("Error fetching services:", error);
-//     }
-//   },
-	// watch: {
-	// 	'newFax.fax'(newValue) {
-    //   // Format fax number when it changes
-    //   this.newFax.fax = this.formatFaxNumber(newValue);
-    // }
-	// },
-		
+	
 	methods: {
+
+		async fetchFacilityType(){
+			try
+						{
+							const url = "/client/api/facilitytypes";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("facility type listed :", response);
+							response.data.forEach((item)=>{
+								this.facilityTypes.push(item.name);
+							});
+							console.log('facility type options =' , this.facilityTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		
+		async addPricingSchedule(obj) {
+			console.log("inside");
+			this.insuranceRates= obj ;
+			// const facilityId = facility_id;
+			console.log("ins:",this.insuranceRates);
+
+			 // Ensure that this.entity.pricing_schedules is an array
+			 if (!Array.isArray(this.entity.pricing_schedules)) {
+				this.$set(this.entity, 'pricing_schedules', []);
+				}
+			// console.log("before",this.entity.pricing_schedules);
+			let newpricingSchedule;
+
+
+			this.entity.pricing_schedules.push(this.insuranceRates);
+			console.log("final",this.entity.pricing_schedules);
+		
+			try {
+				// Make a POST request to store the data in the database
+				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
+				console.log('Axios Response:', response);
+				await this.$nextTick();
+				this.$emit("pricing_schedules", response);
+				console.log("Emitted data:", response.data);
+				
+			} catch (error) {
+				console.error('Error creating schedule:', error);
+			}
+},
+		
+		async fetchInsurances(){
+			try
+						{
+							const url = "/client/contractinsurancelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("insurance types listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.insurances.push(item.insurance_type);
+							// });
+							this.insurances = response.data.map(item => ({
+							id:item.id,
+							insurance_rate_type: item.insurance_type,
+							rate: this.entity.contract_rate || '',
+							facility_id: this.entity.id
+						}));
+							console.log('ownership type options =' , this.insurances);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchServiceOperations(){
+			try
+						{
+							const url = "/client/serviceoperationlist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("service operations listed :", response);
+							response.data.forEach((item)=>{
+								this.serviceOperationsOptions.push(item.operation);
+							});
+							console.log('ownership type options =' , this.serviceOperationsOptions);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchOwnershipTypes(){
+			try
+						{
+							const url = "/client/ownershiptypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("ownership type listed :", response);
+							response.data.forEach((item)=>{
+								this.ownershipTypes.push(item.ownership_type);
+							});
+							console.log('ownership type options =' , this.ownershipTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+
+		async fetchContractTypes(){
+			try
+						{
+							const url = "/client/contracttypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("contract type listed :", response);
+							console.log("before",this.contractTypes)
+							response.data.forEach((item)=>{
+								this.contractTypes.push(item.contract_type);
+							});
+							console.log('contract type options =' , this.contractTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchContractBillTypes(){
+			try
+						{
+							const url = "/client/contractbilltypelist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("contract bill type listed :", response);
+							response.data.forEach((item)=>{
+								this.contractBillTypes.push(item.bill_type);
+							});
+							console.log('contract bill type options =' , this.contractBillTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
 
 		getTypeOptions(row) {
 		return row.typeOptions.concat(['Custom']);
@@ -1755,7 +1814,9 @@ export default {
 		},
 		async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
-
+			console.log('inside updateRecievingMethods');
+			console.log('receivingEmailId',receivingEmailId);
+			console.log('receivingFaxId',receivingFaxId);
 			// Determine if receivingEmailId or receivingFaxId is provided
 			const data = {
 				facility_id: facilityId,
@@ -1764,28 +1825,18 @@ export default {
 			};
 			console.log("Payload",data);
 
-			// try {
-			// 	// const response = await axios.post('/client/receivingMethods', data);
-			// 	await axios.post('/client/receivingMethods', data)
-            //     .then(response => {
-            //         // const responseData = response.data.data;
-			// 		console.log("success");
-			// 	});
-			// 	// console.log('Receiving methods updated:', responseData);
-			// } catch (error) {
-			// 	console.error('Error updating receiving methods:', error);
-			// }
 			try {
-				const response = await axios.post('/client/receivingMethods', data, {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				});
+				// const response = await axios.post('/client/receivingMethods', data, {
+				// 	headers: {
+				// 		'Content-Type': 'application/json',
+				// 	},
+				// });
+				const response = await axios.post('/client/receivingMethods', data);
 				console.log('Receiving methods updated:', response.data);
 			} catch (error) {
 				console.error('Error updating receiving methods:', error);
 			}
-	},
+		},
 	// 	addReceivingMethod() {
     //     // Assuming you have the necessary data in your component's data or computed properties
 	// 	const facilityId = this.entity.id;
@@ -1894,6 +1945,8 @@ async addFax() {
         console.log("new:", newFax);
 		const fax = newFax.fax;
 		const description = newFax.description;
+		console.log('fax',fax);
+		console.log('description',description);
 		// Clear the newFax object for the next entry
         this.newFax = { fax: '', description: '' };
 
@@ -1935,19 +1988,20 @@ async addFax() {
         this.popupVisibleFax = false;
 
         // Prepare the data to be sent in the POST request
-        const faxData = {
-            fax,
-            description,
-        };
-        console.log("header:", faxData);
+        // Prepare the data to be sent in the POST request
+		const faxData = {
+			fax,
+			description,
+		};
+		console.log("header:", faxData);
 		try {
-        // Make a POST request to store the data in the database
-        const response = await axios.post('/client/receivingFaxes', faxData);
-        console.log('Axios Response:', response);
-		await this.$nextTick();
-		this.$emit("Receiving_faxes", response);
-		console.log("Emitted data:", response.data);
-		// Check for a successful status code (2xx)
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/receivingFaxes', faxData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("Receiving_faxes", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
 		if (response.status >= 200 && response.status < 300) {
 			// Parse the JSON response
 				const responseData = response.data;
@@ -1956,7 +2010,8 @@ async addFax() {
 				{
 					console.log('Fax saved successfully.');
 					this.saving = false;
-					
+					await this.updateReceivingMethods(null, responseData.id);
+
 					this.$nextTick(() => {
 						this.$store.dispatch('notify', {
 							variant: 'primary',
@@ -1964,8 +2019,7 @@ async addFax() {
 							message: 'New fax created.',
 						});
 					});
-					await this.updateReceivingMethods(null, responseData.id);
-
+					
 					
 			} else {
 				// Server response is missing expected properties
@@ -2017,166 +2071,86 @@ async addFax() {
 		// Close the delete popup
 		this.closeDeleteFaxPopup();
 	},
-//     addEmail() {
-//       // Add logic to add the new email to the list
-//       // Update the displayedEmails text
-// 	  this.displayedEmails = `
-//     <table border="1">
-//       <tr>
-//         <th>Email</th>
-//         <th>Description</th>
-//       </tr>
-//       <tr>
-//         <td>${this.newEmail.email}</td>
-//         <td>${this.newEmail.description}</td>
-//       </tr>
-//     </table>
-//   `;
-//       this.closePopup();
-//     },
-	// openPopup() {
-	// 	this.popupVisible = true;
-	// 	},
-	// closePopup() {
-	// 	this.popupVisible = false;
-	// 	},
 	openPopup() {
 		this.popupVisible = true;
 		},
-	closePopup() {
+		closePopup() {
 		this.popupVisible = false;
 		},
-		
-	// async addEmail() {
-	// 	// Assuming newEmail is a valid object with email and description properties
-	// 	const newEmail = { ...this.newEmail };
-	// 	const email = newEmail.email;
-	// 	const description= newEmail.description;
-	// 	console.log("new:",newEmail);
-	// 	console.log("Receiving Emails:", this.entity.receiving_emails);
-	// 	// Prepare the data to be sent in the POST request
-	// 	// const emailData = {
-	// 	// 	email,
-	// 	// 	description,
-	// 	// 	};
-	// 	// console.log("before API", emailData);
 
-	// 	// Check if receiving_emails is defined, if not, initialize it as an empty array
-	// 	if (!Array.isArray(this.entity.receiving_emails)) {
-	// 		this.$set(this.entity, 'receiving_emails', []);
-	// 	}
-		
-	// 	// Add the new email to the array
-	// 	this.entity.receiving_emails.push(newEmail);
+		async fetchReceivingFaxes(){
+			try
+						{
+							const url = "/client/receivingfaxlist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("receiving faxes listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.entity.receiving_emails.push(item.receiving_email);
+							// });
 
-	// 	// Clear the newEmail object for the next entry
-	// 	this.newEmail = { email: '', description: '' };
-		
-	// 	// Close the pop-up
-	// 	// this.closePopup();
-	// 	this.popupVisible = false;
+							if (response.data && Array.isArray(response.data)) {
+								// for (let i = 0; i < response.data.length; i++) {
+								// 	const { email, description } = response.data[i];
+        						// 	this.entity.receiving_emails.push({ email, description });
+								// }
+								this.$set(this.entity, 'receiving_faxes', response.data.map(item => ({ fax: item.fax, description: item.description })));
+							}
+							// Use nextTick to ensure the rendering has completed
+							this.$nextTick(() => {
+								console.log('receiving faxes =' , this.entity.receiving_faxes);
+							});
+							// console.log('receiving emails =' , this.entity.receiving_emails);
+							
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async fetchReceivingEmails(){
+			try
+						{
+							const url = "/client/receivingemaillist";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("receiving emails listed :", response);
+							// response.data.forEach((item)=>{
+							// 	this.entity.receiving_emails.push(item.receiving_email);
+							// });
 
-	// 	// Prepare the data to be sent in the POST request
-	// 	const emailData = {
-	// 		email,
-	// 		description,
-	// 		};
-	// 	console.log("before API", emailData);
-	// 	await axios.post('/client/receivingEmails', emailData)
-	// 		.then(response => {
-	// 			// const responseData = response.data.data;
-	// 			console.log("response:",response);
-	// 			if(response.data.success){
-	// 				console.log('email saved');
-	// 				this.saving = false;
-	// 				this.$router.push({
-	// 					name: "receivingEmails"
-	// 				});
-	// 				this.$nextTick(function () {
-	// 					this.$store.dispatch("notify", {
-	// 						variant: "primary",
-	// 						title: "Email Created!",
-	// 						message: `New email Created!.`,
-	// 					});
-	// 				});
-	// 				redirect_index()
-	// 			}else{
-	// 				this.saving = false;
-	// 				console.log('email already exists');
-	// 				this.errorMessage = response.data.message; 
-	// 				this.$nextTick(function () {
-	// 					this.$store.dispatch("notify", {
-	// 						variant: "danger",
-	// 						title: "Email Error",
-	// 						message: this.errorMessage,
-	// 					});
-	// 				});
-	// 			}
-	// 		})
-	// 		.catch(error => {
-	// 			console.log(error)
-	// 			// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
-	// 			// this.saving = false;
-	// 			// this.errorMessage = 'Error creating chain.'; 
-	// 			// this.$nextTick(function () {
-	// 			// 	this.$store.dispatch("notify", {
-	// 			// 		variant: "danger",
-	// 			// 		title: "Chain Error",
-	// 			// 		message: error,
-	// 			// 	});
-	// 			// });
-	// 		})
+							if (response.data && Array.isArray(response.data)) {
+								// for (let i = 0; i < response.data.length; i++) {
+								// 	const { email, description } = response.data[i];
+        						// 	this.entity.receiving_emails.push({ email, description });
+								// }
+								this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ email: item.email, description: item.description })));
+							}
+							// Use nextTick to ensure the rendering has completed
+							this.$nextTick(() => {
+								console.log('receiving emails =' , this.entity.receiving_emails);
+							});
+							// console.log('receiving emails =' , this.entity.receiving_emails);
+							
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
 
-	// 	// // Send a POST request to your controller to add the new type
-    //     // axios.post('/client/receivingEmails', { email , description})
-    //     //     .then((response) => {
-	// 	// 		console.log("inside API call");
-    //     //         // Handle the response, e.g., update the insuranceTypes list
-    //     //         this.entity.receiving_emails.push(response.data);
-
-    //     //         // // Close the modal
-    //     //         // this.$bvModal.hide('customAuditTypeModal');
-
-    //     //         // // Clear the input field
-    //     //         // this.newAuditType = '';
-	// 	// 		console.log("check",response);
-
-	// 	// 		window.location.reload();
-    //     //     })
-    //     //     .catch((error) => {
-    //     //         // Handle any errors, e.g., show an error message
-    //     //         console.error('Error adding new email:', error);
-    //     //     });
-
-	// 	// try {
-	// 	// 	const url = "/client/receivingEmails";
-	// 	// 	const data = {'receivingEmails':this.entity.receiving_emails}
-	// 	// 	console.log(data);
-	// 	// 	// const resp = await axios.post('/client/sendemail', data);
-	// 	// 	const response = await axios.post(url,data);
-	// 	// 	console.log("Response from API:", response.data);
-
-	// 	// 	}
-	// 	// 	 catch (error) {
-    //     //         console.error('Error storing data:', error);
-    //     //     }
-    //     //     // Clear the input for the next entry
-    //     //     this.entity.receiving_email = '';
-        
-
-	// 	// // Make a POST request to store the data in the database
-	// 	// axios.post('client/api/receivingEmails', {
-	// 	// receivingEmails: [newEmail] // Sending an array with a single email
-	// 	// })
-	// 	// .then(response => {
-	// 	// // Handle success response if needed
-	// 	// console.log('Data stored successfully:', response.data);
-	// 	// })
-	// 	// .catch(error => {
-	// 	// // Handle error if the data couldn't be stored
-	// 	// console.error('Error storing data:', error.response.data);
-	// 	// });
-	// },
 	async addEmail() {
 		const newEmail = { ...this.newEmail };
 		const email = newEmail.email;
@@ -2254,6 +2228,8 @@ async addFax() {
 					console.log('Email saved successfully.');
 					this.saving = false;
 					// this.$router.push({ name: 'receivingEmails' });
+					await this.updateReceivingMethods(responseData.id, null);
+
 					this.$nextTick(() => {
 						this.$store.dispatch('notify', {
 							variant: 'primary',
@@ -2261,7 +2237,6 @@ async addFax() {
 							message: 'New email created.',
 						});
 					});
-					await this.updateReceivingMethods(responseData.id, null);
 
 					// redirect_index();
 				// } else {
@@ -2310,9 +2285,11 @@ async addFax() {
     //   this.displayedEmails = ''; // Update with your logic
     //   this.closeDeletePopup();
     // },
-	deleteSelectedEmails() {
+	async deleteSelectedEmails() {
 		// Add logic to delete selected emails
-		console.log("Inside");
+		console.log("Inside",this.entity.receiving_emails);
+		// Create a unique identifier for each email based on email and description
+		const uniqueIdentifier = (email) => `${email.email}_${email.description}`;
 		const updatedEmails = this.entity.receiving_emails.filter(
 		(email) => !this.selectedEmails.includes(email.email)
 		);
@@ -2324,8 +2301,28 @@ async addFax() {
 		// Reset selectedEmails array
 		this.selectedEmails = [];
 
-		// Close the delete popup
-		this.closeDeletePopup();
+		 // Make Axios call to delete emails from the database
+		const apiUrl = `/client/deletereceivingemail/${uniqueIdentifier(this.selectedEmails[0])}`;
+    	await axios.post(apiUrl, { selectedEmails: this.selectedEmails })
+        .then(response => {
+            // Handle success response if needed
+            console.log('Emails deleted successfully:', response.data);
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error deleting emails:', error);
+        })
+        .finally(() => {
+            // Close the delete popup or perform any other actions
+            this.closeDeletePopup();
+        });
+
+		// // Close the delete popup
+		// this.closeDeletePopup();
+
+
+		
+
 	},
 
 	// 	async addReceivingEmail() {
@@ -2837,10 +2834,11 @@ async addFax() {
 		// 	}
 		// },
 		async save() {
+			// console.log("Check:",JSON.stringify(this.insuranceRates));
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-
+				await this.addPricingSchedule(response.id);
 				// const response = await save({
 				// 	...this.entity,
 				// 	services: {

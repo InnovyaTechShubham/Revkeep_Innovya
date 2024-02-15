@@ -19,6 +19,18 @@ class ReceivingEmailsController extends AppController
         // $this->Services = new ServicesTable();
     }
 
+    public function index()
+    {
+        $this->facilityReceivingEmails = new ReceivingEmailsTable();
+
+        $receivingEmails = $this->facilityReceivingEmails->find()->toArray();
+
+        $response = $this->response->withType('application/json');
+        $response = $response->withStringBody(json_encode($receivingEmails));
+        
+        return $response;
+    }
+
     public function add() 
     {
         $this->request->allowMethod(['post']);
@@ -74,51 +86,6 @@ class ReceivingEmailsController extends AppController
 
     }
 
-    // public function index()
-    // {
-        
-    //     // // Query all the information from the Receiving Emails table
-    //     $emails = $this->Emails->find()->toArray();
-    //     $facilityReceivingEmails = $this->facilityReceiving->find()->toArray();
-        
-        
-    //     $data = array('emails' => $emails, 'facilityReceivingEmails' => $facilityReceivingEmails);
-    //     // Create a response object with JSON data
-    //     $response = $this->response->withType('application/json');
-    //     $response = $response->withStringBody(json_encode($data));
-        
-    //     return $response;
-    //     // $this->autoRender = false;
-
-       
-    // }
-    public function index()
-    {
-        // Query all the information from the Receiving Emails table
-        $receivingEmails = $this->ReceivingEmails->find()->toArray();
-        // $facilityReceivingEmails = $this->facilityReceiving->find()->toArray();
-
-        $data = array('receivingEmails' => $receivingEmails, 
-        // 'facilityReceivingEmails' => $facilityReceivingEmails
-    );
-
-        // Insert debugging code
-        // $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example1.json';
-            
-            
-        // $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
-        // $file = fopen($filePath, 'w');
-        // fwrite($file, $jsonContent);
-        // fclose($file);
-        
-        // Create a response object with JSON data
-        $this->autoRender = false; // Disable rendering of a view template
-        $this->response = $this->response->withType('application/json');
-        $this->response = $this->response->withStringBody(json_encode($data));
-
-        return $this->response;
-    }
-
-
     
+ 
 }

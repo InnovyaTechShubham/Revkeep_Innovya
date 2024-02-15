@@ -912,7 +912,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'_method' => 'POST'
 	]);
 
- 	$builder->connect('/outgoingList', [
+	$builder->connect('/outgoing', [
 		'controller' => 'Outgoing',
 		'action' => 'index',
 		
@@ -986,12 +986,6 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	    '_method' => 'POST'
 	]);
 
-	$builder->connect('/facilityAddForms/edit', [
-		'controller' => 'FacilityAddForm',
-		'action' => 'edit',
-	    '_method' => 'POST'
-	]);
-
 	$builder->connect('/facilityContactList', [
 		'controller' => 'FacilityContactList',
 		'action' => 'index',
@@ -1000,62 +994,13 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	$builder->connect('/multiplefacility', [
 		'controller' => 'Multiplefacility',
 		'action' => 'index',
-	]);
-	$builder->connect('/fetchmultiplefacility', [
-		'controller' => 'FetchMultiplefacility',
-		'action' => 'index',
-	    
-	]);
-	$builder->connect('/facilityList', [
-		'controller' => 'FacilityList',
-		'action' => 'index',
-	    
-	]);
-	$builder->connect('/userslist', [
-		'controller' => 'UsersList',
-		'action' => 'index',
-	]);
-	// $builder->connect('/sendemail', [
-	// 	'controller' => 'SendEmail',
-	// 	'action' => 'index',
-	//     '_method' => 'POST'
-	// ]);
-	$builder->connect('/sendoutgoingemail', [
-		'controller' => 'SendOutgoingEmail',
-		'action' => 'index',
 	    '_method' => 'POST'
 	]);
-	$builder->connect('/facilityemaillist', [
-		'controller' => 'FacilityEmailList',
-		'action' => 'index',
-	]);
-	$builder->connect('/facilityfaxlist', [
-		'controller' => 'FacilityFaxList',
-		'action' => 'index',
-	]);
-	$builder->connect('/facilityreceivinglist', [
-		'controller' => 'FacilityReceivingList',
-		'action' => 'index',
-	]);
-	$builder->connect('/caselist', [
-		'controller' => 'CaseList',
-		'action' => 'index',
-	]);
-	$builder->connect('/multipleagencycontact', [
-		'controller' => 'MultipleAgencyContact',
-		'action' => 'index',
-		'_method' => 'POST'
-		
-	]);
-	$builder->connect('/multiagencycontactlist', [
-		'controller' => 'MultiAgencyContactList',
-		'action' => 'index',
-	    
-	]);
+	
 	$builder->connect('/hearing', [
 		'controller' => 'HearingCase',
 		'action' => 'index',
-	    '_method' => 'POST'
+		'_method' => 'POST'
 	]);
 
 
@@ -1180,58 +1125,72 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
-	$builder->connect('/facilityContactList', [
-		'controller' => 'FacilityContactList',
+	// $builder->connect('/contracts', [
+    //     'controller' => 'FacilitiesContracts',
+    //     'action' => 'add',
+    //     '_method' => 'POST'
+    // ]);
+
+	$builder->connect('/contractbilltypelist', [
+		'controller' => 'ContractBillTypes',
 		'action' => 'index',
-	]);
-	$builder->connect('/multiplefacility', [
-		'controller' => 'Multiplefacility',
-		'action' => 'index',
-	]);
-	$builder->connect('/fetchmultiplefacility', [
-		'controller' => 'FetchMultiplefacility',
-		'action' => 'index',
-	    
-	]);
-	$builder->connect('/facilityList', [
-		'controller' => 'FacilityList',
-		'action' => 'index',
-	    
-	]);
-	$builder->connect('/userslist', [
-		'controller' => 'UsersList',
-		'action' => 'index',
-	]);
-	// $builder->connect('/sendemail', [
-	// 	'controller' => 'SendEmail',
-	// 	'action' => 'index',
-	//     '_method' => 'POST'
-	// ]);
-	$builder->connect('/sendoutgoingemail', [
-		'controller' => 'SendOutgoingEmail',
-		'action' => 'index',
-	    '_method' => 'POST'
-	]);
-	$builder->connect('/facilityemaillist', [
-		'controller' => 'FacilityEmailList',
-		'action' => 'index',
-	]);
-	$builder->connect('/facilityfaxlist', [
-		'controller' => 'FacilityFaxList',
-		'action' => 'index',
-	]);
-	$builder->connect('/facilityreceivinglist', [
-		'controller' => 'FacilityReceivingList',
-		'action' => 'index',
-	]);
-	$builder->connect('/caselist', [
-		'controller' => 'CaseList',
-		'action' => 'index',
-	]);
-	$builder->connect('/multipleagencycontact', [
-		'controller' => 'MultipleAgencyContact',
-		'action' => 'index',
-		'_method' => 'POST'
 		
 	]);
+	$builder->connect('/contracttypelist', [
+		'controller' => 'ContractTypes',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/ownershiptypelist', [
+		'controller' => 'ContractOwnershipTypes',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/serviceoperationlist', [
+		'controller' => 'ContractServiceOperations',
+		'action' => 'index',
+		
+	]);
+	$builder->connect('/contractinsurancelist', [
+		'controller' => 'ContractInsuranceTypes',
+		'action' => 'index',
+		
+	]);
+
+	$builder->connect('/contractpricingschedule', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
+	$builder->connect('/receivingemaillist', [
+		'controller' => 'ReceivingEmails',
+		'action' => 'index',
+		
+	]);
+
+	$builder->connect('/receivingfaxlist', [
+		'controller' => 'ReceivingFaxes',
+		'action' => 'index',
+		
+	]);
+
+	$builder->connect('/deletereceivingemail/{id}', [
+		'controller' => 'ReceivingEmails', 
+		'action' => 'delete'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
+
+	$builder->connect('/deletereceivingfax/{id}', [
+		'controller' => 'ReceivingFaxes', 
+		'action' => 'delete'])
+    ->setPass(['id'])
+    ->setMethods(['POST']);
+
+	$builder->connect('/facilitytypes', [
+		'controller' => 'FacilityTypes',
+		'action' => 'index',
+		
+	]);
+
 });

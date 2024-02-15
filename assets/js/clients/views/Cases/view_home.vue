@@ -23,7 +23,7 @@
 				<case-assign :case-entity="caseEntity" />
 			</b-col>
 		</b-row>
-		<!--<b-collapse v-model="isFormattedData" id="collapse1" class="mt-2">
+		<b-collapse v-model="isFormattedData" id="collapse1" class="mt-2">
 			<b-container fluid class="bv-example-row">
 				
 				<template>
@@ -615,7 +615,7 @@
 					</div>
 				</b-col>
 			</b-row>
-		</b-collapse> -->
+		</b-collapse>
 		<b-row>
 			<b-col cols="12" lg="6" xl="6">
 				<h5 class="h6 my-2 font-weight-bold text-muted text-uppercase">Case Documents</h5>
@@ -720,9 +720,9 @@ export default {
 		caseClosed() {
 			return this.caseEntity.closed && this.caseEntity.closed !== null;
 		},
-		//hasReadmissions() {
-		//	return this.caseEntity.case_readmissions && this.caseEntity.case_readmissions.length > 0;
-		//},
+		hasReadmissions() {
+			return this.caseEntity.case_readmissions && this.caseEntity.case_readmissions.length > 0;
+		},
 		formattedData() {
       // Use JSON.stringify to format the JSON data for display
       return JSON.stringify(this.response, null, 2); // null and 2 for spacing and indentation

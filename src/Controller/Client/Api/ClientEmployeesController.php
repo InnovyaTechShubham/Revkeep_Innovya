@@ -123,6 +123,7 @@ class ClientEmployeesController extends ApiController
 			'enumeration_type',
 			'proprietor',
 			'selectedFacilityIds',
+
         ],
         'associated' => [],
     ]);
@@ -247,8 +248,7 @@ class ClientEmployeesController extends ApiController
 	public function lookup(NpiServiceInterface $npiService): void
 {
     $this->getRequest()->allowMethod('post');
-{
-    $this->getRequest()->allowMethod('post');
+
 
 	$npiNumber = $this->getRequest()->getData('npi_number', '');
     $firstName = $this->getRequest()->getData('first_name', '');
@@ -257,9 +257,6 @@ class ClientEmployeesController extends ApiController
     $city = $this->getRequest()->getData('city', '');
     $postalCode = $this->getRequest()->getData('zip', '');
     $exact = $this->getRequest()->getData('exact', false);
-
-	
-	
 	
 	$npiNumber = !empty($npiNumber) ? intval($npiNumber) : null;
 	// Check if NPI number is provided
@@ -286,11 +283,11 @@ class ClientEmployeesController extends ApiController
         },
         'npi'
     );
+
 }
 
     // Setting data for view
     $this->set('data', $results);
 }
 
-}
 }

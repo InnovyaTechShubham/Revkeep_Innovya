@@ -1,0 +1,138 @@
+## contract_types
+INSERT INTO contract_types (contract_type)
+VALUES
+  ('Management Agreement'),
+  ('SNF - % Therapy Component'),
+  ('SNF - Flat Fee'),
+  ('SNF - Flat Fee (Part A)'),
+  ('SNF - Partnership Plus'),
+  ('SNF - Per Diem'),
+  ('SNF - Per Diem (SD)'),
+  ('SNF - Per Minute'),
+  ('SNF - Per Minute (SD)'),
+  ('SNF - Percent Facility Rate'),
+  ('SNF - Percent PDPM Therapy Component');
+
+## contract_ownership_types
+
+INSERT INTO contract_ownership_types (ownership_type)
+VALUES
+  ('Corporate Chain'),
+  ('County Owned'),
+  ('Hospital Owned'),
+  ('Independent'),
+  ('Managed'),
+  ('Management Company'),
+  ('Silver Stone Living');
+
+## contract_insurance_types
+INSERT INTO contract_insurance_types (insurance_type)
+VALUES
+  ('Medicare A'),
+  ('Medicare B'),
+  ('Managed A'),
+  ('Managed A PPS'),
+  ('Managed B'),
+  ('Commercial'),
+  ('Medicaid'),
+  ('Workers Comp'),
+  ('Auto'),
+  ('Military'),
+  ('Private Pay'),
+  ('Other');
+
+## contract_bill_types
+INSERT INTO contract_bill_types (bill_type)
+VALUES
+  ('Other'),
+  ('GHC'),
+  ('Synergy'),
+  ('Encore');
+
+
+## contract_service_operations
+INSERT INTO contract_service_operations (operation)
+VALUES
+  ('PT'),
+  ('OT'),
+  ('ST');
+
+## facility_status
+INSERT INTO facility_status (status, created, modified)
+VALUES
+    ('Active', '2024-01-25 00:00:00.000', '2024-01-25 10:30:00.000'),
+    ('Inactive', '2024-01-26 00:00:00.000', '2024-01-26 09:45:00.000'),
+    ('Pending', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000');
+
+
+## facility_bill_type
+INSERT INTO facility_bill_type (bill_type, created, modified)
+VALUES
+    ('Direct Bill', '2024-01-25 00:00:00.000', '2024-01-25 10:30:00.000'),
+    ('Contract Bill', '2024-01-26 00:00:00.000', '2024-01-26 09:45:00.000'),
+    ('GHC', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000'),
+    ('Synergy', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000'),
+    ('Others', '2024-01-27 00:00:00.000', '2024-01-27 12:15:00.000');
+
+## facility_types
+INSERT INTO facility_types (created, created_by, modified, modified_by, deleted, deleted_by, name)
+VALUES
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Acute Hospital'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Acute Hospital, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Acute Hospital, Skilled Nursing, Subacute Care/Transitional Care Unit'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Adult Care Center'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Adult Day Care Center'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Adult Day Care Center, Assisted Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Adult Day Care Center, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, CCRC'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, CCRC, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Healthcare Center & Adult Day Services, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Independent Living, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Intermediate Care/Long Term Care, Independent Living, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Other'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Supported Residential Center'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Assisted Living, Vitality to You'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'CCRC'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'CCRC, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'CCRC, Outpatient Clinic'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'CCRC, Retirement Community'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'CCRC, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Clinic'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Competitor'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Corporate Office'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Corporate Office, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'County Nursing Home'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Day Health Center'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Healthcare Center & Adult Day Services'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Home Health Care'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Home Health Care, Hospice'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Hospice'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Independent Living, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Intermediate Care/Long Term Care'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Intermediate Care/Long Term Care, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Intermediate Care/Long Term Care, Skilled Nursing, Subacute Care/Transitional Care Unit'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'LTACH'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Other'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Outpatient Clinic'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Outpatient Clinic, Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'PACE Program'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Prison'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Retirement Community'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'School'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Assisted Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Healthcare Center & Adult Day Services'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Independent Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Intermediate Care/Long Term Care'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Intermediate Care/Long Term Care, Assisted Living'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, Intermediate Care/Long Term Care, Subacute Care/Transitional Care Unit'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Skilled Nursing, s'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Subacute Care/Transitional Care Unit'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Supported Residential Center'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Vendor'),
+    ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Vitality to You');

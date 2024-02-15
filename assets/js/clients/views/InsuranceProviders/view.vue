@@ -63,30 +63,34 @@
 
 			<b-card no-body class="shadow-sm mb-4">
 				<b-tabs card active-nav-item-class="font-weight-bold">
+
 					<b-tab lazy active title="Details">
+
 						<b-row>
 							<b-col cols="12" md="6" class="mb-4">
 								<b-card no-body class="shadow-sm">
 									<b-card-header class="font-weight-bold text-uppercase text-muted">
-										Decision Levels
+										Decision Levels 
 									</b-card-header>
 									<b-list-group flush v-if="entity.appeal_levels && entity.appeal_levels.length > 0">
 										<b-list-group-item
-											v-for="appealLevel in entity.appeal_levels"
+											v-for="appealLevel in sortedAppealLevels"
 											:key="appealLevel.id"
 											class="py-3"
 										>
 											<h6 class="h6 font-weight-bold mb-0">
-												{{ appealLevel._joinData?.label || appealLevel.name }}
+												<!-- {{ appealLevel._joinData?.label || appealLevel.name }} -->
+												{{ appealLevel.label }}
 											</h6>
 											<!-- <p class="mb-0">{{ appealLevel.description }}</p> -->
 											<p
-												v-if="appealLevel._joinData.days_to_respond"
+												v-if="appealLevel.daysToRespond"
 												class="small text-muted mb-0"
 											>
-												{{ appealLevel._joinData.days_to_respond }} days to respond
+												<!-- {{ appealLevel._joinData.days_to_respond }} days to respond -->
+												{{ appealLevel.daysToRespond }} days to respond
 											</p>
-											<div v-if="appealLevel.agencies?.length > 0">
+											<!-- <div v-if="appealLevel.agencies?.length > 0">
 												<p v-for="agency in appealLevel.agencies" :key="agency.id" class="mb-0">
 													<router-link
 														:to="{ name: 'agencies.view', params: { id: agency.id } }"
@@ -97,7 +101,7 @@
 														<span v-else> Agency Name Missing </span>
 													</router-link>
 												</p>
-											</div>
+											</div> -->
 										</b-list-group-item>
 									</b-list-group>
 									<b-card-body v-else>
@@ -133,7 +137,9 @@
 							</b-col>
 						</b-row>
 					</b-tab>
+
 					<b-tab no-body lazy title="Cases">
+
 						<case-index
 							ref="caseList"
 							hide-insurance-provider
@@ -167,6 +173,7 @@ export default {
 				appeal_levels: [],
 				insurance_types: [],
 			},
+			sortedAppealLevels:[],
 		};
 	},
 	computed: {
@@ -176,11 +183,13 @@ export default {
 			};
 		},
 		showLoading() {
+			this.sortDecisionLevels();
 			return this.loading && (!this.entity.id || this.entity.id == null);
 		},
 	},
 	mounted() {
 		this.refresh();
+		
 	},
 	methods: {
 		viewCase(caseEntity) {
@@ -190,6 +199,18 @@ export default {
 					id: caseEntity.id,
 				},
 			});
+		},
+		sortDecisionLevels(){
+			console.log("test=",this.entity);
+			if(this.entity.appeal_levels.length){
+				console.log("working");
+				this.entity.appeal_levels.forEach((item,index)=>{
+					console.log("out=",item._joinData);
+					this.sortedAppealLevels.push({id:item._joinData.id , label:item._joinData.label , daysToRespond:item._joinData.days_to_respond, appeal_level_id:item._joinData.appeal_level_id, order_number: item._joinData.order_number,});
+				});
+				this.sortedAppealLevels.sort((a, b) => a.order_number - b.order_number);
+				console.log("sorted array=",this.sortedAppealLevels);
+			}
 		},
 		async refresh() {
 			try {

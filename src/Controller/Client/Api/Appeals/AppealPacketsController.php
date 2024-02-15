@@ -126,7 +126,6 @@ class AppealPacketsController extends ApiController
 		$selectedCaseFiles = $this->request->getData('case_files', []);
 		$selectedAppealFiles = $this->request->getData('appeal_files', []);
 		$orderedList = $this->request->getData('ordered_list', []);
-		$requestId = $this->request->getData('request_id', []);
 
 		if (!empty($orderedList)) {
 			$this->generatePacketOrdered(
@@ -148,7 +147,6 @@ class AppealPacketsController extends ApiController
 			'case_files' => $selectedCaseFiles,
 			'appeal_files' => $selectedAppealFiles,
 			'ordered_list' => $orderedList,
-			'request_id' => $requestId,
 			'success' => true
 		]);
 	}
@@ -283,26 +281,13 @@ class AppealPacketsController extends ApiController
 
 		$outgoingDocuments = $this->fetchTable('OutgoingDocuments');
 
-		$requestId = $this->request->getData('request_id', []);
-
-		// Combine all request_id values into a string
-		$combinedRequestId = implode('_', $requestId);
-
-		// Determine the prefix based on the availability of the combined requestId
-		$prefix = empty($combinedRequestId) ? '01_' : '00_';
-
-		// Apply the prefix to the combined requestId
-		$prefixedCombinedRequestId = $prefix . ($combinedRequestId ?: $this->appeal->id);
-
-		// TODO: REQUEST ID ASSOSIATION
 		$outgoing = $outgoingDocuments->newEntity([
 			'case_id' => $this->appeal->case_id,
 			'appeal_id' => $this->appeal->id,
 			'agency_id' => $this->appeal->agency_id ?? null,
 			'filename' => $this->appeal->id . '.pdf',
 			'delivery_method' => OutgoingDocument::DELIVERY_METHOD_MANUAL,
-			'status_message' => OutgoingDocument::STATUS_NEW,
-			'request_id' => $requestId[0] ?? null
+			'status_message' => OutgoingDocument::STATUS_NEW
 		]);
 
 		$outgoingDocuments->saveOrFail($outgoing);

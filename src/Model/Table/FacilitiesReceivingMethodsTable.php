@@ -44,6 +44,11 @@ class FacilitiesReceivingMethodsTable extends Table
             ->requirePresence('facility_id', 'create')
             ->notEmptyString('facility_id');
 
+        $validator
+            ->allowEmptyString('receiving_email_id', null, 'create');
+    
+        $validator
+            ->allowEmptyString('receiving_fax_id', null, 'create');
         return $validator;
     }
 }

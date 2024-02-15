@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Migrations\AbstractMigration;
 
-class AddColumnToCases extends AbstractMigration
+class AddEmailColumnToOutgoingDocuments extends AbstractMigration
 {
     /**
      * Change Method.
@@ -14,12 +14,12 @@ class AddColumnToCases extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('cases');
-        $table->addColumn('contract_paid_amt_est', 'string', [
+        $table = $this->table('outgoing_documents');
+        $table
+        ->addColumn('email', 'string', [
             'default' => null,
-            'limit' => 255,
             'null' => true,
-        ]);
-        $table->update();
+        ])
+        ->update();
     }
 }

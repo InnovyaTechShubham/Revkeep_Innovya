@@ -79,25 +79,25 @@
 				</b-dropdown>
 
 				<b-dropdown
-					split
-					right
-					@click="attachToCase(caseEntity, { redirect: false })"
-					:disabled="attaching"
-					variant="primary"
-				>
-					<template #button-content>
-						<font-awesome-icon icon="paperclip" fixed-width />
-						<!-- <span>Attach</span> -->
-					</template>
-					<b-dropdown-item-button
-						@click="attachToCase(caseEntity, { redirect: true })"
-						:disabled="attaching"
-						title="Attach and view appeal"
-					>
-						<div>Attach &amp; View</div>
-						<small class="text-muted"> Attach document and view appeal after. </small>
-					</b-dropdown-item-button>
-				</b-dropdown>
+										split
+										right
+										@click="attachToCase(caseEntity, { redirect: false })"
+										:disabled="attaching"
+										variant="primary"
+									>
+										<template #button-content>
+											<font-awesome-icon icon="paperclip" fixed-width />
+											<!-- <span>Attach</span> -->
+										</template>
+										<b-dropdown-item-button
+											@click="attachToCase(caseEntity, { redirect: true })"
+											:disabled="attaching"
+											title="Attach and view appeal"
+										>
+											<div>Attach &amp; View</div>
+											<small class="text-muted"> Attach document and view appeal after. </small>
+										</b-dropdown-item-button>
+									</b-dropdown>
 			</b-col>
 		</b-row>
 		<b-row v-if="addingAppeal" class="my-2">
@@ -189,11 +189,6 @@
 										</span> -->
 										<span v-if="true">
 											{{ appealLevelNames[i] }}
-											<div v-for="request,j in request_list" :key="request.id" class="shadow-sm">
-												<span v-if="request.case_id===appeal.case_id && request.appeal_level == i" :key="request.id">
-													<appeal-status-label :value="appeal" class="bg-primary text-white" />
-												</span>
-											</div>
 										</span>
 										<span v-else class="text-danger"> Missing Level </span>
 										<span v-if="appeal.appeal_level && appeal.appeal_type" class="text-muted">
@@ -203,7 +198,7 @@
 											{{ appeal.appeal_type.name }} 
 										</span>
 										<span v-else class="text-muted"> Post-Payment </span>
-										<!-- <appeal-status-label :value="appeal" /> -->
+										<appeal-status-label :value="appeal" />
 									</p>
 									<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
 										<span
@@ -246,62 +241,62 @@
 							<!-- use appeal_level_id for rendering -->
 							
 							<b-card no-body>
-								<b-card-header>Requests{{ checkRequest() }} </b-card-header>
-								<div v-for="request,j in request_list" :key="request.id" class="shadow-sm">
-									
-									<!-- <b-row v-if="request.case_id===appeal.case_id && request.appeal_level == appeal.appeal_level_id " > -->
-										<b-row v-if="request.case_id===appeal.case_id && request.appeal_level == i" class="mt-3">
-										<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
-											<p  class="font-weight-bold mb-0 custom-padding" >
-												<span>
-													{{ request.request_type }} 
-												</span>
-											</p>
-											<p class="mb-0 text-muted custom-padding">
-												<span > {{ request.type_label }} Request</span>
-											</p>
-											<p v-if="request.status_label !== 'Closed'" class="custom-padding">
-												<span
-													v-if="request.due_date"
-													class="small"
-													:class="request.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'"
-												>
-													Due on {{ $filters.formatDate(request.due_date) }} 
-												</span>
-											</p>
-											<div class="custom-padding">
-												
-												<label class="checkbox-container">
-													Response Received
-													<input type="checkbox" v-model="responseReceived[j]" class="response-checkbox">
-													<span class="checkmark"></span>
-												</label>
-											</div>
-										</b-col>
-										<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
-										<b-dropdown
-											split
-											right
-											@click="attachToAppeal(appeal, { redirect: false })"
-											:disabled="attaching"
-											variant="primary"
-										>
-											<template #button-content>
-												<font-awesome-icon icon="paperclip" fixed-width />
-												<!-- <span>Attach</span> -->
-											</template>
-											<b-dropdown-item-button
-												@click="attachToAppeal(appeal, { redirect: true })"
-												:disabled="attaching"
-												title="Attach and view appeal"
+								<b-card-header v-for="r,ji in request_list" :key="r.id" v-if="r.case_id===appeal.case_id && r.appeal_level == i">Requests{{ checkRequest() }} </b-card-header>
+							 <div v-for="request,j in request_list" :key="request.id" v-if="showRequest" class="shadow-sm upper-space">
+								
+								<!-- <b-row v-if="request.case_id===appeal.case_id && request.appeal_level == appeal.appeal_level_id " > -->
+									<b-row v-if="request.case_id===appeal.case_id && request.appeal_level == i">
+									<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
+										<p  class="font-weight-bold mb-0 custom-padding" >
+											<span>
+												{{ request.request_type }} 
+											</span>
+										</p>
+										<p class="mb-0 text-muted custom-padding">
+											<span > {{ request.type_label }} Request</span>
+										</p>
+										<p v-if="request.status_label !== 'Closed'" class="custom-padding">
+											<span
+												v-if="request.due_date"
+												class="small"
+												:class="request.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'"
 											>
-												<div>Attach &amp; View</div>
-												<small class="text-muted"> Attach document and view appeal after. </small>
-											</b-dropdown-item-button>
-										</b-dropdown>
+												Due on {{ $filters.formatDate(request.due_date) }} 
+											</span>
+										</p>
+										<div class="custom-padding">
+											
+											<label class="checkbox-container">
+												Response Received
+												<input type="checkbox" v-model="responseReceived[j]" class="response-checkbox">
+												<span class="checkmark"></span>
+											</label>
+										</div>
 									</b-col>
-									</b-row>
-								</div>
+									<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
+									<b-dropdown
+										split
+										right
+										@click="attachToAppeal(appeal, { redirect: false })"
+										:disabled="attaching"
+										variant="primary"
+									>
+										<template #button-content>
+											<font-awesome-icon icon="paperclip" fixed-width />
+											<!-- <span>Attach</span> -->
+										</template>
+										<b-dropdown-item-button
+											@click="attachToAppeal(appeal, { redirect: true })"
+											:disabled="attaching"
+											title="Attach and view appeal"
+										>
+											<div>Attach &amp; View</div>
+											<small class="text-muted"> Attach document and view appeal after. </small>
+										</b-dropdown-item-button>
+									</b-dropdown>
+								</b-col>
+								</b-row>
+							 </div>
 							</b-card>
 							
 							<!-- <b-row>

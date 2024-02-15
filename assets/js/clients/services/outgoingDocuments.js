@@ -42,11 +42,6 @@ export async function delivered(id, params) {
 	return response.data;
 }
 
-export async function pending(id, params) {
-	const response = await api.post(`${url}/${id}/pending`, params);
-	return response.data;
-}
-
 export async function retry(id, params) {
 	const response = await api.post(`${url}/${id}/retry`, params);
 	return response.data;

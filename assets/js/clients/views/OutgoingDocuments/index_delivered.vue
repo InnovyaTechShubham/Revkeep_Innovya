@@ -24,36 +24,16 @@
 			<b-col cols="12">
 				<loading-indicator v-if="loading && empty" size="4x" class="my-5" />
 				<div v-else-if="!empty">
-					<div class="table-container">
-					<table class="table table-bordered mb-0 scrollable-row ">
-            <thead>
-                <tr>
-					<th class="col-md-1">Id</th>
-				   <th class="col-md-1">Status</th>
-				   <th class="col-md-1">Facility</th>
-                   <th class="col-md-1">Patient Name</th>
-                   <th class="col-md-2">Recipient Name</th>
-				   <th class="col-md-2">Recipient Type</th>
-                   <th class="col-md-1">Level</th>
-				   <th class="col-md-1">Sent Date</th>
-				   <th class="col-md-2">Delivery Method</th>
-				    <th class="col-md-1">Download</th>
-                  <!--<th class="col-md-2">Actions</th>--> 
-                </tr>
-            </thead>
-        </table>
-		</div>
 					<outgoing-document-list-item
-					v-for="(result, index) in results"
+						v-for="result in results"
 						:key="result.id"
 						:value="result"
 						@updated="
 							recount();
 							refresh();
 						"
-						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#e7eaea' }"
-						class="list-item"
-						/>
+						class="mb-2 shadow-sm"
+					/>
 				</div>
 				<empty-result v-else icon="envelope">
 					No delivered documents
@@ -80,9 +60,3 @@ const recount = () => {
 	store.dispatch("updateState");
 };
 </script>
-
-<style scoped>
-  .list-item:hover {
-    background-color: #e7eaea !important;
-  }
-</style>

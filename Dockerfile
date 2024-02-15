@@ -3,9 +3,6 @@
 FROM node:16-bullseye AS node
 FROM php:8.1-apache-bullseye AS revkeep-base
 
-# Set COMPOSER_ALLOW_SUPERUSER to allow Composer plugins to run
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
 # Node.JS Setup
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
@@ -13,48 +10,43 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && m
 
 # Add microsoft package repo for ODBC
 RUN apt-get update && apt-get install -y gnupg \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update
+	&& curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+	&& curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+	&& apt-get update
 
 # Install dependencies
 RUN ACCEPT_EULA=Y apt-get install -y \
-    libfreetype6-dev \
-    libgss3 \
-    libicu-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libpq-dev \
-    libwebp-dev \
-    libzip-dev \
-    msodbcsql18 \
-    mssql-tools18 \
-    unzip \
-    zip \
-    odbcinst=2.3.7 \
-    odbcinst1debian2=2.3.7 \
-    unixodbc=2.3.7 \
-    unixodbc-dev=2.3.7
+	libfreetype6-dev \
+	libgss3 \
+	libicu-dev \
+	libjpeg62-turbo-dev \
+	libpng-dev \
+	libpq-dev \
+	libwebp-dev \
+	libzip-dev \
+	msodbcsql18 \
+	mssql-tools18 \
+	unzip \
+	zip \
+	odbcinst=2.3.7 \
+	odbcinst1debian2=2.3.7 \
+	unixodbc=2.3.7 \
+	unixodbc-dev=2.3.7
 
 # Add MSSQL Tools to path
 ENV PATH="/opt/mssql-tools18/bin:${PATH}"
 
 # PECL Install PDO MS SQL Server drive
-RUN pecl install -o -f pdo_sqlsrv sqlsrv \
-    && rm -rf /tmp/pear \
-    && docker-php-ext-enable pdo_sqlsrv sqlsrv
+RUN pecl install pdo_sqlsrv sqlsrv
 
 # Enable apache mod_rewrite
 RUN a2enmod rewrite
 
 # Configure PHP extensions and enable
 RUN docker-php-ext-configure intl \
-    && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install gd intl pdo pdo_pgsql opcache zip \
-    && docker-php-ext-enable sqlsrv pdo_sqlsrv opcache
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+	&& docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
+	&& docker-php-ext-install gd intl pdo pdo_pgsql opcache zip \
+	&& docker-php-ext-enable sqlsrv pdo_sqlsrv opcache
 
 # STAGE 2
 FROM revkeep-base AS revkeep-build
@@ -75,20 +67,21 @@ COPY ./config/.env.default ./config/.env
 # Set apache user as owner of working directory (webroot)
 RUN chown -R www-data:www-data .
 
-# Run composer install based on environment
-RUN composer install --prefer-dist --no-interaction --profile --no-ansi --no-scripts --optimize-autoloader
-
-# Run /src/Console/Installer.php
-RUN composer run post-install-cmd --no-interaction
-
 # Build front end assets
 RUN npm install --cache /npm && npm run prod --cache /npm
 
+# Run composer install based on environment
+RUN php composer.phar install --prefer-dist --no-interaction --profile --no-ansi --no-scripts --optimize-autoloader
+
+# Run /src/Console/Installer.php
+RUN php composer.phar run post-install-cmd --no-interaction
+
+# Restart apache to take all configuration changes.
+# Not needed
+# RUN service apache2 restart
+
 # Symlink for improved static asset performance (not serving assets through php)
 RUN php bin/cake.php plugin assets symlink
-
-# Run database migrations
-RUN php bin/cake migrations migrate
 
 # Expose web server
 EXPOSE 80

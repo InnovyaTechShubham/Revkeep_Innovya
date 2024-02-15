@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Controller\Client\Api;
+use App\Model\Table\FacilityTypesTable;
 
 /**
  * Facility Types Controller
@@ -45,11 +46,19 @@ class FacilityTypesController extends ApiController
 	/**
 	 * Index method
 	 *
-	 * @return void
+	 * 
 	 */
-	public function index(): void
+	public function index()
 	{
-		$this->crudIndex();
+		$this->FacilityTypes = new FacilityTypesTable();
+		 // Query all the information from the facility types table
+		 $FacilityTypes = $this->FacilityTypes->find()->toArray();
+        
+		 // Create a response object with JSON data
+		 $response = $this->response->withType('application/json');
+		 $response = $response->withStringBody(json_encode($FacilityTypes));
+		 
+		 return $response;
 	}
 
 	/**

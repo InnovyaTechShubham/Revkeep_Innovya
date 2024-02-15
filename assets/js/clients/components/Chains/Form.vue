@@ -14,7 +14,7 @@
 						:rules="{ required: true, min: 2, max: 60 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Chain Name" label-for="Chain Name" label-cols-lg="2">
+						<b-form-group label="Chain name" label-for="Chain Name" label-cols-lg="4">
 							<b-form-input
 								autofocus
 								name="Chain Name"
@@ -27,19 +27,21 @@
 								:disabled="saving"
 								
 							/>
-							<b-form-invalid-feedback v-if="errorMessage">
-								{{ errorMessage }}
-							</b-form-invalid-feedback>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
 						</b-form-group>
 					</validation-provider>
 
-					<!-- <validation-provider
+					<validation-provider
 						vid="Chain Type"
 						name="Chain Type"
 						:rules="{ required: false, max: 255 }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Chain Type" label-for="Chain Type" label-cols-lg="2">
+						<b-form-group label="Chain Type" label-for="Chain Type" label-cols-lg="4">
 							<b-form-input
 								name="Chain Type"
 								type="text"
@@ -55,7 +57,7 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider> -->
+					</validation-provider>
 					<!-- showing facilities and services -->
 
 					<!-- <validation-provider
@@ -99,7 +101,7 @@
 							<b-form-group
 								label="Facilities And Services"
 								label-for="FacilitiesAndServices"
-								label-cols-lg="2"
+								label-cols-lg="4"
 							>
 								<!-- Custom input box for search -->
 								<input
@@ -149,72 +151,54 @@
 					<template>
 						<div>
 							<b-row>
-							<!-- <b-col sm="4"></b-col> -->
+							<b-col sm="4"></b-col>
 							<!-- Facilities -->
-							<b-col sm="6" lg="6">
+							<b-col sm="4">
 								<div class="selected-item">
 								<div v-if="!selectedItems.length">
 									<empty-result>
 									No facilities added.
 									</empty-result>
 								</div>
+
 								<div v-else>
-									<h6 class="border_bottom" style="padding-bottom: 16px;">
-										Facility
-										<span style="float: right;">
-											<font-awesome-icon icon="trash" @click.stop="toggleDeleteMode" style="cursor: pointer;" />
-										</span>
-									</h6>
+									<h6 class="border_bottom" style="padding-bottom: 16px;">Facility</h6>
 									<div v-for="(selectedItem, index) in selectedItems" :key="index" class="border_bottom">
+										
 										<p>
-										<input type="checkbox" v-if="deleteFacilityMode" v-model="selectedItem.checked" />
 										<span v-if="selectedItem.facility_type || selectedItem.facility_type_id" title="Facility">
-											<font-awesome-icon icon="house" /> {{ selectedItem.name }}
+											<font-awesome-icon icon="house" />  {{ selectedItem.name }}
 										</span>
 										<span v-else title="Service">
-											<font-awesome-icon icon="gear" /> {{ selectedItem.name }}
+											<font-awesome-icon icon="gear" />  {{ selectedItem.name }}
 										</span>
 										</p>
-									</div>
-									<div v-if="deleteFacilityMode" style="display: flex; justify-content: space-between; margin-top: 5px;">
-										<button @click="cancelFacilityDeleteMode" class="btn btn-secondary btn-sm">Cancel</button>
-										<button @click="removeSelectedItems" class="btn btn-danger btn-sm">Remove</button>
 									</div>
 								</div>
 								</div>
 							</b-col>
 
 							<!-- Services -->
-							<b-col sm="6" lg="6">
+							<b-col sm="4">
 								<div class="selected-item">
-									<div v-if="!serviceItems.length">
-										<empty-result>
-										No Services added.
-										</empty-result>
+								<div v-if="!serviceItems.length">
+									<empty-result>
+									No Services added.
+									</empty-result>
+								</div>
+								<div v-else>
+									<h6 class="border_bottom" style="padding-bottom: 16px;">Services</h6>
+									<div v-for="(selectedItem, index) in serviceItems" :key="index" class="border_bottom">
+										<p style="margin-bottom:5px;">
+										<span v-if="selectedItem.facility_type" title="Facility" style="margin-bottom: 5px;">
+											<font-awesome-icon icon="house" />  {{ selectedItem.name }}
+										</span>
+										<span v-else title="Service" style="margin-bottom: 5px;">
+											<font-awesome-icon icon="gear" />  {{ selectedItem.name }}
+										</span>
+										</p>
 									</div>
-									<div v-else>
-										<h6 class="border_bottom" style="padding-bottom: 16px;">
-											Services
-											<span style="float: right;">
-											<font-awesome-icon icon="trash" @click.stop="toggleServiceDeleteMode" style="cursor: pointer;" />
-											</span>
-										</h6>
-										<div v-for="(selectedItem, index) in serviceItems" :key="index" class="border_bottom">
-											<p style="margin-bottom: 5px;">
-											<input type="checkbox" v-if="deleteServiceMode" v-model="selectedItem.checked" />
-											<span v-if="selectedItem.facility_type" title="Facility" style="margin-bottom: 5px;">
-												<font-awesome-icon icon="house" /> {{ selectedItem.name }}
-											</span>
-											<span v-else title="Service" style="margin-bottom: 5px;">
-												<font-awesome-icon icon="gear" /> {{ selectedItem.name }}
-											</span>
-											</p>
-										</div>
-										<div v-if="deleteServiceMode" style="display: flex; justify-content: space-between; margin-top: 5px;">
-											<button @click="cancelServiceDeleteMode" class="btn btn-secondary btn-sm">Cancel</button>
-											<button @click="removeSerivceItems" class="btn btn-danger btn-sm">Remove</button>
-										</div>
-									</div>
+								</div>
 								</div>
 							</b-col>
 							</b-row>
@@ -224,11 +208,11 @@
 				</b-card-body>
 				<!-- select option for facilities and services -->
 				<!-- Use a template element for conditional rendering -->
-				<!-- <template v-if="!flatFacilitiesServicesArr.length">
+				<template v-if="!flatFacilitiesServicesArr.length">
 					<empty-result>
 					No facilities and services available
 					</empty-result>
-				</template> -->
+				</template>
 
 				<b-card-footer>
 					<b-row>
@@ -252,7 +236,7 @@
   border: 1px solid #ccc;
   padding: 8px;
   margin: 8px 0;
-  width:100%;
+  width:300px;
 }
 .border_bottom {
   /* padding: 10px; */
@@ -336,31 +320,27 @@ export default {
 			loadingFacilities: "facilities/loadingAll",
 		}),
 		flatFacilitiesServicesArr() {
-			// Flatten the array of arrays and create a new array with 'display_name' if available, otherwise 'name'
+			// Flatten the array of arrays and create a new array with only 'name' property
 			return (
-				(this.facilities_services_arr || []).flatMap((innerArr) =>
-					innerArr.map((item) => {
-						const name = item.display_name || item.name;
-						return name ? {
-							id: item.id,
-							name: name,
-							facility_type: (item.facility_type && typeof item.facility_type === 'object') ? item.facility_type : null,
-						} : null;
-					})
-				).filter(item => item !== null) || []
+			(this.facilities_services_arr || []).flatMap((innerArr) =>
+				innerArr.map((item) => ({ 
+					id: item.id, 
+					name: item.name, 
+					facility_type: (item.facility_type && typeof item.facility_type === 'object') ? item.facility_type : null,
+				}))
+			) || []
 			);
 		},
 		filteredOptions() {
 			const searchTerm = this.searchText.toLowerCase();
 			return (this.extractedFacilitesAndServices || []).flatMap((innerArr) =>
-				innerArr.map((item) => {
-					const itemName = item.display_name || item.name;
-					return itemName && itemName.toLowerCase().includes(searchTerm) ? {
-						id: item.id,
-						name: itemName,
-						facility_type: (item.facility_type && typeof item.facility_type === 'object') ? item.facility_type : null,
-					} : null;
-				})
+				innerArr.map((item) =>
+				item.name.toLowerCase().includes(searchTerm) ? {
+					id: item.id,
+					name: item.name,
+					facility_type: (item.facility_type && typeof item.facility_type === 'object') ? item.facility_type : null,
+				} : null
+				)
 			).filter(Boolean); // Filter out null values
 		},
 	},
@@ -373,7 +353,7 @@ export default {
 			entity: {
 				id: this.id,
 				chain_name: "",
-				//chain_type: "",
+				chain_type: "",
 				active: true,
 				client_owned: true,
 				facilities: [],
@@ -393,9 +373,6 @@ export default {
 			serviceItems: [],
 			filteredOptions: [],
 			selectedItem: null,
-			deleteFacilityMode: false,
-			deleteServiceMode: false,
-			errorMessage: null,
 		};
 	},
 	watch: {
@@ -446,30 +423,6 @@ export default {
 		});
 	},
 	methods: {
-		toggleDeleteMode() {
-			this.deleteFacilityMode = !this.deleteFacilityMode;
-		},
-		toggleServiceDeleteMode(){
-			this.deleteServiceMode = !this.deleteServiceMode;
-			console.log('Delete Service Mode:', this.deleteServiceMode);
-		},
-		removeSelectedItems() {
-			this.selectedItems = this.selectedItems.filter((item) => !item.checked);
-			this.deleteFacilityMode = false; // Turn off delete mode after removing items
-		},
-		removeSerivceItems(){
-			this.serviceItems = this.serviceItems.filter((item) => !item.checked);
-      		this.deleteServiceMode = false; 
-		},
-		cancelFacilityDeleteMode(){
-			this.selectedItems.forEach((item) => (item.checked = false));
-			this.deleteFacilityMode = false;
-		},
-		cancelServiceDeleteMode(){
-			 // Reset checked status and turn off delete mode
-			this.serviceItems.forEach((item) => (item.checked = false));
-      		this.deleteServiceMode = false;
-		},
 		// method to show dropdown options for Facilities/services
 		filterOptions() {
 			if(this.searchText.length == ''){
@@ -537,80 +490,54 @@ export default {
 		},
 
 		async save() {
+			// alert('calling save method')
 			// Set saving to true to disable the button during the request
 			this.saving = true;
 			// Extract the required data
-			// chain_type removed for now
-			// const { chain_name, chain_type } = this.entity;
-			const { chain_name } = this.entity;
+
+			const { chain_name, chain_type } = this.entity;
 
 			// Prepare the data to be sent in the POST request
 			const chainData = {
 				chain_name,
-				// chain_type, chain_type removed from here for now
+				chain_type,
 				Facility_data: this.selectedItems,
 				Service_data: this.serviceItems
 			};
 			await axios.post('/client/chains', chainData)
 				.then(response => {
+					console.log('inside success block after saving to chainOrganizations');
 					const responseData = response.data.data;
-					
-					if(response.data.success){
-						console.log('chain saved')
-						this.saving = false;
-						this.$router.push({
-							name: "chains"
-						});
-						this.$nextTick(function () {
-							this.$store.dispatch("notify", {
-								variant: "primary",
-								title: "Chain Created!",
-								message: `New Chain Created!.`,
-							});
-						});
-						redirect_index()
-					}else{
-						this.saving = false;
-						console.log('chain already exists');
-						this.errorMessage = response.data.message; 
-						this.$nextTick(function () {
-							this.$store.dispatch("notify", {
-								variant: "danger",
-								title: "Chain Error",
-								message: this.errorMessage,
-							});
-						});
-					}
+					console.log(responseData);
 				})
 				.catch(error => {
-					console.log(error)
-					// TODO: FIX IF THERE IS ANY WARNING/ERROR IN RESPONSE BLOCK
-					// this.saving = false;
-					// this.errorMessage = 'Error creating chain.'; 
-					// this.$nextTick(function () {
-					// 	this.$store.dispatch("notify", {
-					// 		variant: "danger",
-					// 		title: "Chain Error",
-					// 		message: error,
-					// 	});
-					// });
-				})
-				// .finally(() => {
-					
-					
-					
-					
-				// });
+					console.log('inside error block after saving to chainOrganizations');
+					console.error(error);
 
-				// redirect_index()
+				})
+				.finally(() => {
+					console.log('inside finally block after saving to chainOrganizations');
+					this.saving = false;
+					this.$router.push({
+						name: "chains"
+					});
+					this.$nextTick(function () {
+					this.$store.dispatch("notify", {
+						variant: "primary",
+						title: "Chain Updated!",
+						message: `Edit Saved!.`,
+					});
+			});
+					
+				});
+
+				redirect_index()
 		},
 		async editChain(){
 			// alert('inside editchain');
 			this.saving = true;
 			// Extract the required data
-			// chain_type removed from below axios call
-			// const {chain_name, chain_type } = this.entity;
-			const {chain_name } = this.entity;
+			const {chain_name, chain_type } = this.entity;
 
 			// Prepare the data to be sent in the POST request
 			// const chainData = {
@@ -620,7 +547,7 @@ export default {
 
 			const chainData = {
 				chain_name,
-				// chain_type, removed from here also
+				chain_type,
 				Facility_data: this.selectedItems,
 				Service_data: this.serviceItems
 			};
@@ -681,21 +608,19 @@ export default {
 				// alert('success block4')
                 this.chain_data.push(response.data);
 				this.entity.chain_name = this.chain_data[0]['chain_name'];
-				// chain_type is removed from being auto_populated on edit page
-				// this.entity.chain_type = this.chain_data[0]['chain_type'];
+				this.entity.chain_type = this.chain_data[0]['chain_type'];
 				// TODO: PUSH FACILITY DATA TO BELOW FACILITY AND SERVICES ARRAY
-				const chainOrganizations = response.data['chain_organizations'];
-				chainOrganizations.forEach(chainOrg => {
-					if (chainOrg.desc == 'Facility') {
-						// Check if it's a facility and add it to the facilities array
-						this.selectedItems.push(chainOrg['facility']);
-					}
-
-					if (chainOrg.desc == 'Service') {
-						// Check if it's a service and add it to the services array
-						this.serviceItems.push(chainOrg['service']);
-					}
-				});
+				// 	selectedItems: [],
+				// serviceItems: [],
+				// Assuming facility data is present in response.data.facilities
+				const facilities = response.data.chain_organizations.map(item => item.facility);
+				const services_data = response.data.chain_organizations.map(item1 => item1.service);
+				// alert(services_data)
+				// remove duplicate values from services_data: TODO: FIX IT
+				const distinct_services_data = this.eliminateDuplicates(services_data, 'id');
+				this.selectedItems.push(...facilities);
+				this.serviceItems.push(...distinct_services_data);
+				console.log('chain_data',this.chain_data)
                 // nesting 
             })
             .catch(error => {

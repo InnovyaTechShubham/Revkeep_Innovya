@@ -41,6 +41,7 @@
 							</b-col>
 						</b-row>
 					</b-alert>
+
 				</div> 
 			-->
 
@@ -102,36 +103,33 @@
 					</b-form-group> -->
 
 					<b-form-group label="Facility" label-for="facility_id" label-cols-lg="4">
-						<b-input-group>
-							<b-form-input type="text" name="facilitySearch" v-model="facilitySearchTerm"
-								:disabled="saving || loadingFacilities || formDisabled"
-								placeholder="Search for a facility..." @input="filterFacilities" />
-							<b-input-group-append>
-								<b-input-group-text>
-									<font-awesome-icon icon="search" fixed-width />
-								</b-input-group-text>
-							</b-input-group-append>
-						</b-input-group>
-						<div>
-							<!-- Display selected facilities as pills with a cross -->
-							<b-badge v-for="facility in selectedFacilities" :key="facility.id" variant="primary"
-								class="mr-1 mb-1">
-								{{ facility.name }}
-								<span @click="deselectFacility(facility)"
-									style="cursor: pointer; margin-left: 4px; color: red;">x</span>
-							</b-badge>
-						</div>
-						<div v-if="filteredFacilities.length > 0">
-							<!-- Display filtered facilities for selection -->
-							<b-list-group>
-								<b-list-group-item v-for="facility in filteredFacilities" :key="facility.id"
-									@click="selectFacility(facility)">
-									{{ facility.name }}
-								</b-list-group-item>
-							</b-list-group>
-						</div>
-					</b-form-group>
-
+    <b-input-group>
+        <b-form-input type="text" name="facilitySearch" v-model="facilitySearchTerm"
+            :disabled="saving || loadingFacilities || formDisabled"
+            placeholder="Search for a facility..." @input="filterFacilities" />
+        <b-input-group-append>
+            <b-input-group-text>
+                <font-awesome-icon icon="search" fixed-width />
+            </b-input-group-text>
+        </b-input-group-append>
+    </b-input-group>
+    <div>
+        <!-- Display selected facilities as pills with a cross -->
+        <b-badge v-for="facility in selectedFacilities" :key="facility.id" variant="primary" class="mr-1 mb-1">
+            {{ facility.name }}
+            <span @click="deselectFacility(facility)" style="cursor: pointer; margin-left: 4px; color: red;">x</span>
+        </b-badge>
+    </div>
+    <div v-if="filteredFacilities.length > 0">
+        <!-- Display filtered facilities for selection -->
+        <b-list-group>
+            <b-list-group-item v-for="facility in filteredFacilities" :key="facility.id"
+                @click="selectFacility(facility)">
+                {{ facility.name }}
+            </b-list-group-item>
+        </b-list-group>
+    </div>
+</b-form-group>
 
 					<b-form-group label="State" label-for="state" label-cols-lg="4">
 						<b-form-select name="state" v-model="entity.state" :options="states"
@@ -302,6 +300,7 @@ export default {
 	},
 	data() {
 		return {
+
 			MatchingFacility: [],
 			selectedFacilityNames: [],
 			selectedFacilities: [],
@@ -334,7 +333,6 @@ export default {
 				primaryTaxonomy: null,
 				additionalTaxonomies: null,
 				selectedFacilityIds: [],
-
 			},
 			populated: false,
 			loadingFacilities: false,
@@ -381,7 +379,7 @@ export default {
 			this.refresh();
 			this.fetchClientFacilities();
 		}
-
+		
 	},
 	methods: {
 		filterFacilities() {
@@ -402,7 +400,6 @@ export default {
 		// working for adding only one physician
 
 		selectFacility(selectedFacility) {
-
 			console.log('Selected Facility:', selectedFacility);
 			// Check if the facility is not already selected
 			if (!this.selectedFacilities.some(facility => facility.id === selectedFacility.id)) {
@@ -414,26 +411,17 @@ export default {
 
 				// Log the IDs of the selected facilities
 				console.log('Selected Facility IDs:', this.entity.selectedFacilityIds);
+
 			}
 
 			// Clear the search term and filtered facilities
 			this.facilitySearchTerm = '';
 			this.filteredFacilities = [];
-
 		},
-		// deselectFacility(selectedFacility) {
-		// 	// Remove the selected facility from the array
-		// 	this.selectedFacilities = this.selectedFacilities.filter(facility => facility.id !== selectedFacility.id);
-		// },
-
 		deselectFacility(selectedFacility) {
-    // Remove the selected facility from the array
-    this.selectedFacilities = this.selectedFacilities.filter(facility => facility.id !== selectedFacility.id);
-
-    // Update selectedFacilityIds in the entity
-    this.entity.selectedFacilityIds = this.selectedFacilities.map(facility => facility.id);
-},
-
+			// Remove the selected facility from the array
+			this.selectedFacilities = this.selectedFacilities.filter(facility => facility.id !== selectedFacility.id);
+		},
 
 		getValidationState,
 		cancel() {
@@ -461,35 +449,35 @@ export default {
 			}
 		},
 		async fetchClientFacilities() {
-			try {
-				const url = "/client/fetchmultiplefacility";
+    try {
+        const url = "/client/fetchmultiplefacility";
 
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
+        // Fetch data from the server
+        const response = await axios.get(url, {
+            headers: {
+                "Accept": "application/json",
+            },
+        });
 
-				console.log("RESPONSE = ", response.data);
+        console.log("RESPONSE = ", response.data);
 
-				// Filter client facilities based on the route parameter
-				this.clientFacilities = response.data.filter(item => item.client_id === this.id);
+        // Filter client facilities based on the route parameter
+        this.clientFacilities = response.data.filter(item => item.client_id === this.id);
 
-				// Extract facility IDs directly without cleaning the array
-				const matchingFacilityIds = this.clientFacilities.map(item => item.facility_id);
+        // Extract facility IDs directly without cleaning the array
+        const matchingFacilityIds = this.clientFacilities.map(item => item.facility_id);
 
-				// Display the matching facility IDs
-				console.log("Matching Facility IDs:", matchingFacilityIds);
+        // Display the matching facility IDs
+        console.log("Matching Facility IDs:", matchingFacilityIds);
 
-				// Update MatchingFacility array elements individually to maintain reactivity
-				this.MatchingFacility.splice(0, this.MatchingFacility.length, ...matchingFacilityIds);
-				console.log(this.MatchingFacility);
-				this.selectedFacilities = this.facilities.filter(facility => matchingFacilityIds.includes(facility.id));
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
+        // Update MatchingFacility array elements individually to maintain reactivity
+        this.MatchingFacility.splice(0, this.MatchingFacility.length, ...matchingFacilityIds);
+		console.log(this.MatchingFacility);
+		this.selectedFacilities = this.facilities.filter(facility => matchingFacilityIds.includes(facility.id));
+    } catch (error) {
+        console.error("Error fetching client facilities:", error);
+    }
+},
 
 
 		async save(e) {
@@ -533,7 +521,7 @@ export default {
 				const response = await axios.post('/client/multiplefacility', data);
 				console.log("request sent")
 				// Handle the response as needed
-				// console.log(response.data);
+				console.log(response.data);
 
 				this.$emit("savedWithFacilities", response.data); // Emit event for successful saveWithFacilities
 
@@ -571,4 +559,7 @@ export default {
 	width: 150px;
 	margin-right: 10px;
 }
+
+
 </style>
+

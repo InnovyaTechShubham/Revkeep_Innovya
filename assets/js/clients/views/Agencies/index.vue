@@ -21,7 +21,7 @@
 			perPage,
 		}"
 	>
-		<page-header v-bind="{ loading, total }">
+		<page-header v-bind="{ loading, total,reloadPage}">
 			<template #title>Agencies</template>
 			<template #buttons>
 				<b-button variant="primary" :to="{ name: 'agencies.add' }" title="Add New">
@@ -143,4 +143,15 @@ const filtering = ref(false);
 const search = ref("");
 const perPage = ref(15);
 const action = getIndex;
+
+
+  
+   
+  
+   
+  
+ 
+    
+  
+
 </script>

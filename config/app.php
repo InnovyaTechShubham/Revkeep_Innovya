@@ -461,48 +461,6 @@ return [
 		],
 	],
 
-	
-	// 'Datasources' => [
-	// 	'default' => [
-	// 		'className' => Connection::class,
-	// 		'driver' => env('DATABASE_DRIVER', Sqlserver::class),
-	// 		'persistent' => false,
-	// 		'host' => env('DATABASE_HOST', 'revkeep-development.database.windows.net'),
-	// 		'port' => env('DATABASE_PORT', '1433'),
-	// 		'username' => env('DATABASE_USER', 'revkeep'),
-	// 		'password' => env('DATABASE_PASS', '5HN3MsyEhfNhEhPc'),
-	// 		'database' => env('DATABASE_NAME', 'revkeep_test_local_data'),
-	// 		'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', 30),
-	// 		// 'encoding' => env('DATABASE_ENCODING', 'utf8'),
-	// 		'encoding' => PDO::SQLSRV_ENCODING_UTF8,
-	// 		'flags' => [],
-	// 		'cacheMetadata' => true,
-	// 		'quoteIdentifiers' => true,
-	// 		'timezone' => 'UTC',
-	// 		'log' => false,
-	// 		'url' => env('DATABASE_URL', null),
-	// 	],
-	
-	// 	'test' => [
-	// 		'className' => Connection::class,
-	// 		'driver' => env('DATABASE_TEST_DRIVER', Sqlserver::class),
-	// 		'persistent' => false,
-	// 		'host' => env('DATABASE_TEST_HOST', 'revkeep-development.database.windows.net'),
-	// 		'port' => env('DATABASE_TEST_PORT', '1433'),
-	// 		'username' => env('DATABASE_TEST_USER', 'revkeep'),
-	// 		'password' => env('DATABASE_TEST_PASS', '5HN3MsyEhfNhEhPc'),
-	// 		'database' => env('DATABASE_TEST_NAME', 'revkeep_local'),
-	// 		// 'encoding' => env('DATABASE_TEST_ENCODING', 'utf8'),
-	// 		'encoding' => PDO::SQLSRV_ENCODING_UTF8,
-	// 		'timezone' => 'UTC',
-	// 		'cacheMetadata' => true,
-	// 		'quoteIdentifiers' => false,
-	// 		'log' => false,
-	// 		'url' => env('DATABASE_TEST_URL', null),
-	// 		'loginTimeout' => env('DATABASE_LOGIN_TIMEOUT', 30),
-	// 	],
-	// ],
-
 	/**
 	 * Configures logging options
 	 */

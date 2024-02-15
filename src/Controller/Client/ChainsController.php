@@ -7,7 +7,6 @@ use App\Model\Table\ChainsTable;
 use App\Model\Table\ChainOrganizationsTable;
 use App\Controller\AppController;
 use Cake\Network\Exception\MethodNotAllowedException;
-use Cake\ORM\TableRegistry;
 
 
 /**
@@ -45,97 +44,54 @@ class ChainsController extends AppController
 
         if ($this->request->is('post')) {
             $chain_name = $this->request->getData('chain_name');
-            // $chain_type = $this->request->getData('chain_type');
-             // Check if chain_name already exists
-            $existingChain = $type->exists(['chain_name' => $chain_name]);
-            // if chain_name is empty
-            if (empty($chain_name)) {
-                // Handle the case where $chain_name is undefined, null, or empty
-                $response = [
-                    'success' => false,
-                    'message' => 'Chain name and Chain Type is required.',
-                ];
+            $chain_type = $this->request->getData('chain_type');
             
-                // Send the JSON response back to the client
-                echo json_encode($response);
-                // Optionally, you can use "die();" to terminate further script execution
-                die();
-            }
-            if ($existingChain) {
-                // Handle the case where the chain_name already exists
-                $response = [
-                    'success' => false,
-                    'message' => 'Chain Already exists.',
-                ];
-                // Send the JSON response back to the client
-                echo json_encode($response);
-                // Optionally, you can use "die();" to terminate further script execution
-                die();
-            }else{
-                // $chain_name = $this->request->getData('chain_name');
-                // $chain_type = $this->request->getData('chain_type');
+
+            //  get facility and services data
+            $facilityArray = $this->request->getData('Facility_data');
+            $serviceArray = $this->request->getData('Service_data');
+
+
+            $new = $type->newEntity([
                 
+                'chain_name' => $chain_name,
+                'chain_type' => $chain_type,
+            ]);
+            // if ($type->save($new)) {
+            //     $response = [
+            //         'success' => 'true',
 
-                //  get facility and services data
-                $facilityArray = $this->request->getData('Facility_data');
-                $serviceArray = $this->request->getData('Service_data');
+            //         'message' => 'Document entry saved.',
+            //     ];
 
+            // }
 
-                $new = $type->newEntity([
-                    
-                    'chain_name' => $chain_name,
-                    // 'chain_type' => $chain_type,
-                ]);
-            
-                if ($type->save($new)) {
-                    $chainId = $new->id;
+            if ($type->save($new)) {
+                $chainId = $new->id;
 
-                    // Iterate over the arrays and create entries in chainOrganizations table
-                    if (!empty($facilityArray)) {
-                        foreach ($facilityArray as $facilityId) {
-                            $newChainOrganization = $chainOrganizationsTable->newEntity([
-                                'chain_id' => $chainId,
-                                'org_id' => $facilityId['id'],
-                                'desc' => 'Facility',
-                            ]);
-        
-                            $chainOrganizationsTable->save($newChainOrganization);
-                        }
-                    } 
-                    
-                    if(!empty($serviceArray)){
-                        foreach ($serviceArray as $serviceId) {
-                            $newChainOrganization = $chainOrganizationsTable->newEntity([
-                                'chain_id' => $chainId,
-                                'org_id' => $serviceId['id'],
-                                'desc' => 'Service',
-                            ]);
-                            
-                            $chainOrganizationsTable->save($newChainOrganization);
-                        }
+                // Iterate over the arrays and create entries in chainOrganizations table
+                foreach ($facilityArray as $facilityId) {
+                    foreach ($serviceArray as $serviceId) {
+                        $newChainOrganization = $chainOrganizationsTable->newEntity([
+                            'chain_id' => $chainId,
+                            'facility_id' => $facilityId['id'],
+                            'service_id' => $serviceId['id'],
+                        ]);
+
+                        $chainOrganizationsTable->save($newChainOrganization);
                     }
-                    
-                    $response = [
-                        'success' => true,
-                        'message' => 'Document entry and related chainOrganizations entries saved.',
-                    ];
-
-                    // Send the JSON response back to the client
-                    echo json_encode($response);
-                    // Optionally, you can use "die();" to terminate further script execution
-                    die();
-                } else {
-                    $response = [
-                        'success' => false,
-                        'message' => 'Error saving data in Chains table.',
-                    ];
-                    // Send the JSON response back to the client
-                    echo json_encode($response);
-                    // Optionally, you can use "die();" to terminate further script execution
-                    die();
                 }
+
+                $response = [
+                    'success' => true,
+                    'message' => 'Document entry and related chainOrganizations entries saved.',
+                ];
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => 'Error saving data in Chains table.',
+                ];
             }
-            
         }
     }
 
@@ -169,31 +125,33 @@ class ChainsController extends AppController
             // Retrieve a single record from the "chains" table based on the provided $id
             $record = $chainsTable->get($id);
 
-            $chainOrganizationsTable = TableRegistry::getTableLocator()->get('ChainOrganizations');
-            $query = $chainOrganizationsTable->find('all')
+            // Fetch associated ChainOrganizations data with facilities
+            $chainOrganizationsTable = $this->getTableLocator()->get('ChainOrganizations');
+            $chainOrganizationsData = $chainOrganizationsTable->find()
+                ->select(['facility_id'])
+                ->where(['chain_id' => $id])
                 ->contain([
-                    'Facilities' => function ($q) {
-                        return $q->select(['id', 'name', 'facility_type_id']);
-                    },
+                    'Facilities' => ['fields' => ['id', 'name', 'facility_type_id']],
                     'Services' => function ($q) {
                         return $q->select(['id', 'name']);
                     }
                 ])
-                ->where(['ChainOrganizations.chain_id' => $id]);
+                ->toArray();
 
-            $results = $query->all();
             // Add the fetched facility data to the response
-            $record->chain_organizations = $results;
-            // Return JSON response
-            $this->response = $this->response->withType('application/json')
-            ->withStringBody(json_encode($record));
-            return $this->response;
+            $record->chain_organizations = $chainOrganizationsData;
 
         } catch (\Cake\Datasource\Exception\RecordNotFoundException $e) {
             // Handle the case where the record is not found
             $this->response = $this->response->withStatus(404); // Not Found
             return $this->response;
         }
+
+        // Return JSON response
+        $this->response = $this->response->withType('application/json')
+                                        ->withStringBody(json_encode($record));
+        return $this->response;
+
     }
 
     public function editChain($id)
@@ -206,20 +164,8 @@ class ChainsController extends AppController
         if ($this->request->is('post')) {
             // $chain_id = $this->request->getData('id'); // Assuming you have an 'id' field in your form
             $chain_name = $this->request->getData('chain_name');
-            // $chain_type = $this->request->getData('chain_type');
-            // if chain_name is empty
-            if (empty($chain_name)) {
-                // Handle the case where $chain_name is undefined, null, or empty
-                $response = [
-                    'success' => false,
-                    'message' => 'Chain name and Chain Type is required.',
-                ];
-            
-                // Send the JSON response back to the client
-                echo json_encode($response);
-                // Optionally, you can use "die();" to terminate further script execution
-                die();
-            }
+            $chain_type = $this->request->getData('chain_type');
+
             //  get facility and services data
             $facilityArray = $this->request->getData('Facility_data');
             $serviceArray = $this->request->getData('Service_data');
@@ -230,7 +176,7 @@ class ChainsController extends AppController
             // Patch the entity with the new data
             $type->patchEntity($chain, [
                 'chain_name' => $chain_name,
-                // 'chain_type' => $chain_type,
+                'chain_type' => $chain_type,
             ]);
         
             // Save the changes
@@ -242,30 +188,19 @@ class ChainsController extends AppController
                 // $chainId = $chain->id;
 
                 // Deleting entries for the specified chain ID 
+                // TODO: REMOVE THE DELETE QUERY. Find alternate way to update all entries
                 $result = $chainOrganizationsTable->deleteAll(['chain_id' => $id]);
 
 
                 // Iterate over the arrays and create entries in chainOrganizations table
-                if (!empty($facilityArray)) {
-                    foreach ($facilityArray as $facilityId) {
-                        $newChainOrganization = $chainOrganizationsTable->newEntity([
-                            'chain_id' => $id,
-                            'org_id' => $facilityId['id'],
-                            'desc' => 'Facility',
-                        ]);
-    
-                        $chainOrganizationsTable->save($newChainOrganization);
-                    }
-                } 
-                
-                if(!empty($serviceArray)){
+                foreach ($facilityArray as $facilityId) {
                     foreach ($serviceArray as $serviceId) {
                         $newChainOrganization = $chainOrganizationsTable->newEntity([
                             'chain_id' => $id,
-                            'org_id' => $serviceId['id'],
-                            'desc' => 'Service',
+                            'facility_id' => $facilityId['id'],
+                            'service_id' => $serviceId['id'],
                         ]);
-                        
+
                         $chainOrganizationsTable->save($newChainOrganization);
                     }
                 }
@@ -296,9 +231,6 @@ class ChainsController extends AppController
 
 		try {
 			$this->Chains->deleteOrFail($record);
-            // delete related entries from chain_organization table
-            $chainOrganizationsTable = new ChainOrganizationsTable();
-            $result = $chainOrganizationsTable->deleteAll(['chain_id' => $id]);
 			$this->set('data', $record);
 			$this->set('success', true);
 		} catch (PersistenceFailedException $e) {

@@ -98,11 +98,11 @@
 
 					<validation-provider
 						vid="letter_date"
-						name="Audit Letter Date"
+						name="Letter Date"
 						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Audit Letter Date" label-for="letter_date" label-cols-lg="4">
+						<b-form-group label="Letter Date" label-for="letter_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="entity.letter_date"
@@ -123,11 +123,11 @@
 
 					<validation-provider
 						vid="received_date"
-						name="Audit Received Date"
-						:rules="{ required: false }"
+						name="Received Date"
+						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Audit Received Date" label-for="received_date" label-cols-lg="4">
+						<b-form-group label="Received Date" label-for="received_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="entity.received_date"
@@ -247,10 +247,10 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-					<!-- <validation-provider
+					<validation-provider
 						vid="days_to_respond_from"
 						name="Days to respond from"
-						:rules="{ required: false }"
+						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
 						<b-form-group label="From" label-for="days_to_respond_from" label-cols-lg="4">
@@ -271,15 +271,15 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider> -->
+					</validation-provider>
 
 					<validation-provider
 						vid="due_date"
-						name="Audit Due Date"
-						:rules="{ required: true, customValidation: checkDueDate}"
+						name="Due Date"
+						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Audit Due Date" label-for="due_date" label-cols-lg="4">
+						<b-form-group label="Due Date" label-for="due_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="dueDate"
@@ -288,7 +288,7 @@
 								:readonly="false"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
-								:min="entity.letter_date"
+								:min="entity.received_date"
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -636,7 +636,7 @@
 				<b-card-body>
 					<!-- <h6 class="text-muted">Optional</h6> -->
 					<b-card no-body>
-					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
+						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseHearing
@@ -704,7 +704,7 @@
 									</b-form-select>
 								</b-form-group>
 
-								// Render input based on selected Meeting Type 
+								<!-- Render input based on selected Meeting Type -->
 								<template v-if="entity.meeting_type === 'Location'">
 									<b-form-group label="Address" label-for="address" label-cols-lg="4">
 										<b-form-input
@@ -734,7 +734,7 @@
 								</template>
 								</b-card-body>
 								</b-collapse>
-							-->
+
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -956,61 +956,63 @@ export default {
 	computed: {
 
 		dueDate() {
-			if (this.entity.days_to_respond_from_id == 1) {
-			// received date
-			return moment(this.entity.received_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
+    if (this.entity.days_to_respond_from_id == 1) {
+      // received date
+      return moment(this.entity.received_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
 
-			} else if (this.entity.days_to_respond_from_id == 2) {
-			// letter date
-			return moment(this.entity.letter_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
-			}
-		},
-		selectedDaysToDecision() {
-			if (!this.entity.appeal_level_id) return null;
-			
-			const selectedLevel = this.insuranceData.find(level => {
-			return level.id === this.entity.appeal_level_id;
-			});
-			console.log("radio", this.daysToRespondFroms);
-			console.log('days to respond:', selectedLevel.days_to_decision);
-			console.log('Selected level:', selectedLevel);
-			this.daysToDecision = selectedLevel.days_to_decision;
-			console.log("final",this.daysToDecision);
-			return(this.daysToDecision);
-		},
+    } else if (this.entity.days_to_respond_from_id == 2) {
+      // letter date
+      return moment(this.entity.letter_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
+    }
+  },
+  selectedDaysToDecision() {
+    if (!this.entity.appeal_level_id) return null;
+    
+    const selectedLevel = this.insuranceData.find(level => {
+      return level.id === this.entity.appeal_level_id;
+    });
+	console.log("radio", this.daysToRespondFroms);
+	console.log('days to respond:', selectedLevel.days_to_decision);
+    console.log('Selected level:', selectedLevel);
+	this.daysToDecision = selectedLevel.days_to_decision;
+	console.log("final",this.daysToDecision);
+	return(this.daysToDecision);
+  },
 
 		selectedDaysToRespond() {
-			if (!this.entity.appeal_level_id) return null;
-			
-			const selectedLevel = this.insuranceData.find(level => {
-			return level.id === this.entity.appeal_level_id;
-			});
-			console.log("radio", this.daysToRespondFroms);
-			console.log('days to respond:', selectedLevel.days_to_respond);
-			console.log('Selected level:', selectedLevel);
-			this.daysToRespond = selectedLevel.days_to_respond;
-			console.log("final",this.daysToRespond);
-			return(this.daysToRespond);
-			// return selectedLevel ? selectedLevel.daysToRespond : null;
-			
-		},
- 	 	GraceDays() {
-			if (!this.entity.appeal_level_id) return null;
-			
-			const selectedLevel = this.insuranceData.find(level => {
-			return level.id === this.entity.appeal_level_id;
-			});
-			console.log('days to respond:', selectedLevel.Grace_days);
-			console.log('Selected level:', selectedLevel);
-			this.gracedays = selectedLevel.Grace_days;
-			console.log("final",this.gracedays);
-			return(this.gracedays);
-  		},
+    if (!this.entity.appeal_level_id) return null;
+    
+    const selectedLevel = this.insuranceData.find(level => {
+      return level.id === this.entity.appeal_level_id;
+    });
+	console.log("radio", this.daysToRespondFroms);
+	console.log('days to respond:', selectedLevel.days_to_respond);
+    console.log('Selected level:', selectedLevel);
+	this.daysToRespond = selectedLevel.days_to_respond;
+	console.log("final",this.daysToRespond);
+	return(this.daysToRespond);
+    // return selectedLevel ? selectedLevel.daysToRespond : null;
+	
+  },
+ 	 GraceDays() {
+    if (!this.entity.appeal_level_id) return null;
+    
+    const selectedLevel = this.insuranceData.find(level => {
+      return level.id === this.entity.appeal_level_id;
+    });
+	console.log('days to respond:', selectedLevel.Grace_days);
+    console.log('Selected level:', selectedLevel);
+	this.gracedays = selectedLevel.Grace_days;
+	console.log("final",this.gracedays);
+	return(this.gracedays);
+    
+	
+  },
 
-		filteredAuditReviewers() {
-			// Assuming auditReviewers is the array containing all audit reviewers
-			return this.filterAuditReviewersByAgency(this.entity.agency_id);
-		},
+  filteredAuditReviewers() {
+    // Assuming auditReviewers is the array containing all audit reviewers
+    return this.filterAuditReviewersByAgency(this.entity.agency_id);
+  },
 
 		availableAppealLevels() {
 			if (
