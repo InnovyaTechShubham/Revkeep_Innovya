@@ -113,9 +113,9 @@
                                             {{ result.facility_status }}
                                         </b-badge>
 
-										<b-badge pill v-else variant="primary" title="active" class="ml-2 d-flex align-items-center">
+										<!-- <b-badge pill v-else variant="primary" title="active" class="ml-2 d-flex align-items-center">
                                             {{ result.facility_status }}
-                                        </b-badge>
+                                        </b-badge> -->
 									 </div>
 									</div>
 										<p v-if="result.chain_name" class="small mb-1 text-muted" title="Chain">
