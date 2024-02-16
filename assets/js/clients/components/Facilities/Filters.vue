@@ -85,6 +85,7 @@
 
 <script type="text/javascript">
 import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
 	name: "FacilityFilters",
@@ -116,7 +117,7 @@ export default {
 		},
 		...mapGetters({
 			states: "states/states",
-			facilityTypes: "facilityTypes/all",
+			// facilityTypes: "facilityTypes/all",
 		}),
 	},
 	methods:{
@@ -157,7 +158,7 @@ export default {
 				},
 				{
 					value: 0,
-					name: "Pending",
+					name: "Pending Term",
 				},
 			],
 			ownedOptions: [
