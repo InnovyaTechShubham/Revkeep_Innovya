@@ -433,15 +433,15 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 			]
 		]);
 
-		$builder->resources('FacilityTypes', [
-			'map' => [
-				'all' => [
-					'action' => 'all',
-					'method' => 'GET',
-					'path' => 'all'
-				],
-			]
-		]);
+		// $builder->resources('FacilityTypes', [
+		// 	'map' => [
+		// 		'all' => [
+		// 			'action' => 'all',
+		// 			'method' => 'GET',
+		// 			'path' => 'all'
+		// 		],
+		// 	]
+		// ]);
 
 		$builder->resources('GuestPortals', [
 			'map' => [
