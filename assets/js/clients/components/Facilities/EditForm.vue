@@ -65,7 +65,7 @@
 						<validation-provider
 						vid="facility_type_id"
 						name="Facility Type"
-						:rules="{ required: true }"
+						:rules="{ required: false }"
 						v-slot="validationContext"
 						>
 						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="4">
@@ -75,7 +75,6 @@
 							:state="getValidationState(validationContext)"
 							:options="facilityTypes"
 							:disabled="saving"
-							required="required"
 							value-field="id"
 							text-field="name"
 							/>
@@ -172,7 +171,7 @@
 						
 
 					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
-						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
+						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4">
 							<b-form-select v-model="entity.facility_status" :options="facilityStatus" :disabled="saving"></b-form-select>
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
@@ -181,11 +180,27 @@
 
 					<b-form-group label="Bill Type" label-for="bill_type" label-cols-lg="4">
 							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
-								<template #first>
+								<!-- <template #first>
 									<option :value="null" />
-								</template>
+								</template> -->
 							</b-form-select>
 						</b-form-group>
+
+						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									<b-list-group v-if="filteredChains.length > 0">
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group>
 
 
 					
@@ -276,22 +291,6 @@
 
 					</b-col>
 					</b-row>
-					
-			<b-form-group label="Chain" label-for="chain_name" label-cols-lg="2">
-				<b-input-group>
-					<b-form-input type="text" name="chain_name" v-model="searchChain"
-						:disabled="saving"
-						placeholder="Search for a Chain..." @input="filterChains" />
-				</b-input-group>
-				<div class="mb-0" style="margin: 0;">
-					<b-list-group v-if="filteredChains.length > 0">
-						<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-							@click="selectChain(chain)">
-							{{ chain.chain_name }}
-						</b-list-group-item>
-					</b-list-group>
-				</div>
-			</b-form-group>
 
 				</b-card-body>
 				<!--Main section end-->
@@ -1424,7 +1423,7 @@ export default {
 				f_name: null,
 				l_name: null,
 				title_id: null,
-				// street_address_1: null,
+				street_address_1: null,
 				street_address_2: null,
 				city: null,
 				state: null,
@@ -1501,10 +1500,6 @@ export default {
 			deletePopupVisible: false,
 			deletePopupVisibleFax: false,
 			isFaxInputDisabled: false,
-			// faxNumberPattern: /^[0-9]{10}$/, // Adjust the regex pattern based on your fax number format
-			// allowedDigits: 10,
-			// existingFaxes: [] ,
-
 			newEmail: {
 				email: '',
 				description: '',
@@ -1516,47 +1511,14 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
-			serviceOperationsOptions: [
-				// { value: 'pt', text: 'PT' },
-				// { value: 'ot', text: 'OT' },
-				// { value: 'st', text: 'ST' },
-			],
+			serviceOperationsOptions: [],
 			contractBillTypes: [],
-			// { value: 'other', text: 'Other' },
-			// { value: 'ghc', text: 'GHC' },
-			// { value: 'synergy', text: 'Synergy' },
-			// { value: 'encore', text: 'Encore' },
-			
-			contractTypes: [
-			// { value: 'management_agreement', text: 'Management Agreement' },
-			// { value: 'snf_therapy_percent', text: 'SNF - % Therapy Component' },
-			// { value: 'snf_flat_fee', text: 'SNF - Flat Fee' },
-			// { value: 'snf_flat_fee_part_a', text: 'SNF - Flat Fee (Part A)' },
-			// { value: 'snf_partnership_plus', text: 'SNF - Partnership Plus' },
-			// { value: 'snf_per_diem', text: 'SNF - Per Diem' },
-			// { value: 'snf_per_diem_sd', text: 'SNF - Per Diem (SD)' },
-			// { value: 'snf_per_minute', text: 'SNF - Per Minute' },
-			// { value: 'snf_per_minute_sd', text: 'SNF - Per Minute (SD)' },
-			// { value: 'snf_percent_fac_rate', text: 'SNF - Percent Facility Rate' },
-			// { value: 'snf_percent_pdpm_ther_comp', text: 'SNF - Percent PDPM Therapy Component' },
-			],
-			ownershipTypes: [
-			// { value: 'corporate_chain', text: 'Corporate Chain' },
-			// { value: 'county_owned', text: 'County Owned' },
-			// { value: 'hospital_owned', text: 'Hospital Owned' },
-			// { value: 'independent', text: 'Independent' },
-			// { value: 'managed', text: 'Managed' },
-			// { value: 'management_company', text: 'Management Company' },
-			// { value: 'silver_stone_living', text: 'Silver Stone Living' },
-		],
-			
+			contractTypes: [],
+			ownershipTypes: [],
 			insuranceRates: {},
 			selectedInsuranceId: null,
-
-			insurances: [
-				
-		],
-		facilityTypes:[],
+			insurances: [],
+			facilityTypes:[],
    
 	 };
 	},
@@ -2897,8 +2859,8 @@ async addFax() {
 				this.entity.phone = locationAddress.telephone_number ?? "";
 				this.entity.fax = locationAddress.fax_number ?? "";
 				// Address
-				this.entity.street_address_1 = locationAddress.address_1 ?? "";
-				this.entity.street_address_2 = locationAddress.address_2 ?? "";
+				this.entity.address_1 = locationAddress.address_1 ?? "";
+				this.entity.address_2 = locationAddress.address_2 ?? "";
 				this.entity.city = locationAddress.city ?? "";
 				this.entity.state = locationAddress.state ?? "";
 				this.entity.zip = locationAddress.postal_code ?? "";

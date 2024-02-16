@@ -45,8 +45,9 @@
 					</p>
 				</b-col>
 				<b-col cols="12" sm="6" lg="6" class="mb-2">
-					<b-badge pill variant="primary" v-if="entity.active">Active</b-badge>
-					<b-badge pill variant="secondary" v-else>Inactive</b-badge>
+					<!-- <b-badge pill variant="primary" v-if="entity.facility_status">Active</b-badge>
+					<b-badge pill variant="secondary" v-else>Inactive</b-badge> -->
+					<b-badge :pill="true" :variant="badgeVariant">{{ badgeText }}</b-badge>
 					<b-badge pill v-if="entity.client_owned" variant="info"> Owned </b-badge>
 					<b-badge pill v-if="entity.has_contract" variant="info"> Contracted </b-badge>
 				</b-col>
@@ -503,6 +504,32 @@ export default {
 		};
 	},
 	computed: {
+		badgeVariant() {
+			// Assuming "entity.facility_status" holds the facility status value
+			switch (this.entity.facility_status) {
+				case 'Active':
+					return 'primary';
+				case 'Pending Term':
+					return 'secondary'; 
+				case 'Inactive':
+					return 'danger';
+				default:
+					return 'info'; // Adjust the default variant as needed
+			}
+		},
+		badgeText() {
+			// Assuming "entity.facility_status" holds the facility status value
+			switch (this.entity.facility_status) {
+				case 'Active':
+					return 'Active';
+				case 'Pending Term':
+					return 'Pending';
+				case 'Inactive':
+					return 'Inactive';
+				default:
+					return 'Unknown'; // Adjust the default text as needed
+			}
+		},
 		caseFilters() {
 			return {
 				facility_id: this.$route.params.id,

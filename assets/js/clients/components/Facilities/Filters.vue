@@ -4,7 +4,7 @@
 			<b-form-group label="Active" label-for="active" label-cols-lg="4">
 				<b-form-select
 					name="active"
-					v-model="filters.active"
+					v-model="filters.facility_status"
 					:disabled="disabled"
 					:options="activeOptions"
 					value-field="value"
@@ -93,7 +93,7 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					active: null,
+					facility_status: null,
 					facility_type_id: null,
 					state: null,
 					owned: null,
@@ -119,6 +119,31 @@ export default {
 			facilityTypes: "facilityTypes/all",
 		}),
 	},
+	methods:{
+		async fetchFacilityType(){
+			try
+						{
+							const url = "/client/api/facilitytypes";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("facility type listed :", response);
+							response.data.forEach((item)=>{
+								this.facilityTypes.push(item.name);
+							});
+							console.log('facility type options =' , this.facilityTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+	},
 	data() {
 		return {
 			activeOptions: [
@@ -129,6 +154,10 @@ export default {
 				{
 					value: 0,
 					name: "Inactive",
+				},
+				{
+					value: 0,
+					name: "Pending",
 				},
 			],
 			ownedOptions: [
@@ -151,7 +180,13 @@ export default {
 					name: "No",
 				},
 			],
+			facilityTypes:[],
 		};
 	},
+
+	mounted() {
+    // Call the method here
+    	this.fetchFacilityType();
+  },
 };
 </script>
