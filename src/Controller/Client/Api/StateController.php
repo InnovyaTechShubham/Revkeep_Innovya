@@ -122,81 +122,81 @@ class StateController extends ApiController
 				->find('ordered')
 				->all(),
 
-			'facilities' => $this->fetchTable('Facilities')
-				->find('active')
-				->find('ordered')
-				->contain(['FacilityTypes'])
-				->all(),
+			// 'facilities' => $this->fetchTable('Facilities')
+			// 	->find('active')
+			// 	->find('ordered')
+			// 	->contain(['FacilityTypes'])
+			// 	->all(),
 
-			'facilityTypes' =>  $this->fetchTable('FacilityTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'facilityTypes' =>  $this->fetchTable('FacilityTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'insuranceProviders' => $this->fetchTable('InsuranceProviders')
-				->find('active')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'insuranceProviders' => $this->fetchTable('InsuranceProviders')
+			// 	->find('active')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'insuranceTypes' => $this->fetchTable('InsuranceTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'insuranceTypes' => $this->fetchTable('InsuranceTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'referenceNumbers' => $this->fetchTable('ReferenceNumbers')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'referenceNumbers' => $this->fetchTable('ReferenceNumbers')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
 			// Cases
-			'caseOutcomes' => $this->fetchTable('CaseOutcomes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'caseOutcomes' => $this->fetchTable('CaseOutcomes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'caseTypes' => $this->fetchTable('CaseTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'caseTypes' => $this->fetchTable('CaseTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'denialTypes' => $this->fetchTable('DenialTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'denialTypes' => $this->fetchTable('DenialTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'denialReasons' => $this->fetchTable('DenialReasons')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'denialReasons' => $this->fetchTable('DenialReasons')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'notDefendableReasons' => $this->fetchTable('NotDefendableReasons')
-				->find('limited')
-				->all(),
+			// 'notDefendableReasons' => $this->fetchTable('NotDefendableReasons')
+			// 	->find('limited')
+			// 	->all(),
 
-			'withdrawnReasons' => $this->fetchTable('WithdrawnReasons')
-				->find('limited')
-				->all(),
+			// 'withdrawnReasons' => $this->fetchTable('WithdrawnReasons')
+			// 	->find('limited')
+			// 	->all(),
 
-			// Appeals
-			'appealLevels' => $this->fetchTable('AppealLevels')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// // Appeals
+			// 'appealLevels' => $this->fetchTable('AppealLevels')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'appealTypes' => $this->fetchTable('AppealTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'appealTypes' => $this->fetchTable('AppealTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'daysToRespondFroms' => $this->fetchTable('DaysToRespondFroms')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'daysToRespondFroms' => $this->fetchTable('DaysToRespondFroms')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
-			'utcReasons' => $this->fetchTable('UtcReasons')
-				->find('limited')
-				->all(),
+			// 'utcReasons' => $this->fetchTable('UtcReasons')
+			// 	->find('limited')
+			// 	->all(),
 		]);
 	}
 }
