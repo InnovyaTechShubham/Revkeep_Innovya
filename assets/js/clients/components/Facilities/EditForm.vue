@@ -154,7 +154,7 @@
 									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.original_start_date"
+											v-model="entity.contractDetails.original_start_date"
 											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -241,7 +241,7 @@
 						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
 							<b-form-input
 							type="date"
-							v-model="entity.term_date"
+							v-model="entity.contractDetails.term_date"
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
@@ -781,7 +781,7 @@
 										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
+										<b-form-checkbox name="active" v-model="entity.contractDetails.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
 										<b-form-invalid-feedback
@@ -801,7 +801,7 @@
 									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_end_date"
+											v-model="entity.contractDetails.contract_end_date"
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -829,7 +829,7 @@
 									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_start_date"
+											v-model="entity.contractDetails.contract_start_date"
 											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -851,7 +851,7 @@
 									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.renewal_date"
+											v-model="entity.contractDetails.renewal_date"
 											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -880,7 +880,7 @@
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_bill_type"
-											v-model="entity.contract_bill_type"
+											v-model="entity.contractDetails.contract_bill_type"
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
@@ -918,7 +918,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.indemnification_days"
+												v-model="entity.contractDetails.indemnification_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -943,7 +943,7 @@
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_type"
-											v-model="entity.contract_type"
+											v-model="entity.contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
@@ -978,7 +978,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.max_return_work_days"
+												v-model="entity.contractDetails.max_return_work_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -1001,7 +1001,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.serviceOperation"
+									v-model="entity.contractDetails.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1415,7 +1415,6 @@ export default {
 				prior_name:null,
 				facility_type_id: null,
 				active: true,
-				contract_status:true,
 				phone: null,
 				fax: null,
 				email: null,
@@ -1443,13 +1442,6 @@ export default {
 				territory: null,
 				// rvp_name: null,
 				has_contract: false,
-				contract_start_date: null,
-				contract_end_date: null,
-				original_start_date: null,
-				term_date: null,
-				renewal_date: null,
-				indemnification_days: null,
-				max_return_work_days: null,
 				// service_operations: null,
 				address_1: null,
 				address_2: null,
@@ -1469,17 +1461,6 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-				pricing_schedules: [],
-				newSchedule: {
-				ins_id: '',
-				rate: '',
-				facility_id: ''
-			},
-				serviceOperation: null,
-				contract_bill_type: null,
-				contract_type: null,
-				ownership_type: null,
-				contract_insurance_type: null,
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
@@ -1487,6 +1468,27 @@ export default {
                 ltc: null,
                 ai: null,
                 il: null,
+				contractDetails: {
+					// facility_id: this.id,
+					original_start_date: null,
+					term_date: null,
+					contract_status:true,
+					contract_end_date: null,
+					contract_start_date: null,
+					renewal_date: null,
+					indemnification_days: null,
+					max_return_work_days: null,
+					serviceOperation: null,
+					contract_bill_type: null,
+					contract_type: null,
+					ownership_type: null,
+					newSchedule: {
+						ins_id: '',
+						rate: '',
+						facility_id: ''
+					},
+					
+    },
 			},
 			billTypeOptions:[],
 			facilityStatus:[],
@@ -1511,13 +1513,17 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
+			//contract
+			pricing_schedules: [],
 			serviceOperationsOptions: [],
 			contractBillTypes: [],
 			contractTypes: [],
 			ownershipTypes: [],
+			insurances: [],
 			insuranceRates: {},
 			selectedInsuranceId: null,
-			insurances: [],
+			contract_insurance_type: null,
+			// end contract
 			facilityTypes:[],
    
 	 };
@@ -1576,6 +1582,28 @@ export default {
 	},
 	
 	methods: {
+		async saveContract() {
+			try {
+				const apiUrl = '/client/facilitiescontracts';
+
+				// Extract contract-related data from entity
+				const contractData = this.entity.contractDetails;
+
+				// Make the API call with the extracted data
+				const response = await axios.post(apiUrl, contractData);
+
+				// Handle success response if needed
+				console.log('Facilities Contract saved successfully:', response.data);
+
+				// Optionally notify the user or perform other actions
+			} catch (error) {
+				// Handle error
+				console.error('Error saving Facilities Contract:', error);
+
+				// Optionally notify the user or perform other error handling actions
+			}
+		},
+
 
 		async fetchFacilityType(){
 			try
@@ -2248,44 +2276,63 @@ async addFax() {
     //   this.closeDeletePopup();
     // },
 	async deleteSelectedEmails() {
-		// Add logic to delete selected emails
-		console.log("Inside",this.entity.receiving_emails);
-		// Create a unique identifier for each email based on email and description
-		const uniqueIdentifier = (email) => `${email.email}_${email.description}`;
-		const updatedEmails = this.entity.receiving_emails.filter(
-		(email) => !this.selectedEmails.includes(email.email)
-		);
-		console.log("Deleted:",updatedEmails);
+    console.log("Inside", this.entity.receiving_emails);
+    console.log("Selected", this.selectedEmails);
 
-		// Update the receiving_emails array with the updatedEmails
-		this.entity.receiving_emails = updatedEmails;
+    try {
+        // Iterate over selected emails and delete them
+        for (const email of this.selectedEmails) {
+            const apiUrl = `/client/deletereceivingemail/${email.id}`;
+            await axios.delete(apiUrl);
+        }
 
-		// Reset selectedEmails array
-		this.selectedEmails = [];
+        // Filter out the selected emails from the entity's receiving_emails
+        const updatedEmails = this.entity.receiving_emails.filter(
+            (email) => !this.selectedEmails.some(selectedEmail => selectedEmail.id === email.id)
+        );
 
-		 // Make Axios call to delete emails from the database
-		const apiUrl = `/client/deletereceivingemail/${uniqueIdentifier(this.selectedEmails[0])}`;
-    	await axios.post(apiUrl, { selectedEmails: this.selectedEmails })
-        .then(response => {
-            // Handle success response if needed
-            console.log('Emails deleted successfully:', response.data);
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error deleting emails:', error);
-        })
-        .finally(() => {
-            // Close the delete popup or perform any other actions
-            this.closeDeletePopup();
+        // Wait for the next DOM update before emitting the event
+        await this.$nextTick();
+
+        // Emit event to notify about the deletion and pass the updated emails
+        this.$emit("Receiving_emails", updatedEmails);
+
+        // Show notification for successful deletion
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'success',
+                title: 'Emails Deleted!',
+                message: 'Selected emails deleted successfully.',
+            });
         });
 
-		// // Close the delete popup
-		// this.closeDeletePopup();
+        // Log success message
+        console.log('Emails deleted successfully');
+    } catch (error) {
+        // Handle error
+        console.error('Error deleting emails:', error);
+
+        // Show notification for deletion error
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'danger',
+                title: 'Error Deleting Emails',
+                message: 'An error occurred while deleting emails.',
+            });
+        });
+    } finally {
+        // Close the delete popup or perform any other actions
+        this.closeDeletePopup();
+    }
+
+    // Update the receiving_emails array with the updatedEmails
+    this.entity.receiving_emails = updatedEmails;
+
+    // Reset selectedEmails array
+    this.selectedEmails = [];
+},
 
 
-		
-
-	},
 
 	// 	async addReceivingEmail() {
     //     // Trim the entered email and check if it's not empty

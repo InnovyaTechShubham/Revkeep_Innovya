@@ -1193,4 +1193,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		
 	]);
 
+	$builder->connect('/facilitiescontracts', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
 });

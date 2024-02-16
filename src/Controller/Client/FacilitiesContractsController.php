@@ -36,26 +36,26 @@ class FacilitiesContractsController extends AppController
 		
         $this->request->allowMethod(['post']);
         $data = $this->request->getData();
-        $contractPricingSchedulesTableobj = new ContractPricingSchedulesTable();
-        // $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
-        // $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
-        // $file = fopen($filePath, 'w');
-        // fwrite($file, $jsonContent);
-        // fclose($file);
-        $contractPricingSchedulesTableObj = new ContractPricingSchedulesTable();
+        $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
+        $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
+        $file = fopen($filePath, 'w');
+        fwrite($file, $jsonContent);
+        fclose($file);
 
+        $facilitiesContractsTable = new FacilitiesContractsTable();
+        
         try{
             foreach ($data as $object) {
-                $entity = $contractPricingSchedulesTableObj->newEmptyEntity();
-                $entity->insurance_type_id = $object['id']+8;
-                $entity->contract_rate = $object['rate'];
-                $entity->facility_id = $object['facility_id'];
+                $entity = $facilitiesContractsTable->newEmptyEntity();
+                // $entity->insurance_type_id = $object['id']+8;
+                // $entity->contract_rate = $object['rate'];
+                // $entity->facility_id = $object['facility_id'];
                 // $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example3.json';
                 // $jsonContent = json_encode($entity, JSON_PRETTY_PRINT);
                 // $file = fopen($filePath, 'w');
                 // fwrite($file, $jsonContent);
                 // fclose($file);
-                $contractPricingSchedulesTableObj->save($entity);
+                $facilitiesContractsTable->save($entity);
                 $responseMessage = ['message' => 'its working'];
             }
         }
