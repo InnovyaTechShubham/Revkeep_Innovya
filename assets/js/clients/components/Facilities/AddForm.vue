@@ -172,7 +172,7 @@
 						<!-- Active -->
 
 					<validation-provider vid="active" name="Active" :rules="{ required: false }" v-slot="validationContext">
-						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4" description="Inactive facilities will not show up in dropdown lists.">
+						<b-form-group label="Facility Status" label-for="active" label-cols-lg="4">
 							<b-form-select v-model="entity.facility_status" :options="facilityStatus" :disabled="saving"></b-form-select>
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
@@ -181,11 +181,27 @@
 
 					<b-form-group label="Bill Type" label-for="bill_type" label-cols-lg="4">
 							<b-form-select name="bill_type" v-model="entity.bill_type" :options="billTypeOptions" value-field="abbreviation" text-field="name" :disabled="saving">
-								<template #first>
-									<option :value="null" />
-								</template>
+								<!-- <template #first>
+									<option :value="null" /> -->
+								<!-- </template> -->
 							</b-form-select>
 					</b-form-group>
+
+					<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
+								<b-input-group>
+									<b-form-input type="text" name="chain_name" v-model="searchChain"
+										:disabled="saving"
+										placeholder="Search for a Chain..." @input="filterChains" />
+								</b-input-group>
+								<div class="mb-0" style="margin: 0;">
+									<b-list-group v-if="filteredChains.length > 0">
+										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
+											@click="selectChain(chain)">
+											{{ chain.chain_name }}
+										</b-list-group-item>
+									</b-list-group>
+								</div>
+							</b-form-group>
 
 					
 					</b-col>
@@ -272,21 +288,7 @@
 						</validation-provider>
 					</b-col>
 					</b-row>
-							<b-form-group label="Chain" label-for="chain_name" label-cols-lg="2">
-								<b-input-group>
-									<b-form-input type="text" name="chain_name" v-model="searchChain"
-										:disabled="saving"
-										placeholder="Search for a Chain..." @input="filterChains" />
-								</b-input-group>
-								<div class="mb-0" style="margin: 0;">
-									<b-list-group v-if="filteredChains.length > 0">
-										<b-list-group-item v-for="chain in filteredChains" :key="chain.id"
-											@click="selectChain(chain)">
-											{{ chain.chain_name }}
-										</b-list-group-item>
-									</b-list-group>
-								</div>
-							</b-form-group>
+							
 
 				</b-card-body>
 
@@ -342,13 +344,7 @@
 								</b-form-group>
 								</validation-provider>
 
-								<!-- Territory -->
-								<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-									<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-										<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
-										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-									</b-form-group>
-									</validation-provider>
+							
 							</b-col>
 
 							<!-- Second Column -->

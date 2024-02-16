@@ -18,22 +18,27 @@ class FacilitiesContractsTable extends Table
         $this->belongsTo('ContractBillTypes', [
             'foreignKey' => 'contract_bill_type_id',
             'joinType' => 'INNER',
+            'nullable' => true, // Allow nulls
         ]);
         $this->belongsTo('ContractTypes', [
             'foreignKey' => 'contract_type_id',
             'joinType' => 'INNER',
+            'nullable' => true, // Allow nulls
         ]);
         $this->belongsTo('ContractServiceOperations', [
             'foreignKey' => 'service_operation_id',
             'joinType' => 'INNER',
+            'nullable' => true, // Allow nulls
         ]);
         $this->belongsTo('ContractOwnershipTypes', [
             'foreignKey' => 'ownership_type_id',
             'joinType' => 'INNER',
+            'nullable' => true, // Allow nulls
         ]);
         $this->belongsTo('ContractPricingSchedules', [
             'foreignKey' => 'pricing_schedule_id',
             'joinType' => 'INNER',
+            'nullable' => true, // Allow nulls
         ]);
     }
 }

@@ -17,7 +17,7 @@ class ChangeStreetAddressLengthInFacilities extends AbstractMigration
         $this->table('facilities')
         ->changeColumn('street_address_1', 'string', [
             'length' => 255,
-            'null' => false,
+            'null' => true,
         ])
         ->update();
     }

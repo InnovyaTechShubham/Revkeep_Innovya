@@ -86,12 +86,12 @@
 							v-for="result in results"
 							:key="result.id"
 							:to="{ name: 'facilities.view', params: { id: result.id } }"
-							:variant="result.active ? '' : 'light'"
+							:variant="result.facility_status ? '' : 'light'"
 						>
 							<div class="py-2 d-flex justify-start align-items-top">
 								<b-avatar
 									rounded
-									:variant="result.active ? 'primary' : 'light'"
+									:variant="result.facility_status ? 'primary' : 'light'"
 									class="mr-3 px-0 text-center"
 								>
 									<font-awesome-icon icon="building" class="px-0 mx-0" />
@@ -109,7 +109,11 @@
                                             {{ result.facility_status }}
                                         </b-badge>
 
-                                        <b-badge pill v-else-if="result.facility_status === 'Pending'" variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
+                                        <b-badge pill v-else-if="result.facility_status === 'Pending Term'" variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
+                                            {{ result.facility_status }}
+                                        </b-badge>
+
+										<b-badge pill v-else variant="primary" title="active" class="ml-2 d-flex align-items-center">
                                             {{ result.facility_status }}
                                         </b-badge>
 									 </div>
@@ -128,7 +132,7 @@
 											{{ result.full_address }}
 										</p>
 										<div>
-											<b-badge variant="light" v-if="!result.active"> Inactive </b-badge>
+											<b-badge variant="light" v-if="!result.facility_status"> Inactive </b-badge>
 											<b-badge variant="light" v-if="result.facility_type">
 												{{ result.facility_type.name }}
 											</b-badge>
@@ -155,7 +159,7 @@ import { getIndex } from "@/clients/services/facilities";
 import IndexFilters from "@/clients/components/Facilities/Filters.vue";
 
 const defaultFilters = {
-	active: null,
+	facility_status: null,
 	facility_type_id: null,
 	state: null,
 	client_owned: null,
