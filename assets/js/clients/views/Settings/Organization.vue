@@ -30,7 +30,8 @@
 								/>
 							</svg>
 							<div class="media-body">
-								<h5 class="h5 mt-0 mb-0">{{ clientName }}</h5>
+								<!-- <h5 class="h5 mt-0 mb-0">{{ clientName }}</h5>accName -->
+								<h5 class="h5 mt-0 mb-0">{{ accName }}</h5>
 								<p v-if="clientData.full_address" class="h6 text-muted">
 									{{ clientData.full_address }}
 								</p>
@@ -127,12 +128,15 @@
 
 <script type="text/javascript">
 import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
 	name: "ViewOrganization",
 	components: {},
 	data() {
-		return {};
+		return {
+			accName:null,
+		};
 	},
 	computed: {
 		...mapGetters({
@@ -146,11 +150,27 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		this.fetchDetails();
 	},
 	methods: {
 		async refresh() {
 			this.$store.dispatch("clientSettings/get");
 		},
+		async fetchDetails(){
+			const url = "/client/fetchdetails";
+				
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+				console.log('outputed =',response);
+				this.accName = response.data[0].name
+				console.log("client named =", this.accName);
+
+		}
+
 	},
 };
 </script>

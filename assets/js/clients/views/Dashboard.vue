@@ -2,7 +2,8 @@
 	<div>
 		<page-header>
 			<template #title>
-				<span>{{ clientName ?? "Dashboard" }}</span>
+				<!-- <span>{{ ClientName ?? "Dashboard" }}</span> -->
+				<span>{{ accName }}</span>
 				<b-button
 					variant="light"
 					:to="{ name: 'organization' }"
@@ -628,6 +629,7 @@ import Calendar from "@/clients/components/Dashboard/Calendar.vue";
 import RecentNotes from "@/clients/components/Dashboard/RecentNotes.vue";
 
 import CaseIndex from "@/clients/components/Cases/Index.vue";
+import axios from "axios";
 
 export default {
 	name: "Dashboard",
@@ -653,6 +655,7 @@ export default {
 				id: null,
 				list_name: null,
 			},
+			accName:null,
 		};
 	},
 	computed: {
@@ -733,6 +736,7 @@ export default {
 	},
 	mounted() {
 		this.refresh();
+		this.fetchDetails();
 		// this.test();
 	},
 	methods: {
@@ -767,6 +771,20 @@ export default {
 		checkAppealLevelName(result){
 			console.log('RESULTS =', result);
 		},
+		async fetchDetails(){
+			const url = "/client/fetchdetails";
+				
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+				console.log('outputed =',response);
+				this.accName = response.data[0].name
+				console.log("client named =", this.accName);
+
+		}
 	},
 	destroyed() {
 		clearInterval(this.timer);

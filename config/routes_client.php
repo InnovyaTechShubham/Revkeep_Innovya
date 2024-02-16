@@ -1193,4 +1193,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		
 	]);
 
+	$builder->connect('/fetchdetails', [
+		'controller' => 'Fetchdetails',
+		'action' => 'index',
+		
+	]);
+
 });
