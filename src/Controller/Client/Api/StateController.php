@@ -149,7 +149,7 @@ class StateController extends ApiController
 				->find('limited')
 				->all(),
 
-			Cases
+			// Cases
 			'caseOutcomes' => $this->fetchTable('CaseOutcomes')
 				->find('ordered')
 				->find('limited')
