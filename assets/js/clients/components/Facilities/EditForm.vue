@@ -154,7 +154,7 @@
 									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.original_start_date"
+											v-model="contractDetails.original_start_date"
 											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -241,7 +241,7 @@
 						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
 							<b-form-input
 							type="date"
-							v-model="entity.contractDetails.term_date"
+							v-model="contractDetails.term_date"
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
@@ -781,7 +781,7 @@
 										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox name="active" v-model="entity.contractDetails.contract_status" :disabled="saving"
+										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
 										<b-form-invalid-feedback
@@ -801,7 +801,7 @@
 									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.contract_end_date"
+											v-model="contractDetails.contract_end_date"
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -829,7 +829,7 @@
 									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.contract_start_date"
+											v-model="contractDetails.contract_start_date"
 											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -851,7 +851,7 @@
 									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.renewal_date"
+											v-model="contractDetails.renewal_date"
 											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -880,7 +880,7 @@
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_bill_type"
-											v-model="entity.contractDetails.contract_bill_type"
+											v-model="contractDetails.contract_bill_type"
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
@@ -918,7 +918,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.contractDetails.indemnification_days"
+												v-model="contractDetails.indemnification_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -943,7 +943,7 @@
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_type"
-											v-model="entity.contractDetails.contract_type"
+											v-model="contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
@@ -978,7 +978,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.contractDetails.max_return_work_days"
+												v-model="contractDetails.max_return_work_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -1001,7 +1001,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.contractDetails.serviceOperation"
+									v-model="contractDetails.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1020,7 +1020,7 @@
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
 												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
+													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="saveContractPricingSchedule(info.item)" />
 												
 												</div>
 											</template>
@@ -1468,7 +1468,11 @@ export default {
                 ltc: null,
                 ai: null,
                 il: null,
-				contractDetails: {
+				pricing_schedules: [],
+
+				
+			},
+			contractDetails: {
 					// facility_id: this.id,
 					original_start_date: null,
 					term_date: null,
@@ -1482,14 +1486,9 @@ export default {
 					contract_bill_type: null,
 					contract_type: null,
 					ownership_type: null,
-					newSchedule: {
-						ins_id: '',
-						rate: '',
-						facility_id: ''
-					},
+					
 					
     },
-			},
 			billTypeOptions:[],
 			facilityStatus:[],
 			service_ids: [],
@@ -1514,7 +1513,6 @@ export default {
 			selectedFaxes: [],
 			showDeleteIcon: false,
 			//contract
-			pricing_schedules: [],
 			serviceOperationsOptions: [],
 			contractBillTypes: [],
 			contractTypes: [],
@@ -1523,6 +1521,11 @@ export default {
 			insuranceRates: {},
 			selectedInsuranceId: null,
 			contract_insurance_type: null,
+			newSchedule: {
+				insurance_type_id: '',
+				contract_rate: '',
+						// facility_id: ''
+					},
 			// end contract
 			facilityTypes:[],
    
@@ -1582,12 +1585,117 @@ export default {
 	},
 	
 	methods: {
+// 		async saveContractPricingSchedule() {
+// 			try {
+// 				const apiUrl = '/client/contractpricingschedule';
+
+// 				const newSchedule = { ...this.newSchedule };
+// 				const ins_id = newSchedule.ins_id;
+// 				const rate = newSchedule.rate;
+				
+// 				// Check if pricing_schedules is defined, if not, initialize it as an empty array
+// 				if (!Array.isArray(this.entity.pricing_schedules)) {
+// 					this.$set(this.entity, 'pricing_schedules', []);
+// 				}
+// 			}
+// 			// Add the new email to the array
+// 		this.entity.pricing_schedules.push(newSchedule);
+// 		const ScheduleData = {   
+// 			ins_id,
+// 			rate,
+// 		};
+// 		console.log("header:",ScheduleData);
+// // Clear the newEmail object for the next entry
+// this.newEmail = { email: '', description: '' };
+// 		},
+async saveContractPricingSchedule(obj) {
+		console.log("object",obj);
+		// const newSchedule = { ...this.newSchedule };
+		const insurance_type_id = obj.id;
+		const contract_rate = obj.rate;
+
+		console.log("data check",insurance_type_id);
+		console.log("data check",contract_rate);
+
+		this.newSchedule.insurance_type_id =insurance_type_id;
+		this.newSchedule.contract_rate =contract_rate;
+
+		console.log("Newschedule",this.newSchedule);
+
+
+		
+
+		// Check if pricing_schedules is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.pricing_schedules)) {
+			this.$set(this.entity, 'pricing_schedules', []);
+		}
+
+		
+		// Add the new email to the array
+		this.entity.pricing_schedules.push(this.newSchedule);
+
+		// // Clear the newEmail object for the next entry
+		// this.newEmail = { email: '', description: '' };
+
+		
+
+		// Prepare the data to be sent in the POST request
+		const ScheduleData = {   
+			insurance_type_id,
+			contract_rate,
+		};
+		console.log("header:",ScheduleData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/contractpricingschedule', ScheduleData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("pricing_schedules", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			// if (response.status >= 200 && response.status < 300) {
+			// // Parse the JSON response
+			// 	const responseData = response.data;
+			// 	console.log("data",responseData);
+			// 	// Check if the expected properties are present
+			// 	if (responseData.ins_id && responseData.rate) 
+			// 	{
+				if (response.data.success) {
+					console.log('Data saved successfully.');
+					this.saving = false;
+					
+
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Schedule Created!',
+							message: 'New Schedule created.',
+						});
+					});
+
+					
+			} 
+			else {
+				// Server indicates failure with a non-successful status code
+				console.error('Failed to save schedule. Status:', response.status);
+				// You can handle different status codes as needed
+				// For example, if it's a validation error, show a different notification
+				// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			// console.error(error);
+  			// console.log(error.response.data); // Log the response data
+			//   console.log('Error Response:', error.response);
+			console.error('Error creating schedule:', error);
+		}
+},
+
 		async saveContract() {
 			try {
 				const apiUrl = '/client/facilitiescontracts';
 
 				// Extract contract-related data from entity
-				const contractData = this.entity.contractDetails;
+				const contractData = this.contractDetails;
 
 				// Make the API call with the extracted data
 				const response = await axios.post(apiUrl, contractData);
@@ -1629,35 +1737,35 @@ export default {
 					}
 		},
 		
-		async addPricingSchedule(obj) {
-			console.log("inside");
-			this.insuranceRates= obj ;
-			// const facilityId = facility_id;
-			console.log("ins:",this.insuranceRates);
+// 		async addPricingSchedule(obj) {
+// 			console.log("inside");
+// 			this.insuranceRates= obj ;
+// 			// const facilityId = facility_id;
+// 			console.log("ins:",this.insuranceRates);
 
-			 // Ensure that this.entity.pricing_schedules is an array
-			 if (!Array.isArray(this.entity.pricing_schedules)) {
-				this.$set(this.entity, 'pricing_schedules', []);
-				}
-			// console.log("before",this.entity.pricing_schedules);
-			let newpricingSchedule;
+// 			 // Ensure that this.entity.pricing_schedules is an array
+// 			 if (!Array.isArray(this.entity.pricing_schedules)) {
+// 				this.$set(this.entity, 'pricing_schedules', []);
+// 				}
+// 			// console.log("before",this.entity.pricing_schedules);
+// 			let newpricingSchedule;
 
 
-			this.entity.pricing_schedules.push(this.insuranceRates);
-			console.log("final",this.entity.pricing_schedules);
+// 			this.entity.pricing_schedules.push(this.insuranceRates);
+// 			console.log("final",this.entity.pricing_schedules);
 		
-			try {
-				// Make a POST request to store the data in the database
-				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
-				console.log('Axios Response:', response);
-				await this.$nextTick();
-				this.$emit("pricing_schedules", response);
-				console.log("Emitted data:", response.data);
+// 			try {
+// 				// Make a POST request to store the data in the database
+// 				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
+// 				console.log('Axios Response:', response);
+// 				await this.$nextTick();
+// 				this.$emit("pricing_schedules", response);
+// 				console.log("Emitted data:", response.data);
 				
-			} catch (error) {
-				console.error('Error creating schedule:', error);
-			}
-},
+// 			} catch (error) {
+// 				console.error('Error creating schedule:', error);
+// 			}
+// },
 		
 		async fetchInsurances(){
 			try
@@ -2847,7 +2955,7 @@ async addFax() {
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-				await this.addPricingSchedule(response.id);
+				await this.saveContractPricingSchedule(response.id);
 				// const response = await save({
 				// 	...this.entity,
 				// 	services: {
