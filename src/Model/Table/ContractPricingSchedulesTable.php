@@ -10,13 +10,13 @@ class ContractPricingSchedulesTable extends Table
     public function initialize(array $config): void
     {
         $this->setTable('contract_pricing_schedules');
-        $this->belongsTo('InsuranceTypes', [
+        $this->belongsTo('ContractInsuranceTypes', [    
             'foreignKey' => 'insurance_type_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsTo('Facilities', [
-            'foreignKey' => 'facility_id',
-            'joinType' => 'INNER',
-        ]);
+        // $this->belongsTo('Facilities', [
+        //     'foreignKey' => 'facility_id',
+        //     'joinType' => 'INNER',
+        // ]);
     }
 }

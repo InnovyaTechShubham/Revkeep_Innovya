@@ -19,17 +19,17 @@ class ReceivingEmailsController extends AppController
         // $this->Services = new ServicesTable();
     }
 
-    public function index()
-    {
-        $this->facilityReceivingEmails = new ReceivingEmailsTable();
+    // public function index()
+    // {
+    //     $this->facilityReceivingEmails = new ReceivingEmailsTable();
 
-        $receivingEmails = $this->facilityReceivingEmails->find()->toArray();
+    //     $receivingEmails = $this->facilityReceivingEmails->find()->toArray();
 
-        $response = $this->response->withType('application/json');
-        $response = $response->withStringBody(json_encode($receivingEmails));
+    //     $response = $this->response->withType('application/json');
+    //     $response = $response->withStringBody(json_encode($receivingEmails));
         
-        return $response;
-    }
+    //     return $response;
+    // }
 
     public function add() 
     {
