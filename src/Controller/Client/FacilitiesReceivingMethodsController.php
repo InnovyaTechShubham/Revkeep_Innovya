@@ -2,6 +2,8 @@
 namespace App\Controller\Client;
 
 use App\Model\Table\FacilitiesReceivingMethodsTable;
+use App\Model\Table\ReceivingEmailsTable;
+
 use App\Controller\AppController;
 use Cake\Network\Exception\MethodNotAllowedException;
 
@@ -92,5 +94,21 @@ class FacilitiesReceivingMethodsController extends AppController
         }
 
         // $this->viewBuilder()->setOption('serialize', ['success', 'message']);
+    }
+
+    public function index()
+    {
+        $this->facilityReceivingEmails = new FacilitiesReceivingMethodsTable();
+        $this->Emails = new ReceivingEmailsTable();
+
+        $facilityEmails = $this->facilityReceivingEmails->find()->toArray();
+        $emails = $this->Emails->find()->toArray();
+
+        $data = array('emails' => $emails, 'facilityEmails' => $facilityEmails);
+        // Create a response object with JSON data
+        $response = $this->response->withType('application/json');
+        $response = $response->withStringBody(json_encode($data));
+        
+        return $response;
     }
 }

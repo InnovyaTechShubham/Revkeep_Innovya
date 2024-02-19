@@ -1969,7 +1969,10 @@ export default {
 
 							if (response.data && Array.isArray(response.data)) {
 								
-								this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
+								// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
+								this.$set(this.entity, 'receiving_emails', response.data
+								.filter(item => item.facility_id === facilityId)
+								.map(item => ({ email: item.email, description: item.description })));
 							}
 							// Use nextTick to ensure the rendering has completed
 							this.$nextTick(() => {

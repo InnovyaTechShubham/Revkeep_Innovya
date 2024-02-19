@@ -1109,7 +1109,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
     ]);
 
 	$builder->connect('/fetchReceivingEmails', [
-		'controller' => 'ReceivingEmails',
+		'controller' => 'FacilitiesReceivingMethods',
 		'action' => 'index',
 		
 	]);
@@ -1163,11 +1163,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         '_method' => 'POST'
     ]);
 
-	$builder->connect('/receivingemaillist', [
-		'controller' => 'ReceivingEmails',
-		'action' => 'index',
+	// $builder->connect('/receivingemaillist', [
+	// 	'controller' => 'ReceivingEmails',
+	// 	'action' => 'index',
 		
-	]);
+	// ]);
 
 	$builder->connect('/receivingfaxlist', [
 		'controller' => 'ReceivingFaxes',
