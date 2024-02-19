@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Account Name1" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -99,7 +99,7 @@
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
 							<b-form-select
 							name="ownership_type"
-							v-model="entity.ownership_type"
+							v-model="contractDetails.ownership_type"
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
@@ -1692,10 +1692,13 @@ async saveContractPricingSchedule(obj) {
 
 		async saveContract() {
 			try {
+				console.log('inside save contract');
 				const apiUrl = '/client/facilitiescontracts';
 
 				// Extract contract-related data from entity
-				const contractData = this.contractDetails;
+				
+				const contractData = {data:this.contractDetails,id:this.entity.id};
+				console.log('Contract data=',contractData );
 
 				// Make the API call with the extracted data
 				const response = await axios.post(apiUrl, contractData);
@@ -1727,7 +1730,7 @@ async saveContractPricingSchedule(obj) {
 								
 							console.log("facility type listed :", response);
 							response.data.forEach((item)=>{
-								this.facilityTypes.push(item.name);
+								this.facilityTypes.push({name:item.name, id:item.id});
 							});
 							console.log('facility type options =' , this.facilityTypes);
 						}
@@ -2973,6 +2976,8 @@ async addFax() {
 				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
         		console.log('saving Response:', responsed);
                 console.log('Data saved successfully');
+				// for saving contract details
+				this.saveContract()
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));

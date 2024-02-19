@@ -69,14 +69,13 @@
 						:rules="{ required: true }"
 						v-slot="validationContext"
 						>
-						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="4">
+						<b-form-group label="Facility Type1" label-for="facility_type_id" label-cols-lg="4">
 							<b-form-select
 							name="facility_type_id"
 							v-model="entity.facility_type_id"
 							:state="getValidationState(validationContext)"
 							:options="facilityTypes"
 							:disabled="saving"
-							required="required"
 							value-field="id"
 							text-field="name"
 							/>
@@ -101,7 +100,7 @@
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
 							<b-form-select
 							name="ownership_type"
-							v-model="entity.ownership_type"
+							v-model="contractDetails.ownership_type"
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
@@ -156,7 +155,7 @@
 									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.original_start_date"
+											v-model="contractDetails.original_start_date"
 											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -241,7 +240,7 @@
 						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
 							<b-form-input
 							type="date"
-							v-model="entity.contractDetails.term_date"
+							v-model="contractDetails.term_date"
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
@@ -795,7 +794,7 @@
 										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox name="active" v-model="entity.contractDetails.contract_status" :disabled="saving"
+										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
 										<b-form-invalid-feedback
@@ -815,7 +814,7 @@
 									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.contract_end_date"
+											v-model="contractDetails.contract_end_date"
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -843,7 +842,7 @@
 									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.contract_start_date"
+											v-model="contractDetails.contract_start_date"
 											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -865,7 +864,7 @@
 									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contractDetails.renewal_date"
+											v-model="contractDetails.renewal_date"
 											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -894,7 +893,7 @@
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_bill_type"
-											v-model="entity.contractDetails.contract_bill_type"
+											v-model="contractDetails.contract_bill_type"
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
@@ -932,7 +931,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.contractDetails.indemnification_days"
+												v-model="contractDetails.indemnification_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -957,7 +956,7 @@
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_type"
-											v-model="entity.contractDetails.contract_type"
+											v-model="contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
@@ -992,7 +991,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.contractDetails.max_return_work_days"
+												v-model="contractDetails.max_return_work_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -1015,7 +1014,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.contractDetails.serviceOperation"
+									v-model="contractDetails.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1395,7 +1394,9 @@ export default {
                 ltc: null,
                 ai: null,
                 il: null,
-				contractDetails: {
+
+			},
+			contractDetails: {
 					// facility_id: this.id,
 					original_start_date: null,
 					term_date: null,
@@ -1409,14 +1410,9 @@ export default {
 					contract_bill_type: null,
 					contract_type: null,
 					ownership_type: null,
-					newSchedule: {
-						ins_id: '',
-						rate: '',
-						facility_id: ''
-					},
 					
-    },
-			},
+					
+    		},
 			billTypeOptions:[],
 			facilityStatus:[],
 			service_ids: [],
@@ -1499,10 +1495,13 @@ export default {
 	{
 		async saveContract() {
 			try {
+				console.log('inside save contract');
 				const apiUrl = '/client/facilitiescontracts';
 
 				// Extract contract-related data from entity
-				const contractData = this.entity.contractDetails;
+				
+				const contractData = {data:this.contractDetails,name:this.entity.name};
+				console.log('Contract data=',contractData );
 
 				// Make the API call with the extracted data
 				const response = await axios.post(apiUrl, contractData);
@@ -1532,7 +1531,7 @@ export default {
 								
 							console.log("facility type listed :", response);
 							response.data.forEach((item)=>{
-								this.facilityTypes.push(item.name);
+								this.facilityTypes.push({name:item.name, id:item.id});
 							});
 							console.log('facility type options =' , this.facilityTypes);
 						}
@@ -2354,6 +2353,8 @@ export default {
 				const responsed = await axios.post('/client/facilityAddForms', this.forms);
         		console.log('saving Response:', responsed);
                 console.log('Data saved successfully');
+				// for saving contract details
+				this.saveContract()
 				}catch(err){
 					console.log('An error occured while saving the form data: ', err);
 				}
