@@ -55,13 +55,14 @@
 							/>
 						</b-form-group>
 					</validation-provider> -->
-
+<b-row>
+	<b-col md="6">
 					<b-form-group label="Decision Level" label-cols-lg="4">
 						<b-input-group>
 							<b-form-select v-model="entity.appeal_level_id" :options="insuranceData" value-field="id" text-field="label"></b-form-select>
 							<template #append>
 								<b-button
-									variant="primary"
+									variant="success"
 									@click="addingInsuranceProvider = !addingInsuranceProvider"
 									:active="addingInsuranceProvider"
 								>
@@ -70,6 +71,8 @@
 							</template>
 						</b-input-group>
 					</b-form-group>
+				</b-col>
+					
 					<div v-if="addingInsuranceProvider" class="mb-4">
 							<!-- <insurance-provider-form
 								@cancel="addingInsuranceProvider = false"
@@ -94,15 +97,16 @@
 							<!-- </insurance-provider-form>  -->
 							<EditForm :id="caseEntity.insurance_provider_id"  />
 						</div>
+					
 						
-
+						<b-col md="6">
 					<validation-provider
 						vid="letter_date"
-						name="Letter Date"
+						name="Audit Letter Date"
 						:rules="{ required: true }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Letter Date" label-for="letter_date" label-cols-lg="4">
+						<b-form-group label="Audit Letter Date" label-for="letter_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="entity.letter_date"
@@ -120,14 +124,17 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-
+				</b-col>
+				</b-row>
+				<b-row>
+					<b-col class="md-6">
 					<validation-provider
 						vid="received_date"
-						name="Received Date"
-						:rules="{ required: true }"
+						name="Audit Received Date"
+						:rules="{ required: false }"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Received Date" label-for="received_date" label-cols-lg="4">
+						<b-form-group label="Audit Received Date" label-for="received_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="entity.received_date"
@@ -145,30 +152,38 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+					</b-col>
+					<b-col class="md-6">
 					<validation-provider
-                        vid="received_facilitydates"
-                        name="Received by Facility"
-                        :rules="{ required: true }"
-                        v-slot="validationContext"
-                    >
-                        <b-form-group label="Received by Facility" label-for="received_facilitydates" label-cols-lg="4">
-                            <b-form-input
-                                type="date"
-                                v-model="entity.received_facilitydate"
-                                name="received_facilitydates"
-                                required="required"
-                                :disabled="saving"
-                                :state="getValidationState(validationContext)"
-                                :min="minDate"
-                                :max="today"
-                            />
-                            <b-form-invalid-feedback
-                                v-for="error in validationContext.errors"
-                                :key="error"
-                                v-text="error"
-                            />
-                        </b-form-group>
-                    </validation-provider>
+					  
+						vid="received_facilitydates"
+						name="Received by Facility"
+						:rules="{ required: false }"
+						v-slot="validationContext"
+						v-if="caseEntity.facility !== null && iscontract"
+					>
+						<b-form-group label="Received From Facility" label-for="received_facilitydates" label-cols-lg="4">
+							<b-form-input
+								type="date"
+								v-model="entity.received_facilitydate"
+								name="received_facilitydates"
+								required="required"
+								:disabled="saving"
+								:state="getValidationState(validationContext)"
+								:min="minDate"
+								:max="today"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+				</b-col>
+				</b-row>
+			<b-row>
+				<b-col class="md-6">	
 					<validation-provider
 						vid="days_to_decision"
 						name="Days to Decision"
@@ -187,6 +202,7 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
+								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -195,6 +211,8 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+					</b-col>
+					<b-col class="md-6">
                     <validation-provider
 						vid="days_to_respond"
 						name="Days to respond"
@@ -213,6 +231,7 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
+								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -221,6 +240,10 @@
 							/>
 						</b-form-group>
 					</validation-provider>
+					</b-col>
+					</b-row>
+				<b-row>
+				<b-col class="md-6">
 					<validation-provider
 						vid="Grace Days"
 						name="Grace Days"
@@ -239,6 +262,7 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
+								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -247,10 +271,11 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-					<validation-provider
+					</b-col>
+					<!-- <validation-provider
 						vid="days_to_respond_from"
 						name="Days to respond from"
-						:rules="{ required: true }"
+						:rules="{ required: false }"
 						v-slot="validationContext"
 					>
 						<b-form-group label="From" label-for="days_to_respond_from" label-cols-lg="4">
@@ -271,15 +296,15 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
-
+					</validation-provider> -->
+<b-col class="md-6">
 					<validation-provider
 						vid="due_date"
-						name="Due Date"
-						:rules="{ required: true }"
+						name="Audit Due Date"
+						:rules="{ required: true, customValidation: checkDueDate}"
 						v-slot="validationContext"
 					>
-						<b-form-group label="Due Date" label-for="due_date" label-cols-lg="4">
+						<b-form-group label="Audit Due Date" label-for="due_date" label-cols-lg="4">
 							<b-form-input
 								type="date"
 								v-model="dueDate"
@@ -288,7 +313,8 @@
 								:readonly="false"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
-								:min="entity.received_date"
+								:min="entity.letter_date"
+								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -297,7 +323,10 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-
+</b-col>
+</b-row>
+<b-row>
+<b-col class="md-6">
 					<validation-provider
 						vid="assigned_to"
 						name="Assigned To"
@@ -324,7 +353,9 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-<validation-provider
+					</b-col>
+					<b-col class="md-6">
+                    <validation-provider
 						vid="agency_id"
 						name="Agency"
 						:rules="{ required: false }"
@@ -349,7 +380,7 @@
 								</b-form-select>
 								<template #append>
 									<b-button
-										variant="primary"
+										variant="success"
 										@click="addingAgency = !addingAgency"
 										:active="addingAgency"
 									>
@@ -364,7 +395,8 @@
 							</b-input-group>
 						</b-form-group>
 					</validation-provider>
-
+				</b-col>
+			</b-row>
 					<div v-if="addingAgency" class="mb-4">
 						<agency-form @saved="addedAgency" @cancel="addingAgency = false">
 							<template #header>
@@ -385,7 +417,8 @@
 							</template>
 						</agency-form>
 					</div>
-
+<b-row>
+	<b-col class="md-6">
 					<validation-provider
 						vid="audit_reviewer_id"
 						name="Audit Reviewer"
@@ -410,7 +443,7 @@
 								</b-form-select>
 								<template #append>
 									<b-button
-										variant="primary"
+										variant="success"
 										@click="addingAuditReviewer = !addingAuditReviewer"
 										:active="addingAuditReviewer"
 									>
@@ -425,7 +458,7 @@
 							</b-input-group>
 						</b-form-group>
 					</validation-provider>
-
+				</b-col>
 					<div v-if="addingAuditReviewer" class="mb-4">
 						<audit-reviewer-form @saved="addedAuditReviewer" @cancel="addingAuditReviewer = false">
 							<template #header>
@@ -593,7 +626,7 @@
 					</b-card-footer> -->
 
 					
-
+<b-col class="md-6">
 					<validation-provider
 						vid="audit_identifier"
 						name="Audit ID"
@@ -621,7 +654,10 @@
 							/>
 						</b-form-group>
 					</validation-provider>
-
+				</b-col>
+				</b-row>
+				<b-row>
+					<b-col class="md-6">
 					<b-form-group
 						label="Priority"
 						label-for="priority"
@@ -630,13 +666,15 @@
 					>
 						<b-form-checkbox name="priority" v-model="entity.priority">Priority</b-form-checkbox>
 					</b-form-group>
+				</b-col>
+				</b-row>
 				</b-card-body>
 				
 
 				<b-card-body>
-					<!-- <h6 class="text-muted">Optional</h6> -->
+				    <!--	<h6 class="text-muted">Optional</h6>-->
 					<b-card no-body>
-						<b-card-header header-tag="header" role="tab" class="p-0">
+					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseHearing
@@ -704,7 +742,7 @@
 									</b-form-select>
 								</b-form-group>
 
-								<!-- Render input based on selected Meeting Type -->
+								// Render input based on selected Meeting Type 
 								<template v-if="entity.meeting_type === 'Location'">
 									<b-form-group label="Address" label-for="address" label-cols-lg="4">
 										<b-form-input
@@ -734,7 +772,7 @@
 								</template>
 								</b-card-body>
 								</b-collapse>
-
+							-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -818,22 +856,134 @@
 								</empty-result>
 							</b-card-body>
 						</b-collapse>
+						
 						<b-card-header header-tag="header" role="tab" class="p-0">
-                            <b-button
-                                block
-                                v-b-toggle.collapseFinancial
-                                variant="light"
-                                role="tab"
-                                class="text-left px-4 py-3 m-0"
-                            >
-                             Level Financial Details
-                            </b-button>
-                        </b-card-header>
-                        <b-collapse id="collapseFinancial" role="tabpanel">
-                            <b-card-body>
-                                <p>Here is Our Financial Details</p>
-                            </b-card-body>
-                        </b-collapse>
+							<b-button
+								block
+								v-b-toggle.collapseFinancial
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>
+							 Level Financial Details
+							</b-button>
+						</b-card-header>
+						<b-collapse id="collapseFinancial" role="tabpanel">
+							<b-card-body>				
+                           <b-row>
+							<b-col class="md-6">
+								<validation-provider
+									vid="disputed_amount"
+									name="Disputed Amount"
+									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Audit Denial Amount " label-for="disputed_amount" label-cols-lg="4">
+										<b-input-group>
+											<b-input-group-prepend is-text>
+												<font-awesome-icon icon="dollar-sign" fixed-width />
+											</b-input-group-prepend>
+											<b-form-input
+												name="disputed_amount"
+												type="number"
+												v-model="entity.disputed_amount"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+												:min="0"
+												:max="currencyMax"
+												step="0.01"
+												maxlength="10"
+												autocomplete="off"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-input-group>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
+							<b-col class="md-6">
+								<validation-provider
+									vid="outstanding_amount"
+									name="Outstanding Amount"
+									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Outstanding Amount"
+										label-for="outstanding_amount"
+										label-cols-lg="4"
+									>
+										<b-input-group>
+											<b-input-group-prepend is-text>
+												<font-awesome-icon icon="dollar-sign" fixed-width />
+											</b-input-group-prepend>
+											<b-form-input
+												name="outstanding_amount"
+												type="number"
+												v-model="entity.outstanding_amount"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+												:min="0"
+												:max="currencyMax"
+												step="0.01"
+												maxlength="10"
+												autocomplete="off"
+												
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-input-group>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
+							</b-row>
+							<b-row>
+							<b-col class="col-6">
+								<validation-provider
+									vid="reimbursed_amount"
+									name="Reimbursed Amount"
+									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Reimbursed Amount"
+										label-for="reimbursed_amount"
+										label-cols-lg="4"
+									>
+										<b-input-group>
+											<b-input-group-prepend is-text>
+												<font-awesome-icon icon="dollar-sign" fixed-width />
+											</b-input-group-prepend>
+											<b-form-input
+												name="Reimbursed Amount"
+												type="number"
+												v-model="calculatedReimbursedAmount"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+												:min="0"
+												:max="currencyMax"
+												step="0.01"
+												maxlength="10"
+												autocomplete="off"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-input-group>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
+							</b-row>
+							</b-card-body>
+						</b-collapse>
 					</b-card>
 				</b-card-body>
 
@@ -895,7 +1045,7 @@ export default {
 					assigned_to: null,
 					// letter_date: getTodaysDate(),
 					letter_date: null,
-					received_date: getTodaysDate(),
+					received_date: null,
 					due_date: null,
 					hearing_date: null,
 					hearing_time: null,
@@ -905,6 +1055,9 @@ export default {
 					priority: null,
 					audit_identifier: null,
 					received_facilitydate: null,
+					outstanding_amount:null,
+					disputed_amount:null,
+					reimbursed_amount: null,
 				};
 			},
 		},
@@ -914,6 +1067,8 @@ export default {
 				return {
 					id: null,
 					assigned_to: null,
+					facility:null,
+					facility_id: 1107,
 				};
 			},
 		},
@@ -928,6 +1083,10 @@ export default {
 		disableCancel: {
 			type: Boolean,
 			default: false,
+		},
+		currencyMax: {
+			type: Number,
+			default: 999999999,
 		},
 	},
 	data() {
@@ -954,65 +1113,66 @@ export default {
 		
 	},
 	computed: {
-
+		calculatedReimbursedAmount() {
+      // Calculate the difference and return it
+      return this.entity.disputed_amount - this.entity.outstanding_amount;
+    },
 		dueDate() {
-    if (this.entity.days_to_respond_from_id == 1) {
-      // received date
-      return moment(this.entity.received_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
+			if (this.entity.days_to_respond_from_id == 1) {
+			// received date
+			return moment(this.entity.received_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
 
-    } else if (this.entity.days_to_respond_from_id == 2) {
-      // letter date
-      return moment(this.entity.letter_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
-    }
-  },
-  selectedDaysToDecision() {
-    if (!this.entity.appeal_level_id) return null;
-    
-    const selectedLevel = this.insuranceData.find(level => {
-      return level.id === this.entity.appeal_level_id;
-    });
-	console.log("radio", this.daysToRespondFroms);
-	console.log('days to respond:', selectedLevel.days_to_decision);
-    console.log('Selected level:', selectedLevel);
-	this.daysToDecision = selectedLevel.days_to_decision;
-	console.log("final",this.daysToDecision);
-	return(this.daysToDecision);
-  },
+			} else if (this.entity.days_to_respond_from_id == 2) {
+			// letter date
+			return moment(this.entity.letter_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
+			}
+		},
+		selectedDaysToDecision() {
+			if (!this.entity.appeal_level_id) return null;
+			
+			const selectedLevel = this.insuranceData.find(level => {
+			return level.id === this.entity.appeal_level_id;
+			});
+			console.log("radio", this.daysToRespondFroms);
+			console.log('days to respond:', selectedLevel.days_to_decision);
+			console.log('Selected level:', selectedLevel);
+			this.daysToDecision = selectedLevel.days_to_decision;
+			console.log("final",this.daysToDecision);
+			return(this.daysToDecision);
+		},
 
 		selectedDaysToRespond() {
-    if (!this.entity.appeal_level_id) return null;
-    
-    const selectedLevel = this.insuranceData.find(level => {
-      return level.id === this.entity.appeal_level_id;
-    });
-	console.log("radio", this.daysToRespondFroms);
-	console.log('days to respond:', selectedLevel.days_to_respond);
-    console.log('Selected level:', selectedLevel);
-	this.daysToRespond = selectedLevel.days_to_respond;
-	console.log("final",this.daysToRespond);
-	return(this.daysToRespond);
-    // return selectedLevel ? selectedLevel.daysToRespond : null;
-	
-  },
- 	 GraceDays() {
-    if (!this.entity.appeal_level_id) return null;
-    
-    const selectedLevel = this.insuranceData.find(level => {
-      return level.id === this.entity.appeal_level_id;
-    });
-	console.log('days to respond:', selectedLevel.Grace_days);
-    console.log('Selected level:', selectedLevel);
-	this.gracedays = selectedLevel.Grace_days;
-	console.log("final",this.gracedays);
-	return(this.gracedays);
-    
-	
-  },
+			if (!this.entity.appeal_level_id) return null;
+			
+			const selectedLevel = this.insuranceData.find(level => {
+			return level.id === this.entity.appeal_level_id;
+			});
+			console.log("radio", this.daysToRespondFroms);
+			console.log('days to respond:', selectedLevel.days_to_respond);
+			console.log('Selected level:', selectedLevel);
+			this.daysToRespond = selectedLevel.days_to_respond;
+			console.log("final",this.daysToRespond);
+			return(this.daysToRespond);
+			// return selectedLevel ? selectedLevel.daysToRespond : null;
+			
+		},
+ 	 	GraceDays() {
+			if (!this.entity.appeal_level_id) return null;
+			
+			const selectedLevel = this.insuranceData.find(level => {
+			return level.id === this.entity.appeal_level_id;
+			});
+			console.log('days to respond:', selectedLevel.Grace_days);
+			console.log('Selected level:', selectedLevel);
+			this.gracedays = selectedLevel.Grace_days;
+			console.log("final",this.gracedays);
+			return(this.gracedays);
+  		},
 
-  filteredAuditReviewers() {
-    // Assuming auditReviewers is the array containing all audit reviewers
-    return this.filterAuditReviewersByAgency(this.entity.agency_id);
-  },
+		filteredAuditReviewers() {
+			// Assuming auditReviewers is the array containing all audit reviewers
+			return this.filterAuditReviewersByAgency(this.entity.agency_id);
+		},
 
 		availableAppealLevels() {
 			if (
@@ -1084,8 +1244,9 @@ export default {
 		}),
 	},
 	mounted() {
-
+		this.facilityDetails();
 		this.test();
+		this.fetchData();
 		console.log('Days to respond input value on mount:', this.selectedDaysToRespond);
 		
 		// Default appeal type
@@ -1139,7 +1300,8 @@ export default {
 		async save(e) {
 			try {
 				this.saving = true;
-				console.log("saving appeal =", this.entity.appeal_level_id)
+				console.log("saving appeal =", this.entity.appeal_level_id);
+				const calculatedReimbursedAmount = this.calculatedReimbursedAmount;
 				const response = await this.$store.dispatch("appeals/save", {
 					id: this.entity.id || null,
 					case_id: this.entity.case_id || this.caseEntity.id,
@@ -1161,6 +1323,9 @@ export default {
 					audit_identifier: this.entity.audit_identifier,
 					priority: this.entity.priority,
 					received_facilitydate: this.entity.received_facilitydate,
+					disputed_amount:this.entity.disputed_amount,
+					reimbursed_amount:calculatedReimbursedAmount,
+					outstanding_amount:this.entity.outstanding_amount,
 				});
 
 				this.saving = false;
@@ -1338,7 +1503,41 @@ export default {
 				this.entity.appeal_level_id = null; // Handle the case where no option is selected
 			}
 			console.log("apeeal level =" , this.entity.appeal_level_id);
-		}
+		},
+		async facilityDetails(){
+            const url = "/client/facilityList";
+			
+			const response = await axios.get(url, {
+			headers: {
+				"Accept": "application/json",
+				// You can add other headers here if needed
+			},
+			});
+			this.facilities = response.data; // save all facilities for later use
+     
+      console.log("Facility Details:", this.facilities);
+	  const filteredFacilities = this.facilities.filter(facility => facility.id === 1107);
+
+        console.log("Filtered Facilities:", filteredFacilities);
+		if (filteredFacilities) {
+		this.iscontract = filteredFacilities.has_contract;
+		this.facilitie_name = filteredFacilities.name;
+      }
+		},
+		async fetchData() {
+  try {
+	const response = await this.$store.dispatch("cases/get", {
+					id: this.$route.params.id,
+				});
+    const totalClaimAmount = response.total_claim_amount;
+    console.log("Total Claim Amount:", totalClaimAmount);
+	this.appeal.disputed_amount = totalClaimAmount;
+    
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+
 
 	},
 	watch: {
