@@ -1199,4 +1199,22 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         '_method' => 'POST'
     ]);
 
+	$builder->connect('/facilityAddForms/edit', [
+		'controller' => 'FacilityAddForm',
+		'action' => 'edit',
+	    '_method' => 'POST'
+	]);
+
+	$builder->connect('/facilitiescontracts/edit', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'edit',
+        '_method' => 'POST'
+    ]);
+	$builder->connect('/facilitiescontracts/list', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'list',
+        '_method' => 'POST'
+    ]);
+	
+
 });

@@ -69,7 +69,7 @@
 						:rules="{ required: true }"
 						v-slot="validationContext"
 						>
-						<b-form-group label="Facility Type1" label-for="facility_type_id" label-cols-lg="4">
+						<b-form-group label="Facility Type" label-for="facility_type_id" label-cols-lg="4">
 							<b-form-select
 							name="facility_type_id"
 							v-model="entity.facility_type_id"

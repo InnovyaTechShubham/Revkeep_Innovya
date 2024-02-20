@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name1" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -1576,6 +1576,7 @@ export default {
 		this.fetchReceivingEmails();
 		this.fetchReceivingFaxes();
 		this.fetchFacilityType();
+		this.listFacilityContracts();
 
 
 		if (this.id) {
@@ -1694,7 +1695,7 @@ async saveContractPricingSchedule(obj) {
 		async saveContract() {
 			try {
 				console.log('inside save contract');
-				const apiUrl = '/client/facilitiescontracts';
+				const apiUrl = '/client/facilitiescontracts/edit';
 
 				// Extract contract-related data from entity
 				
@@ -2743,6 +2744,32 @@ async addFax() {
 								this.billTypeOptions.push(item.bill_type);
 							});
 							console.log('bill type options =' , this.billTypeOptions);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async listFacilityContracts(){
+			try
+						{
+							const url = "/client/facilitiescontracts/list";
+							console.log("Making request for facility contract");
+							const data = {id:this.entity.id}
+							const response = await axios.post(url,data );
+							console.log("Facility COntract data =", response);
+							this.contractDetails.ownership_type = response.data.ownership_type_id;
+							this.contractDetails.original_start_date = response.data.original_start_date;
+							this.contractDetails.term_date = response.data.term_date;
+							this.contractDetails.contract_status = response.data.status;
+							this.contractDetails.contract_start_date = response.data.contract_effective_date;
+							this.contractDetails.contract_end_date =  response.data.expiration_date;
+							this.contractDetails.renewal_date = response.data.renewal_date;
+							this.contractDetails.contract_bill_type = response.data.contract_bill_type_id;
+							this.contractDetails.contract_type = response.data.contract_type_id;
+							this.contractDetails.indemnification_days = response.data.indemnification_days;
+							this.contractDetails.max_return_work_days = response.data.indemnification_days;
+							this.contractDetails.serviceOperation = response.data.service_operation_id;
 						}
 					catch (error) 
 					{
