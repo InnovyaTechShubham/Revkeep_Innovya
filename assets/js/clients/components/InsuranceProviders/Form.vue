@@ -21,7 +21,7 @@
                     autofocus
                     name="name"
                     type="text"
-                    v-model="entity.name"
+					v-model="modifiedName"
                     required
                     placeholder="Required"
                     :state="getValidationState(validationContext)"
@@ -809,6 +809,7 @@ export default {
 					// {} Join table entity
 				],
 			},
+			newname: '',
 			addingAgency: false,
 			selectedStateName: "Not Applicable",
 				usaStates: [
@@ -876,6 +877,17 @@ export default {
 		};
 	},
 	computed: {
+		modifiedName: {
+      get() {
+        const words = this.entity.name.split('of');
+        return words.length > 1 ? words[0].trim() : this.entity.name;
+      },
+      set(value) {
+        // Implement logic to handle the modified value when it changes
+        // For example, you might want to update this.entity.name
+        this.entity.name = value;
+      }
+    },
 		canAddAppealLevel() {
 			if (this.loadingAppealLevels) {
 				return false;
@@ -1062,9 +1074,9 @@ export default {
 			}
 
 			// Modify the entity name based on the selected state
-			//if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-			//this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
-			//}
+			if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+			this.entity.name = `${this.modifiedName} of ${this.selectedStateName}`;
+			}
 
 			// Populate the insurance_types array with the selected insurance types
 			this.entity.insurance_types = this.audittype_data.map(id => {
