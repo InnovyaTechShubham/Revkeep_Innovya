@@ -135,7 +135,7 @@
 					</b-row>
 
 					<b-row>
-						<b-col col="12">
+						<b-col col="12" md="6">
 							<validation-provider
 									vid="facility_id"
 									name="Facility"
@@ -147,11 +147,12 @@
 											<b-form-select
 												name="facility_id"
 												v-model="entity.facility_id"
-												:options="facilities"
+												:options="displayNames"
 												:disabled="saving || loadingFacilities"
 												:state="getValidationState(validationContext)"
 												value-field="id"
 												text-field="name"
+												@change="logSelectedFacilityDetails"
 											>
 												<template #first>
 													<option :value="null">(None)</option>
@@ -180,41 +181,55 @@
 
 									<facility-form @saved="addedFacility" @cancel="addingFacility = false" />
 								</div>
-
-								<validation-provider
-									vid="visit_number"
-									name="Visit ID/Number"
+                        </b-col>
+                        <b-col col="12" md="6">
+								<!-- <validation-provider
+									vid="facility_status"
+									name="Facility Status"
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Visit ID / Number" label-for="visit_number" label-cols-lg="4">
-										<b-form-input
-											name="visit_number"
-											v-model="entity.visit_number"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-											type="text"
-											autocomplete="off"
-										/>
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+                                    <b-form-input
+                                        name="facility_name"
+                                        v-model="entity.facility_name"
+                                        :disabled="saving"
+                                        readonly
+                                        type="text"
+                                        autocomplete="off"
+                                    />
+                                </b-form-group>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
 											v-text="error"
 										/>
 									</b-form-group>
-								</validation-provider>
+								</validation-provider> -->
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+									<b-form-input
+										name="facility_status"
+										v-model="entity.facility_name"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+									/>
+								</b-form-group>
+
 						</b-col>
 					</b-row>
 
 					<b-row>
-						<b-col cols="12">
+						  
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="admit_date"
 								name="Admit Date"
 								:rules="{ required: true }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Admit Date" label-for="admit_date" label-cols-lg="4">
+								<b-form-group label="Begin DOS" label-for="admit_date" label-cols-lg="4">
 									<b-form-input
 										name="admit_date"
 										type="date"
@@ -231,14 +246,14 @@
 								</b-form-group>
 							</validation-provider>
 						</b-col>
-						<b-col cols="12">
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="discharge_date"
 								name="Discharge Date"
 								:rules="{ required: false }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Discharge Date" label-for="discharge_date" label-cols-lg="4">
+								<b-form-group label="End DOS" label-for="discharge_date" label-cols-lg="4">
 									<b-form-input
 										name="discharge_date"
 										type="date"
@@ -254,9 +269,34 @@
 								</b-form-group>
 							</validation-provider>
 						</b-col>
-					</b-row>
-					<b-row>
-						<b-col cols="12">
+				</b-row>
+				<b-row>		
+					<b-col cols="12" md="6">
+						        <validation-provider
+									vid="visit_number"
+									name="Visit ID/Number"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
+										<b-form-input
+											name="visit_number"
+											v-model="entity.visit_number"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+											type="text"
+											autocomplete="off"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
+						
+						<b-col cols="12" md="6">
 							<validation-provider
 								vid="insurance_provider_id"
 								name="Insurance Provider"
@@ -324,7 +364,10 @@
 									</template>
 								</insurance-provider-form>
 							</div>
-
+                     </b-col>
+                            </b-row>
+                <b-row>
+                        <b-col cols="12" md="6">
 							<validation-provider
 								vid="case_type_id"
 								name="Audit Type"
@@ -348,7 +391,7 @@
 									/>
 								</b-form-group>
 							</validation-provider>
-
+                            </b-col>
 							<!-- <validation-provider
 								vid="insurance_type_id"
 								name="Insurance Type"
@@ -373,7 +416,7 @@
 									/>
 								</b-form-group>
 							</validation-provider> -->
-
+							<b-col cols="12" md="6">
 							<validation-provider
 								vid="client_employee_id"
 								name="Primary Employee"
@@ -444,7 +487,10 @@
 									</template>
 								</client-employee-form>
 							</div>
-
+                 </b-col>
+				 </b-row>
+                     <b-row>
+                       <b-col cols="12" md="6">
 							<b-form-group
 								id="utc"
 								label="Unable To Complete"
@@ -456,7 +502,8 @@
 									UTC
 								</b-form-checkbox>
 							</b-form-group>
-
+                       </b-col>
+                        <b-col cols="12" md="6">
 							<validation-provider
 								vid="assigned_to"
 								name="Assigned To"
@@ -613,7 +660,7 @@
 								role="tab"
 								class="text-left px-4 py-3 m-0"
 							>
-							Claim Billing Codes
+							Claim Details
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseClaimBillingCodes" role="tabpanel">
@@ -631,6 +678,13 @@
 								</div>
 							</b-card-body> -->
 							<b-card-body>
+								<b-row>	
+								<b-col cols="12" md="6" >
+                                 <p class="font-weight-bold">Claim Billing Codes</p>
+								</b-col>
+							</b-row>
+						<b-row>	
+							<b-col cols="12" md="6">	
 							<validation-provider
 									vid="insurance_plan"
 									name="Insurance Plan"
@@ -652,8 +706,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
-
+                            </b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -679,7 +733,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+							</b-row>
+							<b-row>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -705,7 +762,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -731,36 +789,15 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-							</b-card-body>
-
-							<!-- <case-readmissions
-								v-if="hasReadmissions"
-								v-model="entity.case_readmissions"
-								:disabled="saving"
-							/>
-							<b-card-body v-else>
-								<empty-result icon="list"
-									>No Codes
-									<template #content> Add Billing Codes. </template>
-								</empty-result>
-							</b-card-body> -->
-						</b-collapse>
-
-
-						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseClaimDenialCodes
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
-								Claim Denial Codes
-							</b-button>
-						</b-card-header>
-
-						<b-collapse id="collapseClaimDenialCodes" role="tabpanel">
-							<b-card-body>
+								</b-col>
+							</b-row>
+							<b-row>	
+								<b-col cols="12" md="6" >
+                                 <p class="font-weight-bold">Claim Denial Codes</p>
+								</b-col>
+							</b-row>
+							<b-row>
+									<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_plan"
 									name="CARCs"
@@ -782,7 +819,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-
+								</b-col>
+								<b-col cols="12" md="6">
 								<validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
@@ -808,8 +846,41 @@
 										/>
 									</b-form-group>
 								</validation-provider>
+								</b-col>
+							</b-row>
 							</b-card-body>
+
+							<!-- <case-readmissions
+								v-if="hasReadmissions"
+								v-model="entity.case_readmissions"
+								:disabled="saving"
+							/>
+							<b-card-body v-else>
+								<empty-result icon="list"
+									>No Codes
+									<template #content> Add Billing Codes. </template>
+								</empty-result>
+							</b-card-body> -->
 						</b-collapse>
+
+
+					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseClaimDenialCodes
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+							>
+								Claim Denial Codes
+							</b-button>
+						</b-card-header>
+
+						<b-collapse id="collapseClaimDenialCodes" role="tabpanel">
+							<b-card-body>
+								
+							</b-card-body>
+						</b-collapse> -->
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -913,7 +984,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Total Claim Amount"
+										label="Paid Claim Amount"
 										label-for="total_claim_amount"
 										label-cols-lg="4"
 									>
@@ -922,14 +993,14 @@
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
 											<b-form-input
-												name="total_claim_amount"
+												name="Paid Claim Amount"
 												type="number"
 												v-model="entity.total_claim_amount"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.00"
 												maxlength="10"
 												autocomplete="off"
 											/>
@@ -948,7 +1019,7 @@
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
 									v-slot="validationContext"
 								>
-									<b-form-group label="Disputed Amount" label-for="disputed_amount" label-cols-lg="4">
+									<b-form-group label="Audit Denial Amount " label-for="disputed_amount" label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
@@ -961,7 +1032,7 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="1.00"
+												step="0.00"
 												maxlength="10"
 												autocomplete="off"
 											/>
@@ -982,7 +1053,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Reimbursement Amount"
+										label="Contract Risk Amount(Actual)"
 										label-for="reimbursement_amount"
 										label-cols-lg="4"
 									>
@@ -998,10 +1069,10 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-
-												step="0.000000001"
+												step="0.00"
 												maxlength="10"
 												autocomplete="off"
+												readonly
 											/>
 											<b-form-invalid-feedback
 												v-for="error in validationContext.errors"
@@ -1019,7 +1090,7 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Paid Amount Estimate"
+										label="Contract Risk Amount(Calculated)"
 										label-for="reimburse_amount"
 										label-cols-lg="4"
 									>
@@ -1035,8 +1106,7 @@
 												:state="getValidationState(validationContext)"
 												:min="0"
 												:max="currencyMax"
-												step="0.000000001"
-
+												step="0.00"
 												maxlength="10"
 												autocomplete="off"
 												readonly
@@ -1412,10 +1482,12 @@ export default {
 				insurance_type_id: null,
 				case_readmissions: [],
 				facility_id: null,
+				facility_name: null,
 				visit_number: null,
 				total_claim_amount: null,
 				disputed_amount: null,
 				reimbursement_amount: null,
+				contract_paid_amt_est:null,
 				insurance_provider_id: null,
 				insurance_plan: null,
 				insurance_number: null,
@@ -1439,9 +1511,7 @@ export default {
 			maxDate: getTodaysDate(),
 			disciplineIds: [],
 			insuranceTypesList:[],
-
 			displayNames:[],
-
 		};
 	},
 	computed: {
@@ -1499,7 +1569,7 @@ export default {
 	},
 	mounted() {
 		this.additionalDataFetch();
-
+        this.facilityDetails();
 
 		if (this.id) {
 			this.refresh();
@@ -1589,6 +1659,8 @@ export default {
 					total_claim_amount: Number.parseFloat(this.entity.total_claim_amount),
 					disputed_amount: Number.parseFloat(this.entity.disputed_amount),
 					reimbursement_amount: Number.parseFloat(this.entity.reimbursement_amount),
+					contract_paid_amt_est: Number.parseFloat(this.entity.contract_paid_amt_est),
+
 					visit_number: this.entity.visit_number,
 
 					admit_date: this.entity.admit_date,
@@ -1725,6 +1797,33 @@ export default {
 			this.insuranceTypesList=response.data;
 
 		},
+        
+		async facilityDetails(){
+            const url = "/client/facilityList";
+			
+			const response = await axios.get(url, {
+			headers: {
+				"Accept": "application/json",
+				// You can add other headers here if needed
+			},
+			});
+			this.facilities = response.data; // save all facilities for later use
+      this.displayNames = this.facilities.map((facility) => facility.display_name);
+      console.log("display name:", this.displayNames);
+		},
+
+		logSelectedFacilityDetails() {
+      const selectedDisplayName = this.entity.facility_id;
+      const selectedFacility = this.facilities.find(
+        (facility) => facility.display_name === selectedDisplayName
+      );
+
+      if (selectedFacility) {
+		this.iscontract = selectedFacility.has_contract;
+		this.entity.facility_name = selectedFacility.facility_status;
+      }
+    },
+
 
 	},
 	watch: {
