@@ -1019,20 +1019,19 @@
 									<b-col md="6">
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="saveContractPricingSchedule(info.item)" />
-												
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
+										</b-col>
 
-									<b-col md="6">
+										<b-col md="6">
 										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates2[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
 									</b-col>
@@ -1515,9 +1514,13 @@ export default {
 			showDeleteIcon: false,
 			//contract
 			serviceOperationsOptions: [],
+			fullserviceOperationsOptions: [],
 			contractBillTypes: [],
+			fullcontractBillTypes: [],
 			contractTypes: [],
+			fullcontractTypes: [],
 			ownershipTypes: [],
+			fullownershipTypes: [],
 			insurances: [],
 			insuranceRates: {},
 			selectedInsuranceId: null,
@@ -1529,6 +1532,8 @@ export default {
 					},
 			// end contract
 			facilityTypes:[],
+			rates:{},
+			rates2:{},
    
 	 };
 	},
@@ -1577,6 +1582,7 @@ export default {
 		this.fetchReceivingFaxes();
 		this.fetchFacilityType();
 		this.listFacilityContracts();
+		this.listContractPricingSchedules();
 
 
 		if (this.id) {
@@ -1787,8 +1793,9 @@ async saveContractPricingSchedule(obj) {
 							console.log("service operations listed :", response);
 							response.data.forEach((item)=>{
 								this.serviceOperationsOptions.push(item.operation);
+								this.fullserviceOperationsOptions.push({name:item.operation,id:item.id});
 							});
-							console.log('ownership type options =' , this.serviceOperationsOptions);
+							console.log('ownership type options =' , this.fullserviceOperationsOptions);
 						}
 					catch (error) 
 					{
@@ -1810,6 +1817,7 @@ async saveContractPricingSchedule(obj) {
 							console.log("ownership type listed :", response);
 							response.data.forEach((item)=>{
 								this.ownershipTypes.push(item.ownership_type);
+								this.fullownershipTypes.push({name:item.ownership_type , id:item.id});
 							});
 							console.log('ownership type options =' , this.ownershipTypes);
 						}
@@ -1835,6 +1843,7 @@ async saveContractPricingSchedule(obj) {
 							console.log("before",this.contractTypes)
 							response.data.forEach((item)=>{
 								this.contractTypes.push(item.contract_type);
+								this.fullcontractTypes.push({name:item.contract_type , id:item.id});
 							});
 							console.log('contract type options =' , this.contractTypes);
 						}
@@ -1858,6 +1867,7 @@ async saveContractPricingSchedule(obj) {
 							console.log("contract bill type listed :", response);
 							response.data.forEach((item)=>{
 								this.contractBillTypes.push(item.bill_type);
+								this.fullcontractBillTypes.push({id:item.id , billtype:item.bill_type});
 							});
 							console.log('contract bill type options =' , this.contractBillTypes);
 						}
@@ -2538,6 +2548,8 @@ async addFax() {
 		},
 		
 		async save() {
+			console.log('Contract Pricing Schedule rate1', this.rates);
+			console.log('Contract Pricing Schedule rate2', this.rates2);
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -2556,6 +2568,12 @@ async addFax() {
                 console.log('Data saved successfully');
 				// for saving contract details
 				this.saveContract()
+				try{
+					const response = await axios.post('/client/contractpricingschedule/edit', {first:this.rates , second:this.rates2 ,id:this.entity.id});
+				}
+				catch(err){
+					console.log('An error occured while saving the contract pricing schedule data: ', err);
+				}
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -2757,25 +2775,83 @@ async addFax() {
 							console.log("Making request for facility contract");
 							const data = {id:this.entity.id}
 							const response = await axios.post(url,data );
-							console.log("Facility COntract data =", response);
-							this.contractDetails.ownership_type = response.data.ownership_type_id;
+							console.log("Facility COntract data1 =", response);
+							
+							this.fullownershipTypes.forEach((item)=>{
+								console.log("inside loop")
+								if(response.data.ownership_type_id == item.id){
+									
+								this.contractDetails.ownership_type = item.name;
+								console.log("got ownership name", this.contractDetails.ownership_type);
+							}
+							});
+
+							this.fullcontractBillTypes.forEach((item)=>{
+								
+								if(response.data.contract_bill_type_id == item.id){
+								this.contractDetails.contract_bill_type = item.billtype;
+								
+							}
+							});
+							this.fullcontractTypes.forEach((item)=>{
+								console.log("inside loop");
+								if(response.data.contract_type_id == item.id){
+								this.contractDetails.contract_type = item.name;
+								console.log("got bilcontract type  name", this.contractDetails.contract_type);
+							}
+							});
+							try{
+								this.fullserviceOperationsOptions.forEach((item)=>{
+									console.log("inside loop");
+									if(response.data.service_operation_id == item.id){
+									this.contractDetails.serviceOperation = item.name;
+									console.log("got service operation  name", this.contractDetails.serviceOperation);
+								}
+								});
+							}
+							catch(err){
+								console.log("ERROR SERVICE OPTIONS =", err);
+							}
+							
 							this.contractDetails.original_start_date = response.data.original_start_date;
 							this.contractDetails.term_date = response.data.term_date;
-							this.contractDetails.contract_status = response.data.status;
+							this.contractDetails.contract_status = parseInt(response.data.status, 10) === 1;
 							this.contractDetails.contract_start_date = response.data.contract_effective_date;
 							this.contractDetails.contract_end_date =  response.data.expiration_date;
 							this.contractDetails.renewal_date = response.data.renewal_date;
-							this.contractDetails.contract_bill_type = response.data.contract_bill_type_id;
-							this.contractDetails.contract_type = response.data.contract_type_id;
+							// this.contractDetails.contract_type = response.data.contract_type_id;
 							this.contractDetails.indemnification_days = response.data.indemnification_days;
 							this.contractDetails.max_return_work_days = response.data.indemnification_days;
-							this.contractDetails.serviceOperation = response.data.service_operation_id;
+							// this.contractDetails.serviceOperation = response.data.service_operation_id; 
 						}
 					catch (error) 
 					{
 						console.error("Error fetching data:", error.message);
 					}
 		},
+		async listContractPricingSchedules() {
+			try {
+				const url = "/client/contractpricingschedule/list";
+				const data = { id: this.entity.id };
+				const response = await axios.post(url, data);
+				console.log("pricing schedule data =", response);
+				if (response.data && Array.isArray(response.data)) {
+					response.data.forEach((item) => {
+						if (item.insurance_type_id < 7) {
+							this.rates[item.insurance_type_id] = item.contract_rate;
+						}
+						else{
+							this.rates2[item.insurance_type_id-6] = item.contract_rate;
+						}
+						console.log("Contract Rates2 =", this.rates2);
+					}); 
+				}
+				
+			} catch (error) {
+				console.error("Error fetching data:", error.message);
+			}
+		}
+
 },
 };
 </script>

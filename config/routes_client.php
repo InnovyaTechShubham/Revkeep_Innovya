@@ -1215,6 +1215,16 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'list',
         '_method' => 'POST'
     ]);
+	$builder->connect('/contractpricingschedule/edit', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'edit',
+        '_method' => 'POST'
+    ]);
+	$builder->connect('/contractpricingschedule/list', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'list',
+        '_method' => 'POST'
+    ]);
 	
 
 });

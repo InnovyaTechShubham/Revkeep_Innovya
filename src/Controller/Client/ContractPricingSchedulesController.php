@@ -5,85 +5,110 @@ namespace App\Controller\Client;
 use App\Controller\AppController;
 use App\Model\Table\ContractPricingSchedulesTable;
 use Cake\Network\Exception\MethodNotAllowedException;
+use Cake\ORM\TableRegistry;
 
 class ContractPricingSchedulesController extends AppController
 {
-    // private $contractPricingSchedulesTable;
-
-   
-
-    // public function index()
-    // {
-    //     $pricingSchedules = $this->contractPricingSchedulesTable->find()->toArray();
-
-    //     $response = $this->response->withType('application/json');
-    //     $response = $response->withStringBody(json_encode($pricingSchedules));
-        
-    //     return $response;
-
-    // }
-
    /**
 	 * Add method
 	 *
 	 * @return void
 	 * @throws \Cake\ORM\Exception\PersistenceFailedException
 	 */
-	public function add()
-{
-    $this->request->allowMethod(['post']);
-    $insuranceTypeId = $this->request->getData('insurance_type_id');
-    $contractRate = $this->request->getData('contract_rate');
-
-    $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
-    $jsonContent = json_encode(['insurance_type_id' => $insuranceTypeId, 'contract_rate' => $contractRate], JSON_PRETTY_PRINT);
-    file_put_contents($filePath, $jsonContent);
-
-    $contractPricingSchedulesTableobj = new ContractPricingSchedulesTable();
-    $schedule = $contractPricingSchedulesTableobj->newEmptyEntity();
-    
-    $schedule->insurance_type_id = $insuranceTypeId;
-    $schedule->contract_rate = $contractRate;
-
-    try {
-        $contractPricingSchedulesTableobj->save($schedule);
+    public function add()
+    {
+        $this->request->allowMethod(['post']);
+        $data = $this->request->getData();
+        $facilitiesTable = TableRegistry::getTableLocator()->get('Facilities');
+        $facilitiesName = $data['name'];
+        $facility = $facilitiesTable->find()
+        ->where(['name' => $facilitiesName])
+        ->first(); 
+        // Extract the 'id' column value and store it in a variable
+        $facilityId = $facility->get('id');
+        $contractPricingSchedulesTable = new ContractPricingSchedulesTable();
+        try{
+            $insuraceTypeId = 0;
+            foreach ($data['first'] as $rate) {
+                $insuraceTypeId =$insuraceTypeId+1;
+                $entity = $contractPricingSchedulesTable->newEmptyEntity();
+                $entity->insurance_type_id =  $insuraceTypeId;
+                $entity->contract_rate = $rate;
+                $entity->facility_id = $facilityId;
+                $contractPricingSchedulesTable->save($entity);
+            }
+            foreach ($data['second'] as $rate) {
+                $insuraceTypeId =$insuraceTypeId+1;
+                $entity = $contractPricingSchedulesTable->newEmptyEntity();
+                $entity->insurance_type_id = $insuraceTypeId;
+                $entity->contract_rate = $rate;
+                $entity->facility_id = $facilityId;
+                $contractPricingSchedulesTable->save($entity);
+            }
+            $responseMessage = ['message' => 'pricing scheduled working'];
+        }
+        catch (\Exception $e){
+            $responseMessage = ['error' => $e->getMessage()];
+        }
 
         return $this->response
-            ->withType('application/json')
-            ->withStringBody(json_encode(['success' => true]));
-    } catch (\Exception $e) {
-        $responseMessage = ['error' => $e->getMessage()];
-        return $this->response
+        ->withType('application/json')
+        ->withStringBody(json_encode($responseMessage));
+    }
+
+    public function edit(){
+        if ($this->request->is('post')) {
+            $data = $this->request->getData();
+            $id = $data['id'];
+            
+            
+            try{
+                $contractPricingScheduleTable = TableRegistry::getTableLocator()->get('contract_pricing_schedules');
+                $facilityContract = $contractPricingScheduleTable->find()
+                    ->where(['facility_id' => $id]);
+                
+                foreach ($data['first'] as $key => $value) {
+                    foreach($facilityContract as $row) {
+                        if($row['insurance_type_id']==(int)$key){
+                            $row['contract_rate'] = $value;
+                            $contractPricingScheduleTable->save($row);
+                            break;
+                        }
+                    }
+                }
+                foreach ($data['second'] as $key => $value) {
+                    foreach($facilityContract as $row) {
+                        if($row['insurance_type_id']==(int)$key+6){
+                            $row['contract_rate'] = $value;
+                            $contractPricingScheduleTable->save($row);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (\Exception $e){
+                $responseMessage = ['error' => $e->getMessage()];
+                
+            }
+            return $this->response
             ->withType('application/json')
             ->withStringBody(json_encode($responseMessage));
+            
+        }
     }
-}
 
-
-
-		
-    
-// 	}
-
-// public function add()
-// {
-//     $this->request->allowMethod(['post']);
-//     $ins_id = $this->request->getData('ins_id');
-//     $rate = $this->request->getData('rate');
-
-//     $filePath = 'C:\xampp\htdocs\Revkeep_Innovya\example.json';
-//     file_put_contents($filePath, json_encode($rate, JSON_PRETTY_PRINT));
-
-//     $contractPricingSchedulesTableobj = $this->ContractPricingSchedules->newEmptyEntity();
-//     // Handle $ins_id and other fields...
-
-//     try {
-//         $this->ContractPricingSchedules->save($contractPricingSchedulesTableobj);
-//         return $this->jsonResponse($yourDataArray);
-//     } catch (\Exception $e) {
-//         return $this->jsonResponse(['error' => $e->getMessage()]);
-//     }
-// }
+    public function list(){
+        if ($this->request->is('post')){
+            $data = $this->request->getData();
+            $id = $data['id'];
+            $contractPricingScheduleTable = TableRegistry::getTableLocator()->get('contract_pricing_schedules');
+            $facilityContract = $contractPricingScheduleTable->find()
+                ->where(['facility_id' => $id]);
+            return $this->response
+            ->withType('application/json')
+            ->withStringBody(json_encode($facilityContract));
+        }
+    }
 
 }
 

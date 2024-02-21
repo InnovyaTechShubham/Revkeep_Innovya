@@ -103,10 +103,6 @@ class FacilitiesContractsController extends AppController
                 $entity->max_return_days = $data['data']['max_return_work_days'];
                 $entity->service_operation_id = $serviceOperationId;
                 $entity->ownership_type_id = $contractOwnershipTypesId;
-                
-
-
-   				
                 $facilitiesContractsTable->save($entity);
                 $responseMessage = ['message' => 'its working'];
             

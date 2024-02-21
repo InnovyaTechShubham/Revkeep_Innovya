@@ -1028,29 +1028,28 @@
 								</validation-provider>
 
 								<b-card title="Contract Pricing Schedule" border-variant="light">
-								<b-row>
-									<b-col md="6">
+									<b-row>
+										<b-col md="6">
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates[info.index]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
+										</b-col>
 
-									<b-col md="6">
+										<b-col md="6">
 										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates2[info.index]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
-								</b-row>
-							</b-card>
+										</b-col>
+									</b-row>
+								</b-card>
 
 							
 							</b-card-body>
@@ -1448,6 +1447,8 @@ export default {
 			contract_insurance_type: null,
 			// end contract
 			facilityTypes:[],
+			rates:{},
+			rates2:{},
    
 	 };
 	},
@@ -1540,35 +1541,35 @@ export default {
 						console.error("Error fetching data:", error.message);
 					}
 		},
-		async addPricingSchedule(obj) {
-			console.log("inside");
-			this.insuranceRates= obj ;
-			// const facilityId = facility_id;
-			console.log("ins:",this.insuranceRates);
+// 		async addPricingSchedule(obj) {
+// 			console.log("inside");
+// 			this.insuranceRates= obj ;
+// 			// const facilityId = facility_id;
+// 			console.log("ins:",this.insuranceRates);
 
-			 // Ensure that this.entity.pricing_schedules is an array
-			 if (!Array.isArray(this.entity.pricing_schedules)) {
-				this.$set(this.entity, 'pricing_schedules', []);
-				}
-			// console.log("before",this.entity.pricing_schedules);
-			let newpricingSchedule;
+// 			 // Ensure that this.entity.pricing_schedules is an array
+// 			 if (!Array.isArray(this.entity.pricing_schedules)) {
+// 				this.$set(this.entity, 'pricing_schedules', []);
+// 				}
+// 			// console.log("before",this.entity.pricing_schedules);
+// 			let newpricingSchedule;
 
 
-			this.entity.pricing_schedules.push(this.insuranceRates);
-			console.log("final",this.entity.pricing_schedules);
+// 			this.entity.pricing_schedules.push(this.insuranceRates);
+// 			console.log("final",this.entity.pricing_schedules);
 		
-			try {
-				// Make a POST request to store the data in the database
-				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
-				console.log('Axios Response:', response);
-				await this.$nextTick();
-				this.$emit("pricing_schedules", response);
-				console.log("Emitted data:", response.data);
+// 			try {
+// 				// Make a POST request to store the data in the database
+// 				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
+// 				console.log('Axios Response:', response);
+// 				await this.$nextTick();
+// 				this.$emit("pricing_schedules", response);
+// 				console.log("Emitted data:", response.data);
 				
-			} catch (error) {
-				console.error('Error creating schedule:', error);
-			}
-},
+// 			} catch (error) {
+// 				console.error('Error creating schedule:', error);
+// 			}
+// },
 		
 		async fetchInsurances(){
 			try
@@ -2340,6 +2341,12 @@ export default {
 
 		async save() {
 			this.entity.name = this.entity.display_name;
+			console.log('Contract Pricing Schedule rate1', this.rates);
+			console.log('Contract Pricing Schedule rate2', this.rates2);
+
+			// todo:
+			// create backend for add form
+			
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -2361,6 +2368,14 @@ export default {
 				}catch(err){
 					console.log('An error occured while saving the form data: ', err);
 				}
+
+				try{
+					const response = await axios.post('/client/contractpricingschedule', {first:this.rates , second:this.rates2 , name:this.entity.name});
+				}
+				catch(err){
+					console.log('An error occured while saving the contract pricing schedule data: ', err);
+				}
+
 
 			} 
 			catch (e) {
