@@ -99,7 +99,7 @@
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
 							<b-form-select
 							name="ownership_type"
-							v-model="entity.ownership_type"
+							v-model="contractDetails.ownership_type"
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
@@ -154,7 +154,7 @@
 									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.original_start_date"
+											v-model="contractDetails.original_start_date"
 											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -241,7 +241,7 @@
 						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
 							<b-form-input
 							type="date"
-							v-model="entity.term_date"
+							v-model="contractDetails.term_date"
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
@@ -781,7 +781,7 @@
 										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
+										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
 										<b-form-invalid-feedback
@@ -801,7 +801,7 @@
 									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_end_date"
+											v-model="contractDetails.contract_end_date"
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -829,7 +829,7 @@
 									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_start_date"
+											v-model="contractDetails.contract_start_date"
 											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -851,7 +851,7 @@
 									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.renewal_date"
+											v-model="contractDetails.renewal_date"
 											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -880,7 +880,7 @@
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_bill_type"
-											v-model="entity.contract_bill_type"
+											v-model="contractDetails.contract_bill_type"
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
@@ -918,7 +918,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.indemnification_days"
+												v-model="contractDetails.indemnification_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -943,7 +943,7 @@
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_type"
-											v-model="entity.contract_type"
+											v-model="contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
@@ -978,7 +978,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.max_return_work_days"
+												v-model="contractDetails.max_return_work_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -1001,7 +1001,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.serviceOperation"
+									v-model="contractDetails.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1019,20 +1019,19 @@
 									<b-col md="6">
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
+										</b-col>
 
-									<b-col md="6">
+										<b-col md="6">
 										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates2[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
 									</b-col>
@@ -1166,7 +1165,7 @@
 													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
 													<template #cell(email)="info">
 														<div class="d-flex align-items-center">
-														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<b-form-checkbox v-model="selectedEmails" :value="info.item" class="mr-2" />
 														<span>{{ info.item.email }}</span>
 														</div>
 													</template>
@@ -1180,7 +1179,7 @@
 												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
 												</template>
 											</b-modal>
-											<!-- </b-form-group> -->
+											
 										</b-col>
 
 										<!-- Section for Receiving Faxes -->
@@ -1237,7 +1236,7 @@
 													<b-table :items="entity.receiving_faxes" :fields="['fax', 'description']" striped hover>
 													<template #cell(fax)="info">
 														<div class="d-flex align-items-center">
-														<b-form-checkbox v-model="selectedFaxes" :value="info.item.fax" class="mr-2" />
+														<b-form-checkbox v-model="entity.selectedFaxes" :value="info.item" :key="info.item.fax" class="mr-2" />
 														<span>{{ info.item.fax }}</span>
 														</div>
 													</template>
@@ -1263,6 +1262,7 @@
 						</b-collapse>
 
 						<!-- end Receiving Methods -->
+
 
 						<!--NPI information section start-->
 
@@ -1415,7 +1415,6 @@ export default {
 				prior_name:null,
 				facility_type_id: null,
 				active: true,
-				contract_status:true,
 				phone: null,
 				fax: null,
 				email: null,
@@ -1443,13 +1442,6 @@ export default {
 				territory: null,
 				// rvp_name: null,
 				has_contract: false,
-				contract_start_date: null,
-				contract_end_date: null,
-				original_start_date: null,
-				term_date: null,
-				renewal_date: null,
-				indemnification_days: null,
-				max_return_work_days: null,
 				// service_operations: null,
 				address_1: null,
 				address_2: null,
@@ -1469,17 +1461,6 @@ export default {
             	receiving_faxes: [], // For storing multiple faxes
 				// outgoing_emails: [],
             	receiving_methods: [], 
-				pricing_schedules: [],
-				newSchedule: {
-				ins_id: '',
-				rate: '',
-				facility_id: ''
-			},
-				serviceOperation: null,
-				contract_bill_type: null,
-				contract_type: null,
-				ownership_type: null,
-				contract_insurance_type: null,
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
@@ -1487,7 +1468,27 @@ export default {
                 ltc: null,
                 ai: null,
                 il: null,
+				pricing_schedules: [],
+
+				
 			},
+			contractDetails: {
+					// facility_id: this.id,
+					original_start_date: null,
+					term_date: null,
+					contract_status:true,
+					contract_end_date: null,
+					contract_start_date: null,
+					renewal_date: null,
+					indemnification_days: null,
+					max_return_work_days: null,
+					serviceOperation: null,
+					contract_bill_type: null,
+					contract_type: null,
+					ownership_type: null,
+					
+					
+    },
 			billTypeOptions:[],
 			facilityStatus:[],
 			service_ids: [],
@@ -1511,14 +1512,28 @@ export default {
 			},
 			selectedFaxes: [],
 			showDeleteIcon: false,
+			//contract
 			serviceOperationsOptions: [],
+			fullserviceOperationsOptions: [],
 			contractBillTypes: [],
+			fullcontractBillTypes: [],
 			contractTypes: [],
+			fullcontractTypes: [],
 			ownershipTypes: [],
+			fullownershipTypes: [],
+			insurances: [],
 			insuranceRates: {},
 			selectedInsuranceId: null,
-			insurances: [],
+			contract_insurance_type: null,
+			newSchedule: {
+				insurance_type_id: '',
+				contract_rate: '',
+						// facility_id: ''
+					},
+			// end contract
 			facilityTypes:[],
+			rates:{},
+			rates2:{},
    
 	 };
 	},
@@ -1566,6 +1581,8 @@ export default {
 		this.fetchReceivingEmails();
 		this.fetchReceivingFaxes();
 		this.fetchFacilityType();
+		this.listFacilityContracts();
+		this.listContractPricingSchedules();
 
 
 		if (this.id) {
@@ -1576,6 +1593,136 @@ export default {
 	},
 	
 	methods: {
+// 		async saveContractPricingSchedule() {
+// 			try {
+// 				const apiUrl = '/client/contractpricingschedule';
+
+// 				const newSchedule = { ...this.newSchedule };
+// 				const ins_id = newSchedule.ins_id;
+// 				const rate = newSchedule.rate;
+				
+// 				// Check if pricing_schedules is defined, if not, initialize it as an empty array
+// 				if (!Array.isArray(this.entity.pricing_schedules)) {
+// 					this.$set(this.entity, 'pricing_schedules', []);
+// 				}
+// 			}
+// 			// Add the new email to the array
+// 		this.entity.pricing_schedules.push(newSchedule);
+// 		const ScheduleData = {   
+// 			ins_id,
+// 			rate,
+// 		};
+// 		console.log("header:",ScheduleData);
+// // Clear the newEmail object for the next entry
+// this.newEmail = { email: '', description: '' };
+// 		},
+async saveContractPricingSchedule(obj) {
+		console.log("object",obj);
+		// const newSchedule = { ...this.newSchedule };
+		const insurance_type_id = obj.id;
+		const contract_rate = obj.rate;
+
+		console.log("data check",insurance_type_id);
+		console.log("data check",contract_rate);
+
+		this.newSchedule.insurance_type_id =insurance_type_id;
+		this.newSchedule.contract_rate =contract_rate;
+
+		console.log("Newschedule",this.newSchedule);
+
+
+		
+
+		// Check if pricing_schedules is defined, if not, initialize it as an empty array
+		if (!Array.isArray(this.entity.pricing_schedules)) {
+			this.$set(this.entity, 'pricing_schedules', []);
+		}
+
+		
+		// Add the new email to the array
+		this.entity.pricing_schedules.push(this.newSchedule);
+
+		// // Clear the newEmail object for the next entry
+		// this.newEmail = { email: '', description: '' };
+
+		
+
+		// Prepare the data to be sent in the POST request
+		const ScheduleData = {   
+			insurance_type_id,
+			contract_rate,
+		};
+		console.log("header:",ScheduleData);
+		try {
+			// Make a POST request to store the data in the database
+			const response = await axios.post('/client/contractpricingschedule', ScheduleData);
+			console.log('Axios Response:', response);
+			await this.$nextTick();
+			this.$emit("pricing_schedules", response);
+			console.log("Emitted data:", response.data);
+			// Check for a successful status code (2xx)
+			// if (response.status >= 200 && response.status < 300) {
+			// // Parse the JSON response
+			// 	const responseData = response.data;
+			// 	console.log("data",responseData);
+			// 	// Check if the expected properties are present
+			// 	if (responseData.ins_id && responseData.rate) 
+			// 	{
+				if (response.data.success) {
+					console.log('Data saved successfully.');
+					this.saving = false;
+					
+
+					this.$nextTick(() => {
+						this.$store.dispatch('notify', {
+							variant: 'primary',
+							title: 'Schedule Created!',
+							message: 'New Schedule created.',
+						});
+					});
+
+					
+			} 
+			else {
+				// Server indicates failure with a non-successful status code
+				console.error('Failed to save schedule. Status:', response.status);
+				// You can handle different status codes as needed
+				// For example, if it's a validation error, show a different notification
+				// Or if it's a server error, show an error message
+			}
+		} catch (error) {
+			// console.error(error);
+  			// console.log(error.response.data); // Log the response data
+			//   console.log('Error Response:', error.response);
+			console.error('Error creating schedule:', error);
+		}
+},
+
+		async saveContract() {
+			try {
+				console.log('inside save contract');
+				const apiUrl = '/client/facilitiescontracts/edit';
+
+				// Extract contract-related data from entity
+				
+				const contractData = {data:this.contractDetails,id:this.entity.id};
+				console.log('Contract data=',contractData );
+
+				// Make the API call with the extracted data
+				const response = await axios.post(apiUrl, contractData);
+
+				// Handle success response if needed
+				console.log('Facilities Contract saved successfully:', response.data);
+
+				// Optionally notify the user or perform other actions
+			} catch (error) {
+				// Handle error
+				console.error('Error saving Facilities Contract:', error);
+
+				// Optionally notify the user or perform other error handling actions
+			}
+		},
+
 
 		async fetchFacilityType(){
 			try
@@ -1591,7 +1738,7 @@ export default {
 								
 							console.log("facility type listed :", response);
 							response.data.forEach((item)=>{
-								this.facilityTypes.push(item.name);
+								this.facilityTypes.push({name:item.name, id:item.id});
 							});
 							console.log('facility type options =' , this.facilityTypes);
 						}
@@ -1601,35 +1748,6 @@ export default {
 					}
 		},
 		
-		async addPricingSchedule(obj) {
-			console.log("inside");
-			this.insuranceRates= obj ;
-			// const facilityId = facility_id;
-			console.log("ins:",this.insuranceRates);
-
-			 // Ensure that this.entity.pricing_schedules is an array
-			 if (!Array.isArray(this.entity.pricing_schedules)) {
-				this.$set(this.entity, 'pricing_schedules', []);
-				}
-			// console.log("before",this.entity.pricing_schedules);
-			let newpricingSchedule;
-
-
-			this.entity.pricing_schedules.push(this.insuranceRates);
-			console.log("final",this.entity.pricing_schedules);
-		
-			try {
-				// Make a POST request to store the data in the database
-				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
-				console.log('Axios Response:', response);
-				await this.$nextTick();
-				this.$emit("pricing_schedules", response);
-				console.log("Emitted data:", response.data);
-				
-			} catch (error) {
-				console.error('Error creating schedule:', error);
-			}
-},
 		
 		async fetchInsurances(){
 			try
@@ -1675,8 +1793,9 @@ export default {
 							console.log("service operations listed :", response);
 							response.data.forEach((item)=>{
 								this.serviceOperationsOptions.push(item.operation);
+								this.fullserviceOperationsOptions.push({name:item.operation,id:item.id});
 							});
-							console.log('ownership type options =' , this.serviceOperationsOptions);
+							console.log('ownership type options =' , this.fullserviceOperationsOptions);
 						}
 					catch (error) 
 					{
@@ -1698,6 +1817,7 @@ export default {
 							console.log("ownership type listed :", response);
 							response.data.forEach((item)=>{
 								this.ownershipTypes.push(item.ownership_type);
+								this.fullownershipTypes.push({name:item.ownership_type , id:item.id});
 							});
 							console.log('ownership type options =' , this.ownershipTypes);
 						}
@@ -1723,6 +1843,7 @@ export default {
 							console.log("before",this.contractTypes)
 							response.data.forEach((item)=>{
 								this.contractTypes.push(item.contract_type);
+								this.fullcontractTypes.push({name:item.contract_type , id:item.id});
 							});
 							console.log('contract type options =' , this.contractTypes);
 						}
@@ -1746,6 +1867,7 @@ export default {
 							console.log("contract bill type listed :", response);
 							response.data.forEach((item)=>{
 								this.contractBillTypes.push(item.bill_type);
+								this.fullcontractBillTypes.push({id:item.id , billtype:item.bill_type});
 							});
 							console.log('contract bill type options =' , this.contractBillTypes);
 						}
@@ -1799,51 +1921,6 @@ export default {
 				console.error('Error updating receiving methods:', error);
 			}
 		},
-	// 	addReceivingMethod() {
-    //     // Assuming you have the necessary data in your component's data or computed properties
-	// 	const facilityId = this.entity.id;
-	// 		const data = {
-	// 			facility_id: facilityId,
-	// 			receiving_email_id: this.selectedReceivingEmailId,
-	// 			receiving_fax_id: this.selectedReceivingFaxId,
-	// 		};
-
-	// 		// Make an Axios POST request to store data
-	// 		axios.post('/facilities-receivingmethods/store', data)
-	// 			.then(response => {
-	// 				// Handle the success response as needed
-	// 				console.log(response.data);
-	// 			})
-	// 			.catch(error => {
-	// 				// Handle errors
-	// 				console.error(error);
-	// 			});
-    // },
-	
-		// async addReceivingMethod() {
-
-		// 	console.log("started");
-		// 	const facilityId = this.entity.id;
-		// 	const data = {
-		// 		facility_id: facilityId,
-		// 		receiving_email_id: this.selectedReceivingEmailId,
-		// 		receiving_fax_id: this.selectedReceivingFaxId,
-		// 	};
-		// 	// console.log(facilityId);
-			
-
-		// 	// Send a POST request to your controller to add the new type
-		// 	axios.post('/client/receivingMethods', data)
-		// 		.then((response) => {
-		// 			this.receiving_methods.push(response.data);
-		// 			console.log("check",response);
-
-		// 		})
-		// 		.catch((error) => {
-		// 			// Handle any errors, e.g., show an error message
-		// 			console.error('Error adding new type:', error);
-		// 		});
-		// 	},
 	
 	openPopupFax() {
 		this.popupVisibleFax = true;
@@ -1863,43 +1940,6 @@ export default {
 		// this.isFaxInputDisabled = false; // Enable the input field
 		}
 		},
-// 	addFax() {
-//     const newFax = { ...this.newFax };
-//     console.log("new:", newFax);
-
-//     // Check if receiving_faxes is defined, if not, initialize it as an empty array
-//     if (!Array.isArray(this.entity.receiving_faxes)) {
-//         this.$set(this.entity, 'receiving_faxes', []);
-//     }
-
-//     // Check if the fax number already exists
-//     if (this.entity.receiving_faxes.map((fax) => fax.fax).includes(this.newFax.fax)) {
-//         this.$bvToast.toast('Error: Fax number already exists. Please enter a different fax.', {
-//             title: 'Error',
-//             variant: 'danger',
-//             solid: true,
-//             autoHideDelay: 5000, // milliseconds
-//         });
-//         return;
-//     }
-
-//     // Add the new fax to the array
-//     this.existingFaxes.push(this.newFax.fax);
-//     this.entity.receiving_faxes.push(newFax);
-//     console.log('Before addFax:', this.entity.receiving_faxes);
-//     console.log('After addFax:', this.entity.receiving_faxes);
-
-//     // Clear the newFax object for the next entry
-//     this.newFax = { fax: '', description: '' };
-
-//     // Use $nextTick to ensure the DOM is updated
-//     this.$nextTick(() => {
-//         console.log("Receiving Faxes:", this.entity.receiving_faxes);
-//     });
-
-//     // Close the pop-up
-//     this.popupVisibleFax = false;
-// },
 
 async addFax() {
     
@@ -2079,7 +2119,7 @@ async addFax() {
 		async fetchReceivingEmails(){
 			try
 						{
-							const url = "/client/receivingemaillist";
+							const url = "/client/fetchReceivingEmails";
 								
 								const response = await axios.get(url, {
 								headers: {
@@ -2088,24 +2128,56 @@ async addFax() {
 								},
 								});
 								
-							console.log("receiving emails listed :", response);
+							console.log("receiving emails listed :", response.data);
 							// response.data.forEach((item)=>{
 							// 	this.entity.receiving_emails.push(item.receiving_email);
 							// });
 
-							if (response.data && Array.isArray(response.data)) {
-								// for (let i = 0; i < response.data.length; i++) {
-								// 	const { email, description } = response.data[i];
-        						// 	this.entity.receiving_emails.push({ email, description });
-								// }
-								this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ email: item.email, description: item.description })));
-							}
-							// Use nextTick to ensure the rendering has completed
-							this.$nextTick(() => {
-								console.log('receiving emails =' , this.entity.receiving_emails);
-							});
-							// console.log('receiving emails =' , this.entity.receiving_emails);
+							// if (response.data && Array.isArray(response.data)) {
+							// 	const facilityId = this.entity.id;
+							// 	console.log("ID",facilityId);
+
+							// 	// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ email: item.email, description: item.description })));
+							// 	this.$set(this.entity, 'receiving_emails', response.data
+							// 	.filter(item => item.facility_id === facilityId)
+							// 	.map(item => ({ email: item.receiving_email_id })));
+							// 	console.log("final check",this.entity.receiving_emails);
+							// 				}
+							// // Use nextTick to ensure the rendering has completed
+							// this.$nextTick(() => {
+							// 	console.log('receiving emails =' , this.entity.receiving_emails);
+							// });
+							// // console.log('receiving emails =' , this.entity.receiving_emails);
+
+							const facilityId = this.entity.id;
+
 							
+							response.data.facilityEmails.forEach((item, index) => {
+							// console.log(`Element at index ${index}:`, item);
+
+							if (item.facility_id === facilityId && item.receiving_email_id !== null) {
+								console.log("match found =", item.receiving_email_id);
+
+								response.data.emails.forEach((i, index) => {
+									// console.log(`email at index ${index}:`, i);
+									if (i.id == item.id) {
+										console.log("email found =", i);
+										if (!this.entity.receiving_emails.some(email => email.id === i.id)) {
+											this.entity.receiving_emails.push(i);
+											console.log("output", this.entity.receiving_emails);
+                }
+									}
+
+							// 				}
+							// // Use nextTick to ensure the rendering has completed
+							// this.$nextTick(() => {
+							// 	console.log('receiving emails =' , this.entity.receiving_emails);
+							// });
+								});
+							}
+							// console.log("final check",this.entity.receiving_emails);
+
+						});
 						}
 					catch (error) 
 					{
@@ -2139,11 +2211,7 @@ async addFax() {
 			this.$set(this.entity, 'receiving_emails', []);
 		}
 
-		// // Check if the email already exists
-		// if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
-		//     alert('Email address already exists. Please enter a different email.');
-		//     return;
-		// }
+		
 		// Check if the email already exists
 		if (this.entity.receiving_emails.some(existingEmail => existingEmail.email === email)) {
 			this.$bvToast.toast('Error: Email address already exists. Please enter a different email.', {
@@ -2200,19 +2268,6 @@ async addFax() {
 						});
 					});
 
-					// redirect_index();
-				// } else {
-				// 	this.saving = false;
-				// 	// console.log('Email already exists');
-				// 	this.errorMessage = response.data.message;
-				// 	this.$nextTick(() => {
-				// 		this.$store.dispatch('notify', {
-				// 			variant: 'danger',
-				// 			title: 'Email Error',
-				// 			message: this.errorMessage,
-				// 		});
-				// 	});
-				// }
 			} else {
 				// Server response is missing expected properties
 				console.error('Invalid server response:', responseData);
@@ -2248,147 +2303,62 @@ async addFax() {
     //   this.closeDeletePopup();
     // },
 	async deleteSelectedEmails() {
-		// Add logic to delete selected emails
-		console.log("Inside",this.entity.receiving_emails);
-		// Create a unique identifier for each email based on email and description
-		const uniqueIdentifier = (email) => `${email.email}_${email.description}`;
-		const updatedEmails = this.entity.receiving_emails.filter(
-		(email) => !this.selectedEmails.includes(email.email)
-		);
-		console.log("Deleted:",updatedEmails);
+    console.log("Inside", this.entity.receiving_emails);
+    console.log("Selected", this.selectedEmails);
 
-		// Update the receiving_emails array with the updatedEmails
-		this.entity.receiving_emails = updatedEmails;
+    try {
+        // Iterate over selected emails and delete them
+        for (const email of this.selectedEmails) {
+            const apiUrl = `/client/deletereceivingemail/${email.id}`;
+            await axios.delete(apiUrl);
+        }
 
-		// Reset selectedEmails array
-		this.selectedEmails = [];
+        // Filter out the selected emails from the entity's receiving_emails
+        const updatedEmails = this.entity.receiving_emails.filter(
+            (email) => !this.selectedEmails.some(selectedEmail => selectedEmail.id === email.id)
+        );
 
-		 // Make Axios call to delete emails from the database
-		const apiUrl = `/client/deletereceivingemail/${uniqueIdentifier(this.selectedEmails[0])}`;
-    	await axios.post(apiUrl, { selectedEmails: this.selectedEmails })
-        .then(response => {
-            // Handle success response if needed
-            console.log('Emails deleted successfully:', response.data);
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error deleting emails:', error);
-        })
-        .finally(() => {
-            // Close the delete popup or perform any other actions
-            this.closeDeletePopup();
+        // Wait for the next DOM update before emitting the event
+        await this.$nextTick();
+
+        // Emit event to notify about the deletion and pass the updated emails
+        this.$emit("Receiving_emails", updatedEmails);
+
+        // Show notification for successful deletion
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'success',
+                title: 'Emails Deleted!',
+                message: 'Selected emails deleted successfully.',
+            });
         });
 
-		// // Close the delete popup
-		// this.closeDeletePopup();
+        // Log success message
+        console.log('Emails deleted successfully');
+    } catch (error) {
+        // Handle error
+        console.error('Error deleting emails:', error);
 
+        // Show notification for deletion error
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'danger',
+                title: 'Error Deleting Emails',
+                message: 'An error occurred while deleting emails.',
+            });
+        });
+    } finally {
+        // Close the delete popup or perform any other actions
+        this.closeDeletePopup();
+    }
 
-		
+    // Update the receiving_emails array with the updatedEmails
+    this.entity.receiving_emails = updatedEmails;
 
-	},
+    // Reset selectedEmails array
+    this.selectedEmails = [];
+},
 
-	// 	async addReceivingEmail() {
-    //     // Trim the entered email and check if it's not empty
-    //     const trimmedEmail = this.entity.receiving_email.trim();
-	// 	console.log("Email:",trimmedEmail);
-    //     if (trimmedEmail !== '') {
-	// 		// Ensure that receiving_emails is an array before pushing
-	// 		if (!Array.isArray(this.entity.receiving_emails)) {
-    //         this.$set(this.entity, 'receiving_emails', []);
-    //     }
-
-    //         // Push the trimmed email to the receiving_emails array
-    //         this.entity.receiving_emails.push(trimmedEmail);
-
-	// 		console.log("Array:",this.entity.receiving_emails);
-
-	// 		// try {
-    //         //     // Make Axios POST request to store the data in the database
-    //         //     const response = await axios.post('/client/api/receivingEmails', {
-    //         //         receivingEmails: this.entity.receiving_emails
-    //         //     });
-
-	// 		// 	response.log("API call:",response);
-
-    //         //     // Assuming the server responds with the updated list of receiving emails
-    //         //     this.receivingEmails = response.data.receivingEmails;
-
-    //         // }
-	// 		try {
-	// 		const url = "/client/api/receivingEmails";
-	// 		const data = {'receivingEmails':this.entity.receiving_emails}
-	// 		console.log(data);
-	// 		// const resp = await axios.post('/client/sendemail', data);
-	// 		const response = await axios.post(url,data);
-	// 		console.log("Response from API:", response.data);
-
-	// 		}
-	// 		 catch (error) {
-    //             console.error('Error storing data:', error);
-    //         }
-    //         // Clear the input for the next entry
-    //         this.entity.receiving_email = '';
-    //     }
-	// },
-	// removeReceivingEmail(index) {
-    //     // Remove the email at the specified index from the receiving_emails array
-    //     this.entity.receiving_emails.splice(index, 1);
-    // },
-	// addReceivingFax() {
-    //     // Trim the entered fax and check if it's not empty
-    //     const trimmedFax = this.entity.receiving_fax.trim();
-	// 	console.log("Fax:",trimmedFax);
-    //     if (trimmedFax !== '') {
-	// 		// Ensure that receiving_emails is an array before pushing
-	// 		if (!Array.isArray(this.entity.receiving_faxes)) {
-    //         this.$set(this.entity, 'receiving_faxes', []);
-    //     }
-
-    //         // Push the trimmed email to the receiving_emails array
-    //         this.entity.receiving_faxes.push(trimmedFax);
-
-	// 		console.log("Array:",this.entity.receiving_faxes);
-    //         // Clear the input for the next entry
-    //         this.entity.receiving_fax = '';
-    //     }
-	// },
-	// removeReceivingFax(index) {
-    //     // Remove the email at the specified index from the receiving_emails array
-    //     this.entity.receiving_faxes.splice(index, 1);
-    // },
-		// Method to search and filter services based on the search query
-			// searchServices() {
-			// 	if (this.searchQuery === '') {
-			// 		// Show all services when the search query is empty
-			// 		this.matchingServices = this.services;
-			// 	} else {
-			// 		// Filter services based on the search query
-			// 		this.matchingServices = this.services.filter(service => {
-			// 			return service.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-			// 		});
-   			// 	}
-			// },
-
-		// Method to add the selected services to the entity
-		// addSelectedServices() {
-		// 	// Add the selected services to entity.services._ids
-		// 	this.entity.services._ids = this.selectedServices.map(service => service.id);
-
-		// 	// Clear the search and selected services
-		// 	this.searchQuery = '';
-		// 	this.selectedServices = [];
-		// 	},
-		
-		// filterServices() {
-		// 	// Implement the logic to filter Services based on the search term
-		// 	const searchTerm = this.searchQuery.toLowerCase();
-		// 	this.filteredServices = this.services.filter((service) =>
-		// 		service.name.toLowerCase().includes(searchTerm)
-		// 	);
-		// },
-		// filterChains(option, query) {
-		// 	return option.toLowerCase().includes(query.toLowerCase());
-		// },
 		processAdditionalTaxonomies(jsonString) {
 			// Check if jsonString is null or undefined
 			if (jsonString === null || jsonString === undefined || jsonString === "NONE") {
@@ -2412,33 +2382,19 @@ async addFax() {
 			// Wait for chains to be loaded
   			// await this.getChains();
 			// Implement the logic to filter chains based on the search term
-			// .trim().replace(/"/g,'')
 			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
 			console.log("Search:",searchTerm);
 			console.log("chains:",records);
-			// console.log("Check", this.entity.chains);
 
 			// Filter chains, excluding the ones already selected
 			this.filteredChains = records.value.filter((chain) =>
 			chain.chain_name.trim().replace(/"/g,'').toLowerCase().includes(searchTerm) 
-			// && chain.chain_name.length <= maxLength
-			// !this.selectedChains.some(selected => selected.id === chain.id) &&
-			// !this.filteredChains.some(filtered => filtered.id === chain.id)
+			
     		);
 			console.log("Filtered:",this.filteredChains);
 
 			},
 		selectChain(chain) {
-			// Set the selected chain
-			// this.selectedChain = chain.chain_name;
-			// console.log("Selected Chain:",this.selectedChain);
-			// this.entity.chain_name = chain.chain_name;
-			// console.log(" chain_name:",this.entity.chain_name);
-
-			// // Clear the search term and filtered chains
-			// this.searchChain = '';
-			// this.filteredChains = [];
-
 
 			this.searchChain = chain.chain_name;
 			this.entity.chain_name = chain.chain_name;
@@ -2452,14 +2408,6 @@ async addFax() {
 			console.log("services:",this.services);
 			console.log("Check", this.entity.services);
 
-			// this.filteredServices = this.services.filter((service) =>
-			// 	service.name.toLowerCase().includes(searchTerm)
-			// );
-
-			// // Filter services, excluding the ones already selected
-			// this.filteredServices = this.services.filter((service) =>
-			// 	service.name.toLowerCase().includes(searchTerm) && !this.selectedServices.some(selected => selected.id === service.id)
-			// );
 			// Filter services, excluding the ones already selected
 			this.filteredServices = this.services.filter((service) =>
 			service.name.toLowerCase().includes(searchTerm) &&
@@ -2469,43 +2417,14 @@ async addFax() {
 			console.log("Filtered:",this.filteredServices);
 
 			},
-		// 	deselectChain() {
-		// 	// Clear the selected chain
-		// 	this.selectedChain = null;
-
-		// 	// Clear or update this.entity.chain_name as needed
-		// 	this.entity.chain_name = '';
-		// },
-
+		
 	async selectService(selectedService) {
-			// console.log('Selected Service:', selectedService);
-			// Check if the service ID is not already selected
-			// if (!this.entity.services._ids.includes(selectedService.id)) {
-			// 	// Push the selected service ID to the array
-			// 	this.entity.services._ids.push(selectedService.id);
-			// }
-
-			// const url = "/client/api/serviceList";
-				
-			// 	const response = await axios.get(url, {
-			// 	headers: {
-			// 		"Accept": "application/json",
-			// 		// You can add other headers here if needed
-			// 	},
-			// 	});
-
-			// console.log("Response from API:", response);
-			// // Check if the selected service is not already in the response data
-			// const serviceInResponse = response.data.find(service => service.service_id === selectedService.id);
-
+			
 			if (!this.selectedServices.some(service => service.id === selectedService.id)) {
-			// if (serviceInResponse && !this.selectedServices.some(service => service.id === selectedService.id)) {
+			
 				// Push the selected facility to the array
 				this.selectedServices.push(selectedService);
 
-				// // Save the updated selected services for the specific facility to localStorage
-				// const facilityId = this.entity.id;
-    			// localStorage.setItem(`selectedServices_${facilityId}`, JSON.stringify(this.selectedServices));
 				
 				console.log("selected array:",this.selectedServices);
 				this.entity.services.push(selectedService);
@@ -2543,64 +2462,20 @@ async addFax() {
 			}
 		});
 
-			// response.data.facilityservices.forEach((item, index) => {
-			// 	console.log(`Element at index ${index}:`, item);
-			// 	if(item.facility_id == facilityId){
-			// 		console.log("match found = ", item.service_id);
-			// 		response.data.services.foreach((i,index)=> {
-			// 			if(i.service_id == item.service_id){
-			// 				this.selectedServices.push(i.name);
-			// 				console.log("output", this.selectedServices);
-			// 			}
-			// 		});
-
-			// 		// this.selectedServices.push(item.service_id);
-			// 		// console.log("output", this.selectedServices);
-			// 	}
-			// 	});
-				// console.log("thiss insurance provider id", insid);
-
-			// Filter services for the specific facility
-			// const servicesForFacility = response.data.filter(service => service.facility_id === facilityId);
-			// const servicesForFacility = response.data.filter(entry => entry.facility_id === facilityId).map(entry => entry.service_id);
-			// console.log("from db:",servicesForFacility)
-
-			// // Set the filtered services to the selectedServices array
-			// this.selectedServices = servicesForFacility;
-
-			// console.log("Services for Facility:", this.selectedServices);
+		
 			} catch (error) {
 			console.error("Error fetching services:", error);
 			}
 
 			// Clear the search term and filtered services
 			this.searchQuery = '';
-			// this.filteredServices = [];
-			 // Update the filtered services, excluding the selected service
-  			// this.filteredServices = this.filteredServices.filter(service => service.id !== selectedService.id);
+			
 			// Update the filtered services, excluding all selected services
 			this.filteredServices = this.filteredServices.filter(service => !this.selectedServices.some(selected => selected.id === service.id));
 
 			},
 
-
-
-		// selectService(selectedService) {
-		// 	console.log('Selected Service:', selectedService);
-		// 	// Check if the facility is not already selected
-		// 	if (!this.selectedServices.some(service => service.id === selectedService.id)) {
-		// 		// Push the selected facility to the array
-		// 	this.selectedServices.push(selectedService);
-		// 	// console.log('Selected Services array:', this.selectedServices);
-		// 	this.entity.services._ids.push(selectedService);
-		// 	// console.log('check:', this.entity.services._ids);
-
-		// 	}
-
-		// 	// Clear the search term and filtered facilities
-		// 	this.searchQuery = '';
-		// 	this.filteredServices = [];
-		// },
+		
 		deselectService(selectedService) {
 			// Remove the selected facility from the array
 			this.selectedServices = this.selectedServices.filter(service => service.id !== selectedService.id);
@@ -2611,50 +2486,7 @@ async addFax() {
 			await this.$store.dispatch("services/getAll");
 			//  this.availableServices = this.services; // Initialize availableServices with all services
 		},
-		// async getChains() {
-		// 	await this.$store.dispatch("chains/getAll");
-		// },
-		// async getChains() {
-		// 	console.log("Fetching chains...");
-		// 	// await this.$store.dispatch("chains/get");
-		// 	const facilityId = this.entity.id;
-		// 	await axios.get('/client/api/chainList')
-		// 	.then(response => {
-		// 		console.log("Response:",response.data);
-		// 	// // response data stored in records attribute to render as list
-		// 	// records.value = response.data;
-		// 		response.data.facilityChains.forEach((item, index) => {
-		// 		// console.log(`Element at index ${index}:`, item);
-
-		// 		if (item.facility_id == facilityId) {
-		// 			console.log("match found =", item.chain_id);
-		// 			console.log("log =", response.data.chains);
-
-		// 			response.data.chains.forEach((i, index) => {
-		// 				console.log(`chain at index ${index}:`, i);
-		// 				if (i.id == item.chain_id) {
-		// 					console.log("Item found =", i.chain_name);
-		// 					// Check if the service is not already in selectedServices before pushing
-		// 					// if (!this.selectedServices.some(service => service.id === i.id)) {
-		// 						// this.selectedServices.push(i);
-		// 						this.selectedChain = i.chain_name;
-		// 						console.log("output", this.selectedChain);
-		// 						// response data stored in records attribute to render as list
-		// 						records.value = response.data.chains;
-		// 						// }
-		// 				}
-		// 			});
-		// 		}
-		// 	});
-		// 	})
-		// 	.catch(error => {
-		// 		console.error(error);
-		// 	})
-		// 	.finally(() => {
-		// 		this.saving = false;
-		// 	});
-		// 	console.log("Chains fetched successfully.");
-		// 	},
+		
 		async getChains() {
 			console.log("Fetching chains...");
 			// await this.$store.dispatch("chains/get");
@@ -2714,99 +2546,15 @@ async addFax() {
 				this.initialLoaded = true;
 			}
 		},
-		// async save() {
-		// 	try {
-		// 		this.saving = true;
-
-		// 		// const response = await save({
-		// 		// ...this.entity,
-		// 		// services: {
-		// 		// 	_ids: this.selectedServices.map(service => service.id),
-		// 		// },
-		// 		// });
-		// 		console.log("services=", services)
-				
-		// 		// const response = await this.$store.dispatch("facilities/save", this.entity);
-		// 		const response = await save({
-		// 			...this.entity,
-		// 			services: {
-		// 				_ids: this.services_ids,
-		// 			},
-		// 		});
-		// 		console.log("response=",response);
-
-		// 		// this.entity.services = this.selectedServices.map(service => service.id);
-		// 		// this.entity.services = this.selectedServices.map(service => service.id);
-
-		// 		this.$emit("saved", response);
-		// 		this.$emit("update:id", response.id);
-
-		// 		this.$store.dispatch("facilities/getAll");
-		// 		this.$store.dispatch("facilities/getActive");
-		// 	} catch (e) {
-		// 		if (e.response.data.errors) {
-		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-		// 		}
-
-		// 		this.$store.dispatch("apiError", {
-		// 			error: e,
-		// 			title: "Save Failed",
-		// 			message: "Error saving facility details. Please check for errors.",
-		// 			variant: "warning",
-		// 		});
-		// 	} finally {
-		// 		this.saving = false;
-		// 	}
-		// },
-		// async save() {
-		// 	try {
-		// 		this.saving = true;
-		// 		// console.log("Before Response=", response);
-		// 		// const response = await save({
-		// 		// 	...this.entity,
-		// 		// 	services: {
-		// 		// 		_ids: this.services_ids,
-		// 		// 	},
-		// 		// });
-		// // 		console.log("response=",response);
-
-		// 		const response = await this.$store.dispatch("facilities/save",{ ...this.entity, 
-		// 		services: {
-		// 				_ids: this.services_ids,
-		// 			}},);
-		// 		console.log("Response=", response);
-		// 		this.$emit("saved", response);
-		// 		this.$emit("update:id", response.id);
-
-		// 		this.$store.dispatch("facilities/getAll");
-		// 		this.$store.dispatch("facilities/getActive");
-		// 	} catch (e) {
-		// 		if (e.response.data.errors) {
-		// 			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-		// 		}
-
-		// 		this.$store.dispatch("apiError", {
-		// 			error: e,
-		// 			title: "Save Failed",
-		// 			message: "Error saving facility details. Please check for errors.",
-		// 			variant: "warning",
-		// 		});
-		// 	} finally {
-		// 		this.saving = false;
-		// 	}
-		// },
+		
 		async save() {
-			// console.log("Check:",JSON.stringify(this.insuranceRates));
+			console.log('Contract Pricing Schedule rate1', this.rates);
+			console.log('Contract Pricing Schedule rate2', this.rates2);
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-				await this.addPricingSchedule(response.id);
-				// const response = await save({
-				// 	...this.entity,
-				// 	services: {
-				// 		_ids: this.service_ids,
-				// 	},
-				// });
+				await this.saveContractPricingSchedule(response.id);
+				
 				console.log("saved:", response);
 
 
@@ -2818,6 +2566,14 @@ async addFax() {
 				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
         		console.log('saving Response:', responsed);
                 console.log('Data saved successfully');
+				// for saving contract details
+				this.saveContract()
+				try{
+					const response = await axios.post('/client/contractpricingschedule/edit', {first:this.rates , second:this.rates2 ,id:this.entity.id});
+				}
+				catch(err){
+					console.log('An error occured while saving the contract pricing schedule data: ', err);
+				}
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -3012,6 +2768,90 @@ async addFax() {
 						console.error("Error fetching data:", error.message);
 					}
 		},
+		async listFacilityContracts(){
+			try
+						{
+							const url = "/client/facilitiescontracts/list";
+							console.log("Making request for facility contract");
+							const data = {id:this.entity.id}
+							const response = await axios.post(url,data );
+							console.log("Facility COntract data1 =", response);
+							
+							this.fullownershipTypes.forEach((item)=>{
+								console.log("inside loop")
+								if(response.data.ownership_type_id == item.id){
+									
+								this.contractDetails.ownership_type = item.name;
+								console.log("got ownership name", this.contractDetails.ownership_type);
+							}
+							});
+
+							this.fullcontractBillTypes.forEach((item)=>{
+								
+								if(response.data.contract_bill_type_id == item.id){
+								this.contractDetails.contract_bill_type = item.billtype;
+								
+							}
+							});
+							this.fullcontractTypes.forEach((item)=>{
+								console.log("inside loop");
+								if(response.data.contract_type_id == item.id){
+								this.contractDetails.contract_type = item.name;
+								console.log("got bilcontract type  name", this.contractDetails.contract_type);
+							}
+							});
+							try{
+								this.fullserviceOperationsOptions.forEach((item)=>{
+									console.log("inside loop");
+									if(response.data.service_operation_id == item.id){
+									this.contractDetails.serviceOperation = item.name;
+									console.log("got service operation  name", this.contractDetails.serviceOperation);
+								}
+								});
+							}
+							catch(err){
+								console.log("ERROR SERVICE OPTIONS =", err);
+							}
+							
+							this.contractDetails.original_start_date = response.data.original_start_date;
+							this.contractDetails.term_date = response.data.term_date;
+							this.contractDetails.contract_status = parseInt(response.data.status, 10) === 1;
+							this.contractDetails.contract_start_date = response.data.contract_effective_date;
+							this.contractDetails.contract_end_date =  response.data.expiration_date;
+							this.contractDetails.renewal_date = response.data.renewal_date;
+							// this.contractDetails.contract_type = response.data.contract_type_id;
+							this.contractDetails.indemnification_days = response.data.indemnification_days;
+							this.contractDetails.max_return_work_days = response.data.indemnification_days;
+							// this.contractDetails.serviceOperation = response.data.service_operation_id; 
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
+		async listContractPricingSchedules() {
+			try {
+				const url = "/client/contractpricingschedule/list";
+				const data = { id: this.entity.id };
+				const response = await axios.post(url, data);
+				console.log("pricing schedule data =", response);
+				if (response.data && Array.isArray(response.data)) {
+					response.data.forEach((item) => {
+						if (item.insurance_type_id < 7) {
+							this.rates[item.insurance_type_id] = item.contract_rate;
+						}
+						else{
+							this.rates2[item.insurance_type_id-6] = item.contract_rate;
+						}
+						console.log("Contract Rates2 =", this.rates2);
+					}); 
+				}
+				
+			} catch (error) {
+				console.error("Error fetching data:", error.message);
+			}
+		}
+
 },
 };
 </script>

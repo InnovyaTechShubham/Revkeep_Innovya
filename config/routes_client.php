@@ -1198,5 +1198,37 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
+	$builder->connect('/facilitiescontracts', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'add',
+        '_method' => 'POST'
+    ]);
+
+	$builder->connect('/facilityAddForms/edit', [
+		'controller' => 'FacilityAddForm',
+		'action' => 'edit',
+	    '_method' => 'POST'
+	]);
+
+	$builder->connect('/facilitiescontracts/edit', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'edit',
+        '_method' => 'POST'
+    ]);
+	$builder->connect('/facilitiescontracts/list', [
+        'controller' => 'FacilitiesContracts',
+        'action' => 'list',
+        '_method' => 'POST'
+    ]);
+	$builder->connect('/contractpricingschedule/edit', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'edit',
+        '_method' => 'POST'
+    ]);
+	$builder->connect('/contractpricingschedule/list', [
+        'controller' => 'ContractPricingSchedules',
+        'action' => 'list',
+        '_method' => 'POST'
+    ]);
 
 });

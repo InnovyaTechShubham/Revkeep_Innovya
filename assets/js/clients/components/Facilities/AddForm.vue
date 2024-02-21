@@ -76,7 +76,6 @@
 							:state="getValidationState(validationContext)"
 							:options="facilityTypes"
 							:disabled="saving"
-							required="required"
 							value-field="id"
 							text-field="name"
 							/>
@@ -101,7 +100,7 @@
 						<b-form-group label="Type of Ownership" label-for="ownership_type" label-cols-lg="4">
 							<b-form-select
 							name="ownership_type"
-							v-model="entity.ownership_type"
+							v-model="contractDetails.ownership_type"
 							:state="getValidationState(validationContext)"
 							:options="ownershipTypes"
 							:disabled="saving"
@@ -156,7 +155,7 @@
 									<b-form-group label="Original Start Date" label-for="original_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.original_start_date"
+											v-model="contractDetails.original_start_date"
 											name="original_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -241,7 +240,7 @@
 						<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
 							<b-form-input
 							type="date"
-							v-model="entity.term_date"
+							v-model="contractDetails.term_date"
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
@@ -795,7 +794,7 @@
 										label-cols-lg="4"
 										description="Inactive contracts will not show up in dropdown lists."
 									>
-										<b-form-checkbox name="active" v-model="entity.contract_status" :disabled="saving"
+										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
 											>Active</b-form-checkbox
 										>
 										<b-form-invalid-feedback
@@ -815,7 +814,7 @@
 									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_end_date"
+											v-model="contractDetails.contract_end_date"
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -829,6 +828,7 @@
 								</validation-provider>
 
 								
+
 							</b-col>
 
 							<!-- Second Column -->
@@ -842,7 +842,7 @@
 									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.contract_start_date"
+											v-model="contractDetails.contract_start_date"
 											name="contract_start_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -864,7 +864,7 @@
 									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
 										<b-form-input
 											type="date"
-											v-model="entity.renewal_date"
+											v-model="contractDetails.renewal_date"
 											name="renewal_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
@@ -893,13 +893,16 @@
 										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_bill_type"
-											v-model="entity.contract_bill_type"
+											v-model="contractDetails.contract_bill_type"
 											:state="getValidationState(validationContext)"
 											:options="contractBillTypes"
 											:disabled="saving"
 											value-field="value"
 											text-field="text"
 											>
+											<!-- <template #first>
+												<option :value="null" />
+											</template> -->
 											</b-form-select>
 											<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
@@ -928,7 +931,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.indemnification_days"
+												v-model="contractDetails.indemnification_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -953,7 +956,7 @@
 										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
 											<b-form-select
 											name="contract_type"
-											v-model="entity.contract_type"
+											v-model="contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
 											:disabled="saving"
@@ -988,7 +991,7 @@
 												min="0"
 												max="365"
 												default="30"
-												v-model="entity.max_return_work_days"
+												v-model="contractDetails.max_return_work_days"
 												:disabled="saving"
 												:state="getValidationState(validationContext)"
 											/>
@@ -1011,7 +1014,7 @@
 								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
 									<b-form-checkbox-group
 									id="service_operations"
-									v-model="entity.serviceOperation"
+									v-model="contractDetails.serviceOperation"
 									:options="serviceOperationsOptions"
 									:state="getValidationState(validationContext)"
 									:disabled="saving"
@@ -1025,29 +1028,28 @@
 								</validation-provider>
 
 								<b-card title="Contract Pricing Schedule" border-variant="light">
-								<b-row>
-									<b-col md="6">
+									<b-row>
+										<b-col md="6">
 										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates[info.index]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
+										</b-col>
 
-									<b-col md="6">
+										<b-col md="6">
 										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
 											<template v-slot:cell(contract_rate)="info">
-												<div class="d-flex">
-													<input type="text" v-model="info.item.rate" class="form-control" placeholder="Add rate in %" @input="addPricingSchedule(info.item)" />
-												</div>
+											<div class="d-flex">
+												<input type="text" v-model="rates2[info.index]" class="form-control" placeholder="Add rate in %" />
+											</div>
 											</template>
 										</b-table>
-									</b-col>
-								</b-row>
-							</b-card>
+										</b-col>
+									</b-row>
+								</b-card>
 
 							
 							</b-card-body>
@@ -1178,7 +1180,7 @@
 													<b-table :items="entity.receiving_emails" :fields="['email', 'description']" striped hover>
 													<template #cell(email)="info">
 														<div class="d-flex align-items-center">
-														<b-form-checkbox v-model="selectedEmails" :value="info.item.email" class="mr-2" />
+														<b-form-checkbox v-model="selectedEmails" :value="info.item" class="mr-2" />
 														<span>{{ info.item.email }}</span>
 														</div>
 													</template>
@@ -1192,7 +1194,7 @@
 												<b-button @click="deleteSelectedEmails" variant="primary" class="mx-auto d-block">OK</b-button>
 												</template>
 											</b-modal>
-											<!-- </b-form-group> -->
+											
 										</b-col>
 
 										<!-- Section for Receiving Faxes -->
@@ -1319,12 +1321,18 @@ export default {
 		return {
 			loading: true,
 			saving: false,
+			npiLookingUp: false,
+			npiSearched: false,
+			npiResults: [],
 			searchChain:'',
 			selectedChain: '',
 			filteredChains:[],
 			searchQuery: '',            // The search query entered by the user
-			filteredServices: [], 
+        	// availableServices: [],               // The list of all available services
+        	// matchingServices: [],       // The list of services matching the search query
+        	filteredServices: [], 
 			selectedServices: [],		 // The list of services selected by the user
+			// services: [],
 			entity: {
 				id: this.id,
 				name: "",
@@ -1339,57 +1347,45 @@ export default {
 				f_name: null,
 				l_name: null,
 				title_id: null,
-				// street_address_1: null,
+				street_address_1: null,
 				street_address_2: null,
 				city: null,
 				state: null,
 				zip: null,
+				county: null,
 				npi_number: null,
 				npi_manual: null,
 				primary_taxonomy: null,
-				client_owned: false,
-				division: null,
-				region:null,
-				chain_name: null,
+				location_phone: null,
+				mailing_phone: null,
+				additional_taxonomies: null,
+				client_owned: true,
+				chain_name: '',
 				area_name: null,
 				ou_number: null,
 				bu_number: null,
 				territory: null,
-				rvp_name: null,
+				// rvp_name: null,
 				has_contract: false,
-				contract_start_date: null,
-				contract_end_date: null,
-				original_start_date: null,
-				term_date: null,
-				renewal_date: null,
-				indemnification_days: null,
-				max_return_work_days: null,
+				// service_operations: null,
 				address_1: null,
 				address_2: null,
-				// services: {
-				// 	_ids: [],
-				// },
+				// taxonomy_code: null,
+				// taxonomy_desc: null,
+				// taxonomy_group: null,
+				// taxonomy_license:  null,
+				// taxonomy_state: null,
+				othername: null,
+				enumeration_type: null,
+				organizational_subpart:null,
 				services: [],
 				chains:[],
 				receiving_email: '', // For input
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
-				receiving_faxes: [],
+            	receiving_faxes: [], // For storing multiple faxes
+				// outgoing_emails: [],
             	receiving_methods: [], 
-				serviceOperations: [],
-				pricing_schedules: [],
-				newSchedule: {
-				ins_id: '',
-				rate: '',
-				facility_id: '',
-				selectedFaxes: [],
-
-			},
-				serviceOperation: [],
-				contract_bill_type: null,
-				contract_type: null,
-				ownership_type: null,
-				contract_insurance_type: null,
 				facility_status:null,
 				internal_owner:null,
 				bill_type:null,
@@ -1397,11 +1393,28 @@ export default {
                 ltc: null,
                 ai: null,
                 il: null,
+
 			},
+			contractDetails: {
+					// facility_id: this.id,
+					original_start_date: null,
+					term_date: null,
+					contract_status:true,
+					contract_end_date: null,
+					contract_start_date: null,
+					renewal_date: null,
+					indemnification_days: null,
+					max_return_work_days: null,
+					serviceOperation: null,
+					contract_bill_type: null,
+					contract_type: null,
+					ownership_type: null,
+					
+					
+    		},
 			billTypeOptions:[],
 			facilityStatus:[],
 			service_ids: [],
-			selectedContactType: 'phone',
 			forms: [],
 			titlename: [],
 			contactTypes: [],
@@ -1420,18 +1433,25 @@ export default {
 				fax: '',
 				description: '',
 			},
+			selectedFaxes: [],
 			showDeleteIcon: false,
+			//contract
+			pricing_schedules: [],
 			serviceOperationsOptions: [],
 			contractBillTypes: [],
-			contractTypes:[],
+			contractTypes: [],
 			ownershipTypes: [],
+			insurances: [],
 			insuranceRates: {},
 			selectedInsuranceId: null,
-			insurances: [],
-		facilityTypes:[],
+			contract_insurance_type: null,
+			// end contract
+			facilityTypes:[],
+			rates:{},
+			rates2:{},
+   
 	 };
 	},
-
 	watch: {
 		'entity.bill_type': function(newBillType) {
 		if (newBillType === 'Synergy' || newBillType === 'Contract Bill Other') {
@@ -1474,6 +1494,30 @@ export default {
 	
 	methods: 
 	{
+		async saveContract() {
+			try {
+				console.log('inside save contract');
+				const apiUrl = '/client/facilitiescontracts';
+
+				// Extract contract-related data from entity
+				
+				const contractData = {data:this.contractDetails,name:this.entity.name};
+				console.log('Contract data=',contractData );
+
+				// Make the API call with the extracted data
+				const response = await axios.post(apiUrl, contractData);
+
+				// Handle success response if needed
+				console.log('Facilities Contract saved successfully:', response.data);
+
+				// Optionally notify the user or perform other actions
+			} catch (error) {
+				// Handle error
+				console.error('Error saving Facilities Contract:', error);
+
+				// Optionally notify the user or perform other error handling actions
+			}
+		},
 		async fetchFacilityType(){
 			try
 						{
@@ -1488,7 +1532,7 @@ export default {
 								
 							console.log("facility type listed :", response);
 							response.data.forEach((item)=>{
-								this.facilityTypes.push(item.name);
+								this.facilityTypes.push({name:item.name, id:item.id});
 							});
 							console.log('facility type options =' , this.facilityTypes);
 						}
@@ -1497,35 +1541,35 @@ export default {
 						console.error("Error fetching data:", error.message);
 					}
 		},
-		async addPricingSchedule(obj) {
-			console.log("inside");
-			this.insuranceRates= obj ;
-			// const facilityId = facility_id;
-			console.log("ins:",this.insuranceRates);
+// 		async addPricingSchedule(obj) {
+// 			console.log("inside");
+// 			this.insuranceRates= obj ;
+// 			// const facilityId = facility_id;
+// 			console.log("ins:",this.insuranceRates);
 
-			 // Ensure that this.entity.pricing_schedules is an array
-			 if (!Array.isArray(this.entity.pricing_schedules)) {
-				this.$set(this.entity, 'pricing_schedules', []);
-				}
-			// console.log("before",this.entity.pricing_schedules);
-			let newpricingSchedule;
+// 			 // Ensure that this.entity.pricing_schedules is an array
+// 			 if (!Array.isArray(this.entity.pricing_schedules)) {
+// 				this.$set(this.entity, 'pricing_schedules', []);
+// 				}
+// 			// console.log("before",this.entity.pricing_schedules);
+// 			let newpricingSchedule;
 
 
-			this.entity.pricing_schedules.push(this.insuranceRates);
-			console.log("final",this.entity.pricing_schedules);
+// 			this.entity.pricing_schedules.push(this.insuranceRates);
+// 			console.log("final",this.entity.pricing_schedules);
 		
-			try {
-				// Make a POST request to store the data in the database
-				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
-				console.log('Axios Response:', response);
-				await this.$nextTick();
-				this.$emit("pricing_schedules", response);
-				console.log("Emitted data:", response.data);
+// 			try {
+// 				// Make a POST request to store the data in the database
+// 				const response = await axios.post('/client/contractpricingschedule', this.entity.pricing_schedules);
+// 				console.log('Axios Response:', response);
+// 				await this.$nextTick();
+// 				this.$emit("pricing_schedules", response);
+// 				console.log("Emitted data:", response.data);
 				
-			} catch (error) {
-				console.error('Error creating schedule:', error);
-			}
-},
+// 			} catch (error) {
+// 				console.error('Error creating schedule:', error);
+// 			}
+// },
 		
 		async fetchInsurances(){
 			try
@@ -1926,7 +1970,10 @@ export default {
 
 							if (response.data && Array.isArray(response.data)) {
 								
-								this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
+								// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
+								this.$set(this.entity, 'receiving_emails', response.data
+								.filter(item => item.facility_id === facilityId)
+								.map(item => ({ email: item.email, description: item.description })));
 							}
 							// Use nextTick to ensure the rendering has completed
 							this.$nextTick(() => {
@@ -2047,40 +2094,102 @@ export default {
       // Reset selectedEmails array
       this.selectedEmails = [];
     },
-    
+
 	async deleteSelectedEmails() {
-		// Add logic to delete selected emails
-		console.log("Inside",this.entity.receiving_emails);
-		// Create a unique identifier for each email based on email and description
-		const updatedEmails = this.entity.receiving_emails.filter(
-		(email) => !this.selectedEmails.includes(email.email)
-		);
-		console.log("Deleted:",updatedEmails);
+    console.log("Inside", this.entity.receiving_emails);
+    console.log("Selected", this.selectedEmails);
 
-		// Update the receiving_emails array with the updatedEmails
-		this.entity.receiving_emails = updatedEmails;
+    let updatedEmails = null;
 
-		// Reset selectedEmails array
-		this.selectedEmails = [];
+    try {
+        // Iterate over selected emails and delete them
+        for (const email of this.selectedEmails) {
+            const apiUrl = `/client/deletereceivingemail/${email.id}`;
+            await axios.delete(apiUrl);
+        }
 
-		 // Make Axios call to delete emails from the database
-		const apiUrl = `/client/deletereceivingemail/${uniqueIdentifier(updatedEmails[0].id)}`;
-    	await axios.post(apiUrl, { selectedEmails: this.selectedEmails })
-        .then(response => {
-            // Handle success response if needed
-            console.log('Emails deleted successfully:', response.data);
-        })
-        .catch(error => {
-            // Handle error
-            console.error('Error deleting emails:', error);
-        })
-        .finally(() => {
-            // Close the delete popup or perform any other actions
-            this.closeDeletePopup();
+        // Filter out the selected emails from the entity's receiving_emails
+        const updatedEmails = this.entity.receiving_emails.filter(
+            (email) => !this.selectedEmails.some(selectedEmail => selectedEmail.id === email.id)
+        );
+
+        // Wait for the next DOM update before emitting the event
+        await this.$nextTick();
+
+        // Emit event to notify about the deletion and pass the updated emails
+        this.$emit("Receiving_emails", updatedEmails);
+
+        // Show notification for successful deletion
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'success',
+                title: 'Emails Deleted!',
+                message: 'Selected emails deleted successfully.',
+            });
         });
 
+        // Log success message
+        console.log('Emails deleted successfully');
+    } catch (error) {
+        // Handle error
+        console.error('Error deleting emails:', error);
+
+        // Show notification for deletion error
+        this.$nextTick(() => {
+            this.$store.dispatch('notify', {
+                variant: 'danger',
+                title: 'Error Deleting Emails',
+                message: 'An error occurred while deleting emails.',
+            });
+        });
+    } finally {
+        // Close the delete popup or perform any other actions
+        this.closeDeletePopup();
+    }
+
+    // Update the receiving_emails array with the updatedEmails
+    this.entity.receiving_emails = updatedEmails;
+
+    // Reset selectedEmails array
+    this.selectedEmails = [];
+},
+
+    
+	// async deleteSelectedEmails() {
+	// 	// Add logic to delete selected emails
+	// 	console.log("Inside",this.entity.receiving_emails);
+	// 	// Create a unique identifier for each email based on email and description
+	// 	// const uniqueIdentifier = (email) => `${email.email}_${email.description}`;
+	// 	console.log("Selected",this.selectedEmails);
+	// 	const updatedEmails = this.entity.receiving_emails.filter(
+	// 	(email) => !this.selectedEmails.includes(email.email)
+	// 	);
 		
-	},
+
+	// 	 // Make Axios call to delete emails from the database
+	// 	const apiUrl = `/client/deletereceivingemail/`;
+    // 	await axios.post(apiUrl, { selectedEmails: this.selectedEmails })
+    //     .then(response => {
+    //         // Handle success response if needed
+    //         console.log('Emails deleted successfully:', response.data);
+    //     })
+    //     .catch(error => {
+    //         // Handle error
+    //         console.error('Error deleting emails:', error);
+    //     })
+    //     .finally(() => {
+    //         // Close the delete popup or perform any other actions
+    //         this.closeDeletePopup();
+    //     });
+
+	// 	console.log("Updated:",updatedEmails);
+
+	// 	// Update the receiving_emails array with the updatedEmails
+	// 	this.entity.receiving_emails = updatedEmails;
+
+	// 	// Reset selectedEmails array
+	// 	this.selectedEmails = [];
+	// },
 		
 		filterChains() {
 			const searchTerm = this.searchChain ? this.searchChain.toLowerCase() : '';
@@ -2232,6 +2341,12 @@ export default {
 
 		async save() {
 			this.entity.name = this.entity.display_name;
+			console.log('Contract Pricing Schedule rate1', this.rates);
+			console.log('Contract Pricing Schedule rate2', this.rates2);
+
+			// todo:
+			// create backend for add form
+			
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
@@ -2248,9 +2363,19 @@ export default {
 				const responsed = await axios.post('/client/facilityAddForms', this.forms);
         		console.log('saving Response:', responsed);
                 console.log('Data saved successfully');
+				// for saving contract details
+				this.saveContract()
 				}catch(err){
 					console.log('An error occured while saving the form data: ', err);
 				}
+
+				try{
+					const response = await axios.post('/client/contractpricingschedule', {first:this.rates , second:this.rates2 , name:this.entity.name});
+				}
+				catch(err){
+					console.log('An error occured while saving the contract pricing schedule data: ', err);
+				}
+
 
 			} 
 			catch (e) {

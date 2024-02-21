@@ -122,16 +122,16 @@ class StateController extends ApiController
 				->find('ordered')
 				->all(),
 
-			'facilities' => $this->fetchTable('Facilities')
-				->find('active')
-				->find('ordered')
-				->contain(['FacilityTypes'])
-				->all(),
+			// 'facilities' => $this->fetchTable('Facilities')
+			// 	->find('active')
+			// 	->find('ordered')
+			// 	->contain(['FacilityTypes'])
+			// 	->all(),
 
-			'facilityTypes' =>  $this->fetchTable('FacilityTypes')
-				->find('ordered')
-				->find('limited')
-				->all(),
+			// 'facilityTypes' =>  $this->fetchTable('FacilityTypes')
+			// 	->find('ordered')
+			// 	->find('limited')
+			// 	->all(),
 
 			'insuranceProviders' => $this->fetchTable('InsuranceProviders')
 				->find('active')
