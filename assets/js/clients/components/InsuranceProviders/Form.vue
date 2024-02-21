@@ -6,107 +6,127 @@
 				<slot name="header"></slot>
 				<b-card-body>
 					<div class="row">
-            <!-- Name Field -->
-            <div class="col-lg-6 col-xl-4 mb-4">
-              <validation-provider
-                vid="name"
-                name="Name"
-                :rules="{ required: true, min: 3, max: 50 }"
-                v-slot="validationContext"
-              >
-                <b-form-group>
-                  <label for="name" class="col-form-label col-form-label-lg">Name</label>
-                  <b-form-input
-                    id="name"
-                    autofocus
-                    name="name"
-                    type="text"
-					v-model="modifiedName"
-                    required
-                    placeholder="Required"
-                    :state="getValidationState(validationContext)"
-                    :disabled="saving"
-                  />
-                  <b-form-invalid-feedback
-                    v-for="error in validationContext.errors"
-                    :key="error"
-                    v-text="error"
-                  />
-                </b-form-group>
-              </validation-provider>
-            </div>
-			<div class="col-lg-1 col-xl-1 d-flex align-items-center justify-content-center">
-              <p class="my-3">Of</p>
-            </div>
-            <!-- State Field -->
-            <div class="col-lg-6 col-xl-4 mb-4">
-              <validation-provider
-                vid="state"
-                name="State"
-                :rules="{ required: false }"
-                v-slot="validationContext"
-              >
-                <b-form-group>
-                  <label for="state" class="col-form-label col-form-label-lg">State</label>
-                  <b-form-select
-                    id="state"
-                    name="state"
-                    v-model="selectedStateName"
-                    :options="usaStates"
-                    value-field="name"
-                    text-field="name"
-                    placeholder="Enter State (if applicable)"
-                    :state="getValidationState(validationContext)"
-                    :disabled="saving"
-                  />
-                  <small class="form-text text-muted">
-                    Please select the state if it is applicable to your case.
-                  </small>
-                </b-form-group>
-              </validation-provider>
-			  </div>
-			          </div>
-                    			<b-form-group
-									label="Active"
-									label-for="active"
-									label-cols-lg="2" label-cols-xl="2"
-									description="Inactive providers will not show up in dropdown lists."
-								>
-									<b-form-checkbox name="active" v-model="entity.active">Active</b-form-checkbox>
+						<!-- Name Field -->
+						<div class="col-lg-6 col-xl-4 mb-4">
+							<validation-provider
+								vid="name"
+								name="Name"
+								:rules="{ required: true, min: 3, max: 50 }"
+								v-slot="validationContext"
+							>
+								<b-form-group>
+									<label for="name" class="col-form-label col-form-label-lg">Name</label>
+									<b-form-input
+										id="name"
+										autofocus
+										name="name"
+										type="text"
+										v-model="modifiedName"
+										required
+										placeholder="Required"
+										:state="getValidationState(validationContext)"
+										:disabled="saving"
+									/>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
 								</b-form-group>
+							</validation-provider>
+						</div>
+						<div class="col-lg-1 col-xl-1 d-flex align-items-center justify-content-center">
+							<p class="my-3">Of</p>
+						</div>
+						<!-- State Field -->
+						<div class="col-lg-6 col-xl-4 mb-4">
+							<validation-provider
+								vid="state"
+								name="State"
+								:rules="{ required: false }"
+								v-slot="validationContext"
+							>
+								<b-form-group>
+									<label for="state" class="col-form-label col-form-label-lg">State</label>
+									<b-form-select
+										id="state"
+										name="state"
+										v-model="selectedStateName"
+										:options="usaStates"
+										value-field="name"
+										text-field="name"
+										placeholder="Enter State (if applicable)"
+										:state="getValidationState(validationContext)"
+										:disabled="saving"
+									/>
+									<small class="form-text text-muted">
+										Please select the state if it is applicable to your case.
+									</small>
+								</b-form-group>
+							</validation-provider>
+						</div>
+					</div>
+					<b-form-group
+						label="Active"
+						label-for="active"
+						label-cols-lg="2"
+						label-cols-xl="2"
+						description="Inactive providers will not show up in dropdown lists."
+					>
+						<b-form-checkbox name="active" v-model="entity.active">Active</b-form-checkbox>
+					</b-form-group>
 
-					 <div class="d-flex align-items-start">
-    <validation-provider vid="default_insurance_type_id" name="Type" :rules="{ required: false }" v-slot="validationContext">
-      <b-form-group label="Audit Types(s)" label-for="default_insurance_type_id" label-cols-lg="4" label-cols-xl="4">
-        <b-form-checkbox-group
-          name="insurance_type_ids"
-          v-model="audittype_data"
-          :options="insuranceTypes"
-          :disabled="saving || loadingInsuranceTypes"
-          value-field="id"
-          text-field="name"
-          :multiple="true"
-        />
-        <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-      </b-form-group>
-    </validation-provider>
-    <b-button variant="success" size="sm" @click="openCustomAuditTypeModal" class="ml-2">
-      <font-awesome-icon icon="plus" fixed-width />
-      Add More
-    </b-button>
-  </div>
-  
-  <b-modal id="customAuditTypeModal" title="Add Custom Audit Type" @ok="addCustomAuditType">
-    <b-form-input
-      id="newAuditType"
-      name="newAuditType"
-      type="text"
-      v-model="newAuditType"
-      placeholder="Add custom type"
-      :disabled="saving"
-    />
-  </b-modal>
-  <b-form-group label="Decision Levels" label-for="entity.appeal_levels"  label-cols-lg="2" label-cols-xl="2">
+					<div class="d-flex align-items-start">
+						<validation-provider
+							vid="default_insurance_type_id"
+							name="Type"
+							:rules="{ required: false }"
+							v-slot="validationContext"
+						>
+							<b-form-group
+								label="Audit Types(s)"
+								label-for="default_insurance_type_id"
+								label-cols-lg="4"
+								label-cols-xl="4"
+							>
+								<b-form-checkbox-group
+									name="insurance_type_ids"
+									v-model="audittype_data"
+									:options="insuranceTypes"
+									:disabled="saving || loadingInsuranceTypes"
+									value-field="id"
+									text-field="name"
+									:multiple="true"
+								/>
+								<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+								/>
+							</b-form-group>
+						</validation-provider>
+						<b-button variant="success" size="sm" @click="openCustomAuditTypeModal" class="ml-2">
+							<font-awesome-icon icon="plus" fixed-width />
+							Add More
+						</b-button>
+					</div>
+
+					<b-modal id="customAuditTypeModal" title="Add Custom Audit Type" @ok="addCustomAuditType">
+						<b-form-input
+							id="newAuditType"
+							name="newAuditType"
+							type="text"
+							v-model="newAuditType"
+							placeholder="Add custom type"
+							:disabled="saving"
+						/>
+					</b-modal>
+					<b-form-group
+						label="Decision Levels"
+						label-for="entity.appeal_levels"
+						label-cols-lg="2"
+						label-cols-xl="2"
+					>
 						<div v-if="entity.appeal_levels.length > 0">
 							<draggable v-model="entity.appeal_levels" @start="test" @end="onDragEnd">
 								<div v-for="(appealLevel, index) in entity.appeal_levels" :key="index" class="mb-2">
@@ -345,15 +365,15 @@
 															label-cols-lg="4"
 															description="Select the decision type"
 														>
-														<b-form-select
-															name="decision_options"
-															v-model="appealLevel._joinData.decision_options"
-															:options="decisionTypeOptions"
-															:disabled="saving"
-															:state="getValidationState(validationContext)"
-															required="required"
+															<b-form-select
+																name="decision_options"
+																v-model="appealLevel._joinData.decision_options"
+																:options="decisionTypeOptions"
+																:disabled="saving"
+																:state="getValidationState(validationContext)"
+																required="required"
 															/>
-														<!-- <b-form-radio-group
+															<!-- <b-form-radio-group
 															name="decision_options"
 															v-model="appealLevel._joinData.decision_options"
 															:options="decisionTypeOptions"
@@ -370,7 +390,6 @@
 														</b-form-group>
 													</validation-provider>
 												</b-col>
-												
 											</b-row>
 
 											<b-modal
@@ -387,7 +406,9 @@
 												>
 													<template #header>
 														<b-card-header>
-															<div class="d-flex justify-content-between align-items-center">
+															<div
+																class="d-flex justify-content-between align-items-center"
+															>
 																<span class="font-weight-bold">Add New Agency</span>
 																<b-button
 																	variant="secondary"
@@ -423,8 +444,7 @@
 								<font-awesome-icon icon="plus" fixed-width />
 								<span>Add Level</span>
 							</b-button>
-						<!-- </draggable> -->
-
+							<!-- </draggable> -->
 						</div>
 						<div v-else>
 							<empty-result icon="gavel">
@@ -444,9 +464,7 @@
 									</b-button>
 								</template>
 							</empty-result>
-							
 						</div>
-
 					</b-form-group>
 				</b-card-body>
 
@@ -501,9 +519,9 @@
 						</b-card-header> -->
 						<!-- <b-collapse id="collapseAddress" role="tabpanel"> 
 							<b-card-body> -->
-								<h5 class="h5 font-weight-bold">Address</h5>
-							<b-row >	
-								<b-col class="md-6">
+						<h5 class="h5 font-weight-bold">Address</h5>
+						<b-row>
+							<b-col class="md-6">
 								<b-form-group label="Address" label-for="street_address_1" label-cols-lg="4">
 									<validation-provider
 										vid="street_address_1"
@@ -526,8 +544,8 @@
 											v-text="error"
 										/>
 									</validation-provider>
-							
-								<!--	<validation-provider
+
+									<!--	<validation-provider
 										vid="street_address_2"
 										name="Street Address (Continued)"
 										:rules="{ required: false, max: 50 }"
@@ -573,7 +591,7 @@
 									</b-form-group>
 								</validation-provider>
 							</b-col>
-							</b-row>
+						</b-row>
 						<b-row>
 							<b-col class="md-6">
 								<validation-provider
@@ -603,8 +621,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-							</b-col>	
-                            <b-col class="md-6">
+							</b-col>
+							<b-col class="md-6">
 								<validation-provider
 									vid="zip"
 									name="Zip"
@@ -627,12 +645,11 @@
 									</b-form-group>
 								</validation-provider>
 							</b-col>
-							</b-row>	
-							<!--</b-card-body>
+						</b-row>
+						<!--</b-card-body>
 						 </b-collapse> -->
 					</b-card>
 					<b-card>
-
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0 " >
 							<b-button
 								block
@@ -645,9 +662,9 @@
 						</b-card-header> -->
 						<!-- <b-collapse id="collapseContact" role="tabpanel">
 							<b-card-body> -->
-								<h5 class="h5 font-weight-bold">Contact Information</h5>
-							<b-row>
-								<b-col class="md-6">	
+						<h5 class="h5 font-weight-bold">Contact Information</h5>
+						<b-row>
+							<b-col class="md-6">
 								<validation-provider
 									vid="phone"
 									name="Phone"
@@ -670,8 +687,8 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-                            </b-col>
-                            <b-col class="md-6">
+							</b-col>
+							<b-col class="md-6">
 								<validation-provider
 									vid="fax"
 									name="Fax"
@@ -694,10 +711,10 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-                   </b-col>
-				   </b-row>
-				   <b-row>
-                           <b-col class="md-6">
+							</b-col>
+						</b-row>
+						<b-row>
+							<b-col class="md-6">
 								<validation-provider
 									vid="email"
 									name="Email"
@@ -719,32 +736,32 @@
 										/>
 									</b-form-group>
 								</validation-provider>
-                       </b-col>
-                        <b-col class="md-6">
+							</b-col>
+							<b-col class="md-6">
 								<validation-provider
-								vid="additionalContact"
-								name="Additional Contact Method"
-								:rules="{ required: false }" 
-								v-slot="validationContext"
-							>
-								<b-form-group label="Website" label-for="additionalContact" label-cols-lg="4">
-									<b-form-input
-										name="additionalContact"
-										type="text"
-										v-model="entity.additionalContact"
-										:state="getValidationState(validationContext)"
-										:disabled="saving"
-									/>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
-								</b-form-group>
-       					 </validation-provider>
-						 </b-col>
+									vid="additionalContact"
+									name="Additional Contact Method"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Website" label-for="additionalContact" label-cols-lg="4">
+										<b-form-input
+											name="additionalContact"
+											type="text"
+											v-model="entity.additionalContact"
+											:state="getValidationState(validationContext)"
+											:disabled="saving"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+							</b-col>
 						</b-row>
-							<!--</b-card-body>
+						<!--</b-card-body>
 						 </b-collapse> -->
 					</b-card>
 				</b-card-body>
@@ -767,13 +784,12 @@
 	</validation-observer>
 </template>
 
-
 <script type="text/javascript">
 import { mapGetters } from "vuex";
 import { formatErrors, getValidationState } from "@/validation";
 import AgencyForm from "@/clients/components/Agencies/Form.vue";
-import axios from 'axios';
-import draggable from 'vuedraggable';
+import axios from "axios";
+import draggable from "vuedraggable";
 export default {
 	name: "InsuranceProviderForm",
 	components: {
@@ -787,7 +803,7 @@ export default {
 	},
 	data() {
 		return {
-			audittype_data:[],
+			audittype_data: [],
 			loading: true,
 			saving: false,
 			entity: {
@@ -803,91 +819,92 @@ export default {
 				state: null,
 				zip: null,
 				insurance_types: [],
-                insurance_type_ids: this.audittype_data,
+				insurance_type_ids: this.audittype_data,
 				newAuditType: "",
 				appeal_levels: [
 					// {} Join table entity
 				],
 			},
-			newname: '',
+			newname: "",
 			addingAgency: false,
 			selectedStateName: "Not Applicable",
-				usaStates: [
-				        { name: "Not Applicable" },
-						{ name: "Alabama" },
-						{ name: "Alaska" },
-						{ name: "Arizona" },
-						{ name: "Arkansas" },
-						{ name: "California" },
-						{ name: "Colorado" },
-						{ name: "Connecticut" },
-						{ name: "Delaware" },
-						{ name: "Florida" },
-						{ name: "Georgia" },
-						{ name: "Hawaii" },
-						{ name: "Idaho" },
-						{ name: "Illinois" },
-						{ name: "Indiana" },
-						{ name: "Iowa" },
-						{ name: "Kansas" },
-						{ name: "Kentucky" },
-						{ name: "Louisiana" },
-						{ name: "Maine" },
-						{ name: "Maryland" },
-						{ name: "Massachusetts" },
-						{ name: "Michigan" },
-						{ name: "Minnesota" },
-						{ name: "Mississippi" },
-						{ name: "Missouri" },
-						{ name: "Montana" },
-						{ name: "Nebraska" },
-						{ name: "Nevada" },
-						{ name: "New Hampshire" },
-						{ name: "New Jersey" },
-						{ name: "New Mexico" },
-						{ name: "New York" },
-						{ name: "North Carolina" },
-						{ name: "North Dakota" },
-						{ name: "Ohio" },
-						{ name: "Oklahoma" },
-						{ name: "Oregon" },
-						{ name: "Pennsylvania" },
-						{ name: "Rhode Island" },
-						{ name: "South Carolina" },
-						{ name: "South Dakota" },
-						{ name: "Tennessee" },
-						{ name: "Texas" },
-						{ name: "Utah" },
-						{ name: "Vermont" },
-						{ name: "Virginia" },
-						{ name: "Washington" },
-						{ name: "West Virginia" },
-						{ name: "Wisconsin" },
-						{ name: "Wyoming" }
-           ],
-			levelTypeOptions: [
-				{ value: 'Pre-Appeal', text: 'Pre-Appeal' },
-				{ value: 'Appeal', text: 'Appeal' },
+			usaStates: [
+				{ name: "Not Applicable" },
+				{ name: "Alabama" },
+				{ name: "Alaska" },
+				{ name: "Arizona" },
+				{ name: "Arkansas" },
+				{ name: "California" },
+				{ name: "Colorado" },
+				{ name: "Connecticut" },
+				{ name: "Delaware" },
+				{ name: "Florida" },
+				{ name: "Georgia" },
+				{ name: "Hawaii" },
+				{ name: "Idaho" },
+				{ name: "Illinois" },
+				{ name: "Indiana" },
+				{ name: "Iowa" },
+				{ name: "Kansas" },
+				{ name: "Kentucky" },
+				{ name: "Louisiana" },
+				{ name: "Maine" },
+				{ name: "Maryland" },
+				{ name: "Massachusetts" },
+				{ name: "Michigan" },
+				{ name: "Minnesota" },
+				{ name: "Mississippi" },
+				{ name: "Missouri" },
+				{ name: "Montana" },
+				{ name: "Nebraska" },
+				{ name: "Nevada" },
+				{ name: "New Hampshire" },
+				{ name: "New Jersey" },
+				{ name: "New Mexico" },
+				{ name: "New York" },
+				{ name: "North Carolina" },
+				{ name: "North Dakota" },
+				{ name: "Ohio" },
+				{ name: "Oklahoma" },
+				{ name: "Oregon" },
+				{ name: "Pennsylvania" },
+				{ name: "Rhode Island" },
+				{ name: "South Carolina" },
+				{ name: "South Dakota" },
+				{ name: "Tennessee" },
+				{ name: "Texas" },
+				{ name: "Utah" },
+				{ name: "Vermont" },
+				{ name: "Virginia" },
+				{ name: "Washington" },
+				{ name: "West Virginia" },
+				{ name: "Wisconsin" },
+				{ name: "Wyoming" },
 			],
-			decisionTypeOptions:[
-				{ value: 1, text: 'No Findings/Issues' },
-				{ value: 2, text: 'Reversed/Held' },
-				{ value: 3, text: 'Not Favorable / Partially Favorable/ Favorable' },
-			]
+			levelTypeOptions: [
+				{ value: "Pre-Appeal", text: "Pre-Appeal" },
+				{ value: "Appeal", text: "Appeal" },
+			],
+			decisionTypeOptions: [
+				{ value: 1, text: "No Findings/Issues" },
+				{ value: 2, text: "Reversed/Held" },
+				{ value: 3, text: "Not Favorable / Partially Favorable/ Favorable" },
+				{ value: 4, text: "Dismissed" },
+			],
 		};
 	},
 	computed: {
 		modifiedName: {
-      get() {
-        const words = this.entity.name.split('of');
-        return words.length > 1 ? words[0].trim() : this.entity.name;
-      },
-      set(value) {
-        // Implement logic to handle the modified value when it changes
-        // For example, you might want to update this.entity.name
-        this.entity.name = value;
-      }
-    },
+			get() {
+				const words = this.entity.name.split("of");
+				return words.length > 1 ? words[0].trim() : this.entity.name;
+			},
+			set(value) {
+				// Implement logic to handle the modified value when it changes
+				// For example, you might want to update this.entity.name
+				this.entity.name = value;
+			},
+		},
 		canAddAppealLevel() {
 			if (this.loadingAppealLevels) {
 				return false;
@@ -927,75 +944,74 @@ export default {
 		} else {
 			this.loading = false;
 		}
-	this.additionalData();
+		this.additionalData();
 		// this.test();
-	
 	},
 	methods: {
-		test(){
-			console.log("ID =",this.entity.id);
+		test() {
+			console.log("ID =", this.entity.id);
 			console.log("ID Direct", this.id);
 			console.log("Entityed =", this.entity);
 		},
 
-	async additionalData(){
-		const insid = this.id;
-        const url = "/client/audittype";
-				console.log("initiated");
-				const response = await axios.get(url, {
+		async additionalData() {
+			const insid = this.id;
+			const url = "/client/audittype";
+			console.log("initiated");
+			const response = await axios.get(url, {
 				headers: {
-					"Accept": "application/json",
+					Accept: "application/json",
 					// You can add other headers here if needed
 				},
-				});
-				//insurance_type_ids: [],
-				console.log("Audit type latest", response.data);
-				response.data.forEach((item, index) => {
+			});
+			//insurance_type_ids: [],
+			console.log("Audit type latest", response.data);
+			response.data.forEach((item, index) => {
 				console.log(`Element at index ${index}:`, item);
-				if(item.insurance_provider_id == insid){
+				if (item.insurance_provider_id == insid) {
 					console.log("match found = ", item.insurance_type_id);
 
 					this.audittype_data.push(item.insurance_type_id);
 					console.log("output", this.audittype_data);
 				}
+			});
+			console.log("thiss insurance provider id", insid);
+		},
+		openCustomAuditTypeModal() {
+			// Open the custom audit type modal when the "Add More" button is clicked
+			this.$bvModal.show("customAuditTypeModal");
+		},
+		async addCustomAuditType() {
+			console.log("started");
+			const newType = this.newAuditType;
+			const insid = this.id;
+			console.log(insid);
+			// Check if the new type is not empty
+			if (newType.trim() === "") {
+				return;
+			}
+
+			// Send a POST request to your controller to add the new type
+			axios
+				.post("/client/addtype", { newType, insid })
+				.then((response) => {
+					// Handle the response, e.g., update the insuranceTypes list
+					this.insuranceTypes.push(response.data);
+
+					// Close the modal
+					this.$bvModal.hide("customAuditTypeModal");
+
+					// Clear the input field
+					this.newAuditType = "";
+					console.log("check", response);
+
+					window.location.reload();
+				})
+				.catch((error) => {
+					// Handle any errors, e.g., show an error message
+					console.error("Error adding new type:", error);
 				});
-				console.log("thiss insurance provider id", insid);
-	},
-        openCustomAuditTypeModal() {
-      // Open the custom audit type modal when the "Add More" button is clicked
-      this.$bvModal.show("customAuditTypeModal");
-    },
-	async addCustomAuditType() {
-
-		console.log("started");
-        const newType = this.newAuditType;
-		const insid = this.id;
-        console.log(insid);
-        // Check if the new type is not empty
-        if (newType.trim() === '') {
-            return;
-        }
-
-        // Send a POST request to your controller to add the new type
-        axios.post('/client/addtype', { newType , insid})
-            .then((response) => {
-                // Handle the response, e.g., update the insuranceTypes list
-                this.insuranceTypes.push(response.data);
-
-                // Close the modal
-                this.$bvModal.hide('customAuditTypeModal');
-
-                // Clear the input field
-                this.newAuditType = '';
-				console.log("check",response);
-
-				window.location.reload();
-            })
-            .catch((error) => {
-                // Handle any errors, e.g., show an error message
-                console.error('Error adding new type:', error);
-            });
-    },
+		},
 		getValidationState,
 		cancel() {
 			this.$emit("cancel");
@@ -1023,110 +1039,110 @@ export default {
 				this.loading = false;
 			}
 		},
-	// 	async save() {
-	// 		try {
-				
-	// 			this.saving = true;
-                
-	// 					if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-	// 					this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
-	// 					} else {
-	// 					this.entity.name = this.entity.name;
-	// 					}
-	// 					// Populate the insurance_types array with the selected insurance types
-	// 					this.entity.insurance_types = this.audittype_data.map(id => {
-	// 					return { id }; // Assuming the structure of insurance types is an object with an 'id' field
-    // });
-	// 			const request = Object.assign({}, this.entity);
-	// 			const response = await this.$store.dispatch("insuranceProviders/save", request);
+		// 	async save() {
+		// 		try {
 
-	// 			this.$emit("saved", response);
-	// 			this.$emit("update:id", response.id);
-	// 		} catch (e) {
-	// 			if (e.response.data.errors) {
-	// 				this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-					
-	// 			}
-	// 			console.log("error = ", e);
-	// 			this.$store.dispatch("apiError", {
-	// 				error: e,
-	// 				title: "Save Failed",
-	// 				message: "Error saving insurance provider details. Please check for errors.",
-	// 				variant: "warning",
-	// 			});
-	// 		} finally {
-	// 			this.saving = false;
-	// 			this.$store.dispatch("insuranceProviders/getActive");
-	// 			this.$store.dispatch("insuranceProviders/getAll");
-	// 			this.test();
-	// 		}
-	// 	},
-	async save() {
-		try {
-			this.saving = true;
+		// 			this.saving = true;
 
-			// Check if appeal_levels exist, and if so, update their order numbers
-			if (this.entity.appeal_levels && this.entity.appeal_levels.length > 0) {
-			// Update order numbers based on the new array
-			this.entity.appeal_levels.forEach((item, index) => {
-				this.$set(item, 'order_number', index + 1);
-			});
+		// 					if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+		// 					this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+		// 					} else {
+		// 					this.entity.name = this.entity.name;
+		// 					}
+		// 					// Populate the insurance_types array with the selected insurance types
+		// 					this.entity.insurance_types = this.audittype_data.map(id => {
+		// 					return { id }; // Assuming the structure of insurance types is an object with an 'id' field
+		// });
+		// 			const request = Object.assign({}, this.entity);
+		// 			const response = await this.$store.dispatch("insuranceProviders/save", request);
+
+		// 			this.$emit("saved", response);
+		// 			this.$emit("update:id", response.id);
+		// 		} catch (e) {
+		// 			if (e.response.data.errors) {
+		// 				this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+
+		// 			}
+		// 			console.log("error = ", e);
+		// 			this.$store.dispatch("apiError", {
+		// 				error: e,
+		// 				title: "Save Failed",
+		// 				message: "Error saving insurance provider details. Please check for errors.",
+		// 				variant: "warning",
+		// 			});
+		// 		} finally {
+		// 			this.saving = false;
+		// 			this.$store.dispatch("insuranceProviders/getActive");
+		// 			this.$store.dispatch("insuranceProviders/getAll");
+		// 			this.test();
+		// 		}
+		// 	},
+		async save() {
+			try {
+				this.saving = true;
+
+				// Check if appeal_levels exist, and if so, update their order numbers
+				if (this.entity.appeal_levels && this.entity.appeal_levels.length > 0) {
+					// Update order numbers based on the new array
+					this.entity.appeal_levels.forEach((item, index) => {
+						this.$set(item, "order_number", index + 1);
+					});
+				}
+
+				// Modify the entity name based on the selected state
+				if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
+					this.entity.name = `${this.modifiedName} of ${this.selectedStateName}`;
+				}
+
+				// Populate the insurance_types array with the selected insurance types
+				this.entity.insurance_types = this.audittype_data.map((id) => {
+					return { id }; // Assuming the structure of insurance types is an object with an 'id' field
+				});
+
+				const request = Object.assign({}, this.entity);
+				const response = await this.$store.dispatch("insuranceProviders/save", request);
+				console.log("Backend Response:", response);
+
+				this.$emit("saved", response);
+				this.$emit("update:id", response.id);
+			} catch (e) {
+				if (e.response.data.errors) {
+					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
+				}
+				console.log("error = ", e);
+				this.$store.dispatch("apiError", {
+					error: e,
+					title: "Save Failed",
+					message: "Error saving insurance provider details. Please check for errors.",
+					variant: "warning",
+				});
+			} finally {
+				this.saving = false;
+				this.$store.dispatch("insuranceProviders/getActive");
+				this.$store.dispatch("insuranceProviders/getAll");
+				this.test();
 			}
-
-			// Modify the entity name based on the selected state
-			if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-			this.entity.name = `${this.modifiedName} of ${this.selectedStateName}`;
-			}
-
-			// Populate the insurance_types array with the selected insurance types
-			this.entity.insurance_types = this.audittype_data.map(id => {
-			return { id }; // Assuming the structure of insurance types is an object with an 'id' field
-			});
-
-			const request = Object.assign({}, this.entity);
-			const response = await this.$store.dispatch("insuranceProviders/save", request);
-			console.log('Backend Response:', response);
-
-			this.$emit("saved", response);
-			this.$emit("update:id", response.id);
-		} catch (e) {
-			if (e.response.data.errors) {
-			this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
-			}
-			console.log("error = ", e);
-			this.$store.dispatch("apiError", {
-			error: e,
-			title: "Save Failed",
-			message: "Error saving insurance provider details. Please check for errors.",
-			variant: "warning",
-			});
-		} finally {
-			this.saving = false;
-			this.$store.dispatch("insuranceProviders/getActive");
-			this.$store.dispatch("insuranceProviders/getAll");
-			this.test();
-		}
 		},
-				addAppealLevel() {
+		addAppealLevel() {
 			let nextId = this.availableAppealLevels[0]?.id ?? null;
 			// if(nextId >= 7){
 			// 	nextId = 6;
 			// }
-			if (nextId )
-			this.entity.appeal_levels.push({
-				id: nextId,
-				_joinData: {
+			if (nextId)
+				this.entity.appeal_levels.push({
 					id: nextId,
-					appeal_level_id: nextId,
-					label: "",
-					days_to_respond: 30,
-					max_days: 30,
-					agency_id: null,
-					Grace_days:0,
-					level_type:null,
-					decision_options:null,
-				},
-			});
+					_joinData: {
+						id: nextId,
+						appeal_level_id: nextId,
+						label: "",
+						days_to_respond: 30,
+						max_days: 30,
+						agency_id: null,
+						Grace_days: 0,
+						level_type: null,
+						decision_options: null,
+					},
+				});
 		},
 		removeAppealLevel(appealLevel, index) {
 			this.entity.appeal_levels.splice(index, 1);
@@ -1140,25 +1156,20 @@ export default {
 				this.entity.appeal_levels[index]._joinData.agency_id = agency.id;
 			}
 		},
-		
+
 		async onDragEnd() {
-			
 			this.entity.appeal_levels.forEach(async (appealLevel, index) => {
-				
-				const originalIndex = this.entity.appeal_levels.findIndex(
-				(original) => original.id === appealLevel.id
-				);
+				const originalIndex = this.entity.appeal_levels.findIndex((original) => original.id === appealLevel.id);
 
 				if (originalIndex !== -1) {
-				// Update the order property locally
-				this.$set(this.entity.appeal_levels, originalIndex, {
-					...this.entity.appeal_levels[originalIndex],
-					order: index + 1,
-				});
+					// Update the order property locally
+					this.$set(this.entity.appeal_levels, originalIndex, {
+						...this.entity.appeal_levels[originalIndex],
+						order: index + 1,
+					});
 				}
 			});
-			},
-
+		},
 	},
 	watch: {
 		entity: {
