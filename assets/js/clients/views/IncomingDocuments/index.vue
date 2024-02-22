@@ -104,8 +104,10 @@
 					</b-row>
 				</b-card>
 			</b-container>
-
-			 <button class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'HideList' : 'ShowList' }}</strong></button> 
+			<div v-if="!isEmpty">
+				<button class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'HideList' : 'ShowList' }}</strong></button>
+			</div>
+			  
 			<b-container fluid  class="h-100 px-0 overflow-hidden">
 				<b-row no-gutters class="justify-content-center h-100">
 					<b-col cols="12" xl="2" class="d-none d-xl-block">
@@ -480,9 +482,9 @@ export default {
 				this.incomingDocuments.splice(index, 1);
 			}
 
-			this.$router.replace({
-				name: "incomingDocuments",
-			});
+			// this.$router.replace({
+			// 	name: "incomingDocuments",
+			// });
 
 			this.refresh();
 		},

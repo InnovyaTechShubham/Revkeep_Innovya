@@ -4,124 +4,127 @@
 		<b-form @submit.prevent="save">
 			<b-card no-body :class="flush ? 'border-0' : ''">
 				<b-card-body class="mb-0">
-					<validation-provider
-						vid="patient_id"
-						name="Patient"
-						:rules="{ required: true }"
-						v-slot="validationContext"
-					>
-						<div v-if="!hidePatient">
-							<div v-if="addingPatient" class="mb-4">
-								<patient-form @cancel="addingPatient = false" @saved="addedNewPatient">
-									<template #header>
-										<b-card-header>
-											<div class="d-flex justify-content-between align-items-center">
-												<span class="font-weight-bold">Add New Patient</span>
-												<b-button
-													variant="secondary"
-													size="sm"
-													@click="addingPatient = false"
-													title="Cancel"
-													class="mb-0"
-												>
-													<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
-												</b-button>
-											</div>
-										</b-card-header>
-									</template>
-								</patient-form>
-							</div>
-							<div v-else-if="editingPatient" class="mb-4">
-								<patient-form
-									:id="editingPatient"
-									@cancel="editingPatient = false"
-									@saved="savedPatient"
-								>
-									<template #header>
-										<b-card-header>
-											<div class="d-flex justify-content-between align-items-center">
-												<span class="font-weight-bold">Edit Patient</span>
-												<b-button
-													variant="secondary"
-													size="sm"
-													@click="editingPatient = false"
-													title="Cancel"
-													class="mb-0"
-												>
-													<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
-												</b-button>
-											</div>
-										</b-card-header>
-									</template>
-								</patient-form>
-							</div>
-							<div v-else>
-								<b-form-group label="Patient" label-for="patient" label-cols-lg="4">
-									<patient-search
-										name="patient"
-										v-model="currentPatient"
-										@add="addingPatient = true"
-										:state="getValidationState(validationContext)"
-										:disabled="saving"
-									/>
-								</b-form-group>
-								<b-row v-if="currentPatient && currentPatient.id">
-									<b-col cols="12" lg="8" offset-lg="4" class="mb-4">
-										<div class="d-flex justify-content-between align-items-center">
-											<div>
-												<h2
-													class="h3 my-0 mb-1 font-weight-bold text-uppercase"
-													v-text="currentPatient.list_name"
-												/>
-												<h3
-													v-if="currentPatient.date_of_birth"
-													class="h6 mt-0 mb-1 text-muted text-uppercase"
-												>
-													<span class="font-weight-bold">
-														{{ $filters.formatDate(currentPatient.date_of_birth) }}
-													</span>
-													<span
-														v-if="
-															currentPatient.age != null &&
-															currentPatient.age != undefined
-														"
-													>
-														&mdash;
-														<span>
-															<font-awesome-icon
-																v-if="currentPatient.is_birthday"
-																icon="birthday-cake"
-																class="text-muted"
-															/>
+					<b-row>
+						<b-col col="12" md="6">
+							<validation-provider
+								vid="patient_id"
+								name="Patient"
+								:rules="{ required: true }"
+								v-slot="validationContext"
+							>
+								<div v-if="!hidePatient">
+									<div v-if="addingPatient" class="mb-4">
+										<patient-form @cancel="addingPatient = false" @saved="addedNewPatient">
+											<template #header>
+												<b-card-header>
+													<div class="d-flex justify-content-between align-items-center">
+														<span class="font-weight-bold">Add New Patient</span>
+														<b-button
+															variant="secondary"
+															size="sm"
+															@click="addingPatient = false"
+															title="Cancel"
+															class="mb-0"
+														>
+															<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+														</b-button>
+													</div>
+												</b-card-header>
+											</template>
+										</patient-form>
+									</div>
+									<div v-else-if="editingPatient" class="mb-4">
+										<patient-form
+											:id="editingPatient"
+											@cancel="editingPatient = false"
+											@saved="savedPatient"
+										>
+											<template #header>
+												<b-card-header>
+													<div class="d-flex justify-content-between align-items-center">
+														<span class="font-weight-bold">Edit Patient</span>
+														<b-button
+															variant="secondary"
+															size="sm"
+															@click="editingPatient = false"
+															title="Cancel"
+															class="mb-0"
+														>
+															<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+														</b-button>
+													</div>
+												</b-card-header>
+											</template>
+										</patient-form>
+									</div>
+									<div v-else>
+										<b-form-group label="Patient" label-for="patient" label-cols-lg="4">
+											<patient-search
+												name="patient"
+												v-model="currentPatient"
+												@add="addingPatient = true"
+												:state="getValidationState(validationContext)"
+												:disabled="saving"
+											/>
+										</b-form-group>
+										<b-row v-if="currentPatient && currentPatient.id">
+											<b-col cols="12" lg="8" offset-lg="4" class="mb-4">
+												<div class="d-flex justify-content-between align-items-center">
+													<div>
+														<h2
+															class="h3 my-0 mb-1 font-weight-bold text-uppercase"
+															v-text="currentPatient.list_name"
+														/>
+														<h3
+															v-if="currentPatient.date_of_birth"
+															class="h6 mt-0 mb-1 text-muted text-uppercase"
+														>
+															<span class="font-weight-bold">
+																{{ $filters.formatDate(currentPatient.date_of_birth) }}
+															</span>
 															<span
-																class="font-weight-bold"
-																v-text="currentPatient.age"
-															/>
-														</span>
-													</span>
-												</h3>
-												<h3 v-else class="h6 mt-0 mb-1 text-warning">(Missing DOB)</h3>
-											</div>
+																v-if="
+																	currentPatient.age != null &&
+																	currentPatient.age != undefined
+																"
+															>
+																&mdash;
+																<span>
+																	<font-awesome-icon
+																		v-if="currentPatient.is_birthday"
+																		icon="birthday-cake"
+																		class="text-muted"
+																	/>
+																	<span
+																		class="font-weight-bold"
+																		v-text="currentPatient.age"
+																	/>
+																</span>
+															</span>
+														</h3>
+														<h3 v-else class="h6 mt-0 mb-1 text-warning">(Missing DOB)</h3>
+													</div>
 
-											<b-button variant="light" class="mb-0" @click="editPatient">
-												<font-awesome-icon icon="edit" fixed-width />
-												<span>Edit Patient</span>
-											</b-button>
-										</div>
-									</b-col>
-								</b-row>
-							</div>
-						</div>
-						<b-form-invalid-feedback
-							v-for="error in validationContext.errors"
-							:key="error"
-							v-text="error"
-						/>
-					</validation-provider>
-
+													<b-button variant="light" class="mb-0" @click="editPatient">
+														<font-awesome-icon icon="edit" fixed-width />
+														<span>Edit Patient</span>
+													</b-button>
+												</div>
+											</b-col>
+										</b-row>
+									</div>
+								</div>
+								<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+								/>
+							</validation-provider>
+						</b-col>
+					</b-row>
 					<b-row>
 						<b-col col="12">
-							<b-form-group label="Case Type" label-for="case_type" label-cols-lg="4">
+							<b-form-group label="Case Type" label-for="case_type" label-cols-lg="2">
 								<b-form-radio-group>
 									<input type="radio" id="pre" name="case_type" value="pre" v-model="entity.caseType">
 									<label for="pre">Pre-Payment</label>
@@ -137,45 +140,62 @@
 					<b-row>
 						<b-col col="12" md="6">
 							<validation-provider
-									vid="facility_id"
-									name="Facility"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
-										<b-input-group>
-											<b-form-select
-												name="facility_id"
-												v-model="entity.facility_id"
-												:options="displayNames"
-												:disabled="saving || loadingFacilities"
-												:state="getValidationState(validationContext)"
-												value-field="id"
-												text-field="name"
-												@change="logSelectedFacilityDetails"
-											>
-												<template #first>
-													<option :value="null">(None)</option>
-												</template>
-											</b-form-select>
-											<b-form-invalid-feedback
-												v-for="error in validationContext.errors"
-												:key="error"
-												v-text="error"
-											/>
-											<template #append>
-												<b-button
-													variant="primary"
-													@click="addingFacility = !addingFacility"
-													:active="addingFacility"
-												>
-													<font-awesome-icon icon="plus" fixed-width />
-												</b-button>
-											</template>
-										</b-input-group>
-									</b-form-group>
-								</validation-provider>
+								vid="facility_id"
+								name="Facility"
+								:rules="{ required: false }"
+								v-slot="validationContext">
+								<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
+									<!-- Use a div to create a pseudo input group -->
+									<div style="display: flex; position: relative;">
+										<!-- Custom input box for search -->
+										<input
+											name="facilitySearch"
+											v-model="facilitySearch"
+											:disabled="saving || loadingFacilities"
+											:state="getValidationState(validationContext)"
+											@input="searchFacilities"
+											style="width: 100%; padding: 8px; border-radius: 4px 0 0 4px;"
+											class="custom-rounded-border"
+										/>
 
+										<!-- Append button -->
+										<b-button
+											variant="primary"
+											@click="addingFacility = !addingFacility"
+											:active="addingFacility"
+											style="border-radius: 0 4px 4px 0; margin-left: -1px;"
+										>
+											<font-awesome-icon icon="plus" fixed-width />
+										</b-button>
+									</div>
+
+									<!-- Display filtered options in a list -->
+									<div>
+										<div class="custom-dropdown-option" v-if="searchResults.length > 0 && facilitySearch !== ''">
+											<b-row v-for="(item, index) in searchResults" :key="index" @click="() => selectFacility(item)">
+												<b-col class="custom-option-col">
+													<div class="option-content">
+														<!-- Content for the option -->
+														<p>
+															<span title="Facility">
+																{{ item }}
+															</span>
+														</p>
+													</div>
+												</b-col>
+											</b-row>
+										</div>
+									</div>
+									
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+
+								<!-- TODO: ADD A PLUS ICON TO DISPLAY BELOW COMPONEt -->
 								<div v-if="addingFacility" class="mb-4">
 									<h6 class="text-muted">Add New Facility</h6>
 
@@ -209,6 +229,17 @@
 								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
 									<b-form-input
 										name="facility_status"
+										v-model="entity.facility_name"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+									/>
+								</b-form-group>
+								<!-- Term Date -->
+								<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+									<b-form-input
+										name="term_date"
 										v-model="entity.facility_name"
 										:disabled="saving"
 										readonly
@@ -272,29 +303,29 @@
 				</b-row>
 				<b-row>		
 					<b-col cols="12" md="6">
-						        <validation-provider
-									vid="visit_number"
-									name="Visit ID/Number"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
-										<b-form-input
-											name="visit_number"
-											v-model="entity.visit_number"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-											type="text"
-											autocomplete="off"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-							</b-col>
+							<validation-provider
+								vid="visit_number"
+								name="Visit ID/Number"
+								:rules="{ required: false }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
+									<b-form-input
+										name="visit_number"
+										v-model="entity.visit_number"
+										:disabled="saving"
+										:state="getValidationState(validationContext)"
+										type="text"
+										autocomplete="off"
+									/>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+						</b-col>
 						
 						<b-col cols="12" md="6">
 							<validation-provider
@@ -364,8 +395,40 @@
 									</template>
 								</insurance-provider-form>
 							</div>
-                     </b-col>
-                            </b-row>
+                     	</b-col>
+						<!-- adding new column Insurance Type -->
+						<b-col cols="12" md="6">
+							<validation-provider
+								v-if="iscontract"
+								vid="insurance_type"
+								name="Insurance Type"
+								:rules="{ required: false }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Insurance Type" label-for="Insurance Type" label-cols-lg="4">
+									<b-form-select
+										name="insurance_type"
+										v-model="entity.insurance_type"
+										:disabled="saving"
+										:state="getValidationState(validationContext)"
+										:options="insuranceOptions"
+										required
+									>
+										<template v-slot:first>
+											<!-- This is optional, in case you want a non-selectable prompt -->
+											<option disabled value="">Please select one</option>
+										</template>
+									</b-form-select>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+
+						</b-col>
+                    </b-row>
                 <b-row>
                         <b-col cols="12" md="6">
 							<validation-provider
@@ -551,14 +614,17 @@
 						</b-card-header>
 						<b-collapse id="collapseDenial" role="tabpanel">
 							<b-card-body>
-								<validation-provider
-									vid="denial_type_id"
-									name="Denial Type"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Denial Type" label-for="denial_type_id" label-cols-lg="4">
-										<b-select
+								<div class="row">
+									<!-- First Column for Denial Type -->
+									<div class="col-lg-6">
+										<validation-provider
+										vid="denial_type_id"
+										name="Denial Type"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Denial Type" label-for="denial_type_id" label-cols-lg="4">
+											<b-select
 											name="denial_type_id"
 											v-model="entity.denial_type_id"
 											:options="denialTypes"
@@ -566,62 +632,80 @@
 											:state="getValidationState(validationContext)"
 											value-field="id"
 											text-field="name"
-										>
+											>
 											<template #first>
 												<option :value="null">(None)</option>
 											</template>
-										</b-select>
-										<b-form-invalid-feedback
+											</b-select>
+											<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
 											:key="error"
 											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
+											/>
+										</b-form-group>
+										</validation-provider>
+									</div>
 
-								<div v-if="addingDenialReason">
-									<denial-reason-form
-										autofocus
-										@cancel="addingDenialReason = false"
-										@saved="addedNewDenialReason"
-									>
-										<template #header>
-											<b-card-header>
-												<div class="d-flex justify-content-between align-items-center">
-													<span class="font-weight-bold">Add New Denial Reason</span>
-													<b-button
-														variant="secondary"
-														size="sm"
-														@click="addingDenialReason = false"
-														title="Cancel"
-														class="mb-0"
-													>
-														<font-awesome-icon
-															icon="remove"
-															fixed-width
-															class="my-0 py-0"
-														/>
-													</b-button>
-												</div>
-											</b-card-header>
-										</template>
-									</denial-reason-form>
-								</div>
-								<div v-else>
-									<b-form-group
-										label="Denial Reasons"
-										label-for="denial_reasons"
-										label-cols-lg="4"
-										v-if="!addingDenialReason"
-									>
-										<denial-reason-search-multi
+									<!-- Second Column for Denial Reason -->
+									<div class="col-lg-6">
+										<div v-if="addingDenialReason">
+										<denial-reason-form
+											autofocus
+											@cancel="addingDenialReason = false"
+											@saved="addedNewDenialReason"
+										>
+											<!-- Your Denial Reason Form Content -->
+										</denial-reason-form>
+										</div>
+										<div v-else>
+										<b-form-group
+											label="Denial Reasons"
+											label-for="denial_reasons"
+											label-cols-lg="4"
+											v-if="!addingDenialReason"
+										>
+											<denial-reason-search-multi
 											name="denial_reasons"
 											v-model="currentDenialReasons"
 											@add="addingDenialReason = true"
 											:disabled="saving"
+											/>
+										</b-form-group>
+										</div>
+									</div>
+								</div>
+
+								<!-- Powerback Denial Reason -->
+								<validation-provider
+									vid="pwrbck_deny_res"
+									name="Powerback Denial Reason"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group
+										label="Powerback Denial Reason"
+										label-for="pwrbck_deny_res"
+										label-cols-lg="2"
+									>
+										<b-select
+										v-model="selectedDenialReason"
+										name="pwrbck_denial_reason"
+										:state="getValidationState(validationContext)"
+										>
+										<template #first>
+											<option :value="null">(None)</option>
+										</template>
+										<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
+											{{ reason.reason }}
+										</option>
+										</b-select>
+										<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
 										/>
 									</b-form-group>
-								</div>
+								</validation-provider>
 							</b-card-body>
 						</b-collapse>
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
@@ -1480,6 +1564,7 @@ export default {
 				admit_date: null,
 				discharge_date: null,
 				insurance_type_id: null,
+				insurance_type: null,
 				case_readmissions: [],
 				facility_id: null,
 				facility_name: null,
@@ -1512,6 +1597,29 @@ export default {
 			disciplineIds: [],
 			insuranceTypesList:[],
 			displayNames:[],
+			denialReasons: [],
+			selectedDenialReason: null,
+
+			temp_displayName: [],
+			facilitySearch: '',
+			searchResults: [], // Array to hold filtered search results
+			selectedResult: null, // Selected result from the dropdown
+			insuranceOptions: [
+            { value: null, text: 'Select an option' }, // Optional: as a placeholder
+            { value: 'option1', text: 'Medicare A' },
+            { value: 'option2', text: 'Medicare B' },
+            { value: 'option3', text: 'Managed A' },
+            { value: 'option4', text: 'Managed A PPS' },
+            { value: 'option5', text: 'Managed B' },
+            { value: 'option6', text: 'Commercial' },
+            { value: 'option7', text: 'Medicaid' },
+            { value: 'option8', text: 'Workers Comp' },
+            { value: 'option9', text: 'Auto' },
+            { value: 'option10', text: 'Military' },
+            { value: 'option11', text: 'Private Pay' },
+            { value: 'option12', text: 'Other' },
+            // Add more options as needed
+        ],
 		};
 	},
 	computed: {
@@ -1569,7 +1677,8 @@ export default {
 	},
 	mounted() {
 		this.additionalDataFetch();
-        this.facilityDetails();
+        this.facilityDetails();	
+		this.fetchDenialReasons();
 
 		if (this.id) {
 			this.refresh();
@@ -1797,7 +1906,16 @@ export default {
 			this.insuranceTypesList=response.data;
 
 		},
-        
+		// fetch powerbackDenialReasons
+		async fetchDenialReasons() {
+			try {
+				const response = await axios.get('/client/GetdenialReasons');
+				console.log(JSON.stringify(response.data));
+				this.denialReasons.push(response.data);
+			} catch (error) {
+				console.error('Error fetching denial reasons:', error);
+			}
+		} ,     
 		async facilityDetails(){
             const url = "/client/facilityList";
 			
@@ -1808,22 +1926,49 @@ export default {
 			},
 			});
 			this.facilities = response.data; // save all facilities for later use
-      this.displayNames = this.facilities.map((facility) => facility.display_name);
-      console.log("display name:", this.displayNames);
+			this.displayNames = this.facilities.map((facility) => facility.display_name);
+			this.temp_displayName.push(this.facilities.map((facility) => facility.display_name));
+			console.log("display name:", this.displayNames);
+			console.log('temp_displayNames', JSON.stringify(this.temp_displayName));
 		},
 
-		logSelectedFacilityDetails() {
-      const selectedDisplayName = this.entity.facility_id;
-      const selectedFacility = this.facilities.find(
-        (facility) => facility.display_name === selectedDisplayName
-      );
+		logSelectedFacilityDetails(item) {
+			console.log('inside logSelectedFacilityDetails')
+			const selectedDisplayName = item;
+			const selectedFacility = this.facilities.find(
+				(facility) => facility.display_name === selectedDisplayName
+			);
 
-      if (selectedFacility) {
-		this.iscontract = selectedFacility.has_contract;
-		this.entity.facility_name = selectedFacility.facility_status;
-      }
-    },
+			if (selectedFacility) {
+				console.log('inside *****selectedFacility')
+				this.iscontract = selectedFacility.has_contract;
+				this.entity.facility_name = selectedFacility.facility_status;
+				// this.entity.facility_name = 'Active';
+			}
+    	},
 
+		searchFacilities() {
+			// Filter the displayNames array based on the search input
+			console.log('inside searchFacilities');
+			console.log(JSON.stringify(this.displayNames));
+			console.log('this.facilitySearch');
+			console.log(this.facilitySearch);
+
+			this.searchResults = this.displayNames.filter(name =>
+				name && name.toLowerCase().includes(this.facilitySearch.toLowerCase())
+			);
+
+			console.log('searchResults:', this.searchResults);
+		},
+		selectFacility(item) {
+		// Handle the selected facility, if needed
+		this.facilitySearch = item;
+		console.log('item inside selectFacility:',item);
+		this.logSelectedFacilityDetails(item);
+		this.searchResults = [];
+		
+		
+		},
 
 	},
 	watch: {
@@ -1856,3 +2001,45 @@ export default {
 	},
 };
 </script>
+<style scoped>
+.custom-dropdown-option {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.custom-rounded-border {
+  border: 1px solid #007bff; /* Set your desired border color and thickness */
+  border-radius: 5px; /* Set your desired border radius */
+}
+
+.custom-dropdown-option {
+  position: absolute;
+  top: 100%; /* Position the dropdown below the input */
+  left: 0;
+  width: 100%; /* Make the dropdown full-width */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Hide overflow content */
+  z-index: 1000;
+}
+.custom-option-col {
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-option-col:hover {
+  background-color: #f5f5f5;
+  color: #9bb8d7;
+}
+.option-content{
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+</style>

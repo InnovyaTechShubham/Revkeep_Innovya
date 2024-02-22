@@ -20,7 +20,7 @@
 					<font-awesome-icon icon="birthday-cake" />
 					{{ caseEntity.patient?.date_of_birth ?? "View Case"  }}
 					&mdash;
-					{{ caseEntity.patient?.age ?? "View Case" }}
+					{{ caseEntity.patient?.age+' yrs' ?? "View Case" }}
 				</span>
 			</template>
 			<template #buttons>
@@ -199,16 +199,25 @@
 			   <b-col cols="4" xl="8" class="text-left">
 				<b-button @click="showDetails = !showDetails" variant="secondary">
 					<span v-if="showDetails">Hide Details</span>
-					<span v-else>Show Details</span>
+					<span v-else>Case Details</span>
 				</b-button>
-				<b-button @click="showData" variant="secondary">
+				 <!-- Old Notes Button -->
+				 <b-button @click="toggleOldNotes" class="btn-orange-gradient">
+					<span v-if="showOldNotes">Hide Old Notes</span>
+					<span v-else>Old Notes</span>
+				</b-button>
+
+				<!-- Read-only input box for Old Notes -->
+				<b-form-input v-if="showOldNotes" readonly value="No comments available"></b-form-input>
+				<!-- Show data and Show formatted data hidden for now -->
+				<!-- <b-button @click="showData" variant="secondary">
 					<span v-if="showLoveMessage">Hide Data</span>
 					<span v-else>Show Data</span>
 				</b-button>
 				<b-button @click="showFormattedData" variant="secondary">
 					<span v-if="isFormattedData">Hide Formatted Data</span>
 					<span v-else>Show Formatted Data</span>
-				</b-button>
+				</b-button> -->
 				<!-- <b-button v-b-toggle.formattedData>
 					<span >Formatted Data</span>
 				</b-button> -->
@@ -916,6 +925,7 @@ export default {
 			showDetails: false,
 			isFormattedData: false,
 			showLoveMessage: false,
+			showOldNotes: false,
 			caseEntity: {
 				id: null,
 				created: null,
@@ -1206,9 +1216,18 @@ export default {
 				this.response = "DATA NOT AVAILABLE FOR THIS CASE";
 			}
 		},
+		toggleOldNotes() {
+			this.showOldNotes = !this.showOldNotes;
+		}
 	},
 	destroyed() {
 		clearInterval(this.timer);
 	},
 };
 </script>
+<style scoped>
+.btn-orange-gradient {
+    background: linear-gradient(to right, #ff8c00, #ffa500);
+    color: white;
+}
+</style>

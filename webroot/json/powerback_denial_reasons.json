@@ -1,0 +1,102 @@
+[
+    {
+        "id": 1,
+        "reason": "Authorization Benefits exhausted"
+    },
+    {
+        "id": 2,
+        "reason": "Bundled Charges"
+    },
+    {
+        "id": 3,
+        "reason": "Cert missing or incomplete"
+    },
+    {
+        "id": 4,
+        "reason": "HCPC Coding (technical)"
+    },
+    {
+        "id": 5,
+        "reason": "Documentation does not support level of services"
+    },
+    {
+        "id": 6,
+        "reason": "Documentation does not support services"
+    },
+    {
+        "id": 7,
+        "reason": "No\/Incomplete ADR"
+    },
+    {
+        "id": 8,
+        "reason": "E-Stim"
+    },
+    {
+        "id": 9,
+        "reason": "Insufficient progress"
+    },
+    {
+        "id": 10,
+        "reason": "LCD ICD-10 coding (technical)"
+    },
+    {
+        "id": 11,
+        "reason": "180 day Eval"
+    },
+    {
+        "id": 12,
+        "reason": "LTG not measurable"
+    },
+    {
+        "id": 13,
+        "reason": "Medical Necessity"
+    },
+    {
+        "id": 14,
+        "reason": "Modifier\/NCCI Issue (technical)"
+    },
+    {
+        "id": 15,
+        "reason": "No daily skilled care"
+    },
+    {
+        "id": 16,
+        "reason": "No PLOF documented"
+    },
+    {
+        "id": 17,
+        "reason": "Other technical denial"
+    },
+    {
+        "id": 18,
+        "reason": "Patient no longer required the services of skilled staff"
+    },
+    {
+        "id": 19,
+        "reason": "Section GG Issues"
+    },
+    {
+        "id": 20,
+        "reason": "Therapy did not meet ordered frequency"
+    },
+    {
+        "id": 21,
+        "reason": "Therapy minutes do not support the billed RUG"
+    },
+    {
+        "id": 22,
+        "reason": "Treatment not related to diagnosis"
+    },
+    {
+        "id": 23,
+        "reason": "RTM Billing\/Documentation"
+    },
+    {
+        "id": 24,
+        "reason": "No Treatment Encounter Notes"
+    },
+    {
+        "id": 25,
+        "reason": "Denied in Error by Payor"
+    }
+]

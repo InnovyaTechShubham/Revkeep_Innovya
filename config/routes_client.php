@@ -1230,5 +1230,16 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'list',
         '_method' => 'POST'
     ]);
+	// Fetch powerbackDenialResaons  GetdenialReasons
+	// $builder->connect('/GetdenialReasons', [
+    //     'controller' => 'PowerbackDenialResons',
+    //     'action' => 'index',
+    //     '_method' => 'GET'
+    // ]);
+	$builder->connect('/GetdenialReasons', [
+		'controller' => 'PowerbackDenialReasons',
+		'action' => 'getAllRecord',
+		'_method' => 'GET'
+	]);
 
 });
