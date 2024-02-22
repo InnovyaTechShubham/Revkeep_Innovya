@@ -1727,7 +1727,7 @@ async saveContractPricingSchedule(obj) {
 		async fetchFacilityType(){
 			try
 						{
-							const url = "/client/api/facilitytypes";
+							const url = "/client/facilitytypes";
 								
 								const response = await axios.get(url, {
 								headers: {

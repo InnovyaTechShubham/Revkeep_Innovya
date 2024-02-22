@@ -1521,7 +1521,7 @@ export default {
 		async fetchFacilityType(){
 			try
 						{
-							const url = "/client/api/facilitytypes";
+							const url = "/client/facilitytypes";
 								
 								const response = await axios.get(url, {
 								headers: {
@@ -2360,13 +2360,17 @@ export default {
 				console.log("post data :", this.forms);
 				// await axios.post('/client/facilityAddForms', this.forms );
 				try{
-				const responsed = await axios.post('/client/facilityAddForms', this.forms);
-        		console.log('saving Response:', responsed);
-                console.log('Data saved successfully');
-				// for saving contract details
-				this.saveContract()
+					const responsed = await axios.post('/client/facilityAddForms', this.forms);
+					console.log('saving Response:', responsed);
+					console.log('Data saved successfully');
 				}catch(err){
 					console.log('An error occured while saving the form data: ', err);
+				}
+
+				try{
+					this.saveContract()
+				}catch(err){
+					console.log('Error in Contract Save' , err);
 				}
 
 				try{

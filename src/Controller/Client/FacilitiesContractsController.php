@@ -104,7 +104,7 @@ class FacilitiesContractsController extends AppController
                 $entity->service_operation_id = $serviceOperationId;
                 $entity->ownership_type_id = $contractOwnershipTypesId;
                 $facilitiesContractsTable->save($entity);
-                $responseMessage = ['message' => 'its working'];
+                $responseMessage = ['message' => 'Facility Contracts Added Successfully'];
             
         }
         catch (\Exception $e){
@@ -186,7 +186,7 @@ class FacilitiesContractsController extends AppController
                 $facilityContract->ownership_type_id = $contractOwnershipTypesId;
                 
                 $facilitiesContractsTable->save($facilityContract);
-                $responseMessage = ['message' => 'edit functionality working'];
+                $responseMessage = ['message' => 'Facility Contracts Edited Successfully'];
                 $facilitiesContractsTable->save($facilityContract);
             }
             catch (\Exception $e){
