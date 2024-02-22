@@ -888,8 +888,7 @@ export default {
 			decisionTypeOptions: [
 				{ value: 1, text: "No Findings/Issues" },
 				{ value: 2, text: "Reversed/Held" },
-				{ value: 3, text: "Not Favorable / Partially Favorable/ Favorable" },
-				{ value: 4, text: "Dismissed" },
+				{ value: 3, text: "Not Favorable / Partially Favorable / Favorable / Dismissed" },
 			],
 		};
 	},
