@@ -1458,7 +1458,7 @@ export default {
 				receiving_email: '', // For input
             	receiving_emails: [], // For storing multiple emails
 				receiving_fax: '', // For input
-            	receiving_faxes: [], // For storing multiple faxes
+            	receiving_faxes: [], // For storing multiple faxes 
 				// outgoing_emails: [],
             	receiving_methods: [], 
 				facility_status:null,
@@ -1472,6 +1472,8 @@ export default {
 
 				
 			},
+			receiving_emails: [], // For storing multiple emails
+			receiving_faxes: [], // For storing multiple faxes 
 			contractDetails: {
 					// facility_id: this.id,
 					original_start_date: null,
@@ -1578,12 +1580,10 @@ export default {
 		this.fetchOwnershipTypes();
 		this.fetchServiceOperations();
 		this.fetchInsurances();
-		this.fetchReceivingEmails();
-		this.fetchReceivingFaxes();
 		this.fetchFacilityType();
 		this.listFacilityContracts();
 		this.listContractPricingSchedules();
-
+		
 
 		if (this.id) {
 			this.refresh();
@@ -1996,47 +1996,47 @@ async addFax() {
 			description,
 		};
 		console.log("header:", faxData);
-		try {
-			// Make a POST request to store the data in the database
-			const response = await axios.post('/client/receivingFaxes', faxData);
-			console.log('Axios Response:', response);
-			await this.$nextTick();
-			this.$emit("Receiving_faxes", response);
-			console.log("Emitted data:", response.data);
-			// Check for a successful status code (2xx)
-		if (response.status >= 200 && response.status < 300) {
-			// Parse the JSON response
-				const responseData = response.data;
-				// Check if the expected properties are present
-				if (responseData.fax && responseData.description && responseData.id) 
-				{
-					console.log('Fax saved successfully.');
-					this.saving = false;
-					await this.updateReceivingMethods(null, responseData.id);
+		// try {
+		// 	// Make a POST request to store the data in the database
+		// 	const response = await axios.post('/client/receivingFaxes', faxData);
+		// 	console.log('Axios Response:', response);
+		// 	await this.$nextTick();
+		// 	this.$emit("Receiving_faxes", response);
+		// 	console.log("Emitted data:", response.data);
+		// 	// Check for a successful status code (2xx)
+		// if (response.status >= 200 && response.status < 300) {
+		// 	// Parse the JSON response
+		// 		const responseData = response.data;
+		// 		// Check if the expected properties are present
+		// 		if (responseData.fax && responseData.description && responseData.id) 
+		// 		{
+		// 			console.log('Fax saved successfully.');
+		// 			this.saving = false;
+		// 			await this.updateReceivingMethods(null, responseData.id);
 
-					this.$nextTick(() => {
-						this.$store.dispatch('notify', {
-							variant: 'primary',
-							title: 'Fax Created!',
-							message: 'New fax created.',
-						});
-					});
+		// 			this.$nextTick(() => {
+		// 				this.$store.dispatch('notify', {
+		// 					variant: 'primary',
+		// 					title: 'Fax Created!',
+		// 					message: 'New fax created.',
+		// 				});
+		// 			});
 					
 					
-			} else {
-				// Server response is missing expected properties
-				console.error('Invalid server response:', responseData);
-			}
-			} else {
-			// Server indicates failure with a non-successful status code
-			console.error('Failed to save fax. Status:', response.status);
-			// You can handle different status codes as needed
-			// For example, if it's a validation error, show a different notification
-			// Or if it's a server error, show an error message
-			}
-		} catch (error) {
-			console.error('Error creating fax:', error);
-		}
+		// 	} else {
+		// 		// Server response is missing expected properties
+		// 		console.error('Invalid server response:', responseData);
+		// 	}
+		// 	} else {
+		// 	// Server indicates failure with a non-successful status code
+		// 	console.error('Failed to save fax. Status:', response.status);
+		// 	// You can handle different status codes as needed
+		// 	// For example, if it's a validation error, show a different notification
+		// 	// Or if it's a server error, show an error message
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error creating fax:', error);
+		// }
 },
     openDeleteFaxPopup() {
       // Show checkboxes and delete icon
@@ -2056,134 +2056,39 @@ async addFax() {
     //   this.displayedFaxes = ''; // Update with your logic
     //   this.closeDeletePopup();
     // },
-	deleteSelectedFaxes() {
+	async deleteSelectedFaxes() {
 		// Add logic to delete selected faxes
 		console.log("Inside");
 		const updatedFaxes = this.entity.receiving_faxes.filter(
 		(fax) => !this.selectedFaxes.includes(fax.fax)
 		);
-		console.log("Deleted:",updatedFaxes);
-
+		console.log("Deleted:", this.selectedFaxes);
+		console.log("Selected FAx :", this.entity.selectedFaxes);
 		// Update the receiving_faxes array with the updatedFaxes
 		this.entity.receiving_faxes = updatedFaxes;
-
+		const indexToRemove = this.entity.receiving_faxes.findIndex(fax => fax.id === this.entity.selectedFaxes.id);
+		// If the index is found (i.e., the fax with the given id exists), remove it
+		if (indexToRemove !== -1) {
+			this.entity.receiving_faxes.splice(indexToRemove, 1);
+		}
+		console.log("Remaining faxes" , this.entity.receiving_faxes);
+		
 		// Reset selectedFaxes array
 		this.selectedFaxes = [];
 
 		// Close the delete popup
 		this.closeDeleteFaxPopup();
+		const responseOutgoingData = await axios.post('/client/receivingEmails', {data:this.entity.selectedFaxes , fetch:false , add:false , edit:false , delete:true});
 	},
 	openPopup() {
-		this.popupVisible = true;
-		},
-		closePopup() {
-		this.popupVisible = false;
-		},
+	this.popupVisible = true;
+	},
+	closePopup() {
+	this.popupVisible = false;
+	},
 
-		async fetchReceivingFaxes(){
-			try
-						{
-							const url = "/client/receivingfaxlist";
-								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
-								
-							console.log("receiving faxes listed :", response);
-							// response.data.forEach((item)=>{
-							// 	this.entity.receiving_emails.push(item.receiving_email);
-							// });
-
-							if (response.data && Array.isArray(response.data)) {
-								// for (let i = 0; i < response.data.length; i++) {
-								// 	const { email, description } = response.data[i];
-        						// 	this.entity.receiving_emails.push({ email, description });
-								// }
-								this.$set(this.entity, 'receiving_faxes', response.data.map(item => ({ fax: item.fax, description: item.description })));
-							}
-							// Use nextTick to ensure the rendering has completed
-							this.$nextTick(() => {
-								console.log('receiving faxes =' , this.entity.receiving_faxes);
-							});
-							// console.log('receiving emails =' , this.entity.receiving_emails);
-							
-						}
-					catch (error) 
-					{
-						console.error("Error fetching data:", error.message);
-					}
-		},
-		async fetchReceivingEmails(){
-			try
-						{
-							const url = "/client/fetchReceivingEmails";
-								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
-								
-							console.log("receiving emails listed :", response.data);
-							// response.data.forEach((item)=>{
-							// 	this.entity.receiving_emails.push(item.receiving_email);
-							// });
-
-							// if (response.data && Array.isArray(response.data)) {
-							// 	const facilityId = this.entity.id;
-							// 	console.log("ID",facilityId);
-
-							// 	// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ email: item.email, description: item.description })));
-							// 	this.$set(this.entity, 'receiving_emails', response.data
-							// 	.filter(item => item.facility_id === facilityId)
-							// 	.map(item => ({ email: item.receiving_email_id })));
-							// 	console.log("final check",this.entity.receiving_emails);
-							// 				}
-							// // Use nextTick to ensure the rendering has completed
-							// this.$nextTick(() => {
-							// 	console.log('receiving emails =' , this.entity.receiving_emails);
-							// });
-							// // console.log('receiving emails =' , this.entity.receiving_emails);
-
-							const facilityId = this.entity.id;
-
-							
-							response.data.facilityEmails.forEach((item, index) => {
-							// console.log(`Element at index ${index}:`, item);
-
-							if (item.facility_id === facilityId && item.receiving_email_id !== null) {
-								console.log("match found =", item.receiving_email_id);
-
-								response.data.emails.forEach((i, index) => {
-									// console.log(`email at index ${index}:`, i);
-									if (i.id == item.id) {
-										console.log("email found =", i);
-										if (!this.entity.receiving_emails.some(email => email.id === i.id)) {
-											this.entity.receiving_emails.push(i);
-											console.log("output", this.entity.receiving_emails);
-                }
-									}
-
-							// 				}
-							// // Use nextTick to ensure the rendering has completed
-							// this.$nextTick(() => {
-							// 	console.log('receiving emails =' , this.entity.receiving_emails);
-							// });
-								});
-							}
-							// console.log("final check",this.entity.receiving_emails);
-
-						});
-						}
-					catch (error) 
-					{
-						console.error("Error fetching data:", error.message);
-					}
-		},
+		
+	
 
 	async addEmail() {
 		const newEmail = { ...this.newEmail };
@@ -2226,7 +2131,7 @@ async addFax() {
 
 		// Add the new email to the array
 		this.entity.receiving_emails.push(newEmail);
-
+		console.log("NEW EMAIL ADDED =" , this.entity.receiving_emails);
 		// Clear the newEmail object for the next entry
 		this.newEmail = { email: '', description: '' };
 
@@ -2239,49 +2144,49 @@ async addFax() {
 			description,
 		};
 		console.log("header:",emailData);
-		try {
-			// Make a POST request to store the data in the database
-			const response = await axios.post('/client/receivingEmails', emailData);
-			console.log('Axios Response:', response);
-			await this.$nextTick();
-			this.$emit("Receiving_emails", response);
-			console.log("Emitted data:", response.data);
-			// Check for a successful status code (2xx)
-			if (response.status >= 200 && response.status < 300) {
-			// Parse the JSON response
-				const responseData = response.data;
-				console.log("id",responseData.id);
-				// Check if the expected properties are present
-				if (responseData.email && responseData.description && responseData.id) 
-				{
-				// if (response.data.success) {
-					console.log('Email saved successfully.');
-					this.saving = false;
-					// this.$router.push({ name: 'receivingEmails' });
-					await this.updateReceivingMethods(responseData.id, null);
+		// try {
+		// 	// Make a POST request to store the data in the database
+		// 	const response = await axios.post('/client/receivingEmails', emailData);
+		// 	console.log('Axios Response:', response);
+		// 	await this.$nextTick();
+		// 	this.$emit("Receiving_emails", response);
+		// 	console.log("Emitted data:", response.data);
+		// 	// Check for a successful status code (2xx)
+		// 	if (response.status >= 200 && response.status < 300) {
+		// 	// Parse the JSON response
+		// 		const responseData = response.data;
+		// 		console.log("id",responseData.id);
+		// 		// Check if the expected properties are present
+		// 		if (responseData.email && responseData.description && responseData.id) 
+		// 		{
+		// 		// if (response.data.success) {
+		// 			console.log('Email saved successfully.');
+		// 			this.saving = false;
+		// 			// this.$router.push({ name: 'receivingEmails' });
+		// 			await this.updateReceivingMethods(responseData.id, null);
 
-					this.$nextTick(() => {
-						this.$store.dispatch('notify', {
-							variant: 'primary',
-							title: 'Email Created!',
-							message: 'New email created.',
-						});
-					});
+		// 			this.$nextTick(() => {
+		// 				this.$store.dispatch('notify', {
+		// 					variant: 'primary',
+		// 					title: 'Email Created!',
+		// 					message: 'New email created.',
+		// 				});
+		// 			});
 
-			} else {
-				// Server response is missing expected properties
-				console.error('Invalid server response:', responseData);
-			}
-			} else {
-			// Server indicates failure with a non-successful status code
-			console.error('Failed to save email. Status:', response.status);
-			// You can handle different status codes as needed
-			// For example, if it's a validation error, show a different notification
-			// Or if it's a server error, show an error message
-			}
-		} catch (error) {
-			console.error('Error creating email:', error);
-		}
+		// 	} else {
+		// 		// Server response is missing expected properties
+		// 		console.error('Invalid server response:', responseData);
+		// 	}
+		// 	} else {
+		// 	// Server indicates failure with a non-successful status code
+		// 	console.error('Failed to save email. Status:', response.status);
+		// 	// You can handle different status codes as needed
+		// 	// For example, if it's a validation error, show a different notification
+		// 	// Or if it's a server error, show an error message
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error creating email:', error);
+		// }
 },
 
     openDeletePopup() {
@@ -2305,7 +2210,18 @@ async addFax() {
 	async deleteSelectedEmails() {
     console.log("Inside", this.entity.receiving_emails);
     console.log("Selected", this.selectedEmails);
-
+	this.selectedEmails.forEach(selectedEmail => {
+    // Find the index of selectedEmail in receiving_emails array based on matching id
+    const index = this.entity.receiving_emails.findIndex(email => email.id === selectedEmail.id);
+    
+    // If index is found (i.e., selectedEmail exists in receiving_emails), remove it
+    if (index !== -1) {
+        this.entity.receiving_emails.splice(index, 1);
+    }
+	});
+	console.log("After deleting data", this.entity.receiving_emails);
+	const data = this.selectedEmails;
+	
     try {
         // Iterate over selected emails and delete them
         for (const email of this.selectedEmails) {
@@ -2350,10 +2266,12 @@ async addFax() {
     } finally {
         // Close the delete popup or perform any other actions
         this.closeDeletePopup();
+		const responseOutgoingData = await axios.post('/client/receivingEmails', {data:data , fetch:false , add:false , edit:false , delete:true});
+
     }
 
     // Update the receiving_emails array with the updatedEmails
-    this.entity.receiving_emails = updatedEmails;
+    // this.entity.receiving_emails = updatedEmails;
 
     // Reset selectedEmails array
     this.selectedEmails = [];
@@ -2548,32 +2466,52 @@ async addFax() {
 		},
 		
 		async save() {
-			console.log('Contract Pricing Schedule rate1', this.rates);
-			console.log('Contract Pricing Schedule rate2', this.rates2);
+			console.log("Outgoing faxes =" , this.entity.receiving_faxes);
+			console.log("Outgoing emails =" , this.entity.receiving_emails);
+			try{
+					console.log("Making Request for saving emails & faxes");
+					// let responserec = await axios.post('/client/editFacilitiesReceivingMethod', {emails:this.entity.receiving_emails , faxes:this.entity.receiving_faxes , id:this.entity.id});
+					const response = await axios.post('/client/receivingEmails', {emails:this.entity.receiving_emails , faxes:this.entity.receiving_faxes , id:this.entity.id , edit:true , add:false , fetch:false , delete:false});
+					console.log("REQUEST EDIT FORM =", response);
+			}catch(err){
+					console.log('An error occured while saving the receiving emails data: ', err);
+			}
 			try {
 				this.saving = true;
 				const response = await this.$store.dispatch("facilities/save", this.entity);
-				await this.saveContractPricingSchedule(response.id);
-				
-				console.log("saved:", response);
-
-
 				this.$emit("saved", response);
 				this.$emit("update:id", response.id);
 
-				this.$store.dispatch("facilities/getAll");
-				this.$store.dispatch("facilities/getActive");
+				// this.$store.dispatch("facilities/getAll");
+				// this.$store.dispatch("facilities/getActive");
+				try{
 				const responsed = await axios.post('/client/facilityAddForms/edit', this.forms);
         		console.log('saving Response:', responsed);
                 console.log('Data saved successfully');
+				}
+				catch(err){
+					console.log("Contact edit form not saved");
+				}
 				// for saving contract details
-				this.saveContract()
+				try{
+					this.saveContract()
+				}
+				catch(err){
+					console.log("Contract not saved");
+				}
 				try{
 					const response = await axios.post('/client/contractpricingschedule/edit', {first:this.rates , second:this.rates2 ,id:this.entity.id});
 				}
 				catch(err){
 					console.log('An error occured while saving the contract pricing schedule data: ', err);
 				}
+				// try{
+				// 	console.log("Making Request for saving emails & faxes");
+				// 	let responserec = await axios.post('/client/editFacilitiesReceivingMethod', {emails:this.entity.receiving_emails , faxes:this.entity.receiving_faxes , id:this.entity.id});
+				// 	console.log("REQUEST EDIT FORM =", responserec);
+				// }catch(err){
+				// 	console.log('An error occured while saving the receiving emails data: ', err);
+				// }
 			} catch (e) {
 				if (e.response.data.errors) {
 					this.$refs.observer.setErrors(formatErrors(e.response.data.errors));
@@ -2846,11 +2784,67 @@ async addFax() {
 						console.log("Contract Rates2 =", this.rates2);
 					}); 
 				}
+				try{
+					console.log("MAKING REQUEST FOR FETCHING OUTGOING DATA")
+					const responseOutgoingData = await axios.post('/client/receivingEmails', {id:this.entity.id , fetch:true , add:false , edit:false , delete:false});
+					console.log("Response OUTGOING DATA =", responseOutgoingData);
+					if (responseOutgoingData.data && Array.isArray(responseOutgoingData.data)) {
+						responseOutgoingData.data.forEach((item) => {
+							console.log("Inside loop , item =", item);
+							if (item.receiving_email_id !== null) {
+								console.log("Inside email loop");
+								try{
+								this.receiving_emails.push({
+									id: item.id,
+									email: item.receiving_email_id,
+									description: item.email_desc
+									
+								});
+							}
+							catch(e){
+								console.log("Email not added to entity" , e);
+							}
+							}
+
+							if (item.receiving_fax_id !== null) {
+								console.log("Inside fax loop");
+								try{
+								this.receiving_faxes.push({
+									id: item.id,
+									fax: item.receiving_fax_id,
+									description: item.fax_desc
+									
+								});
+							} catch(e){
+								console.log( "Fax not added to entity ", e);
+							}
+							}
+
+						}); 
+						console.log("EMAIL OUTGOING =", this.receiving_emails);
+						console.log("FAX OUTGOING =", this.receiving_faxes);
+
+					}
+					this.$set(this.entity, 'receiving_emails', [...this.receiving_emails]);
+					this.$set(this.entity, 'receiving_faxes', [...this.receiving_faxes]);
+					console.log("final email =", this.entity.receiving_emails);
+					console.log("final fax =", this.entity.receiving_faxes);
+
+				}
+				catch (error) {
+					console.error("Error fetching outgoing method data:", error.message);
+				}
 				
 			} catch (error) {
 				console.error("Error fetching data:", error.message);
 			}
-		}
+			
+			
+			
+
+			
+		},
+		
 
 },
 };

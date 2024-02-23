@@ -16,14 +16,13 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Account Name2" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
 										v-model="entity.display_name"
 										:state="getValidationState(validationContext)"
-										required="required"
-										
+										required="required"	
 									/>
 									<b-form-invalid-feedback
 										v-for="error in validationContext.errors"
@@ -1480,8 +1479,8 @@ export default {
 		this.fetchOwnershipTypes();
 		this.fetchServiceOperations();
 		this.fetchInsurances();
-		this.fetchReceivingEmails();
-		this.fetchReceivingFaxes();
+		// this.fetchReceivingEmails();
+		// this.fetchReceivingFaxes();
 		this.fetchFacilityType();
 
 
@@ -1917,75 +1916,75 @@ export default {
 	closePopup() {
 		this.popupVisible = false;
 		},
-	async fetchReceivingFaxes(){
-		try
-					{
-						const url = "/client/receivingfaxlist";
+	// async fetchReceivingFaxes(){
+	// 	try
+	// 				{
+	// 					const url = "/client/receivingfaxlist";
 							
-							const response = await axios.get(url, {
-							headers: {
-								"Accept": "application/json",
-								// You can add other headers here if needed
-							},
-							});
+	// 						const response = await axios.get(url, {
+	// 						headers: {
+	// 							"Accept": "application/json",
+	// 							// You can add other headers here if needed
+	// 						},
+	// 						});
 							
-						console.log("receiving faxes listed :", response);
-						// response.data.forEach((item)=>{
-						// 	this.entity.receiving_emails.push(item.receiving_email);
-						// });
+	// 					console.log("receiving faxes listed :", response);
+	// 					// response.data.forEach((item)=>{
+	// 					// 	this.entity.receiving_emails.push(item.receiving_email);
+	// 					// });
 
-						if (response.data && Array.isArray(response.data)) {
-							// for (let i = 0; i < response.data.length; i++) {
-							// 	const { email, description } = response.data[i];
-							// 	this.entity.receiving_emails.push({ email, description });
-							// }
-							this.$set(this.entity, 'receiving_faxes', response.data.map(item => ({  id:item.id,fax: item.fax, description: item.description })));
-						}
-						// Use nextTick to ensure the rendering has completed
-						this.$nextTick(() => {
-							console.log('receiving faxes =' , this.entity.receiving_faxes);
-						});
-						// console.log('receiving emails =' , this.entity.receiving_emails);
+	// 					if (response.data && Array.isArray(response.data)) {
+	// 						// for (let i = 0; i < response.data.length; i++) {
+	// 						// 	const { email, description } = response.data[i];
+	// 						// 	this.entity.receiving_emails.push({ email, description });
+	// 						// }
+	// 						this.$set(this.entity, 'receiving_faxes', response.data.map(item => ({  id:item.id,fax: item.fax, description: item.description })));
+	// 					}
+	// 					// Use nextTick to ensure the rendering has completed
+	// 					this.$nextTick(() => {
+	// 						console.log('receiving faxes =' , this.entity.receiving_faxes);
+	// 					});
+	// 					// console.log('receiving emails =' , this.entity.receiving_emails);
 						
-					}
-				catch (error) 
-				{
-					console.error("Error fetching data:", error.message);
-				}
-	},
-	async fetchReceivingEmails(){
-			try
-						{
-							const url = "/client/receivingemaillist";
+	// 				}
+	// 			catch (error) 
+	// 			{
+	// 				console.error("Error fetching data:", error.message);
+	// 			}
+	// },
+	// async fetchReceivingEmails(){
+	// 		try
+	// 					{
+	// 						const url = "/client/receivingemaillist";
 								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
+	// 							const response = await axios.get(url, {
+	// 							headers: {
+	// 								"Accept": "application/json",
+	// 								// You can add other headers here if needed
+	// 							},
+	// 							});
 								
-							console.log("receiving emails listed :", response);
+	// 						console.log("receiving emails listed :", response);
 							
 
-							if (response.data && Array.isArray(response.data)) {
+	// 						if (response.data && Array.isArray(response.data)) {
 								
-								// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
-								this.$set(this.entity, 'receiving_emails', response.data
-								.filter(item => item.facility_id === facilityId)
-								.map(item => ({ email: item.email, description: item.description })));
-							}
-							// Use nextTick to ensure the rendering has completed
-							this.$nextTick(() => {
-								console.log('receiving emails =' , this.entity.receiving_emails);
-							});
+	// 							// this.$set(this.entity, 'receiving_emails', response.data.map(item => ({ id:item.id,email: item.email, description: item.description })));
+	// 							this.$set(this.entity, 'receiving_emails', response.data
+	// 							.filter(item => item.facility_id === facilityId)
+	// 							.map(item => ({ email: item.email, description: item.description })));
+	// 						}
+	// 						// Use nextTick to ensure the rendering has completed
+	// 						this.$nextTick(() => {
+	// 							console.log('receiving emails =' , this.entity.receiving_emails);
+	// 						});
 							
-						}
-					catch (error) 
-					{
-						console.error("Error fetching data:", error.message);
-					}
-		},
+	// 					}
+	// 				catch (error) 
+	// 				{
+	// 					console.error("Error fetching data:", error.message);
+	// 				}
+	// 	},
 	async addEmail() {
 		const newEmail = { ...this.newEmail };
 		const email = newEmail.email;
@@ -2341,8 +2340,9 @@ export default {
 
 		async save() {
 			this.entity.name = this.entity.display_name;
-			console.log('Contract Pricing Schedule rate1', this.rates);
-			console.log('Contract Pricing Schedule rate2', this.rates2);
+			console.log("Outgoing faxes =" , this.entity.receiving_faxes);
+			console.log("Outgoing emails =" , this.entity.receiving_emails);
+				
 
 			// todo:
 			// create backend for add form
@@ -2378,6 +2378,11 @@ export default {
 				}
 				catch(err){
 					console.log('An error occured while saving the contract pricing schedule data: ', err);
+				}
+				try{
+					const response = await axios.post('/client/receivingEmails', {emails:this.entity.receiving_emails , faxes:this.entity.receiving_faxes , name:this.entity.name , add:true , edit:false , fetch:false , delete:false});
+				}catch(err){
+					console.log('An error occured while saving the receiving emails data: ', err);
 				}
 
 
