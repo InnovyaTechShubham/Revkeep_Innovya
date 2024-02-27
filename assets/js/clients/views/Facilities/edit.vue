@@ -27,6 +27,7 @@ export default {
 	data() {
 		return {
 			name: null,
+			display_name:null,
 		};
 	},
 	methods: {

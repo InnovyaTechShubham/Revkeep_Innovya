@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name2" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Facility Name" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"

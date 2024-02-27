@@ -3,7 +3,7 @@
 		<page-header>
 			<template #title>
 				<router-link :to="{ name: 'facilities' }" v-text="`Facilities /`" />
-				<span>{{ entity.name }}</span>
+				<span>{{ entity.display_name }}</span>
 			</template>
 			<template #buttons>
 				<b-button
@@ -190,7 +190,7 @@
 									</table>
 								</div>
 								
-								<h6 class="h6 text-uppercase font-weight-bold text-muted mt-5">Receiving Information</h6>
+								<h6 class="h6 text-uppercase font-weight-bold text-muted mt-5">Outgoing Methods</h6>
 								<div class="table-responsive">
 									<table class="table table-sm table-headers-muted table-data-right mb-0">
 
@@ -221,8 +221,8 @@
 									<tr>
             <th>Faxes</th>
             <td>
-                <span v-if="entity.receiving_faxes && entity.receiving_faxes.length > 0">
-                    {{ entity.receiving_faxes.map(faxObj => `(${faxObj.fax}) ${faxObj.description}`).join(', ') }}
+                <span v-if="receiving_faxes && receiving_faxes.length > 0">
+                    {{ receiving_faxes.map(faxObj => `${faxObj.fax} (${faxObj.description})`).join(', ') }}
                 </span>
                 <span v-else class="text-muted"> &mdash; </span>
             </td>
@@ -443,12 +443,14 @@ export default {
 				name: null,
 				active: null,
 				full_address: null,
+				display_name:null,
 				// receiving_faxes: [], // For storing multiple faxes
             	// receiving_emails: [], // For storing multiple emails
 
 			},
 			similar: [],
 			receivingEmails: [],
+			receiving_faxes:[]
 			// entity: {
 			// 	id: this.id,
 			// 	name: "",
@@ -557,9 +559,52 @@ export default {
 	methods: {
 		async fetchReceivingEmails() {
 			try {
-				const response = await axios.get('/client/fetchReceivingEmails');
-				this.receivingEmails = response.data.receivingEmails;
-				console.log("API",this.receivingEmails);
+				// const response = await axios.get('/client/fetchReceivingEmails');
+				// this.receivingEmails = response.data.receivingEmails;
+				// console.log("API",this.receivingEmails);
+				const url = window.location.href; // Get the current URL
+				const facilityId = url.match(/\/facilities\/(\d+)/)[1]; // Extract facility ID from the URL
+				console.log("Facility ID:", facilityId);
+				console.log("MAKING REQUEST FOR FETCHING OUTGOING DATA for IF = ",facilityId);
+				const responseOutgoingData = await axios.post('/client/receivingEmails', {id:facilityId , fetch:true , add:false , edit:false , delete:false});
+				console.log("Response OUTGOING DATA =", responseOutgoingData);
+				if (responseOutgoingData.data && Array.isArray(responseOutgoingData.data)) {
+						responseOutgoingData.data.forEach((item) => {
+							console.log("Inside loop , item =", item);
+							if (item.receiving_email_id !== null) {
+								console.log("Inside email loop");
+								try{
+								this.receivingEmails.push({
+									id: item.id,
+									email: item.receiving_email_id,
+									description: item.email_desc
+									
+								});
+							}
+							catch(e){
+								console.log("Email not added to entity" , e);
+							}
+							}
+
+							if (item.receiving_fax_id !== null) {
+								console.log("Inside fax loop");
+								try{
+								this.receiving_faxes.push({
+									id: item.id,
+									fax: item.receiving_fax_id,
+									description: item.fax_desc
+									
+								});
+							} catch(e){
+								console.log( "Fax not added to entity ", e);
+							}
+							}
+
+						}); 
+						console.log("EMAIL OUTGOING =", this.receivingEmails);
+						console.log("FAX OUTGOING =", this.receiving_faxes);
+
+					}
 			} catch (error) {
 				console.error('Error fetching receiving emails:', error);
 			}

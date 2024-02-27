@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Account Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Facility Name" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -188,7 +188,7 @@
 
 						<b-form-group label="Chain" label-for="chain_name" label-cols-lg="4">
 								<b-input-group>
-									<b-form-input type="text" name="chain_name" v-model="searchChain"
+									<b-form-input type="text" name="chain_name" v-model="entity.chain_name"
 										:disabled="saving"
 										placeholder="Search for a Chain..." @input="filterChains" />
 								</b-input-group>
@@ -245,7 +245,7 @@
 							name="term_date"
 							:disabled="saving"
 							:state="getValidationState(validationContext)"
-							:style="{ color: entity.facility_status === 'Inactive' ? 'red' : 'inherit' }"
+							:style="{ color: entity.facility_status === 'Inactive' ? 'red' : entity.facility_status === 'Pending Term' ? '#FFD700' : 'inherit' }"
 							/>
 							<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
 						</b-form-group>
@@ -310,22 +310,19 @@
 						</b-card-header>
 						<b-collapse id="collapseAdditional" role="tabpanel">
 							<b-card-body>
-								<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-										<b-form-group label="Region" label-for="region" label-cols-lg="2">
-											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
-											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-										</b-form-group>
-								</validation-provider>
+								
 
 								<b-row>
 								<!-- First Column -->
 								<b-col md="6">
-									<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
-												<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
+									<validation-provider vid="region" name="Region" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+										<b-form-group label="Region" label-for="region" label-cols-lg="4">
+											<b-form-input name="region" type="text" v-model="entity.region" :state="getValidationState(validationContext)" :disabled="saving" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+										</b-form-group>
 									</validation-provider>
+								
+									
 
 
 									<!-- Division -->
@@ -350,12 +347,25 @@
 								
 								
 									<b-col md="6">
-										<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
-											<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
-												<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
-												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
-											</b-form-group>
-										</validation-provider>
+										<b-row>
+											<b-col>
+												<validation-provider vid="territory" name="Territory" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+													<b-form-group label="Territory" label-for="territory" label-cols-lg="4">
+														<b-form-input name="territory" type="text" v-model="entity.territory" :state="getValidationState(validationContext)" :disabled="saving" />
+														<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+													</b-form-group>
+												</validation-provider>
+											</b-col>
+											<b-col>
+												<validation-provider vid="area_name" name="Area" :rules="{ required: false, max: 60 }" v-slot="validationContext">
+													<b-form-group label="Area" label-for="area_name" label-cols-lg="4">
+														<b-form-input name="area_name" type="text" v-model="entity.area_name" :state="getValidationState(validationContext)" :disabled="saving" />
+														<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error" v-text="error" />
+													</b-form-group>
+												</validation-provider>
+											</b-col>
+										</b-row>
+										
 			
 
 									<!--  Internal Owner -->
@@ -775,7 +785,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<b-form-group
+									<!-- <b-form-group
 										label="Contract Status"
 										label-for="active"
 										label-cols-lg="4"
@@ -789,7 +799,27 @@
 											:key="error"
 											v-text="error"
 										/>
+									</b-form-group> -->
+									<b-form-group
+										label="Contract Status"
+										label-for="contractStatus"
+										label-cols-lg="4"
+									>
+										<b-form-select
+											id="contractStatus"
+											v-model="contractDetails.contract_status"
+											:options="contractStatusOptions"
+											:disabled="saving"
+											value-field="id"
+											text-field="contract_status"
+										></b-form-select>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
 									</b-form-group>
+
 								</validation-provider>
 
 								<validation-provider
@@ -805,6 +835,7 @@
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
+											:style="{ color: contractDetails.contract_status === 3 ? 'red' : contractDetails.contract_status === 2 ? '#FFD700' : 'inherit' }"
 										/>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
@@ -946,7 +977,7 @@
 											v-model="contractDetails.contract_type"
 											:state="getValidationState(validationContext)"
 											:options="contractTypes"
-											:disabled="saving"
+											:disabled="true"
 											value-field="value"
 											text-field="text"
 											direction="down"
@@ -1279,7 +1310,7 @@
 								<div class="flex-grow-1 pr-3">
 									<div class="label-value-row">
 										<div class="label-text">Name:</div>
-										<div class="text">{{ entity.name }}</div>
+										<div class="text">{{ entity.display_name }}</div>
 									</div>
 									<div class="label-value-row">
 										<div class="label-text">NPI Number:</div>
@@ -1469,6 +1500,7 @@ export default {
                 ai: null,
                 il: null,
 				pricing_schedules: [],
+				chain_name:null,
 
 				
 			},
@@ -1478,7 +1510,7 @@ export default {
 					// facility_id: this.id,
 					original_start_date: null,
 					term_date: null,
-					contract_status:true,
+					contract_status:null,
 					contract_end_date: null,
 					contract_start_date: null,
 					renewal_date: null,
@@ -1536,17 +1568,18 @@ export default {
 			facilityTypes:[],
 			rates:{},
 			rates2:{},
+			contractStatusOptions:[],
    
 	 };
 	},
 	watch: {
 		'entity.bill_type': function(newBillType) {
-		if (newBillType === 'Synergy' || newBillType === 'Contract Bill Other') {
+		if (newBillType === 'Synergy' || newBillType === 'Contract Bill Other' || newBillType === 'GHC') {
 			this.entity.has_contract = true;
 		} else {
 			this.entity.has_contract = false;
 		}
-		}
+		},
 	},
 	computed: 
 	{
@@ -1871,10 +1904,28 @@ async saveContractPricingSchedule(obj) {
 							});
 							console.log('contract bill type options =' , this.contractBillTypes);
 						}
-					catch (error) 
-					{
-						console.error("Error fetching data:", error.message);
-					}
+			catch (error) 
+						{
+							console.error("Error fetching data:", error.message);
+						}
+			try{
+				const url = "/client/api/fetchContractStatus";
+								
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+				this.contractStatusOptions = response.data;
+
+				console.log('COntract Status options =' , this.contractStatusOptions);
+
+			}
+			catch (error) 
+						{
+							console.error("Error COntract Status options data:", error.message);
+						}
 		},
 
 		getTypeOptions(row) {
@@ -2753,7 +2804,7 @@ async addFax() {
 							
 							this.contractDetails.original_start_date = response.data.original_start_date;
 							this.contractDetails.term_date = response.data.term_date;
-							this.contractDetails.contract_status = parseInt(response.data.status, 10) === 1;
+							this.contractDetails.contract_status = parseInt(response.data.status, 10);
 							this.contractDetails.contract_start_date = response.data.contract_effective_date;
 							this.contractDetails.contract_end_date =  response.data.expiration_date;
 							this.contractDetails.renewal_date = response.data.renewal_date;
