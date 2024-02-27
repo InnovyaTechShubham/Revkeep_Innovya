@@ -6,12 +6,8 @@
 				<b-card-body class="mb-0">
 					<b-row>
 						<b-col col="12" md="6">
-							<validation-provider
-								vid="patient_id"
-								name="Patient"
-								:rules="{ required: true }"
-								v-slot="validationContext"
-							>
+							<validation-provider vid="patient_id" name="Patient" :rules="{ required: true }"
+								v-slot="validationContext">
 								<div v-if="!hidePatient">
 									<div v-if="addingPatient" class="mb-4">
 										<patient-form @cancel="addingPatient = false" @saved="addedNewPatient">
@@ -19,14 +15,10 @@
 												<b-card-header>
 													<div class="d-flex justify-content-between align-items-center">
 														<span class="font-weight-bold">Add New Patient</span>
-														<b-button
-															variant="secondary"
-															size="sm"
-															@click="addingPatient = false"
-															title="Cancel"
-															class="mb-0"
-														>
-															<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+														<b-button variant="secondary" size="sm"
+															@click="addingPatient = false" title="Cancel" class="mb-0">
+															<font-awesome-icon icon="remove" fixed-width
+																class="my-0 py-0" />
 														</b-button>
 													</div>
 												</b-card-header>
@@ -34,23 +26,16 @@
 										</patient-form>
 									</div>
 									<div v-else-if="editingPatient" class="mb-4">
-										<patient-form
-											:id="editingPatient"
-											@cancel="editingPatient = false"
-											@saved="savedPatient"
-										>
+										<patient-form :id="editingPatient" @cancel="editingPatient = false"
+											@saved="savedPatient">
 											<template #header>
 												<b-card-header>
 													<div class="d-flex justify-content-between align-items-center">
 														<span class="font-weight-bold">Edit Patient</span>
-														<b-button
-															variant="secondary"
-															size="sm"
-															@click="editingPatient = false"
-															title="Cancel"
-															class="mb-0"
-														>
-															<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+														<b-button variant="secondary" size="sm"
+															@click="editingPatient = false" title="Cancel" class="mb-0">
+															<font-awesome-icon icon="remove" fixed-width
+																class="my-0 py-0" />
 														</b-button>
 													</div>
 												</b-card-header>
@@ -59,46 +44,30 @@
 									</div>
 									<div v-else>
 										<b-form-group label="Patient" label-for="patient" label-cols-lg="4">
-											<patient-search
-												name="patient"
-												v-model="currentPatient"
-												@add="addingPatient = true"
-												:state="getValidationState(validationContext)"
-												:disabled="saving"
-											/>
+											<patient-search name="patient" v-model="currentPatient"
+												@add="addingPatient = true" :state="getValidationState(validationContext)"
+												:disabled="saving" />
 										</b-form-group>
 										<b-row v-if="currentPatient && currentPatient.id">
 											<b-col cols="12" lg="8" offset-lg="4" class="mb-4">
 												<div class="d-flex justify-content-between align-items-center">
 													<div>
-														<h2
-															class="h3 my-0 mb-1 font-weight-bold text-uppercase"
-															v-text="currentPatient.list_name"
-														/>
-														<h3
-															v-if="currentPatient.date_of_birth"
-															class="h6 mt-0 mb-1 text-muted text-uppercase"
-														>
+														<h2 class="h3 my-0 mb-1 font-weight-bold text-uppercase"
+															v-text="currentPatient.list_name" />
+														<h3 v-if="currentPatient.date_of_birth"
+															class="h6 mt-0 mb-1 text-muted text-uppercase">
 															<span class="font-weight-bold">
 																{{ $filters.formatDate(currentPatient.date_of_birth) }}
 															</span>
-															<span
-																v-if="
-																	currentPatient.age != null &&
-																	currentPatient.age != undefined
-																"
-															>
+															<span v-if="currentPatient.age != null &&
+																currentPatient.age != undefined
+																">
 																&mdash;
 																<span>
-																	<font-awesome-icon
-																		v-if="currentPatient.is_birthday"
-																		icon="birthday-cake"
-																		class="text-muted"
-																	/>
-																	<span
-																		class="font-weight-bold"
-																		v-text="currentPatient.age"
-																	/>
+																	<font-awesome-icon v-if="currentPatient.is_birthday"
+																		icon="birthday-cake" class="text-muted" />
+																	<span class="font-weight-bold"
+																		v-text="currentPatient.age" />
 																</span>
 															</span>
 														</h3>
@@ -114,11 +83,8 @@
 										</b-row>
 									</div>
 								</div>
-								<b-form-invalid-feedback
-									v-for="error in validationContext.errors"
-									:key="error"
-									v-text="error"
-								/>
+								<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+									v-text="error" />
 							</validation-provider>
 						</b-col>
 					</b-row>
@@ -139,40 +105,31 @@
 
 					<b-row>
 						<b-col col="12" md="6">
-							<validation-provider
-								vid="facility_id"
-								name="Facility"
-								:rules="{ required: false }"
+							<validation-provider vid="facility_id" name="Facility" :rules="{ required: false }"
 								v-slot="validationContext">
 								<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
 									<!-- Use a div to create a pseudo input group -->
 									<div style="display: flex; position: relative;">
 										<!-- Custom input box for search -->
-										<input
-											name="facilitySearch"
-											v-model="facilitySearch"
+										<input name="facilitySearch" v-model="facilitySearch"
 											:disabled="saving || loadingFacilities"
-											:state="getValidationState(validationContext)"
-											@input="searchFacilities"
+											:state="getValidationState(validationContext)" @input="searchFacilities"
 											style="width: 100%; padding: 8px; border-radius: 4px 0 0 4px;"
-											class="custom-rounded-border"
-										/>
+											class="custom-rounded-border" />
 
 										<!-- Append button -->
-										<b-button
-											variant="primary"
-											@click="addingFacility = !addingFacility"
-											:active="addingFacility"
-											style="border-radius: 0 4px 4px 0; margin-left: -1px;"
-										>
+										<b-button variant="primary" @click="addingFacility = !addingFacility"
+											:active="addingFacility" style="border-radius: 0 4px 4px 0; margin-left: -1px;">
 											<font-awesome-icon icon="plus" fixed-width />
 										</b-button>
 									</div>
 
 									<!-- Display filtered options in a list -->
 									<div>
-										<div class="custom-dropdown-option" v-if="searchResults.length > 0 && facilitySearch !== ''">
-											<b-row v-for="(item, index) in searchResults" :key="index" @click="() => selectFacility(item)">
+										<div class="custom-dropdown-option"
+											v-if="searchResults.length > 0 && facilitySearch !== ''">
+											<b-row v-for="(item, index) in searchResults" :key="index"
+												@click="() => selectFacility(item)">
 												<b-col class="custom-option-col">
 													<div class="option-content">
 														<!-- Content for the option -->
@@ -186,24 +143,21 @@
 											</b-row>
 										</div>
 									</div>
-									
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 
-								<!-- TODO: ADD A PLUS ICON TO DISPLAY BELOW COMPONEt -->
-								<div v-if="addingFacility" class="mb-4">
-									<h6 class="text-muted">Add New Facility</h6>
+							<!-- TODO: ADD A PLUS ICON TO DISPLAY BELOW COMPONEt -->
+							<div v-if="addingFacility" class="mb-4">
+								<h6 class="text-muted">Add New Facility</h6>
 
-									<facility-form @saved="addedFacility" @cancel="addingFacility = false" />
-								</div>
-                        </b-col>
-                        <b-col col="12" md="6">
-								<!-- <validation-provider
+								<facility-form @saved="addedFacility" @cancel="addingFacility = false" />
+							</div>
+						</b-col>
+						<b-col col="12" md="6">
+							<!-- <validation-provider
 									vid="facility_status"
 									name="Facility Status"
 									:rules="{ required: false }"
@@ -226,168 +180,92 @@
 										/>
 									</b-form-group>
 								</validation-provider> -->
-								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
-									<b-form-input
-										name="facility_status"
-										v-model="entity.facility_name"
-										:disabled="saving"
-										readonly
-										type="text"
-										autocomplete="off"
-									/>
-								</b-form-group>
-								<!-- Term Date -->
-								<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
-									<b-form-input
-										name="term_date"
-										v-model="entity.facility_name"
-										:disabled="saving"
-										readonly
-										type="text"
-										autocomplete="off"
-									/>
-								</b-form-group>
+							<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+								<b-form-input name="facility_status" v-model="entity.facility_name" :disabled="saving"
+									readonly type="text" autocomplete="off" />
+							</b-form-group>
+							<!-- Term Date -->
+							<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+								<b-form-input name="term_date" v-model="entity.facility_name" :disabled="saving" readonly
+									type="text" autocomplete="off" />
+							</b-form-group>
 
 						</b-col>
 					</b-row>
 
 					<b-row>
-						  
+
 						<b-col cols="12" md="6">
-							<validation-provider
-								vid="admit_date"
-								name="Admit Date"
-								:rules="{ required: true }"
-								v-slot="validationContext"
-							>
+							<validation-provider vid="admit_date" name="Admit Date" :rules="{ required: true }"
+								v-slot="validationContext">
 								<b-form-group label="Begin DOS" label-for="admit_date" label-cols-lg="4">
-									<b-form-input
-										name="admit_date"
-										type="date"
-										v-model="entity.admit_date"
-										:disabled="saving"
-										:state="getValidationState(validationContext)"
-										required
-									/>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-input name="admit_date" type="date" v-model="entity.admit_date"
+										:disabled="saving" :state="getValidationState(validationContext)" required />
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 						</b-col>
 						<b-col cols="12" md="6">
-							<validation-provider
-								vid="discharge_date"
-								name="Discharge Date"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
+							<validation-provider vid="discharge_date" name="Discharge Date" :rules="{ required: false }"
+								v-slot="validationContext">
 								<b-form-group label="End DOS" label-for="discharge_date" label-cols-lg="4">
-									<b-form-input
-										name="discharge_date"
-										type="date"
-										v-model="entity.discharge_date"
-										:disabled="saving"
-										:state="getValidationState(validationContext)"
-									/>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-input name="discharge_date" type="date" v-model="entity.discharge_date"
+										:disabled="saving" :state="getValidationState(validationContext)" />
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 						</b-col>
-				</b-row>
-				<b-row>		
-					<b-col cols="12" md="6">
-							<validation-provider
-								vid="visit_number"
-								name="Visit ID/Number"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
-								<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
-									<b-form-input
-										name="visit_number"
-										v-model="entity.visit_number"
-										:disabled="saving"
-										:state="getValidationState(validationContext)"
-										type="text"
-										autocomplete="off"
-									/>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
-								</b-form-group>
-							</validation-provider>
-						</b-col>
-						
+					</b-row>
+					<b-row>
 						<b-col cols="12" md="6">
-							<validation-provider
-								vid="insurance_provider_id"
-								name="Insurance Provider"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
-								<b-form-group
-									label="Insurance Provider"
-									label-for="insurance_provider"
-									label-cols-lg="4"
-								>
+							<validation-provider vid="visit_number" name="Visit ID/Number" :rules="{ required: false }"
+								v-slot="validationContext">
+								<b-form-group label="Visit ID / MRN" label-for="visit_number" label-cols-lg="4">
+									<b-form-input name="visit_number" v-model="entity.visit_number" :disabled="saving"
+										:state="getValidationState(validationContext)" type="text" autocomplete="off" />
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+
+						<b-col cols="12" md="6">
+							<validation-provider vid="insurance_provider_id" name="Insurance Provider"
+								:rules="{ required: false }" v-slot="validationContext">
+								<b-form-group label="Insurance Provider" label-for="insurance_provider" label-cols-lg="4">
 									<b-input-group>
-										<b-select
-											name="insurance_provider_id"
-											v-model="entity.insurance_provider_id"
-											:options="insuranceProviders"
-											:disabled="saving || loadingInsuranceProviders"
-											:state="getValidationState(validationContext)"
-											value-field="id"
-											text-field="name"
-											@change="changedInsuranceProvider"
-										>
+										<b-select name="insurance_provider_id" v-model="entity.insurance_provider_id"
+											:options="insuranceProviders" :disabled="saving || loadingInsuranceProviders"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="name" @change="changedInsuranceProvider">
 											<template #first>
 												<b-select-option :value="null"> (None) </b-select-option>
 											</template>
 										</b-select>
 										<template #append>
-											<b-button
-												variant="primary"
+											<b-button variant="primary"
 												@click="addingInsuranceProvider = !addingInsuranceProvider"
-												:active="addingInsuranceProvider"
-											>
+												:active="addingInsuranceProvider">
 												<font-awesome-icon icon="plus" fixed-width />
 											</b-button>
 										</template>
 									</b-input-group>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 
 							<div v-if="addingInsuranceProvider" class="mb-4">
-								<insurance-provider-form
-									@cancel="addingInsuranceProvider = false"
-									@saved="addedNewInsuranceProvider"
-								>
+								<insurance-provider-form @cancel="addingInsuranceProvider = false"
+									@saved="addedNewInsuranceProvider">
 									<template #header>
 										<b-card-header>
 											<div class="d-flex justify-content-between align-items-center">
 												<span class="font-weight-bold">Add New Insurance Provider</span>
-												<b-button
-													variant="secondary"
-													size="sm"
-													@click="addingInsuranceProvider = false"
-													title="Cancel"
-													class="mb-0"
-												>
+												<b-button variant="secondary" size="sm"
+													@click="addingInsuranceProvider = false" title="Cancel" class="mb-0">
 													<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
 												</b-button>
 											</div>
@@ -395,67 +273,40 @@
 									</template>
 								</insurance-provider-form>
 							</div>
-                     	</b-col>
+						</b-col>
 						<!-- adding new column Insurance Type -->
 						<b-col cols="12" md="6">
-							<validation-provider
-								v-if="iscontract"
-								vid="insurance_type"
-								name="Insurance Type"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
+							<validation-provider v-if="iscontract" vid="insurance_type" name="Insurance Type"
+								:rules="{ required: false }" v-slot="validationContext">
 								<b-form-group label="Insurance Type" label-for="Insurance Type" label-cols-lg="4">
-									<b-form-select
-										name="insurance_type"
-										v-model="entity.insurance_type"
-										:disabled="saving"
-										:state="getValidationState(validationContext)"
-										:options="insuranceOptions"
-										required
-									>
+									<b-form-select name="insurance_type" v-model="entity.insurance_type" :disabled="saving"
+										:state="getValidationState(validationContext)" :options="insuranceOptions" required>
 										<template v-slot:first>
 											<!-- This is optional, in case you want a non-selectable prompt -->
 											<option disabled value="">Please select one</option>
 										</template>
 									</b-form-select>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 
 						</b-col>
-                    </b-row>
-                <b-row>
-                        <b-col cols="12" md="6">
-							<validation-provider
-								vid="case_type_id"
-								name="Audit Type"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
+					</b-row>
+					<b-row>
+						<b-col cols="12" md="6">
+							<validation-provider vid="case_type_id" name="Audit Type" :rules="{ required: false }"
+								v-slot="validationContext">
 								<b-form-group label="Audit Type" label-for="case_type_id" label-cols-lg="4">
-									<b-form-select
-										name="case_type_id"
-										v-model="entity.case_type_id"
-										:options="insuranceTypesList"
-										:disabled="saving || loadingCaseTypes"
-										:state="getValidationState(validationContext)"
-										value-field="id"
-										text-field="name"
-									/>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-select name="case_type_id" v-model="entity.case_type_id"
+										:options="insuranceTypesList" :disabled="saving || loadingCaseTypes"
+										:state="getValidationState(validationContext)" value-field="id" text-field="name" />
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
-                            </b-col>
-							<!-- <validation-provider
+						</b-col>
+						<!-- <validation-provider
 								vid="insurance_type_id"
 								name="Insurance Type"
 								:rules="{ required: true }"
@@ -479,30 +330,16 @@
 									/>
 								</b-form-group>
 							</validation-provider> -->
-							<b-col cols="12" md="6">
-							<validation-provider
-								vid="client_employee_id"
-								name="Primary Employee"
-								:rules="{ required: true, numeric: true }"
-								v-slot="validationContext"
-							>
-								<b-form-group
-									label="Primary Physician"
-									label-for="client_employee_id"
-									label-cols-lg="4"
-									description="The licensed physician responsible for this case"
-								>
+						<b-col cols="12" md="6">
+							<validation-provider vid="client_employee_id" name="Primary Employee"
+								:rules="{ required: true, numeric: true }" v-slot="validationContext">
+								<b-form-group label="Primary Physician" label-for="client_employee_id" label-cols-lg="4"
+									description="The licensed physician responsible for this case">
 									<b-input-group>
-										<b-form-select
-											name="client_employee_id"
-											v-model="entity.client_employee_id"
-											:options="clientEmployees"
-											:disabled="saving || loadingClientEmployees"
-											:state="getValidationState(validationContext)"
-											value-field="id"
-											text-field="full_name"
-											required
-										>
+										<b-form-select name="client_employee_id" v-model="entity.client_employee_id"
+											:options="clientEmployees" :disabled="saving || loadingClientEmployees"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="full_name" required>
 											<template #first>
 												<option disabled v-if="!hasClientEmployees" :value="null">
 													No physicians added.
@@ -510,39 +347,36 @@
 											</template>
 										</b-form-select>
 										<template #append>
-											<b-button
+											<!-- <b-button variant="primary" :to="{ name: 'clientEmployees.add.npi.cases', params: { id: entity.id } }" -->
+											<b-button variant="primary" :to="{
+												name: entity.id ? 'clientEmployees.add.npi.cases' : 'clientEmployees.add.npi.newcase',
+												params: { id: entity.id }
+											}" title="Add from NPI Registry">
+												<font-awesome-icon icon="plus" fixed-width />
+												<!-- <span>Add</span> -->
+											</b-button>
+											<!-- <b-button
 												variant="primary"
 												@click="addingClientEmployee = !addingClientEmployee"
 												:active="addingClientEmployee"
 											>
 												<font-awesome-icon icon="plus" fixed-width />
-											</b-button>
+											</b-button> -->
 										</template>
 									</b-input-group>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 
 							<div v-if="addingClientEmployee" class="mb-4">
-								<client-employee-form
-									@saved="addedClientEmployee"
-									@cancel="addingClientEmployee = false"
-								>
+								<client-employee-form @saved="addedClientEmployee" @cancel="addingClientEmployee = false">
 									<template #header>
 										<b-card-header>
 											<div class="d-flex justify-content-between align-items-center">
 												<span class="font-weight-bold">Add New Physician</span>
-												<b-button
-													variant="secondary"
-													size="sm"
-													@click="addingClientEmployee = false"
-													title="Cancel"
-													class="mb-0"
-												>
+												<b-button variant="secondary" size="sm"
+													@click="addingClientEmployee = false" title="Cancel" class="mb-0">
 													<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
 												</b-button>
 											</div>
@@ -550,47 +384,29 @@
 									</template>
 								</client-employee-form>
 							</div>
-                 </b-col>
-				 </b-row>
-                     <b-row>
-                       <b-col cols="12" md="6">
-							<b-form-group
-								id="utc"
-								label="Unable To Complete"
-								label-for="utc"
-								label-cols-lg="4"
-								description="This case is unable to be progressed any further"
-							>
+						</b-col>
+					</b-row>
+					<b-row>
+						<b-col cols="12" md="6">
+							<b-form-group id="utc" label="Unable To Complete" label-for="utc" label-cols-lg="4"
+								description="This case is unable to be progressed any further">
 								<b-form-checkbox name="utc" v-model="entity.unable_to_complete" :disabled="saving">
 									UTC
 								</b-form-checkbox>
 							</b-form-group>
-                       </b-col>
-                        <b-col cols="12" md="6">
-							<validation-provider
-								vid="assigned_to"
-								name="Assigned To"
-								:rules="{ required: false }"
-								v-slot="validationContext"
-							>
+						</b-col>
+						<b-col cols="12" md="6">
+							<validation-provider vid="assigned_to" name="Assigned To" :rules="{ required: false }"
+								v-slot="validationContext">
 								<b-form-group label="Assigned To" label-for="assigned_to" label-cols-lg="4">
-									<b-form-select
-										v-model="entity.assigned_to"
-										name="assigned_to"
-										:options="users"
-										:disabled="saving"
-										value-field="id"
-										text-field="full_name"
-									>
+									<b-form-select v-model="entity.assigned_to" name="assigned_to" :options="users"
+										:disabled="saving" value-field="id" text-field="full_name">
 										<template #first>
 											<option :value="null">(Unassigned)</option>
 										</template>
 									</b-form-select>
-									<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-									/>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
 								</b-form-group>
 							</validation-provider>
 						</b-col>
@@ -602,13 +418,8 @@
 
 					<b-card no-body>
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseDenial
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
+							<b-button block v-b-toggle.collapseDenial variant="light" role="tab"
+								class="text-left px-4 py-3 m-0">
 								Audit Denial Details
 							</b-button>
 						</b-card-header>
@@ -617,93 +428,58 @@
 								<div class="row">
 									<!-- First Column for Denial Type -->
 									<div class="col-lg-6">
-										<validation-provider
-										vid="denial_type_id"
-										name="Denial Type"
-										:rules="{ required: false }"
-										v-slot="validationContext"
-										>
-										<b-form-group label="Denial Type" label-for="denial_type_id" label-cols-lg="4">
-											<b-select
-											name="denial_type_id"
-											v-model="entity.denial_type_id"
-											:options="denialTypes"
-											:disabled="saving || loadingDenialTypes"
-											:state="getValidationState(validationContext)"
-											value-field="id"
-											text-field="name"
-											>
-											<template #first>
-												<option :value="null">(None)</option>
-											</template>
-											</b-select>
-											<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-											/>
-										</b-form-group>
+										<validation-provider vid="denial_type_id" name="Denial Type"
+											:rules="{ required: false }" v-slot="validationContext">
+											<b-form-group label="Denial Type" label-for="denial_type_id" label-cols-lg="4">
+												<b-select name="denial_type_id" v-model="entity.denial_type_id"
+													:options="denialTypes" :disabled="saving || loadingDenialTypes"
+													:state="getValidationState(validationContext)" value-field="id"
+													text-field="name">
+													<template #first>
+														<option :value="null">(None)</option>
+													</template>
+												</b-select>
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
 										</validation-provider>
 									</div>
 
 									<!-- Second Column for Denial Reason -->
 									<div class="col-lg-6">
 										<div v-if="addingDenialReason">
-										<denial-reason-form
-											autofocus
-											@cancel="addingDenialReason = false"
-											@saved="addedNewDenialReason"
-										>
-											<!-- Your Denial Reason Form Content -->
-										</denial-reason-form>
+											<denial-reason-form autofocus @cancel="addingDenialReason = false"
+												@saved="addedNewDenialReason">
+												<!-- Your Denial Reason Form Content -->
+											</denial-reason-form>
 										</div>
 										<div v-else>
-										<b-form-group
-											label="Denial Reasons"
-											label-for="denial_reasons"
-											label-cols-lg="4"
-											v-if="!addingDenialReason"
-										>
-											<denial-reason-search-multi
-											name="denial_reasons"
-											v-model="currentDenialReasons"
-											@add="addingDenialReason = true"
-											:disabled="saving"
-											/>
-										</b-form-group>
+											<b-form-group label="Denial Reasons" label-for="denial_reasons"
+												label-cols-lg="4" v-if="!addingDenialReason">
+												<denial-reason-search-multi name="denial_reasons"
+													v-model="currentDenialReasons" @add="addingDenialReason = true"
+													:disabled="saving" />
+											</b-form-group>
 										</div>
 									</div>
 								</div>
 
 								<!-- Powerback Denial Reason -->
-								<validation-provider
-									vid="pwrbck_deny_res"
-									name="Powerback Denial Reason"
-									:rules="{ required: false }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Powerback Denial Reason"
-										label-for="pwrbck_deny_res"
-										label-cols-lg="2"
-									>
-										<b-select
-										v-model="selectedDenialReason"
-										name="pwrbck_denial_reason"
-										:state="getValidationState(validationContext)"
-										>
-										<template #first>
-											<option :value="null">(None)</option>
-										</template>
-										<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
-											{{ reason.reason }}
-										</option>
+								<validation-provider vid="pwrbck_deny_res" name="Powerback Denial Reason"
+									:rules="{ required: false }" v-slot="validationContext">
+									<b-form-group label="Powerback Denial Reason" label-for="pwrbck_deny_res"
+										label-cols-lg="2">
+										<b-select v-model="selectedDenialReason" name="pwrbck_denial_reason"
+											:state="getValidationState(validationContext)">
+											<template #first>
+												<option :value="null">(None)</option>
+											</template>
+											<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
+												{{ reason.reason }}
+											</option>
 										</b-select>
-										<b-form-invalid-feedback
-										v-for="error in validationContext.errors"
-										:key="error"
-										v-text="error"
-										/>
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+											v-text="error" />
 									</b-form-group>
 								</validation-provider>
 							</b-card-body>
@@ -735,16 +511,11 @@
 							</b-card-body>
 						</b-collapse> -->
 
-						
+
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseClaimBillingCodes
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
-							Claim Details
+							<b-button block v-b-toggle.collapseClaimBillingCodes variant="light" role="tab"
+								class="text-left px-4 py-3 m-0">
+								Claim Details
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseClaimBillingCodes" role="tabpanel">
@@ -762,176 +533,92 @@
 								</div>
 							</b-card-body> -->
 							<b-card-body>
-								<b-row>	
-								<b-col cols="12" md="6" >
-                                 <p class="font-weight-bold">Claim Billing Codes</p>
-								</b-col>
-							</b-row>
-						<b-row>	
-							<b-col cols="12" md="6">	
-							<validation-provider
-									vid="insurance_plan"
-									name="Insurance Plan"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="ICD-10-CM codes" label-for="insurance_plan" label-cols-lg="4">
-										<b-form-input
-											name="insurance_plan"
-											type="text"
-											v-model="entity.icdCodes10"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-                            </b-col>
-								<b-col cols="12" md="6">
-								<validation-provider
-									vid="insurance_number"
-									name="Insurance Plan ID / Number"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="CPT Codes"
-										label-for="insurance_number"
-										label-cols-lg="4"
-									>
-										<b-form-input
-											name="insurance_number"
-											type="text"
-											v-model="entity.cptCodes"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								</b-col>
-							</b-row>
-							<b-row>
-								<b-col cols="12" md="6">
-								<validation-provider
-									vid="insurance_number"
-									name="Insurance Plan ID / Number"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="ICD-10-PCS codes"
-										label-for="insurance_number"
-										label-cols-lg="4"
-									>
-										<b-form-input
-											name="insurance_number"
-											type="text"
-											v-model="entity.icdCodes"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								</b-col>
-								<b-col cols="12" md="6">
-								<validation-provider
-									vid="insurance_number"
-									name="Insurance Plan ID / Number"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="HCPCS codes"
-										label-for="insurance_number"
-										label-cols-lg="4"
-									>
-										<b-form-input
-											name="insurance_number"
-											type="text"
-											v-model="entity.insurance_number"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								</b-col>
-							</b-row>
-							<b-row>	
-								<b-col cols="12" md="6" >
-                                 <p class="font-weight-bold">Claim Denial Codes</p>
-								</b-col>
-							</b-row>
-							<b-row>
+								<b-row>
 									<b-col cols="12" md="6">
-								<validation-provider
-									vid="insurance_plan"
-									name="CARCs"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="CARCs" label-for="insurance_plan" label-cols-lg="4">
-										<b-form-input
-											name="insurance_plan"
-											type="text"
-											v-model="entity.carcs"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								</b-col>
-								<b-col cols="12" md="6">
-								<validation-provider
-									vid="insurance_number"
-									name="Insurance Plan ID / Number"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="RARCs"
-										label-for="insurance_number"
-										label-cols-lg="4"
-									>
-										<b-form-input
-											name="insurance_number"
-											type="text"
-											v-model="entity.rarcs"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group>
-								</validation-provider>
-								</b-col>
-							</b-row>
+										<p class="font-weight-bold">Claim Billing Codes</p>
+									</b-col>
+								</b-row>
+								<b-row>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_plan" name="Insurance Plan"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="ICD-10-CM codes" label-for="insurance_plan"
+												label-cols-lg="4">
+												<b-form-input name="insurance_plan" type="text" v-model="entity.icdCodes10"
+													:disabled="saving" :state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_number" name="Insurance Plan ID / Number"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="CPT Codes" label-for="insurance_number" label-cols-lg="4">
+												<b-form-input name="insurance_number" type="text" v-model="entity.cptCodes"
+													:disabled="saving" :state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+								</b-row>
+								<b-row>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_number" name="Insurance Plan ID / Number"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="ICD-10-PCS codes" label-for="insurance_number"
+												label-cols-lg="4">
+												<b-form-input name="insurance_number" type="text" v-model="entity.icdCodes"
+													:disabled="saving" :state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_number" name="Insurance Plan ID / Number"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="HCPCS codes" label-for="insurance_number"
+												label-cols-lg="4">
+												<b-form-input name="insurance_number" type="text"
+													v-model="entity.insurance_number" :disabled="saving"
+													:state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+								</b-row>
+								<b-row>
+									<b-col cols="12" md="6">
+										<p class="font-weight-bold">Claim Denial Codes</p>
+									</b-col>
+								</b-row>
+								<b-row>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_plan" name="CARCs"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="CARCs" label-for="insurance_plan" label-cols-lg="4">
+												<b-form-input name="insurance_plan" type="text" v-model="entity.carcs"
+													:disabled="saving" :state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+									<b-col cols="12" md="6">
+										<validation-provider vid="insurance_number" name="Insurance Plan ID / Number"
+											:rules="{ required: false, max: 50 }" v-slot="validationContext">
+											<b-form-group label="RARCs" label-for="insurance_number" label-cols-lg="4">
+												<b-form-input name="insurance_number" type="text" v-model="entity.rarcs"
+													:disabled="saving" :state="getValidationState(validationContext)" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors"
+													:key="error" v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</b-col>
+								</b-row>
 							</b-card-body>
 
 							<!-- <case-readmissions
@@ -948,7 +635,7 @@
 						</b-collapse>
 
 
-					<!--	<b-card-header header-tag="header" role="tab" class="p-0">
+						<!--	<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseClaimDenialCodes
@@ -1049,157 +736,85 @@
 						</b-collapse> -->
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseFinancial
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
+							<b-button block v-b-toggle.collapseFinancial variant="light" role="tab"
+								class="text-left px-4 py-3 m-0">
 								Financial Details
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseFinancial" role="tabpanel">
 							<b-card-body>
-								<validation-provider
-									vid="total_claim_amount"
-									name="Total Claim Amount"
+								<validation-provider vid="total_claim_amount" name="Total Claim Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Paid Claim Amount"
-										label-for="total_claim_amount"
-										label-cols-lg="4"
-									>
+									v-slot="validationContext">
+									<b-form-group label="Paid Claim Amount" label-for="total_claim_amount"
+										label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
-											<b-form-input
-												name="Paid Claim Amount"
-												type="number"
-												v-model="entity.total_claim_amount"
-												:disabled="saving"
-												:state="getValidationState(validationContext)"
-												:min="0"
-												:max="currencyMax"
-												step="0.00"
-												maxlength="10"
-												autocomplete="off"
-											/>
-											<b-form-invalid-feedback
-												v-for="error in validationContext.errors"
-												:key="error"
-												v-text="error"
-											/>
+											<b-form-input name="Paid Claim Amount" type="number"
+												v-model="entity.total_claim_amount" :disabled="saving"
+												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
+												step="0.00" maxlength="10" autocomplete="off" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+												v-text="error" />
 										</b-input-group>
 									</b-form-group>
 								</validation-provider>
 
-								<validation-provider
-									vid="disputed_amount"
-									name="Disputed Amount"
+								<validation-provider vid="disputed_amount" name="Disputed Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
-									v-slot="validationContext"
-								>
-									<b-form-group label="Audit Denial Amount " label-for="disputed_amount" label-cols-lg="4">
+									v-slot="validationContext">
+									<b-form-group label="Audit Denial Amount " label-for="disputed_amount"
+										label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
-											<b-form-input
-												name="disputed_amount"
-												type="number"
-												v-model="entity.disputed_amount"
-												:disabled="saving"
-												:state="getValidationState(validationContext)"
-												:min="0"
-												:max="currencyMax"
-												step="0.00"
-												maxlength="10"
-												autocomplete="off"
-											/>
-											<b-form-invalid-feedback
-												v-for="error in validationContext.errors"
-												:key="error"
-												v-text="error"
-											/>
+											<b-form-input name="disputed_amount" type="number"
+												v-model="entity.disputed_amount" :disabled="saving"
+												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
+												step="0.00" maxlength="10" autocomplete="off" />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+												v-text="error" />
 										</b-input-group>
 									</b-form-group>
 								</validation-provider>
 
-								<validation-provider
-								    v-if="iscontract"
-									vid="reimbursement_amount"
+								<validation-provider v-if="iscontract" vid="reimbursement_amount"
 									name="Reimbursement Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Contract Risk Amount(Actual)"
-										label-for="reimbursement_amount"
-										label-cols-lg="4"
-									>
+									v-slot="validationContext">
+									<b-form-group label="Contract Risk Amount(Actual)" label-for="reimbursement_amount"
+										label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
-											<b-form-input
-												name="reimbursement_amount"
-												type="number"
-												v-model="entity.reimbursement_amount"
-												:disabled="saving"
-												:state="getValidationState(validationContext)"
-												:min="0"
-												:max="currencyMax"
-												step="0.00"
-												maxlength="10"
-												autocomplete="off"
-												readonly
-											/>
-											<b-form-invalid-feedback
-												v-for="error in validationContext.errors"
-												:key="error"
-												v-text="error"
-											/>
+											<b-form-input name="reimbursement_amount" type="number"
+												v-model="entity.reimbursement_amount" :disabled="saving"
+												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
+												step="0.00" maxlength="10" autocomplete="off" readonly />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+												v-text="error" />
 										</b-input-group>
 									</b-form-group>
 								</validation-provider>
-								<validation-provider
-								    v-if="iscontract"
-									vid="reimburse_amount"
-									name="Reimburse Amount"
+								<validation-provider v-if="iscontract" vid="reimburse_amount" name="Reimburse Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Contract Risk Amount(Calculated)"
-										label-for="reimburse_amount"
-										label-cols-lg="4"
-									>
+									v-slot="validationContext">
+									<b-form-group label="Contract Risk Amount(Calculated)" label-for="reimburse_amount"
+										label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
-											<b-form-input
-												name="contract_paid_amt_est"
-												type="number"
-												v-model="entity.contract_paid_amt_est"
-												:disabled="saving"
-												:state="getValidationState(validationContext)"
-												:min="0"
-												:max="currencyMax"
-												step="0.00"
-												maxlength="10"
-												autocomplete="off"
-												readonly
-											/>
-											<b-form-invalid-feedback
-												v-for="error in validationContext.errors"
-												:key="error"
-												v-text="error"
-											/>
+											<b-form-input name="contract_paid_amt_est" type="number"
+												v-model="entity.contract_paid_amt_est" :disabled="saving"
+												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
+												step="0.00" maxlength="10" autocomplete="off" readonly />
+											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+												v-text="error" />
 										</b-input-group>
 									</b-form-group>
 								</validation-provider>
@@ -1207,101 +822,55 @@
 						</b-collapse>
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseInsurance
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
+							<b-button block v-b-toggle.collapseInsurance variant="light" role="tab"
+								class="text-left px-4 py-3 m-0">
 								Insurance Details
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseInsurance" role="tabpanel">
 							<b-card-body>
-								<validation-provider
-									vid="insurance_plan"
-									name="Insurance Plan"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
+								<validation-provider vid="insurance_plan" name="Insurance Plan"
+									:rules="{ required: false, max: 50 }" v-slot="validationContext">
 									<b-form-group label="Plan Name" label-for="insurance_plan" label-cols-lg="4">
-										<b-form-input
-											name="insurance_plan"
-											type="text"
-											v-model="entity.insurance_plan"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+										<b-form-input name="insurance_plan" type="text" v-model="entity.insurance_plan"
+											:disabled="saving" :state="getValidationState(validationContext)" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+											v-text="error" />
 									</b-form-group>
 								</validation-provider>
 
-								<validation-provider
-									vid="insurance_number"
-									name="Insurance Plan ID / Number"
-									:rules="{ required: false, max: 50 }"
-									v-slot="validationContext"
-								>
-									<b-form-group
-										label="Plan ID / Number"
-										label-for="insurance_number"
-										label-cols-lg="4"
-									>
-										<b-form-input
-											name="insurance_number"
-											type="text"
-											v-model="entity.planID"
-											:disabled="saving"
-											:state="getValidationState(validationContext)"
-										/>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+								<validation-provider vid="insurance_number" name="Insurance Plan ID / Number"
+									:rules="{ required: false, max: 50 }" v-slot="validationContext">
+									<b-form-group label="Plan ID / Number" label-for="insurance_number" label-cols-lg="4">
+										<b-form-input name="insurance_number" type="text" v-model="entity.planID"
+											:disabled="saving" :state="getValidationState(validationContext)" />
+										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+											v-text="error" />
 									</b-form-group>
 								</validation-provider>
 							</b-card-body>
 						</b-collapse>
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
-							<b-button
-								block
-								v-b-toggle.collapseReadmissions
-								variant="light"
-								role="tab"
-								class="text-left px-4 py-3 m-0"
-							>
+							<b-button block v-b-toggle.collapseReadmissions variant="light" role="tab"
+								class="text-left px-4 py-3 m-0">
 								Readmissions
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseReadmissions" role="tabpanel">
 							<b-card-body>
 								<div class="d-flex">
-									<b-button
-										variant="secondary"
-										@click="addReadmission"
-										:disabled="!canAddReadmission"
-										class="ml-auto"
-									>
+									<b-button variant="secondary" @click="addReadmission" :disabled="!canAddReadmission"
+										class="ml-auto">
 										<font-awesome-icon icon="plus" fixed-width />
 										<span>Add Readmission</span>
 									</b-button>
 								</div>
 							</b-card-body>
-							<case-readmissions
-								v-if="hasReadmissions"
-								v-model="entity.case_readmissions"
-								:disabled="saving"
-							/>
+							<case-readmissions v-if="hasReadmissions" v-model="entity.case_readmissions"
+								:disabled="saving" />
 							<b-card-body v-else>
-								<empty-result icon="list"
-									>No readmissions
+								<empty-result icon="list">No readmissions
 									<template #content> Add readmissions to track multiple service dates. </template>
 								</empty-result>
 							</b-card-body>
@@ -1319,7 +888,7 @@
 							</b-button>
 						</b-card-header>
 						<b-collapse id="collapseClaimBillingCodes" role="tabpanel"> -->
-							<!-- <b-card-body>
+						<!-- <b-card-body>
 								<div class="d-flex">
 									<b-button
 										variant="secondary"
@@ -1332,7 +901,7 @@
 									</b-button>
 								</div>
 							</b-card-body> -->
-							<!-- <b-card-body>
+						<!-- <b-card-body>
 							<validation-provider
 									vid="insurance_plan"
 									name="Insurance Plan"
@@ -1356,7 +925,7 @@
 								</validation-provider> -->
 
 
-								<!-- <validation-provider
+						<!-- <validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
 									:rules="{ required: false, max: 50 }"
@@ -1382,7 +951,7 @@
 									</b-form-group>
 								</validation-provider> -->
 
-								<!-- <validation-provider
+						<!-- <validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
 									:rules="{ required: false, max: 50 }"
@@ -1408,7 +977,7 @@
 									</b-form-group>
 								</validation-provider> -->
 
-								<!-- <validation-provider
+						<!-- <validation-provider
 									vid="insurance_number"
 									name="Insurance Plan ID / Number"
 									:rules="{ required: false, max: 50 }"
@@ -1435,7 +1004,7 @@
 								</validation-provider>
 							</b-card-body> -->
 
-							<!-- <case-readmissions
+						<!-- <case-readmissions
 								v-if="hasReadmissions"
 								v-model="entity.case_readmissions"
 								:disabled="saving"
@@ -1456,13 +1025,8 @@
 							<b-button v-if="!hideCancel" block variant="light" @click="cancel">Cancel</b-button>
 						</b-col>
 						<b-col cols="12" md="6" offset-xl="4" xl="4">
-							<b-button
-								block
-								variant="primary"
-								type="submit"
-								:disabled="saving || loading || !hasPatient"
-								:title="invalid ? 'Please fix any validation errors' : 'Save'"
-							>
+							<b-button block variant="primary" type="submit" :disabled="saving || loading || !hasPatient"
+								:title="invalid ? 'Please fix any validation errors' : 'Save'">
 								<font-awesome-icon icon="circle-notch" v-if="saving" spin fixed-width />
 								<span>Save</span>
 							</b-button>
@@ -1488,6 +1052,7 @@ import DenialReasonSearchMulti from "@/clients/components/Search/DenialReasonsMu
 import DenialReasonForm from "@/clients/components/DenialReasons/Form.vue";
 import ClientEmployeeForm from "@/clients/components/ClientEmployees/Form.vue";
 import FacilityForm from "@/clients/components/Facilities/AddForm.vue";
+// import AddNPI from "@/clients/views/ClientEmployees/add_npi.vue";
 import axios from "axios";
 
 export default {
@@ -1572,7 +1137,7 @@ export default {
 				total_claim_amount: null,
 				disputed_amount: null,
 				reimbursement_amount: null,
-				contract_paid_amt_est:null,
+				contract_paid_amt_est: null,
 				insurance_provider_id: null,
 				insurance_plan: null,
 				insurance_number: null,
@@ -1581,12 +1146,12 @@ export default {
 				unable_to_complete: false,
 				assigned: null,
 				assigned_to: null,
-				cptCodes:null,
-				icdCodes:null,
-				carcs:null,
-				rarcs:null,
-				planID:null,
-				icdCodes10:null,
+				cptCodes: null,
+				icdCodes: null,
+				carcs: null,
+				rarcs: null,
+				planID: null,
+				icdCodes10: null,
 
 
 			},
@@ -1595,8 +1160,8 @@ export default {
 			minDate: getAbsoluteMinimumDate(),
 			maxDate: getTodaysDate(),
 			disciplineIds: [],
-			insuranceTypesList:[],
-			displayNames:[],
+			insuranceTypesList: [],
+			displayNames: [],
 			denialReasons: [],
 			selectedDenialReason: null,
 
@@ -1605,21 +1170,21 @@ export default {
 			searchResults: [], // Array to hold filtered search results
 			selectedResult: null, // Selected result from the dropdown
 			insuranceOptions: [
-            { value: null, text: 'Select an option' }, // Optional: as a placeholder
-            { value: 'option1', text: 'Medicare A' },
-            { value: 'option2', text: 'Medicare B' },
-            { value: 'option3', text: 'Managed A' },
-            { value: 'option4', text: 'Managed A PPS' },
-            { value: 'option5', text: 'Managed B' },
-            { value: 'option6', text: 'Commercial' },
-            { value: 'option7', text: 'Medicaid' },
-            { value: 'option8', text: 'Workers Comp' },
-            { value: 'option9', text: 'Auto' },
-            { value: 'option10', text: 'Military' },
-            { value: 'option11', text: 'Private Pay' },
-            { value: 'option12', text: 'Other' },
-            // Add more options as needed
-        ],
+				{ value: null, text: 'Select an option' }, // Optional: as a placeholder
+				{ value: 'option1', text: 'Medicare A' },
+				{ value: 'option2', text: 'Medicare B' },
+				{ value: 'option3', text: 'Managed A' },
+				{ value: 'option4', text: 'Managed A PPS' },
+				{ value: 'option5', text: 'Managed B' },
+				{ value: 'option6', text: 'Commercial' },
+				{ value: 'option7', text: 'Medicaid' },
+				{ value: 'option8', text: 'Workers Comp' },
+				{ value: 'option9', text: 'Auto' },
+				{ value: 'option10', text: 'Military' },
+				{ value: 'option11', text: 'Private Pay' },
+				{ value: 'option12', text: 'Other' },
+				// Add more options as needed
+			],
 		};
 	},
 	computed: {
@@ -1677,7 +1242,7 @@ export default {
 	},
 	mounted() {
 		this.additionalDataFetch();
-        this.facilityDetails();	
+		this.facilityDetails();
 		this.fetchDenialReasons();
 
 		if (this.id) {
@@ -1893,17 +1458,17 @@ export default {
 			this.$store.dispatch("facilities/getActive");
 		},
 
-		async additionalDataFetch(){
+		async additionalDataFetch() {
 			const url = "/client/insuranceTypesList";
-				
+
 			const response = await axios.get(url, {
-			headers: {
-				"Accept": "application/json",
-				// You can add other headers here if needed
-			},
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
 			});
 			console.log("insuranceTypesList = ", response.data);
-			this.insuranceTypesList=response.data;
+			this.insuranceTypesList = response.data;
 
 		},
 		// fetch powerbackDenialReasons
@@ -1915,15 +1480,15 @@ export default {
 			} catch (error) {
 				console.error('Error fetching denial reasons:', error);
 			}
-		} ,     
-		async facilityDetails(){
-            const url = "/client/facilityList";
-			
+		},
+		async facilityDetails() {
+			const url = "/client/facilityList";
+
 			const response = await axios.get(url, {
-			headers: {
-				"Accept": "application/json",
-				// You can add other headers here if needed
-			},
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
 			});
 			this.facilities = response.data; // save all facilities for later use
 			this.displayNames = this.facilities.map((facility) => facility.display_name);
@@ -1945,7 +1510,7 @@ export default {
 				this.entity.facility_name = selectedFacility.facility_status;
 				// this.entity.facility_name = 'Active';
 			}
-    	},
+		},
 
 		searchFacilities() {
 			// Filter the displayNames array based on the search input
@@ -1961,13 +1526,13 @@ export default {
 			console.log('searchResults:', this.searchResults);
 		},
 		selectFacility(item) {
-		// Handle the selected facility, if needed
-		this.facilitySearch = item;
-		console.log('item inside selectFacility:',item);
-		this.logSelectedFacilityDetails(item);
-		this.searchResults = [];
-		
-		
+			// Handle the selected facility, if needed
+			this.facilitySearch = item;
+			console.log('item inside selectFacility:', item);
+			this.logSelectedFacilityDetails(item);
+			this.searchResults = [];
+
+
 		},
 
 	},
@@ -2003,43 +1568,50 @@ export default {
 </script>
 <style scoped>
 .custom-dropdown-option {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
+	background-color: #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .custom-rounded-border {
-  border: 1px solid #007bff; /* Set your desired border color and thickness */
-  border-radius: 5px; /* Set your desired border radius */
+	border: 1px solid #007bff;
+	/* Set your desired border color and thickness */
+	border-radius: 5px;
+	/* Set your desired border radius */
 }
 
 .custom-dropdown-option {
-  position: absolute;
-  top: 100%; /* Position the dropdown below the input */
-  left: 0;
-  width: 100%; /* Make the dropdown full-width */
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Hide overflow content */
-  z-index: 1000;
+	position: absolute;
+	top: 100%;
+	/* Position the dropdown below the input */
+	left: 0;
+	width: 100%;
+	/* Make the dropdown full-width */
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+	/* Hide overflow content */
+	z-index: 1000;
 }
+
 .custom-option-col {
-  margin-left: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+	margin-left: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s;
 }
 
 .custom-option-col:hover {
-  background-color: #f5f5f5;
-  color: #9bb8d7;
+	background-color: #f5f5f5;
+	color: #9bb8d7;
 }
-.option-content{
+
+.option-content {
 	margin-top: 2px;
 	margin-bottom: 2px;
 }
-
 </style>

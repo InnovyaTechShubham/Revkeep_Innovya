@@ -4,7 +4,10 @@ import AddNPI from "@/clients/views/ClientEmployees/add_npi.vue";
 import Edit from "@/clients/views/ClientEmployees/edit.vue";
 import View from "@/clients/views/ClientEmployees/view.vue";
 
-const baseUrl = "/physicians";
+// Base URLs for different routes 
+const baseUrl = "/physicians"; // if accessing from physician 
+const Url = "/cases"; // if accessing from edit case 
+const NewCaseUrl = "/newcases" // if accessing from new case
 
 export default [
 	{
@@ -18,6 +21,22 @@ export default [
 	{
 		path: `${baseUrl}/add/npi`,
 		name: "clientEmployees.add.npi",
+		component: AddNPI,
+		meta: {
+			title: "Add Physician From NPI Registry",
+		},
+	},
+	{
+		path: `${Url}/:id/add/npi`,
+		name: "clientEmployees.add.npi.cases",
+		component: AddNPI,
+		meta: {
+			title: "Add Physician From NPI Registry",
+		},
+	},
+	{
+		path: `${NewCaseUrl}/add/npi`,
+		name: "clientEmployees.add.npi.newcase",
 		component: AddNPI,
 		meta: {
 			title: "Add Physician From NPI Registry",

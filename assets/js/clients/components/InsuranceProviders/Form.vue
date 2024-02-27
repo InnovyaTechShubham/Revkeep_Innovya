@@ -51,7 +51,7 @@
 									<b-form-select
 										id="state"
 										name="state"
-										v-model="selectedStateName"
+										v-model="selected_state_name"
 										:options="usaStates"
 										value-field="name"
 										text-field="name"
@@ -818,6 +818,7 @@ export default {
 				city: null,
 				state: null,
 				zip: null,
+				selected_state_name: "Not Applicable",
 				insurance_types: [],
 				insurance_type_ids: this.audittype_data,
 				newAuditType: "",
@@ -827,7 +828,6 @@ export default {
 			},
 			newname: "",
 			addingAgency: false,
-			selectedStateName: "Not Applicable",
 			usaStates: [
 				{ name: "Not Applicable" },
 				{ name: "Alabama" },
@@ -1027,7 +1027,8 @@ export default {
 				this.entity.insurance_types = {
 					_ids: response.insurance_types.map((insuranceType) => insuranceType.id) ?? [],
 				};
-
+				 // Set the selected state name from the entity data
+				 this.selected_state_name = this.entity.selected_state_name || "Not Applicable";
 				this.$emit("loaded", response);
 			} catch (e) {
 				this.$store.dispatch("apiError", {
@@ -1043,8 +1044,8 @@ export default {
 
 		// 			this.saving = true;
 
-		// 					if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-		// 					this.entity.name = `${this.entity.name} of ${this.selectedStateName}`;
+		// 					if (this.selected_state_name && this.selected_state_name !== "Not Applicable") {
+		// 					this.entity.name = `${this.entity.name} of ${this.selected_state_name}`;
 		// 					} else {
 		// 					this.entity.name = this.entity.name;
 		// 					}
@@ -1088,10 +1089,12 @@ export default {
 					});
 				}
 
-				// Modify the entity name based on the selected state
-				if (this.selectedStateName && this.selectedStateName !== "Not Applicable") {
-					this.entity.name = `${this.modifiedName} of ${this.selectedStateName}`;
-				}
+				
+        // Modify the entity name based on the selected state
+        if (this.selected_state_name && this.selected_state_name !== "Not Applicable") {
+            this.entity.selected_state_name = this.selected_state_name;
+            this.entity.name = `${this.modifiedName} of ${this.selected_state_name}`;
+        }
 
 				// Populate the insurance_types array with the selected insurance types
 				this.entity.insurance_types = this.audittype_data.map((id) => {

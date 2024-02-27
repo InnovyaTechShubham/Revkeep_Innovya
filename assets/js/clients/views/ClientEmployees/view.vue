@@ -6,11 +6,8 @@
 				<span>{{ entity.full_name }}</span>
 			</template>
 			<template #buttons>
-				<b-button
-					variant="primary"
-					:to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
-					title="Edit"
-				>
+				<b-button variant="primary" :to="{ name: 'clientEmployees.edit', params: { id: $route.params.id } }"
+					title="Edit">
 					<font-awesome-icon icon="edit" fixed-width />
 					<span>Edit</span>
 				</b-button>
@@ -54,7 +51,7 @@
 
 			<b-card no-body class="shadow-sm">
 				<b-tabs card active-nav-item-class="font-weight-bold">
-					<b-tab  no-body active lazy>
+					<b-tab no-body active lazy>
 						<template #title>Details</template>
 
 						<!-- <div class="row mt-4">
@@ -76,13 +73,40 @@
 							</dd>
 						</div>  -->
 
-						<div class="row mt-4">
+						<!-- <div class="row mt-4">
 							<dt class="col text-muted h6 small ml-3">Facility</dt>
 							<dd class="col-8 d-flex flex-wrap align-items-center">
 								<template v-if="MatchingFacility.length > 0">
 									<div v-for="(facilityName, index) in MatchingFacility" :key="index" class="mb-1">
 										<b-badge pill variant="primary" class="ml-1">{{ facilityName }}</b-badge>
 									</div>
+								</template>
+								<template v-else>
+									<span class="text-muted">No matching facilities found.</span>
+								</template>
+							</dd>
+						</div> -->
+
+						<!-- <div class="row mt-4">
+							<dt class="col text-muted h6 small ml-3">Facility</dt>
+							<dd class="col-8 d-flex flex-wrap align-items-center">
+								<template v-if="MatchingFacility.length > 0">
+									<span v-for="(facilityName, index) in MatchingFacility" :key="index">
+										{{ index > 0 ? ', ' : '' }}{{ facilityName }}
+									</span>
+								</template>
+								<template v-else>
+									<span class="text-muted">No matching facilities found.</span>
+								</template>
+							</dd>
+						</div> -->
+						<div class="row mt-4">
+							<dt class="col text-muted h6 small ml-3">Facility</dt>
+							<dd class="col-8 d-flex flex-wrap align-items-center">
+								<template v-if="facilityNames.length > 0">
+									<span v-for="(facility, index) in facilityNames" :key="index">
+										<span v-if="index > 0">, </span>{{ facility.name }}
+									</span>
 								</template>
 								<template v-else>
 									<span class="text-muted">No matching facilities found.</span>
@@ -133,15 +157,10 @@
 							</dd>
 						</div>
 					</b-tab>
-					<b-tab no-body  lazy>
+					<b-tab no-body lazy>
 						<template #title>Cases</template>
-						<case-index
-							ref="caseList"
-							hide-client-employee
-							:filters="caseFilters"
-							@clicked="viewCase"
-							empty-description="No cases have been created for this physician."
-						/>
+						<case-index ref="caseList" hide-client-employee :filters="caseFilters" @clicked="viewCase"
+							empty-description="No cases have been created for this physician." />
 					</b-tab>
 					<b-tab no-body lazy>
 						<template #title>Add Case</template>
@@ -189,6 +208,7 @@ export default {
 				full_name: null,
 				list_name: null,
 			},
+			facilityNames: [],
 		};
 	},
 	computed: {
@@ -204,7 +224,9 @@ export default {
 	mounted() {
 		this.refresh();
 		this.fetchClientFacilities();
-		this.FacilitiesList();
+		// this.FacilitiesList();
+		// console.log("MatchingFacility:", this.MatchingFacility); // Add this line
+		// this.FindFacilityName();
 	},
 	methods: {
 		async refresh() {
@@ -220,11 +242,38 @@ export default {
 				this.loading = false;
 			}
 		},
+		// async fetchClientFacilities() {
+		// 	try {
+		// 		const url = "/client/fetchmultiplefacility";
+
+
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+
+		// 		console.log("RESPONSE = ", response.data);
+
+
+		// 		this.clientFacilities = response.data.filter(item => item.client_id === this.$route.params.id);
+
+		// 		// Extract facility IDs directly without cleaning the array
+		// 		let matchingFacilityIds = this.clientFacilities.map(item => item.facility_id);
+
+		// 		// Display the matching facility IDs
+		// 		console.log("Matching Facility IDs:", matchingFacilityIds);
+
+		// 		this.MatchingFacility = [...this.MatchingFacility, ...matchingFacilityIds];
+		// 		console.log(this.MatchingFacility);
+		// 		this.FindFacilityName();
+		// 	} catch (error) {
+		// 		console.error("Error fetching client facilities:", error);
+		// 	}
+		// },
 		async fetchClientFacilities() {
 			try {
 				const url = "/client/fetchmultiplefacility";
-
-				
 				const response = await axios.get(url, {
 					headers: {
 						"Accept": "application/json",
@@ -233,7 +282,6 @@ export default {
 
 				console.log("RESPONSE = ", response.data);
 
-				
 				this.clientFacilities = response.data.filter(item => item.client_id === this.$route.params.id);
 
 				// Extract facility IDs directly without cleaning the array
@@ -244,40 +292,76 @@ export default {
 
 				this.MatchingFacility = [...this.MatchingFacility, ...matchingFacilityIds];
 				console.log(this.MatchingFacility);
+
+				// Call FindFacilityName after updating MatchingFacility
+				this.FindFacilityName();
 			} catch (error) {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
-		
-		async FacilitiesList() {
+
+		// async FacilitiesList() {
+		// 	try {
+		// 		const url = "/client/facilityList";
+
+		// 		// Fetch data from the server
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+
+		// 		console.log("RESPONSE = ", response.data);
+
+		// 		// Extract facility names based on their IDs
+		// 		let facilityNames = this.MatchingFacility.map(facilityId => {
+		// 			const facility = response.data.find(item => item.id === facilityId);
+		// 			return facility ? facility.name : null;
+		// 		});
+
+		// 		// Display the facility names
+		// 		console.log("Facility names", facilityNames);
+
+		// 		// Update MatchingFacility array with facility names
+		// 		this.MatchingFacility = facilityNames.filter(name => name !== null);
+		// 		console.log("final", this.MatchingFacility);
+		// 	} catch (error) {
+		// 		console.error("Error fetching client facilities:", error);
+		// 	}
+		// },
+		// async FindFacilityName(){
+		// 	console.log("working");
+		// 	try {
+		// 		const response = await axios.get('/client/findfacilityname', {
+		// 			params: {
+		// 				id: this.MatchingFacility
+		// 			}
+		// 		});
+		// 		this.searchResults = response.data;
+		// 		console.log("Matching facilities names", this.searchResults);
+		// 	} catch (error) {
+		// 		console.error('Error searching facilities:', error);
+		// 	}
+		// },
+		async FindFacilityName() {
+			console.log("Finding facility names...");
 			try {
-				const url = "/client/facilityList";
-
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
+				const ids = this.MatchingFacility.join(',');
+				console.log("Sending request with facility IDs:", ids);
+				const response = await axios.get('/client/findfacilityname', {
+					params: {
+						ids: ids // Sending comma-separated list of facility IDs
+					}
 				});
-
-				console.log("RESPONSE = ", response.data);
-
-				// Extract facility names based on their IDs
-				let facilityNames = this.MatchingFacility.map(facilityId => {
-					const facility = response.data.find(item => item.id === facilityId);
-					return facility ? facility.name : null;
-				});
-
-				// Display the facility names
-				console.log("Facility names", facilityNames);
-
-				// Update MatchingFacility array with facility names
-				this.MatchingFacility = facilityNames.filter(name => name !== null);
-				console.log("final", this.MatchingFacility);
+				console.log("Request sent successfully");
+				this.facilityNames = response.data;
+				console.log("Matching facilities name:", this.facilityNames);
 			} catch (error) {
-				console.error("Error fetching client facilities:", error);
+				console.error('Error fetching facility names:', error);
+				// Handle error here, e.g., show error message to the user
 			}
 		},
+
 		async destroy() {
 			if (!confirm("Are you sure you want to delete this physician?")) {
 				return;

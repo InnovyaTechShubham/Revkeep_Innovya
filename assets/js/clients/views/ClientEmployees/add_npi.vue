@@ -5,7 +5,7 @@
 				<router-link :to="{ name: 'clientEmployees' }" v-text="`Physicians /`" />
 				<span>Add From NPI Registry</span>
 			</template>
-			
+
 			<!-- current requirement does not allow manually addition of physician if in future requirement changes uncomment the below code 
 				rest all the functionalities are untouched
 				
@@ -381,12 +381,46 @@ export default {
 
 				const newEntity = await this.$store.dispatch("clientEmployees/create", entity);
 
-				this.$router.push({
-					name: "clientEmployees.edit",
-					params: {
-						id: newEntity.id,
-					},
-				});
+				// this.$router.push({
+				// 	name: "clientEmployees.edit",
+				// 	params: {
+				// 		id: newEntity.id,
+				// 	},
+				// });
+
+
+				// Extract the case ID from the current route URL if it contains '/cases'
+				// const caseId = this.$route.path.includes('/cases') ? this.$route.params.id : null;
+
+				// Redirect the user based on the current route
+				// this.$router.push({
+				// 	name: this.$route.path.includes('/cases') ? 'cases.edit' : 'clientEmployees.edit',
+				// 	params: {
+				// 		// If the current route contains '/cases', use the extracted case ID, otherwise use newEntity.id
+				// 		id: caseId ? caseId : newEntity.id,
+				// 	},
+				// });
+
+				// Extract the ID from the current route URL
+				const id = this.$route.params.id;
+
+				// Check if the current route is '/client/physicians/add/npi'
+				if (this.$route.path.includes('/physicians')) {
+					// Redirect to 'clientEmployees.edit'
+					this.$router.push({ name: 'clientEmployees.edit', params: { id: newEntity.id } });
+				}
+				// Check if the current route is '/client/cases/:id/add/npi'
+				else if (this.$route.path.includes('/cases')) {
+					// Redirect to 'cases.edit' with the extracted case ID or newEntity.id
+					this.$router.push({ name: 'cases.edit', params: { id: id ? id : newEntity.id } });
+				}
+				// Check if the current route is '/client/cases/add/npi'
+				else if (this.$route.path.includes('/newcases')) {
+					// Redirect to 'cases.add'
+					this.$router.push({ name: 'cases.add' });
+				}
+
+
 
 				this.$nextTick(function () {
 					this.$store.dispatch("notify", {

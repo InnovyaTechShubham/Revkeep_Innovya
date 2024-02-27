@@ -929,7 +929,12 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
-
+	$builder->connect('/multipleagencycontact', [
+		'controller' => 'MultipleAgencyContact',
+		'action' => 'index',
+		'_method' => 'POST'
+		
+	]);
 	$builder->connect('/outgoingList', [
 		'controller' => 'OutgoingList',
 		'action' => 'index',
@@ -1023,6 +1028,16 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 	
 	$builder->connect('/fetchmultiplefacility', [
 		'controller' => 'FetchMultiplefacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/searchfacility', [
+		'controller' => 'Searchfacility',
+		'action' => 'index',
+	    
+	]);
+	$builder->connect('/findfacilityname', [
+		'controller' => 'FindFacilityName',
 		'action' => 'index',
 	    
 	]);
@@ -1241,5 +1256,9 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'getAllRecord',
 		'_method' => 'GET'
 	]);
-
+	$builder->connect('/multiagencycontactlist', [
+		'controller' => 'MultiAgencyContactList',
+		'action' => 'index',
+		
+	]);
 });
