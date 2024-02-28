@@ -327,6 +327,10 @@ export default {
 		id: {
 			default: null,
 		},
+		// client_id: {
+		// 	type: String,
+		// 	default: null,
+		// },
 	},
 	computed: {
 		...mapGetters({
@@ -396,6 +400,7 @@ export default {
 			deleteFacilityMode: false,
 			deleteServiceMode: false,
 			errorMessage: null,
+			client_id: window.authUser?.client_id,
 		};
 	},
 	watch: {
@@ -542,6 +547,8 @@ export default {
 			// Extract the required data
 			// chain_type removed for now
 			// const { chain_name, chain_type } = this.entity;
+			console.log('inside chain save method:-');
+			console.log(this.client_id);
 			const { chain_name } = this.entity;
 
 			// Prepare the data to be sent in the POST request
@@ -549,7 +556,8 @@ export default {
 				chain_name,
 				// chain_type, chain_type removed from here for now
 				Facility_data: this.selectedItems,
-				Service_data: this.serviceItems
+				Service_data: this.serviceItems,
+				client_id: this.client_id
 			};
 			await axios.post('/client/chains', chainData)
 				.then(response => {
@@ -622,7 +630,8 @@ export default {
 				chain_name,
 				// chain_type, removed from here also
 				Facility_data: this.selectedItems,
-				Service_data: this.serviceItems
+				Service_data: this.serviceItems,
+				client_id: this.clientId
 			};
 			// alert(JSON.stringify(chainData))
 			await axios.post(`/client/editChain/${this.$route.params.id}`, chainData)

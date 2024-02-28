@@ -10,7 +10,7 @@
 
 		<b-row class="my-4">
 			<b-col cols="12">
-				<AddForm v-model="entity" @cancel="toIndex" @saved="toView" />
+				<AddForm v-model="entity" :client_id="client_id" @cancel="toIndex" @saved="toView" />
 			</b-col>
 		</b-row>
 	</div>
@@ -32,7 +32,12 @@ export default {
 				name: "",
 				active: true,
 			},
+			client_id: window.authUser?.client_id || null,
 		};
+	},
+	mounted(){
+		console.log('inside chain  add.vue:-')
+		console.log(this.client_id);
 	},
 	methods: {
 		toIndex() {

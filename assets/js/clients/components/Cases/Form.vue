@@ -107,7 +107,7 @@
 						<b-col col="12" md="6">
 							<validation-provider vid="facility_id" name="Facility" :rules="{ required: false }"
 								v-slot="validationContext">
-								<b-form-group label="Account Name" label-for="facility" label-cols-lg="4">
+								<b-form-group label="Facility Name" label-for="facility" label-cols-lg="4">
 									<!-- Use a div to create a pseudo input group -->
 									<div style="display: flex; position: relative;">
 										<!-- Custom input box for search -->
@@ -135,7 +135,7 @@
 														<!-- Content for the option -->
 														<p>
 															<span title="Facility">
-																{{ item }}
+																{{ item.displayName }}
 															</span>
 														</p>
 													</div>
@@ -180,15 +180,28 @@
 										/>
 									</b-form-group>
 								</validation-provider> -->
-							<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
-								<b-form-input name="facility_status" v-model="entity.facility_name" :disabled="saving"
-									readonly type="text" autocomplete="off" />
-							</b-form-group>
-							<!-- Term Date -->
-							<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
-								<b-form-input name="term_date" v-model="entity.facility_name" :disabled="saving" readonly
-									type="text" autocomplete="off" />
-							</b-form-group>
+								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+									<b-form-input
+										name="facility_status"
+										v-model="entity.facility_name"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+									/>
+								</b-form-group>
+								<!-- Term Date -->
+								<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+									<b-form-input
+										name="term_date"
+										v-model="term_date"
+										:disabled="saving"
+										readonly
+										type="text"
+										autocomplete="off"
+										:style="{ color: entity.facility_name === 'Inactive' ? 'red' : 'inherit' }"
+									/>
+								</b-form-group>
 
 						</b-col>
 					</b-row>
@@ -276,11 +289,22 @@
 						</b-col>
 						<!-- adding new column Insurance Type -->
 						<b-col cols="12" md="6">
-							<validation-provider v-if="iscontract" vid="insurance_type" name="Insurance Type"
-								:rules="{ required: false }" v-slot="validationContext">
-								<b-form-group label="Insurance Type" label-for="Insurance Type" label-cols-lg="4">
-									<b-form-select name="insurance_type" v-model="entity.insurance_type" :disabled="saving"
-										:state="getValidationState(validationContext)" :options="insuranceOptions" required>
+							<validation-provider
+								v-if="iscontract"
+								vid="insurance_type"
+								name="Insurance Rate Type"
+								:rules="{ required: false }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Insurance Rate Type" label-for="Insurance Type" label-cols-lg="4">
+									<b-form-select
+										name="insurance_type"
+										v-model="entity.insurance_type"
+										:disabled="saving"
+										:state="getValidationState(validationContext)"
+										:options="insuranceOptions"
+										required
+									>
 										<template v-slot:first>
 											<!-- This is optional, in case you want a non-selectable prompt -->
 											<option disabled value="">Please select one</option>
@@ -426,6 +450,40 @@
 						<b-collapse id="collapseDenial" role="tabpanel">
 							<b-card-body>
 								<div class="row">
+									<!-- Powerback Denial Reason -->
+									<div class="col-lg-12">
+										<validation-provider
+										vid="pwrbck_deny_res"
+										name="Powerback Denial Reason"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Powerback Denial Reason"
+											label-for="pwrbck_deny_res"
+											label-cols-lg="2"
+										>
+											<b-select
+											v-model="selectedDenialReason"
+											name="pwrbck_denial_reason"
+											:state="getValidationState(validationContext)"
+											>
+											<template #first>
+												<option :value="null">(None)</option>
+											</template>
+											<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
+												{{ reason.reason }}
+											</option>
+											</b-select>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									</div>
+									
 									<!-- First Column for Denial Type -->
 									<div class="col-lg-6">
 										<validation-provider vid="denial_type_id" name="Denial Type"
@@ -482,6 +540,7 @@
 											v-text="error" />
 									</b-form-group>
 								</validation-provider>
+								
 							</b-card-body>
 						</b-collapse>
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
@@ -1167,24 +1226,14 @@ export default {
 
 			temp_displayName: [],
 			facilitySearch: '',
+			selectedFacilityId:null,
+			term_date: null,
+			facilities: [],
+			iscontract: null,
 			searchResults: [], // Array to hold filtered search results
 			selectedResult: null, // Selected result from the dropdown
-			insuranceOptions: [
-				{ value: null, text: 'Select an option' }, // Optional: as a placeholder
-				{ value: 'option1', text: 'Medicare A' },
-				{ value: 'option2', text: 'Medicare B' },
-				{ value: 'option3', text: 'Managed A' },
-				{ value: 'option4', text: 'Managed A PPS' },
-				{ value: 'option5', text: 'Managed B' },
-				{ value: 'option6', text: 'Commercial' },
-				{ value: 'option7', text: 'Medicaid' },
-				{ value: 'option8', text: 'Workers Comp' },
-				{ value: 'option9', text: 'Auto' },
-				{ value: 'option10', text: 'Military' },
-				{ value: 'option11', text: 'Private Pay' },
-				{ value: 'option12', text: 'Other' },
-				// Add more options as needed
-			],
+			insuranceOptions: [],
+            // Add more options as needed
 		};
 	},
 	computed: {
@@ -1244,6 +1293,7 @@ export default {
 		this.additionalDataFetch();
 		this.facilityDetails();
 		this.fetchDenialReasons();
+		this.fetchContractInsuranceTypes();
 
 		if (this.id) {
 			this.refresh();
@@ -1283,7 +1333,8 @@ export default {
 				const response = await this.$store.dispatch("cases/get", {
 					id: this.id,
 				});
-
+				console.log('cases form , on edit:-')
+				console.log(JSON.stringify(response));
 				this.$set(this, "entity", response);
 				this.currentPatient = response.patient || {};
 
@@ -1300,7 +1351,31 @@ export default {
 				if (this.entity.disciplines) {
 					this.disciplineIds = this.entity.disciplines.map((item) => item.id);
 				}
+				if(response.term_date){
+					this.term_date = response.term_date;
+				}
+				if(response.insuranceRateType){
+					this.entity.insurance_type = response.insuranceRateType;
+				}
+				if(response.pwrbackDenialReason){
+					this.selectedDenialReason = response.pwrbackDenialReason;
+				}
+				if(response.facility_id){
+					console.log('facility id found on edit data.')
+					this.selectedFacilityId = response.facility_id;
+					// Search for the corresponding displayName
+					const foundFacility = this.displayNames.find(item => item.id === response.facility_id);
+					console.log('foundFacility:-')
+					console.log(JSON.stringify(foundFacility));
+					// Check if foundFacility is not null or undefined
+					if (foundFacility) {
+						console.log('if condition true')
+						// Store the displayName in this.facilitySearch
+						// this.facilitySearch = foundFacility.displayName;
+						this.selectFacility(foundFacility);
 
+					}
+				}
 				this.$emit("loaded", this.entity);
 			} catch (e) {
 				this.$store.dispatch("apiError", {
@@ -1320,7 +1395,7 @@ export default {
 					id: this.id || null,
 					case_type_id: this.entity.case_type_id,
 					patient_id: this.entity.patient_id,
-					facility_id: this.entity.facility_id,
+					facility_id: this.selectedFacilityId,
 					denial_type_id: this.entity.denial_type_id,
 					case_outcome_id: this.entity.case_outcome_id,
 					client_employee_id: this.entity.client_employee_id,
@@ -1354,6 +1429,9 @@ export default {
 					disciplines: {
 						_ids: this.disciplineIds,
 					},
+					term_date : this.term_date,
+					insuranceRateType: this.entity.insurance_type,
+					pwrbackDenialReason: this.selectedDenialReason,
 				};
 
 				if (this.currentDocument && this.currentDocument.id) {
@@ -1480,10 +1558,24 @@ export default {
 			} catch (error) {
 				console.error('Error fetching denial reasons:', error);
 			}
+		} ,     
+		async fetchContractInsuranceTypes(){
+			try {
+				console.log('inside fetchContractInsuranceTypes:-')
+				const response = await axios.get('/client/contractinsurancelist');
+				console.log('ContractInsuranceType:-')
+				console.log(JSON.stringify(response.data));
+				this.insuranceOptions = response.data.map(item => {
+					return { text: item.insurance_type, value: item.id };
+				});
+			} catch (error) {
+				console.error('Error fetching denial reasons:', error);
+			}
 		},
-		async facilityDetails() {
-			const url = "/client/facilityList";
-
+		async facilityDetails(){
+			console.log('inside facilityDetails');
+            const url = "/client/facilityList";
+			
 			const response = await axios.get(url, {
 				headers: {
 					"Accept": "application/json",
@@ -1491,24 +1583,99 @@ export default {
 				},
 			});
 			this.facilities = response.data; // save all facilities for later use
-			this.displayNames = this.facilities.map((facility) => facility.display_name);
-			this.temp_displayName.push(this.facilities.map((facility) => facility.display_name));
-			console.log("display name:", this.displayNames);
-			console.log('temp_displayNames', JSON.stringify(this.temp_displayName));
+			let temp_facilities = response.data;
+			console.log('facilities:-')
+			console.log(JSON.stringify(response.data));
+
+			// Check if this.facilities is defined and is an array
+			// Use the map method to directly extract display_name values
+			// this.displayNames = this.facilities
+			// 	.map((facility) => facility.display_name)
+			// 	.filter((displayName) => displayName !== null && displayName !== undefined);
+
+
+			this.displayNames = this.facilities
+				.map((facility) => ({ id: facility.id, displayName: facility.display_name }))
+				.filter(({ displayName }) => displayName !== null && displayName !== undefined);
+				
+
+			// // Check if this.facilities is an array, if not, convert it
+			// if (!Array.isArray(this.facilities)) {
+			// // Assuming you want to convert it to an array, you can use Array.from or spread syntax
+			// this.facilities = Array.from(this.facilities);
+			// // Alternatively: this.facilities = [...this.facilities];
+			// }
+			// console.log('temp_facilities:')
+			// console.log(temp_facilities);
+			// console.log(temp_facilities.length);
+			// for (let i = 0; i < temp_facilities.length; i++) {
+			// 	console.log(temp_facilities[i]['display_name']);
+			// 	this.facility
+			// }
+
+			// this.temp_displayName.push(this.facilities.map((facility) => facility.display_name));
+			console.log("display name:");
+			console.log(JSON.stringify(this.displayNames));
+			// console.log('temp_displayNames', JSON.stringify(this.temp_displayName));
 		},
 
 		logSelectedFacilityDetails(item) {
 			console.log('inside logSelectedFacilityDetails')
-			const selectedDisplayName = item;
+			const selectedDisplayName = item.displayName;
 			const selectedFacility = this.facilities.find(
 				(facility) => facility.display_name === selectedDisplayName
 			);
 
 			if (selectedFacility) {
 				console.log('inside *****selectedFacility')
-				this.iscontract = selectedFacility.has_contract;
-				this.entity.facility_name = selectedFacility.facility_status;
+				// this.iscontract = selectedFacility.has_contract;
+				// this.entity.facility_name = selectedFacility.facility_status;
 				// this.entity.facility_name = 'Active';
+				// fetch assosiated facility contract on ID basis and populate term_date read onluy field
+				// const url = "/client/findFacilityContract/";
+				// Wrap the code in an async function
+				console.log('selectedFacility.id:-');
+				console.log(selectedFacility.id);
+				const fetchFacilityContractData = async () => {
+				try {
+					// const url = "/client/findFacilityContract/";
+					const url = `/client/findFacilityContract/${selectedFacility.id}`;
+
+					const response1 = await axios.get(url, {
+						headers: {
+							"Accept": "application/json",
+							// You can add other headers here if needed
+						},
+					});
+					// TODO: CHECK IF THERE IS ANY FACILITY CONTRACT FOUND
+					// if there is any, set term date value
+					this.term_date = response1.data.term_date; // save all facilities for later use
+					// if facility has contract, set visiblity of insurance type 
+					this.iscontract = true;
+					// if facility has contract, set facility status value
+					let temp_val = "2";
+					switch (temp_val) {
+						case "1":
+							// code to be executed if expression matches value1
+							this.entity.facility_name = 'Active'
+							break;
+
+						case "2":
+							// code to be executed if expression matches value2
+							this.entity.facility_name = 'Inactive'
+							break;
+						case "3":
+							// code to be executed if expression matches value2
+							this.entity.facility_name = 'Pending'
+							break;
+					}
+				} catch (error) {
+					console.error("Error fetching data:", error);
+				}
+			};
+
+			// Call the async function
+			fetchFacilityContractData();
 			}
 		},
 
@@ -1519,15 +1686,25 @@ export default {
 			console.log('this.facilitySearch');
 			console.log(this.facilitySearch);
 
-			this.searchResults = this.displayNames.filter(name =>
-				name && name.toLowerCase().includes(this.facilitySearch.toLowerCase())
-			);
+			// this.searchResults = this.displayNames.filter(name =>
+			// 	name && name.toLowerCase().includes(this.facilitySearch.toLowerCase())
+			// );
+
+			this.searchResults = this.displayNames.filter(item => {
+				const name = (item && item.displayName) || ''; // Ensure a valid string
+				return name.toLowerCase().includes(this.facilitySearch.toLowerCase());
+			});
 
 			console.log('searchResults:', this.searchResults);
 		},
 		selectFacility(item) {
 			// Handle the selected facility, if needed
-			this.facilitySearch = item;
+			console.log('inside selectFacility(item) method:-');
+		console.log(JSON.stringify(item));
+		console.log(item.displayName);
+		console.log(item.id);
+		this.facilitySearch = item.displayName;
+		this.selectedFacilityId = item.id;
 			console.log('item inside selectFacility:', item);
 			this.logSelectedFacilityDetails(item);
 			this.searchResults = [];

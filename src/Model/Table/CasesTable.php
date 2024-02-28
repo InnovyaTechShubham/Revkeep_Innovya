@@ -71,6 +71,10 @@ class CasesTable extends Table
 			'foreignKey' => 'facility_id',
 		]);
 
+		$this->belongsTo('Facilities', [
+			'foreignKey' => 'facility_id',
+		]);
+
 		$this->belongsTo('DenialTypes', [
 			'foreignKey' => 'denial_type_id',
 		]);

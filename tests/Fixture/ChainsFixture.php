@@ -22,6 +22,7 @@ class ChainsFixture extends TestFixture
                 'id' => 1,
                 'chain_name' => 'Lorem ipsum dolor sit amet',
                 'chain_type' => 'Lorem ipsum dolor sit amet',
+                'client_id' => 'Lorem ipsum dolor sit amet',
             ],
         ];
         parent::init();
