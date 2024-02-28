@@ -17,11 +17,11 @@ class MultiplefacilityController extends AppController
            $id = $data['id'];
            $selectedFacilityIds = $data['selectedFacilityIds'];
            $selectedFacilityNames = $data['selectedFacilityNames'];
-           $filePath = 'C:\xampp\htdocs\Insurace-provider-Merged\example3.json';
-            $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
-            $file = fopen($filePath, 'w');
-            fwrite($file, $jsonContent);
-            fclose($file);
+           // $filePath = 'C:\xampp\htdocs\Insurace-provider-Merged\example3.json';
+           //  $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
+           //  $file = fopen($filePath, 'w');
+           //  fwrite($file, $jsonContent);
+           //  fclose($file);
 
             try {
                 $clientemployeesFacilityTable = new ClientemployeesFacilityTable();  
