@@ -15,26 +15,50 @@
 						<span>Add New</span>
 						</b-button>
 					</div>
+
+					<!-- <button @click="previousPage" :disabled="currentPage === 1">Previous</button> -->
+    				<!-- <button @click="nextPage" :disabled="currentPage === totalPages-1">Next</button> -->
+
+					<!-- <b-button variant="Secondary" title="Next Page" @click="nextPage" :disabled="currentPage >= totalPages">
+						<span>Next</span>
+					</b-button> -->
 				</div>
 			</div>
 		</b-row>
 
 		<b-row class="mt-4">
-			<b-col cols="12" md="9" lg="4" order="1" class="mb-4 mb-lg-0">
-			<b-form @submit.prevent="doSearch">
-				<search-input v-model="search" v-bind="{ loading }" />
-			</b-form>
+			<!-- Search input column -->
+			<b-col cols="12" md="9" lg="8" order="1" class="mb-4 mb-lg-0">
+				<div class="search-container">
+				<i class="fas fa-search search-icon"></i>
+				<input v-model="search" @input="handleSearch" placeholder="Search for a chain" class="search-input" />
+				</div>
+			</b-col>
+
+			<!-- Pagination buttons column -->
+			<b-col cols="12" md="3" lg="4" order="2">
+				<div class="d-flex justify-content-end">
+				<b-button @click="previousPage" :disabled="currentPage === 1" class="custom-prev-button">
+					<i class="fas fa-arrow-left"></i> Prev
+				</b-button>
+
+				<b-button @click="nextPage" :disabled="currentPage === totalPages" class="custom-next-button">
+					Next <i class="fas fa-arrow-right"></i>
+				</b-button>
+				</div>
 			</b-col>
 		</b-row>
+
+
 	  <b-row>
 		<b-col cols="12">
-		  <b-collapse v-model="filtering" class="py-2">
+		  <!-- <b-collapse v-model="filtering" class="py-2">
 			<b-form @submit.prevent="doSearch">
 			  <b-card>
 				<IndexFilters v-model="filters" :disabled="loading" />
 			  </b-card>
 			</b-form>
-		  </b-collapse>
+		  </b-collapse> -->
 		</b-col>
 	  </b-row>
 	  <b-row class="my-4">
@@ -56,17 +80,30 @@
 				  </b-avatar>
 				  <b-row class="flex-fill">
 					<b-col cols="12" class="text-left">
-					  <h6 class="h6 font-weight-bold mb-1">
-						{{ result.chain_name }}
-					  </h6>
-					  <!-- <p v-if="result.chain_type" class="small mb-1 text-muted" title="Description">
-						{{ result.chain_type }}
-					  </p> -->
+						<h6 class="h6 font-weight-bold mb-1">
+							{{ result.chain_name }}
+						</h6>
+						<!-- <p v-if="result.chain_type" class="small mb-1 text-muted" title="Description">
+							{{ result.chain_type }}
+						</p> -->
+						<!-- Display facility count conditionally -->
+						<p style="font-size:small;font: 900;">
+							
+							<span v-if="result.facility_count === 1 && result.facility_count !== undefined">
+								<font-awesome-icon style="color: #007BFF;" icon="house" /> {{ result.facility_count }} Facility
+							</span>
+							<span v-else-if="result.facility_count > 1 && result.facility_count !== undefined">
+								<font-awesome-icon style="color: #007BFF;" icon="house" />{{ result.facility_count }} Facilities
+							</span>
+							<span v-else>
+								<font-awesome-icon style="color: #007BFF;" icon="house" /> No Facilities Attached.
+							</span>
+						</p>
 					</b-col>
 				  </b-row>
 				</div>
 			  </b-list-group-item>
-			</b-list-group>
+			</b-list-group>	
 		  </div>
 		  <empty-result v-else>
 			No Chains Created.
@@ -86,30 +123,172 @@
 	.no-shadow {
 		box-shadow: none !important;
 	}
+
+	.search-container {
+		display: flex;
+  		align-items: center;
+	}
+
+	.search-icon {
+		color: #555; /* Adjust color as needed */
+		cursor: pointer;
+		border: 1px solid #555; /* Border for the search icon */
+		padding: 10px;
+		border-radius: 5px 0 0 5px;  /* Rounded corners for the search icon */
+		margin-right: 0; /* Add some spacing between icon and input */
+	}
+
+	.search-input {
+		width: 400px;
+		padding: 7px; /* Adjust padding for thickness */
+		border-radius: 0 5px 5px 0; /* Rounded corners for the input */
+		border: 1px solid #a29f9f; /* Border for the input */
+		outline: none; /* Remove default input focus outline */
+	}
+
+	/* pagination prev and next button styles */
+	.custom-prev-button {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+	.custom-next-button{
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
 </style>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
-import { getIndex } from "@/clients/services/chain";
+import { debounce } from 'lodash';
 
-// get All record
+// Reactive variables
 const records = ref([]);
+const originalRecords = ref([]);
+const search = ref('');
+const loading = ref(false);
 
-async function fetchData(){
-	
-	await axios.get('/client/getChains')
-		.then(response => {
-		// response data stored in records attribute to render as list
-		records.value = response.data;
-		})
-		.catch(error => {
-			console.error(error);
-		})
-		.finally(() => {
-			this.saving = false;
-		});
+// Pagination
+const pageSize = 10; // Set the number of records per page
+const currentPage = ref(1);
+const totalPages = ref(1); // Initialize totalPages
+
+// Fetch data on page load
+onMounted(async () => {
+  await fetchData();
+});
+
+// Watch for changes in the search term and trigger search logic after three key presses
+const debouncedSearch = debounce(async () => {
+  loading.value = true;
+  await fetchData();
+  loading.value = false;
+}, 300); // Adjust the debounce delay as needed
+
+// Watch for changes in the current page and trigger data fetch
+watch(currentPage, async () => {
+  await fetchData();
+});
+
+// Watch for changes in the search term and trigger search logic after two key presses
+watch(search, async () => {
+  console.log('searching...');
+  loading.value = true;
+  // Introduce a delay before triggering the search logic (adjust as needed)
+  await new Promise(resolve => setTimeout(resolve, 300));
+  filterRecords();
+  loading.value = false;
+});
+
+// Fetch data function
+async function fetchData() {
+  try {
+    console.log('inside fetchData function');
+    const response = await axios.get('/client/getChains',{
+      params: {
+        page: currentPage.value,
+        perPage: pageSize, // Add a limit parameter for pagination
+		search: search.value,
+      },
+    });
+    console.log('inside fetchData of chain index:-')
+    console.log(JSON.stringify(response.data));
+    records.value = response.data;
+
+	records.value = records.value.map(item => {
+	// Check if chain_organizations is not an empty array
+	if (Array.isArray(item.chain_organizations) && item.chain_organizations.length > 0) {
+		// Count the occurrences of objects with desc as 'Facility'
+		const facilityCount = item.chain_organizations.filter(obj => obj.desc === 'Facility').length;
+		
+		// Add a new field facility_count to the object
+		return { ...item, facility_count: facilityCount };
+	}
+
+	// If chain_organizations is an empty array or not an array, keep the original object
+	return item;
+	});
+    originalRecords.value = [...response.data]; 
+
+    // Update totalPages based on the total records from the server
+    totalPages.value = Math.ceil(response.headers['x-total-count'] / pageSize);
+
+	console.log('x-total-count header:', response.headers['x-total-count']);
+	console.log('totalPage value inside fetchdata:-');
+	console.log(totalPages.value);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-// Call the fetchData function on page load
-onMounted(fetchData);
+// Search/filter logic
+async function filterRecords() {
+  try {
+    loading.value = true;
+    const searchTerm = search.value.toLowerCase();
+    if (searchTerm === '' || searchTerm.length < 2) {
+      // Show full records when searchTerm is empty or its length is less than 2
+      records.value = [...originalRecords.value];
+    } else {
+      // Always fetch data when filterRecords is called
+      await fetchData();
+      records.value = records.value.filter(record => {
+        return record.chain_name.toLowerCase().includes(searchTerm);
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+function handleSearch(event) {
+	debouncedSearch();
+  // You can add any additional logic if needed
+  console.log('Search input value:', event.target.value);
+}
+
+// Pagination controls
+function nextPage() {
+	console.log("Next Page Clicked", currentPage.value);
+	console.log('totalPages.value');
+	console.log(totalPages.value)
+	if (currentPage.value < totalPages.value) {
+		currentPage.value++;
+		
+		fetchData();
+	}
+}
+
+function previousPage() {
+	console.log("Previous Page Clicked", currentPage.value);
+	console.log('totalPages.value');
+	console.log(totalPages.value)
+	if (currentPage.value > 1) {
+		currentPage.value--;
+		
+		fetchData();
+	}
+}
+
 </script>

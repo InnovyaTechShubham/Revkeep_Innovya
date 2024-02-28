@@ -1069,7 +1069,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
     $builder->connect('/getChains', [
         'controller' => 'Chains',
         'action' => 'getAllRecord',
-        '_method' => 'GET'
+		'?' => ['search' => true], // Add the new parameter here
     ]);
    
     // route to display chain details
@@ -1240,6 +1240,13 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'list',
         '_method' => 'POST'
     ]);
+	
+	$builder->connect('/findFacilityContract/{id}', [
+		'controller' => 'FacilitiesContracts', 
+		'action' => 'findFacility'])
+    ->setPass(['id'])
+    ->setMethods(['GET']);
+
 	$builder->connect('/contractpricingschedule/edit', [
         'controller' => 'ContractPricingSchedules',
         'action' => 'edit',
@@ -1266,4 +1273,6 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
+	// find facilityContract on ID basis
+
 });

@@ -53,7 +53,12 @@
 				<b-col cols="12">
 					<div>
 						<b-tabs content-class="mt-3">
-							<b-tab title="Facilities" active>
+							<b-tab active>
+								<template #title>
+									<span class="mr-2">Facilities</span>
+									<!-- Show badge pill on the right -->
+									<span class="badge badge-pill badge-light">{{ facility_data.length }}</span>
+								</template>
 								<div v-if="!facility_data.length">
 									<empty-result>
 										No facilities assigned.
@@ -78,7 +83,12 @@
 								</template>
 								
 							</b-tab>
-							<b-tab title="Services">
+							<b-tab active>
+								<template #title>
+									<span class="mr-2">Services</span>
+									<!-- Show badge pill on the right -->
+									<span class="badge badge-pill badge-light">{{ services_data.length }}</span>
+								</template>
 								<div v-if="!services_data.length">
 									<empty-result>
 										No Services assigned.

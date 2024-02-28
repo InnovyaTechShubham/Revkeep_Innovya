@@ -21,6 +21,12 @@ class ContractInsuranceTypesController extends AppController
 
         $response = $this->response->withType('application/json');
         $response = $response->withStringBody(json_encode($insuranceTypes));
+
+        $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+        $jsonContent = json_encode($response, JSON_PRETTY_PRINT);
+        $file = fopen($filePath, 'w');
+        fwrite($file, $jsonContent);
+        fclose($file);
         
         return $response;
     }

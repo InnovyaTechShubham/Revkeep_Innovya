@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $chain_name
  * @property string|null $chain_type
+ * @property string|null $client_id
  */
 class Chain extends Entity
 {
@@ -26,5 +27,6 @@ class Chain extends Entity
     protected $_accessible = [
         'chain_name' => true,
         'chain_type' => true,
+        'client_id' => true,
     ];
 }

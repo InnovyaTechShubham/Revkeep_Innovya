@@ -8,6 +8,8 @@ use App\Model\Table\ChainOrganizationsTable;
 use App\Controller\AppController;
 use Cake\Network\Exception\MethodNotAllowedException;
 use Cake\ORM\TableRegistry;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Datasource\ResultSetInterface;
 
 
 /**
@@ -27,13 +29,19 @@ class ChainsController extends AppController
 		'finder' => 'search',
 		'limit' => PAGINATION_DEFAULT_LIMIT,
 		'order' => [
-			'name' => 'asc',
+			'chain_name' => 'asc',
 		],
 		'sortableFields' => [
 			'chain_name',
-			'chain_type',
 		],
 	];
+
+
+    public function initialize(): void
+    {
+        parent::initialize();
+        // $this->loadComponent('Paginator');
+    }
 
     public function index()
     {
@@ -53,7 +61,7 @@ class ChainsController extends AppController
                 // Handle the case where $chain_name is undefined, null, or empty
                 $response = [
                     'success' => false,
-                    'message' => 'Chain name and Chain Type is required.',
+                    'message' => 'Chain name required.',
                 ];
             
                 // Send the JSON response back to the client
@@ -79,13 +87,39 @@ class ChainsController extends AppController
                 //  get facility and services data
                 $facilityArray = $this->request->getData('Facility_data');
                 $serviceArray = $this->request->getData('Service_data');
+                $client_id = $this->request->getData('client_id');
+                $client_id = strval($client_id);
 
 
                 $new = $type->newEntity([
                     
                     'chain_name' => $chain_name,
                     // 'chain_type' => $chain_type,
+                    'client_id' => $client_id
                 ]);
+
+                // write data to json file starts here
+                 // Create an array with chain_name and client_id
+                // $dataToWrite = [
+                //     'chain_name' => $chain_name,
+                //     'client_id' => $client_id,
+                // ];
+
+                // // Convert the array to JSON format
+                // $jsonData = json_encode($dataToWrite, JSON_PRETTY_PRINT);
+
+                // // // Specify the path where you want to save the JSON file
+                // // $filePath = '/path/to/your/directory/chain_data.json';
+
+                // // // Write the JSON data to the file
+                // // file_put_contents($filePath, $jsonData);
+
+
+                // $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+                // file_put_contents($filePath, $jsonData);
+
+
+                // write data to json file ends here
             
                 if ($type->save($new)) {
                     $chainId = $new->id;
@@ -142,19 +176,95 @@ class ChainsController extends AppController
 	public function getAllRecord()
 	{
 
-        $this->autoRender = false;
+        try {
+            $this->autoRender = false;
 
-        // Get the ChainsTable instance
-        $chainsTable = $this->getTableLocator()->get('Chains');
+            // Get the ChainsTable instance
+            $chainsTable = $this->getTableLocator()->get('Chains');
 
-        // Retrieve all records from the "chains" table
-        $records = $chainsTable->find('all')->toArray();
+            // Get pagination parameters from the request
+            // params: {
+            //     page: currentPage.value,
+            //     perPage: pageSize, // Add a limit parameter for pagination
+            //   },
+            $page = $this->request->getQuery('page', 1);
+            $limit = $this->request->getQuery('perPage', 15);
+            $searchTerm = $this->request->getQuery('search', ''); // Retrieve the new parameter
 
-        // Return JSON response
-        $this->response = $this->response->withType('application/json')
-                                         ->withStringBody(json_encode($records));
-        return $this->response;
-		 
+
+            // Create a Paginator instance
+            // Create a connection instance
+            // $connection = ConnectionManager::get('default');
+
+            // Set up pagination configuration
+            $paginationConfig = [
+                'limit' => $limit,
+                'page' => $page,
+            ];
+
+            // Add search condition if the search term is provided
+            if (!empty($searchTerm)) {
+                $paginationConfig['conditions']['chain_name LIKE'] = "%$searchTerm%";
+            }
+
+            // Retrieve all records from the "chains" table
+            // $records = $chainsTable->find('all')->toArray();
+            // $records = $chainsTable->find('all')->paginate($paginationConfig)->toArray();
+
+            // Retrieve all records using the Paginator instance
+            // Retrieve paginated records from the "chains" table
+            $query = $chainsTable->find('all');
+            // Specify the association and fields to be retrieved
+            $query->contain([
+                'ChainOrganizations' => function ($q) {
+                    return $q->select(['chain_id', 'org_id', 'desc']);
+                }
+            ]);
+            $records = $this->paginate($query, $paginationConfig)->toArray();
+
+            //  // Initialize an array to store the total facility count for each chain_name
+            // $facilityCounts = [];
+
+            // // Calculate and store total facility count for each chain_name
+            // foreach ($records as $record) {
+            //     $facilityCount = 0;
+            //     foreach ($record->chain_organizations as $chainOrganization) {
+            //         if ($chainOrganization->desc === 'Facility') {
+            //             $facilityCount++;
+            //         }
+            //     }
+            //     $records[$record->chain_name] = $facilityCount;
+            // }
+
+            // Get the total count of records for the pagination header
+            $totalRecords = $chainsTable->find('all')->count();
+
+            // Set the x-total-count header
+            $this->response = $this->response->withHeader('X-Total-Count', $totalRecords);
+
+
+            $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+            $jsonContent = json_encode($records, JSON_PRETTY_PRINT);
+            $file = fopen($filePath, 'w');
+            fwrite($file, $jsonContent);
+            fclose($file);
+
+            // Return JSON response
+            $this->response = $this->response->withType('application/json')
+                ->withStringBody(json_encode($records));
+            return $this->response;
+
+        } catch (\Exception $e) {
+
+            $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+            $jsonContent = json_encode($e->getMessage(), JSON_PRETTY_PRINT);
+            $file = fopen($filePath, 'w');
+            fwrite($file, $jsonContent);
+            fclose($file);
+
+            $this->log($e->getMessage(), 'error');
+            $this->response = $this->response->withStatus(500);
+        }	 
 	}
 
 

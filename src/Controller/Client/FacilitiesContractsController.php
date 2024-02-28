@@ -237,4 +237,40 @@ class FacilitiesContractsController extends AppController
         }
     }
 
+    public function findFacility($id){
+        if ($this->request->is('get')){
+            // $facilityId = $args['id'];
+            // $filePath = 'D:\xampp\htdocs\Insurance_mergerd\final_revkeep\example4.json';
+            // $jsonContent = json_encode($data, JSON_PRETTY_PRINT);
+            //             $file = fopen($filePath, 'w');
+            //             fwrite($file, $jsonContent);
+            //             fclose($file);
+            try{
+            $facilitiesContractsTable = TableRegistry::getTableLocator()->get('facilities_contracts');
+            $facilityContract = $facilitiesContractsTable->find()
+                ->where(['facility_id' => $id])
+                ->first();
+            // $filePath = 'D:\xampp\htdocs\Insurance_mergerd\final_revkeep\example4.json';
+            // $jsonContent = json_encode($facilityContract, JSON_PRETTY_PRINT);
+            // $file = fopen($filePath, 'w');
+            // fwrite($file, $jsonContent);3
+            // fclose($file);
+            $response = $this->response->withType('application/json');
+            $response = $response->withStringBody(json_encode($facilityContract, JSON_PRETTY_PRINT));
+            }
+            catch (\Exception $e){
+                $responseMessage = ['error' => $e->getMessage()];
+                // $filePath = 'D:\xampp\htdocs\Insurance_mergerd\final_revkeep\example4.json';
+                // $jsonContent = json_encode($e, JSON_PRETTY_PRINT);
+                // $file = fopen($filePath, 'w');
+                // fwrite($file, $jsonContent);
+                // fclose($file);
+            }
+
+             return $this->response
+            ->withType('application/json')
+            ->withStringBody(json_encode($facilityContract));
+        }
+    }
+
 }

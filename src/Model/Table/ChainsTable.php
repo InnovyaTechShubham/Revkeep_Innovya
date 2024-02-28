@@ -40,6 +40,14 @@ class ChainsTable extends Table
         $this->setTable('chains');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Clients', [
+            'foreignKey' => 'client_id',
+        ]);
+        $this->hasMany('ChainOrganizations', [
+            'foreignKey' => 'chain_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**
@@ -61,6 +69,25 @@ class ChainsTable extends Table
             ->maxLength('chain_type', 255)
             ->allowEmptyString('chain_type');
 
+        $validator
+            ->scalar('client_id')
+            ->maxLength('client_id', 255)
+            ->allowEmptyString('client_id');
+
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules): RulesChecker
+    {
+        $rules->add($rules->existsIn('client_id', 'Clients'), ['errorField' => 'client_id']);
+
+        return $rules;
     }
 }
