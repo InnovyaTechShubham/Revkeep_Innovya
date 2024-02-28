@@ -1075,7 +1075,7 @@
 						<!-- Contract Section End-->
 
 						<!--Service section start-->
-						<b-card-header header-tag="header" role="tab" class="p-0">
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseServices
@@ -1126,7 +1126,7 @@
 								
 
 							</b-card-body>
-						</b-collapse>
+						</b-collapse> -->
 						<!--Service section End-->
 
 						<!--Receiving Methods section start-->
