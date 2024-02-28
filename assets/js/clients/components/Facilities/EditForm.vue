@@ -298,6 +298,301 @@
 				<!-- Details section start-->
 				<b-card no-body>
 					
+						
+						<!-- Contract Section Start-->
+						<b-card-header header-tag="header" role="tab" class="p-0">
+							<b-button
+								block
+								v-b-toggle.collapseContract
+								variant="light"
+								role="tab"
+								class="text-left px-4 py-3 m-0"
+								>Contract</b-button
+							>
+						</b-card-header>
+						<b-collapse id="collapseContract" role="tabpanel">
+							<b-card-body>
+							<b-row>
+							<!-- First Column -->
+							<b-col md="6">
+								<validation-provider
+									vid="active"
+									name="Active"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									
+									<b-form-group
+										label="Contract Status"
+										label-for="contractStatus"
+										label-cols-lg="4"
+									>
+										<b-form-select
+											id="contractStatus"
+											v-model="contractDetails.contract_status"
+											:options="contractStatusOptions"
+											:disabled="saving"
+											value-field="id"
+											text-field="contract_status"
+										></b-form-select>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+
+								</validation-provider>
+
+								<validation-provider
+									vid="contract_end_date"
+									name="Contract End Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Expiration Date" label-for="contract_end_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="contractDetails.contract_end_date"
+											name="contract_end_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+											:style="{ color: contractDetails.contract_status === 2 ? 'red' : contractDetails.contract_status === 3 ? '#FFD700' : 'inherit' }"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								
+
+							</b-col>
+
+							<!-- Second Column -->
+							<b-col md="6">
+								<validation-provider
+									vid="contract_start_date"
+									name="Contract Start Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Contract Effective Date" label-for="contract_start_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="contractDetails.contract_start_date"
+											name="contract_start_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								<validation-provider
+									vid="renewal_date"
+									name="Renewal Date"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+								>
+									<b-form-group label="Renewal Date" label-for="renewal_date" label-cols-lg="4">
+										<b-form-input
+											type="date"
+											v-model="contractDetails.renewal_date"
+											name="renewal_date"
+											:disabled="saving"
+											:state="getValidationState(validationContext)"
+										/>
+										<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+										/>
+									</b-form-group>
+								</validation-provider>
+
+								</b-col>
+								</b-row>
+
+									<b-row>
+									<!-- First Column -->
+									<b-col md="6">
+										<!-- Contract Bill Type -->
+										<validation-provider
+										vid="contract_bill_type"
+										name="Contract Bill Type"
+										:rules="{ required: false }"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Bill Type" label-for="contract_bill_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_bill_type"
+											v-model="contractDetails.contract_bill_type"
+											:state="getValidationState(validationContext)"
+											:options="contractBillTypes"
+											:disabled="saving"
+											value-field="value"
+											text-field="text"
+											>
+											
+											</b-form-select>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="indemnification_days"
+										name="Indemnification Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Indemnification Days"
+											label-for="indemnification_days"
+											label-cols-lg="4"
+											description="Days exceeded for Indemnification"
+										>
+											<b-form-input
+												name="indemnification_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="contractDetails.indemnification_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+
+									</b-col>
+
+									<!-- Second Column -->
+									<b-col md="6">
+										<!-- Contract Type -->
+										<validation-provider
+										vid="contract_type"
+										name="Contract Type"
+										v-slot="validationContext"
+										>
+										<b-form-group label="Contract Type" label-for="contract_type" label-cols-lg="4">
+											<b-form-select
+											name="contract_type"
+											v-model="contractDetails.contract_type"
+											:state="getValidationState(validationContext)"
+											:options="contractTypes"
+											:disabled="true"
+											value-field="value"
+											text-field="text"
+											direction="down"
+											/>
+											<b-form-invalid-feedback
+											v-for="error in validationContext.errors"
+											:key="error"
+											v-text="error"
+											/>
+										</b-form-group>
+										</validation-provider>
+
+										<validation-provider
+										vid="max_return_work_days"
+										name="Max Return Days"
+										:rules="{ required: false, min: 0, max: 365 }"
+										v-slot="validationContext"
+									>
+										<b-form-group
+											label="Max Return Days"
+											label-for="max_return_work_days"
+											label-cols-lg="4"
+											description="Maximum days to return work to facility"
+										>
+											<b-form-input
+												name="max_return_work_days"
+												type="number"
+												step="1"
+												min="0"
+												max="365"
+												default="30"
+												v-model="contractDetails.max_return_work_days"
+												:disabled="saving"
+												:state="getValidationState(validationContext)"
+											/>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
+										</b-form-group>
+									</validation-provider>
+									</b-col>
+								</b-row>
+
+								<validation-provider
+								vid="service_operations"
+								name="Service Operations"
+								:rules="{ required: false }"
+								v-slot="validationContext"
+								>
+								<b-form-group label="Service Operations" label-for="service_operations" label-cols-lg="2">
+									<b-form-checkbox-group
+									id="service_operations"
+									v-model="contractDetails.serviceOperation"
+									:options="serviceOperationsOptions"
+									:state="getValidationState(validationContext)"
+									:disabled="saving"
+									/>
+									<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+									/>
+								</b-form-group>
+								</validation-provider>
+
+								<b-card title="Contract Pricing Schedule" border-variant="light">
+								<b-row>
+									<b-col md="6">
+										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="info">
+											<div class="d-flex">
+												<input type="text" v-model="rates[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
+											</template>
+										</b-table>
+										</b-col>
+
+										<b-col md="6">
+										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
+											<template v-slot:cell(contract_rate)="info">
+											<div class="d-flex">
+												<input type="text" v-model="rates2[info.index+1]" class="form-control" placeholder="Add rate in %" />
+											</div>
+											</template>
+										</b-table>
+									</b-col>
+								</b-row>
+							</b-card>
+
+							
+							</b-card-body>
+						</b-collapse>
+
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -763,7 +1058,7 @@
 						</b-collapse>
 						<!-- Contact section end-->
 
-						<!-- Contract Section Start-->
+						<!-- Contract Section Start
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
@@ -777,7 +1072,7 @@
 						<b-collapse id="collapseContract" role="tabpanel">
 							<b-card-body>
 							<b-row>
-							<!-- First Column -->
+							 First Column 
 							<b-col md="6">
 								<validation-provider
 									vid="active"
@@ -785,21 +1080,7 @@
 									:rules="{ required: false }"
 									v-slot="validationContext"
 								>
-									<!-- <b-form-group
-										label="Contract Status"
-										label-for="active"
-										label-cols-lg="4"
-										description="Inactive contracts will not show up in dropdown lists."
-									>
-										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
-											>Active</b-form-checkbox
-										>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
-									</b-form-group> -->
+									
 									<b-form-group
 										label="Contract Status"
 										label-for="contractStatus"
@@ -849,7 +1130,7 @@
 
 							</b-col>
 
-							<!-- Second Column -->
+							 Second Column 
 							<b-col md="6">
 								<validation-provider
 									vid="contract_start_date"
@@ -899,9 +1180,9 @@
 								</b-row>
 
 									<b-row>
-									<!-- First Column -->
+									 First Column 
 									<b-col md="6">
-										<!-- Contract Bill Type -->
+										 Contract Bill Type 
 										<validation-provider
 										vid="contract_bill_type"
 										name="Contract Bill Type"
@@ -918,9 +1199,7 @@
 											value-field="value"
 											text-field="text"
 											>
-											<!-- <template #first>
-												<option :value="null" />
-											</template> -->
+											
 											</b-form-select>
 											<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
@@ -963,9 +1242,9 @@
 
 									</b-col>
 
-									<!-- Second Column -->
+									 Second Column 
 									<b-col md="6">
-										<!-- Contract Type -->
+										 Contract Type 
 										<validation-provider
 										vid="contract_type"
 										name="Contract Type"
@@ -1071,7 +1350,7 @@
 
 							
 							</b-card-body>
-						</b-collapse>
+						</b-collapse> -->
 						<!-- Contract Section End-->
 
 						<!--Service section start-->
