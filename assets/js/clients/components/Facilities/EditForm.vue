@@ -835,7 +835,7 @@
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
-											:style="{ color: contractDetails.contract_status === 3 ? 'red' : contractDetails.contract_status === 2 ? '#FFD700' : 'inherit' }"
+											:style="{ color: contractDetails.contract_status === 2 ? 'red' : contractDetails.contract_status === 3 ? '#FFD700' : 'inherit' }"
 										/>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
