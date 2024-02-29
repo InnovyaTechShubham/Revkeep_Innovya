@@ -298,7 +298,7 @@
 				<!-- Details section start-->
 				<b-card no-body>
 					
-						
+					<template v-if="entity.has_contract">
 						<!-- Contract Section Start-->
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -592,6 +592,7 @@
 							
 							</b-card-body>
 						</b-collapse>
+					</template>
 
 						<b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
