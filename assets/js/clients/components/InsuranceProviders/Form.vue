@@ -76,7 +76,9 @@
 						<b-form-checkbox name="active" v-model="entity.active">Active</b-form-checkbox>
 					</b-form-group>
 
-					<div class="d-flex align-items-start">
+					<!-- Audit types in insurance provider not needed for PowerBack -->
+					
+					<!-- <div class="d-flex align-items-start">
 						<validation-provider
 							vid="default_insurance_type_id"
 							name="Type"
@@ -109,9 +111,9 @@
 							<font-awesome-icon icon="plus" fixed-width />
 							Add More
 						</b-button>
-					</div>
+					</div> -->
 
-					<b-modal id="customAuditTypeModal" title="Add Custom Audit Type" @ok="addCustomAuditType">
+					<!-- <b-modal id="customAuditTypeModal" title="Add Custom Audit Type" @ok="addCustomAuditType">
 						<b-form-input
 							id="newAuditType"
 							name="newAuditType"
@@ -120,7 +122,8 @@
 							placeholder="Add custom type"
 							:disabled="saving"
 						/>
-					</b-modal>
+					</b-modal> -->
+
 					<b-form-group
 						label="Decision Levels"
 						label-for="entity.appeal_levels"
