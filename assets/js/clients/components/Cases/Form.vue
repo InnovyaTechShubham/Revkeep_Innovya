@@ -112,7 +112,6 @@
 									label-for="facility" 
 									label-cols-lg="4" 
 									:description="!entity.showNoContract ? 'This facility has no contract.' : ''" 
-									:class="{ 'text-info': !entity.showNoContract }"
 								>
 									<!-- Use a div to create a pseudo input group -->
 									<div style="display: flex; position: relative;">
@@ -323,7 +322,49 @@
 								</insurance-provider-form>
 							</div>
 						</b-col>
+						<b-col cols="12" md="6">
+							<validation-provider v-if="isManagedByRequired" vid="managed_by" name="Managed By"
+								:rules="{ required: false }" v-slot="validationContext">
+								<b-form-group label="Managed By" label-for="managed_by" label-cols-lg="4">
+									<b-input-group>
+										<b-select name="managed_by" v-model="entity.managed_by"
+											:options="filteredInsuranceProviders" :disabled="saving || loadingInsuranceProviders"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="name">
+											<template #first>
+												<b-select-option :value="null"> (None) </b-select-option>
+											</template>
+										</b-select>
+									</b-input-group>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+
 						<!-- adding new column Insurance Type -->
+						<b-col cols="12" md="6">
+							<!-- add insurance provider type -->
+							<validation-provider v-if="entity.insurance_provider_id !== null" vid="insurance_provider_type" name="Insurance Provider Types"
+								:rules="{ required: false }" v-slot="validationContext">
+								<b-form-group label="Insurance Provider Types" label-for="insurance_provider_type" label-cols-lg="4">
+									<b-input-group>
+										<b-select name="insurance_provider_type" v-model="entity.insurance_provider_type"
+											:options="insuranceProviderTypes[0]" :disabled="saving || loadingInsuranceProviders"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="insurance_provider_type">
+											<template #first>
+												<b-select-option :value="null"> (None) </b-select-option>
+											</template>
+										</b-select>
+									</b-input-group>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+					</b-row>
+					<b-row>
 						<b-col cols="12" md="6">
 							<validation-provider
 								v-if="iscontract"
@@ -351,10 +392,6 @@
 								</b-form-group>
 							</validation-provider>
 
-						</b-col>
-					</b-row>
-					<b-row>
-						<b-col cols="12" md="6">
 							<validation-provider vid="case_type_id" name="Audit Type" :rules="{ required: false }"
 								v-slot="validationContext">
 								<b-form-group label="Audit Type" label-for="case_type_id" label-cols-lg="4">
@@ -1217,6 +1254,7 @@ export default {
 				icdCodes10: null,
 				has_contract: false,
 				showNoContract: true,
+				managed_by: null,
 
 			},
 			currentDenialReasons: [],
@@ -1239,6 +1277,9 @@ export default {
 			selectedResult: null, // Selected result from the dropdown
 			insuranceOptions: [],
             // Add more options as needed
+
+			insuranceProviderTypes: [],
+			insurance_provider_type: '',
 		};
 	},
 	computed: {
@@ -1293,11 +1334,23 @@ export default {
 			facilities: "facilities/active",
 			loadingFacilities: "facilities/loadingActive",
 		}),
+		filteredInsuranceProviders() {
+			// Filter out options with text-field values 'Managed A' and 'Managed B'
+			return this.insuranceProviders.filter(provider => provider.name !== 'Managed A' && provider.name !== 'Managed B');
+		},
+		isManagedByRequired() {
+			// Get the selected insurance provider
+			const selectedProvider = this.insuranceProviders.find(provider => provider.id === this.entity.insurance_provider_id);
+
+			// Check if the selected provider is 'Managed A' or 'Managed B'
+			return selectedProvider && (selectedProvider.name === 'Managed A' || selectedProvider.name === 'Managed B');
+		},
 	},
 	mounted() {
 		this.additionalDataFetch();
-		// this.facilityDetails();
+		this.facilityDetails();
 		this.fetchDenialReasons();
+		this.fetchInsuranceProviderTypes();
 		this.fetchContractInsuranceTypes();
 
 		if (this.id) {
@@ -1356,9 +1409,9 @@ export default {
 				if (this.entity.disciplines) {
 					this.disciplineIds = this.entity.disciplines.map((item) => item.id);
 				}
-				if(response.term_date){
-					this.term_date = response.term_date;
-				}
+				// if(response.term_date){
+				// 	this.term_date = response.term_date;
+				// }
 				if(response.insuranceRateType){
 					this.entity.insurance_type = response.insuranceRateType;
 				}
@@ -1366,20 +1419,12 @@ export default {
 					this.selectedDenialReason = response.pwrbackDenialReason;
 				}
 				if(response.facility_id){
-					console.log('facility id found on edit data.')
-					this.selectedFacilityId = response.facility_id;
-					// Search for the corresponding displayName
-					const foundFacility = this.displayNames.find(item => item.id === response.facility_id);
-					console.log('foundFacility:-')
-					console.log(JSON.stringify(foundFacility));
-					// Check if foundFacility is not null or undefined
-					if (foundFacility) {
-						console.log('if condition true')
-						// Store the displayName in this.facilitySearch
-						// this.facilitySearch = foundFacility.displayName;
-						this.selectFacility(foundFacility);
 
-					}
+					this.facilitySearch = response.facility.display_name;
+					this.term_date = response.term_date;
+					this.entity.facility_name = response.facility.facility_status;
+					this.entity.has_contract = response.facility.has_contract;
+
 				}
 				this.$emit("loaded", this.entity);
 			} catch (e) {
@@ -1437,6 +1482,8 @@ export default {
 					term_date : this.term_date,
 					insuranceRateType: this.entity.insurance_type,
 					pwrbackDenialReason: this.selectedDenialReason,
+					managed_by: this.entity.managed_by,
+					insurance_provider_type: this.entity.insurance_provider_type,
 				};
 
 				if (this.currentDocument && this.currentDocument.id) {
@@ -1564,6 +1611,17 @@ export default {
 				console.error('Error fetching denial reasons:', error);
 			}
 		} ,     
+		async fetchInsuranceProviderTypes(){
+			try{
+				console.log('inside fetchInsuranceProviderTypes method')
+				const response = await axios.get('/client/GetInsuranceProviderTypes');
+				console.log('fetchInsuranceProviderstypes response data:-')
+				console.log(JSON.stringify(response.data));
+				this.insuranceProviderTypes.push(response.data);
+			} catch (error){
+				console.error('Error fetching denial reasons:', error);
+			}
+		} ,
 		async fetchContractInsuranceTypes(){
 			try {
 				console.log('inside fetchContractInsuranceTypes:-')

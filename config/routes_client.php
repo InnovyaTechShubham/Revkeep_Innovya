@@ -863,11 +863,6 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 			'action' => 'index'
 		]);
 
-		$builder->connect('/fetchContractPricingDefaultValues', [
-			'controller' => 'FetchContractPricingDefaultValues',
-			'action' => 'index'
-		]);
-
 		// Fallback to Dashed routes like /dashed-resource/
 		$builder->fallbacks(DashedRoute::class);
 	});
@@ -1284,6 +1279,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'controller' => 'FacilityList',
 		'action' => 'searchFacility',
 		'?' => ['search' => true], // Add the new parameter here
+    ]);
+	$builder->connect('/GetInsuranceProviderTypes', [
+        'controller' => 'InsuranceProviderTypes',
+		'action' => 'getAll', // Add the new parameter here
+		'_method' => 'GET'
     ]);
 
 });
