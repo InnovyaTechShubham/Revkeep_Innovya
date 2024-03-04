@@ -52,7 +52,7 @@
 			<b-row>
 				<b-col cols="12">
 					<div>
-						<b-tabs content-class="mt-3">
+						<b-tabs v-model="activeTab" content-class="mt-3">
 							<b-tab active>
 								<template #title>
 									<span class="mr-2">Facilities</span>
@@ -83,7 +83,7 @@
 								</template>
 								
 							</b-tab>
-							<b-tab active>
+							<b-tab>
 								<template #title>
 									<span class="mr-2">Services</span>
 									<!-- Show badge pill on the right -->
@@ -147,6 +147,7 @@ export default {
 				chain_type: null,
 			},
 			fields: ['id', 'name'],
+			activeTab: 0,
 		};
 	},
 	mounted() {

@@ -1,27 +1,21 @@
 <template>
 	<div>
-		<b-row class="mx-1" style="background: white;">
+		<b-row class="" style="background: white;margin-left: 2px;margin-right: 1px;">
 			<div class="header-container w-100">
-				<div class="d-flex justify-content-between align-items-center w-100">
+				<div class="d-flex justify-content-between align-items-center header_outer">
 					<page-header class="no-shadow">
-						<template #title>Chains<span class="badge ml-4 my-0 text-muted badge-light badge-pill">{{ records.length }}</span></template>
-						
+					<template #title class="ml-2 py-2">
+						<h1 class="h5 d-inline-block my-0 py-0 font-weight-bold text-dark text-break">Chains</h1>
+						<span class="badge ml-4 my-0 text-muted badge-light badge-pill">{{ totalCount }}</span>
+					</template>
 					</page-header>
-					
 
-					<div>
-						<b-button variant="primary" :to="{ name: 'chains.add' }" title="Add New">
+					<div class="d-flex align-items-center">
+					<b-button variant="primary" :to="{ name: 'chains.add' }" title="Add New" class="mr-3">
 						<font-awesome-icon icon="plus" fixed-width />
 						<span>Add New</span>
-						</b-button>
+					</b-button>
 					</div>
-
-					<!-- <button @click="previousPage" :disabled="currentPage === 1">Previous</button> -->
-    				<!-- <button @click="nextPage" :disabled="currentPage === totalPages-1">Next</button> -->
-
-					<!-- <b-button variant="Secondary" title="Next Page" @click="nextPage" :disabled="currentPage >= totalPages">
-						<span>Next</span>
-					</b-button> -->
 				</div>
 			</div>
 		</b-row>
@@ -31,19 +25,27 @@
 			<b-col cols="12" md="9" lg="8" order="1" class="mb-4 mb-lg-0">
 				<div class="search-container">
 				<i class="fas fa-search search-icon"></i>
-				<input v-model="search" @input="handleSearch" placeholder="Search for a chain" class="search-input" />
+				<input 
+					ref="searchInput"
+					v-model="search" 
+					@input="handleSearch" 
+					@focus="inputFocus = true"
+					@blur="inputFocus = false"
+					:class="{ 'focused': inputFocus }"
+					placeholder="Search..."
+					class="search-input" />
 				</div>
 			</b-col>
 
 			<!-- Pagination buttons column -->
 			<b-col cols="12" md="3" lg="4" order="2">
 				<div class="d-flex justify-content-end">
-				<b-button @click="previousPage" :disabled="currentPage === 1" class="custom-prev-button">
-					<i class="fas fa-arrow-left"></i> Prev
+				<b-button @click="previousPage"  class="custom-prev-button" style="background-color: #9EA3A9;">
+					<font-awesome-icon icon="chevron-left" /> Prev
 				</b-button>
 
-				<b-button @click="nextPage" :disabled="currentPage === totalPages" class="custom-next-button">
-					Next <i class="fas fa-arrow-right"></i>
+				<b-button @click="nextPage"  class="custom-next-button" style="background-color: #9EA3A9;">
+					Next <font-awesome-icon icon="chevron-right" />
 				</b-button>
 				</div>
 			</b-col>
@@ -118,7 +120,13 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 10px; /* Adjust padding as needed */
+		/* padding: 10px; Adjust padding as needed */
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}	
+
+	.header_outer{
+		width: 100%;
 	}
 	.no-shadow {
 		box-shadow: none !important;
@@ -131,29 +139,45 @@
 
 	.search-icon {
 		color: #555; /* Adjust color as needed */
+		background-color: #E9ECEF;
 		cursor: pointer;
-		border: 1px solid #555; /* Border for the search icon */
 		padding: 10px;
-		border-radius: 5px 0 0 5px;  /* Rounded corners for the search icon */
+		border-radius: 3px 0 0 3px;  /* Rounded corners for the search icon */
 		margin-right: 0; /* Add some spacing between icon and input */
+		border: 1px solid #ced4da;
 	}
 
 	.search-input {
-		width: 400px;
-		padding: 7px; /* Adjust padding for thickness */
+		width: 355px;
+		padding: 6px; /* Adjust padding for thickness */
 		border-radius: 0 5px 5px 0; /* Rounded corners for the input */
-		border: 1px solid #a29f9f; /* Border for the input */
+		border: 1px solid #ccc; /* Border for the input */
 		outline: none; /* Remove default input focus outline */
+	}
+
+	.search-input:focus {
+		color: #495057;
+		/* e9ecef */
+		background-color: #fff;
+		border-color: #80bdff;
+		outline: 0;
+		box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 	}
 
 	/* pagination prev and next button styles */
 	.custom-prev-button {
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
+		width: 75px;
+		border-right-width: 0;
 	}
 	.custom-next-button{
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
+		width: 75px;
+	}
+	.focused {
+		border: 2px #4e77a3; /* Adjust the styling as needed */
 	}
 </style>
 <script setup>
@@ -168,9 +192,13 @@ const search = ref('');
 const loading = ref(false);
 
 // Pagination
-const pageSize = 10; // Set the number of records per page
+const pageSize = 15; // Set the number of records per page
 const currentPage = ref(1);
 const totalPages = ref(1); // Initialize totalPages
+const totalCount = ref(0);
+
+const searchInput = ref(null);
+const inputFocus = ref(false);
 
 // Fetch data on page load
 onMounted(async () => {
@@ -201,6 +229,9 @@ watch(search, async () => {
 
 // Fetch data function
 async function fetchData() {
+	// await nextTick(); // Wait for the next rendering cycle
+    searchInput.value.focus();
+	inputFocus.value = true;
   try {
     console.log('inside fetchData function');
     const response = await axios.get('/client/getChains',{
@@ -235,6 +266,7 @@ async function fetchData() {
 	console.log('x-total-count header:', response.headers['x-total-count']);
 	console.log('totalPage value inside fetchdata:-');
 	console.log(totalPages.value);
+	totalCount.value = response.headers['x-total-count'];
   } catch (error) {
     console.error(error);
   }
