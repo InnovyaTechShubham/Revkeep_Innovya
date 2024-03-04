@@ -137,3 +137,62 @@ VALUES
     ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Supported Residential Center'),
     ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Vendor'),
     ('2024-02-08 16:02:35.357', NULL, '2024-02-08 16:02:35.357', NULL, NULL, NULL, 'Vitality to You');
+
+
+
+
+
+-- powerback_denial_reasons
+    INSERT INTO [dbo].[powerback_denial_reasons] ([reason])
+VALUES
+   ('Authorization'),
+   ('Benefits exhausted'),
+   ('Bundled Charges'),
+   ('Cert missing or incomplete'),
+   ('HCPC Coding (technical)'),
+   ('Documentation does not support level of services'),
+   ('Documentation does not support services'),
+   ('No/Incomplete ADR'),
+   ('E-Stim'),
+   ('Insufficient progress'),
+   ('LCD ICD-10 coding (technical)'),
+   ('180 day Eval'),
+   ('LTG not measurable'),
+   ('Medical Necessity'),
+   ('Modifier/NCCI Issue (technical)'),
+   ('No daily skilled care'),
+   ('No PLOF documented'),
+   ('Other technical denial'),
+   ('Patient no longer required the services of skilled staff'),
+   ('Section GG Issues'),
+   ('Therapy did not meet ordered frequency'),
+   ('Therapy minutes do not support the billed RUG'),
+   ('Treatment not related to diagnosis'),
+   ('RTM Billing/Documentation'),
+   ('No Treatment Encounter Notes'),
+   ('Denied in Error by Payor');
+
+
+  --  query for insurance provider type
+INSERT INTO insurance_provider_types (insurance_provider_type)
+VALUES
+('Commercial'),
+('Medicare'),
+('Workers Comp'),
+('Auto'),
+('VA');
+
+
+-- Query for contract_insurance_types default_value
+
+  UPDATE contract_insurance_types
+SET default_value = 0.5
+WHERE id = 3; 
+
+  UPDATE contract_insurance_types
+SET default_value = 0.5
+WHERE id = 5; 
+
+  UPDATE contract_insurance_types
+SET default_value = 0.75
+WHERE default_value is NULL; 
