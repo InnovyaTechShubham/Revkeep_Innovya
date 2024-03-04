@@ -863,6 +863,11 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 			'action' => 'index'
 		]);
 
+		$builder->connect('/fetchContractPricingDefaultValues', [
+			'controller' => 'FetchContractPricingDefaultValues',
+			'action' => 'index'
+		]);
+
 		// Fallback to Dashed routes like /dashed-resource/
 		$builder->fallbacks(DashedRoute::class);
 	});

@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Facility Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Facility Name1" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -1488,6 +1488,7 @@ export default {
 		// this.fetchReceivingEmails();
 		// this.fetchReceivingFaxes();
 		this.fetchFacilityType();
+		this.listDefaultContractPricingSchedules();
 
 
 		if (this.id) {
@@ -2587,6 +2588,33 @@ export default {
 						console.error("Error fetching data:", error.message);
 					}
 		},
+		async listDefaultContractPricingSchedules(){
+			try{
+				const url = "/client/api/fetchContractPricingDefaultValues";
+				const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+				console.log("default contract pricing schedule data =", response);
+				if (response.data && Array.isArray(response.data)) {
+					response.data.forEach((item) => {
+						if (item.id < 7) {
+							this.$set(this.rates, item.id-1, item.default_value); // Trigger reactivity
+						} else {
+							this.$set(this.rates2, item.id - 7, item.default_value); // Trigger reactivity
+						}
+					});
+
+					console.log("Default Contract Rates1 =", this.rates);
+					console.log("Default Contract Rates2 =", this.rates2);
+				}
+			}
+			catch(e){
+				console.log("error in fetching default contract pricing schedule data =", response);
+			}
+		}
 },
 };
 </script>
