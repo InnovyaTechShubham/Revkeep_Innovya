@@ -137,6 +137,9 @@
 										<b-card-header>
 											<b-form-group class="mb-0">
 												<b-input-group>
+													<b-input-group-text class="p-0" style="border: none; background: none;">
+                           								 Opportunity {{ index + 1 }}
+                        							</b-input-group-text>
 													<!-- <b-form-select
 														v-model="appealLevel._joinData.appeal_level_id"
 														:options="appealLevels"
