@@ -274,7 +274,6 @@
 									<b-form-checkbox
 										name="has_contract"
 										v-model="entity.has_contract"
-										:disabled="true"
 										:state="getValidationState(validationContext)"
 									>
 										Has Contract
