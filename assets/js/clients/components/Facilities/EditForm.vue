@@ -568,8 +568,8 @@
 								<b-card title="Contract Pricing Schedule" border-variant="light">
 								<b-row>
 									<b-col md="6">
-										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate']">
-											<template v-slot:cell(contract_rate)="info">
+										<b-table :items="insurances.slice(0, 6)" :fields="['insurance_rate_type', 'contract_rate(%)']">
+											<template v-slot:cell(contract_rate(%))="info">
 											<div class="d-flex">
 												<input type="text" v-model="rates[info.index+1]" class="form-control" placeholder="Add rate in %" />
 											</div>
@@ -578,8 +578,8 @@
 										</b-col>
 
 										<b-col md="6">
-										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate']">
-											<template v-slot:cell(contract_rate)="info">
+										<b-table :items="insurances.slice(6, 12)" :fields="['insurance_rate_type', 'contract_rate(%)']">
+											<template v-slot:cell(contract_rate(%))="info">
 											<div class="d-flex">
 												<input type="text" v-model="rates2[info.index+1]" class="form-control" placeholder="Add rate in %" />
 											</div>
@@ -3106,12 +3106,21 @@ async addFax() {
 				console.log("pricing schedule data =", response);
 				if (response.data && Array.isArray(response.data)) {
 					response.data.forEach((item) => {
+						// if (item.insurance_type_id < 7) {
+						// 	this.rates[item.insurance_type_id] = item.contract_rate;
+						// }
+						// else{
+						// 	this.rates2[item.insurance_type_id-6] = item.contract_rate;
+						// }
 						if (item.insurance_type_id < 7) {
-							this.rates[item.insurance_type_id] = item.contract_rate;
-						}
-						else{
-							this.rates2[item.insurance_type_id-6] = item.contract_rate;
-						}
+                    // Convert decimal to percentage
+                    const percentageRate = parseFloat(item.contract_rate) * 100;
+                    this.rates[item.insurance_type_id] = percentageRate.toFixed(2);
+                } else {
+                    // Convert decimal to percentage
+                    const percentageRate2 = parseFloat(item.contract_rate) * 100;
+                    this.rates2[item.insurance_type_id - 6] = percentageRate2.toFixed(2);
+                }
 						console.log("Contract Rates2 =", this.rates2);
 					}); 
 				}
