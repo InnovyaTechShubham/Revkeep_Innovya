@@ -47,6 +47,13 @@
 				<b-col cols="12" sm="6" lg="6" class="mb-2">
 					<!-- <b-badge pill variant="primary" v-if="entity.facility_status">Active</b-badge>
 					<b-badge pill variant="secondary" v-else>Inactive</b-badge> -->
+					<b-badge pill 
+						v-if="entity.is_encore === 1"
+						variant="success" 
+					>
+						<!-- {{ result.is_encore }} -->
+						Encore
+                	</b-badge>
 					<b-badge :pill="true" :variant="badgeVariant">{{ badgeText }}</b-badge>
 					<b-badge pill v-if="entity.client_owned" variant="info"> Owned </b-badge>
 					<b-badge pill v-if="entity.has_contract" variant="info"> Contracted </b-badge>
@@ -444,6 +451,7 @@ export default {
 				active: null,
 				full_address: null,
 				display_name:null,
+				is_encore:null,
 				// receiving_faxes: [], // For storing multiple faxes
             	// receiving_emails: [], // For storing multiple emails
 

@@ -105,13 +105,43 @@
 									<div >
 										
 
-                                        <b-badge pill v-if="result.facility_status === 'Inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
-                                            {{ result.facility_status }}
+                                        
+										<b-badge pill 
+											v-if="result.is_encore === 1"
+											variant="success" title="inactive" class="ml-2 d-flex align-items-center"
+										>
+                                            <!-- {{ result.is_encore }} -->
+											Encore
                                         </b-badge>
 
+										<!-- <b-badge pill v-else variant="primary" title="active" class="ml-2 d-flex align-items-center">
+                                            {{ result.facility_status }}
+                                        </b-badge> -->
+									 </div>
+									 <div >
+										<b-badge pill v-if="result.facility_status === 'Inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
+                                            {{ result.facility_status }}
+                                        </b-badge>
+										<!-- <b-badge pill v-if="result.facility_status === 'Inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
+                                            {{ result.is_encore }}
+                                        </b-badge> -->
                                         <b-badge pill v-else-if="result.facility_status === 'Pending Term'" variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
                                             {{ result.facility_status }}
                                         </b-badge>
+
+                                        <!-- <b-badge pill v-if="result.facility_status === 'Inactive'" variant="danger" title="inactive" class="ml-2 d-flex align-items-center">
+                                            {{ result.facility_status }}
+                                        </b-badge> -->
+										<!-- <b-badge pill 
+											v-if="result.is_encore === 0"
+											variant="success" title="inactive" class="ml-2 d-flex align-items-center"
+										>
+                                            
+											Encore
+                                        </b-badge> -->
+                                        <!-- <b-badge pill v-else-if="result.facility_status === 'Pending Term'" variant="warning" title="pending" class="ml-2 d-flex align-items-center" >
+                                            {{ result.facility_status }}
+                                        </b-badge> -->
 
 										<!-- <b-badge pill v-else variant="primary" title="active" class="ml-2 d-flex align-items-center">
                                             {{ result.facility_status }}

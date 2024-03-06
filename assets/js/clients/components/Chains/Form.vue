@@ -314,7 +314,20 @@ import { save} from "@/clients/services/chain";
 import { formatErrors, getValidationState } from "@/validation";
 import axios from "axios";
 import { BFormSelect, BFormInvalidFeedback } from 'bootstrap-vue';
+// import debounce from 'lodash/debounce';
 
+function debounce(func, delay) {
+  console.log('inside debounce function');
+  let timeoutId;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(context, args);
+    }, delay);
+  };
+}
 
 export default {
 	name: "ChainForm",
@@ -336,6 +349,7 @@ export default {
 		...mapGetters({
 			facilities: "facilities/active",
 			services: "services/all",
+
 			loadingServices: "services/loadingAll",
 			loadingFacilities: "facilities/loadingAll",
 		}),
@@ -345,20 +359,29 @@ export default {
 				(this.facilities_services_arr || []).flatMap((innerArr) =>
 					innerArr.map((item) => {
 						const name = item.display_name || item.name;
+						console.log('inside facilities_services_arr, name is:-');
+						console.log(name);
 						return name ? {
 							id: item.id,
 							name: name,
-							facility_type: (item.facility_type && typeof item.facility_type === 'object') ? item.facility_type : null,
+							facility_type: (item.facility_type_id && item.facility_type_id !== null) ? item.facility_type_id : null,
 						} : null;
 					})
 				).filter(item => item !== null) || []
 			);
 		},
 		filteredOptions() {
+			console.log('inside filteredOptions:-');
 			const searchTerm = this.searchText.toLowerCase();
+			console.log('searchTerm:-')
+			console.log(this.searchText.toLowerCase());
+			console.log('inside filtered ooptions, extractedFacilitesAndServices are:-')
+			console.log(JSON.stringify(this.extractedFacilitesAndServices));
 			return (this.extractedFacilitesAndServices || []).flatMap((innerArr) =>
 				innerArr.map((item) => {
 					const itemName = item.display_name || item.name;
+					console.log('itemName:-');
+					console.log(itemName);
 					return itemName && itemName.toLowerCase().includes(searchTerm) ? {
 						id: item.id,
 						name: itemName,
@@ -385,7 +408,7 @@ export default {
 					_ids: [],
 				},
 			},
-			facility_ids: [],
+			// facility_ids: [],
             servicesData: [],
             dropdownData: [],   // To store the data fetched from the database
             selectedItem: null,  // To store the selected item ID
@@ -401,6 +424,18 @@ export default {
 			deleteServiceMode: false,
 			errorMessage: null,
 			client_id: window.authUser?.client_id,
+			debouncedApiCall: debounce(async () => {
+				console.log('calling getServicesAndFacilities() method');
+				await this.getServicesAndFacilities();
+
+				const searchTerm = this.searchText.toLowerCase();
+				this.filteredOptions = this.flatFacilitiesServicesArr.filter(
+				(item) => item.name.toLowerCase().includes(searchTerm)
+				);
+
+				console.log('inside filterOptions, filteredOptions are:-');
+				console.log(JSON.stringify(this.filteredOptions));
+			}, 300), // Adjust the delay (in milliseconds) according to your needs
 		};
 	},
 	watch: {
@@ -418,8 +453,8 @@ export default {
 			this.getChainDataForEdit();
 		}
 		
-        this.getServices();
-		this.getFacilities();
+        // this.getServices();
+		// this.getFacilities();
 		
 
 		if (this.id) {
@@ -428,7 +463,6 @@ export default {
 		} else {
 			this.loading = false;
 			console.log('facilites_services_arr:-')
-			console.log(this.facilities_services_arr)
 			console.log('extracted data as:-')
 			console.log(this.extractedFacilitesAndServices)
 		}
@@ -476,14 +510,37 @@ export default {
       		this.deleteServiceMode = false;
 		},
 		// method to show dropdown options for Facilities/services
-		filterOptions() {
-			if(this.searchText.length == ''){
+		async getServicesAndFacilities() {
+			// await this.getServices();
+			await this.getFacilities();
+		},
+		async filterOptions() {
+			if(this.searchText.length < 2){
 				this.filteredOptions = [];
+
+				this.facility_ids= [];
+				this.servicesData= [];
+				this.dropdownData= [];   // To store the data fetched from the database
+				this.selectedItem= null;  // To store the selected item ID
+				this.facilities_services_arr= [];
+				this.extractedFacilitesAndServices= [];
+				// this.searchText= '';
+				this.facilities_services= null;
+				// this.selectedItems= [];
+				this.serviceItems= [];
+				this.filteredOptions= [];
+				this.selectedItem= null;
+			}else{
+				if(this.searchText.length >=2){
+					// this.filteredOptions = [];
+					this.facilities_services_arr = [];
+					this.extractedFacilitesAndServices = [];
+
+					// Call the debounced function
+					this.debouncedApiCall();
+				}
 			}
-			const searchTerm = this.searchText.toLowerCase();
-			this.filteredOptions = this.flatFacilitiesServicesArr.filter(
-				(item) => item.name.toLowerCase().includes(searchTerm)
-			);
+			
 		},
 		selectOption(item) {
 			this.selectedItem = item;
@@ -499,18 +556,48 @@ export default {
 		
 		getValidationState,
 		async getServices() {
-			await this.$store.dispatch("services/getAll");
-			const services = await this.$store.dispatch("services/getAll");
+			console.log('getServices called');
+			// await this.$store.dispatch("services/getAll");
+			const services = await this.$store.dispatch("services/getAll", { search: this.searchText });
 			this.facilities_services_arr.push(services);
-			console.log(this.extractDataFromOptions(services));
 			this.extractedFacilitesAndServices.push(this.extractDataFromOptions(services));
+			console.log('extractedFacilitesAndServices inisde getServices:-');
+			console.log(JSON.stringify(this.extractedFacilitesAndServices));
 		},
 		async getFacilities() {
-			await this.$store.dispatch("facilities/getAll");
-			const facilities = await this.$store.dispatch("facilities/getAll");
-			this.facilities_services_arr.push(facilities);
-			console.log(this.extractDataFromOptions(facilities));
-			this.extractedFacilitesAndServices.push(this.extractDataFromOptions(facilities));
+			// await this.$store.dispatch("facilities/getAll");
+			// const facilities = await this.$store.dispatch("facilities/getAll", { search: this.searchText });
+			// this.facilities_services_arr.push(facilities);
+			// console.log(this.extractDataFromOptions(facilities));
+			// this.extractedFacilitesAndServices.push(this.extractDataFromOptions(facilities));
+			// console.log('extractedFacilitesAndServices inisde getServices:-');
+			// console.log(JSON.stringify(this.extractedFacilitesAndServices));
+
+			
+
+			try {
+				// const facilities = null;
+
+				const response = await axios.get('/client/searchFacility',{
+				params: {
+					search: this.searchText,
+				},
+				});
+				// console.log('inside facilityDetails on Form.vue chains new axios request ******:-')
+				// console.log(JSON.stringify(response.data));
+				let facilities = response.data;
+				this.facilities_services_arr.push(facilities);
+				// console.log('facilities_services_arr:-')
+				// console.log(JSON.stringify(this.facilities_services_arr));
+				// console.log('extractDataFromOptions:-');
+				// console.log(JSON.stringify(this.extractDataFromOptions(facilities)));
+				this.extractedFacilitesAndServices.push(this.extractDataFromOptions(facilities));
+				console.log('extractedFacilitesAndServices inisde getFacilities:-');
+				console.log(JSON.stringify(this.extractedFacilitesAndServices));
+			} catch (error) {
+				console.error('Error fetching services:', error);
+				// Handle the error as needed
+			}
 		},
 		extractDataFromOptions(options) {
 			return options.map(option => ({ id: option.id, name: option.name }));

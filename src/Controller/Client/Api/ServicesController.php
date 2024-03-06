@@ -105,10 +105,15 @@ class ServicesController extends ApiController
 	 */
 	public function all(): void
 	{
+		$search = $this->request->getQuery('search');
 		$entities = $this->Services
 			->find('all')
-			->find('ordered')
-			->all();
+			->find('ordered');
+
+		if (!empty($search)) {
+			$entities->where(['name LIKE' => '%' . $search . '%']);
+		}
+		$entities = $entities->all();
 
 		$this->set('data', $entities);
 	}

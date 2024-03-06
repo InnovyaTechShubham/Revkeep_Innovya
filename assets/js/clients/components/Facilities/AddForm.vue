@@ -16,7 +16,7 @@
 								:rules="{ required: true, max: 60 }"
 								v-slot="validationContext"
 							>
-								<b-form-group label="Facility Name" label-for="disp_name" label-cols-lg="4">
+								<b-form-group label="Facility Name1" label-for="disp_name" label-cols-lg="4">
 									<b-form-input
 										name="disp_name"
 										type="text"
@@ -788,19 +788,23 @@
 									v-slot="validationContext"
 								>
 									<b-form-group
-										label="Contract Status"
-										label-for="active"
-										label-cols-lg="4"
-										description="Inactive contracts will not show up in dropdown lists."
-									>
-										<b-form-checkbox name="active" v-model="contractDetails.contract_status" :disabled="saving"
-											>Active</b-form-checkbox
+											label="Contract Status"
+											label-for="contractStatus"
+											label-cols-lg="4"
 										>
-										<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-										/>
+											<b-form-select
+												id="contractStatus"
+												v-model="contractDetails.contract_status"
+												:options="contractStatusOptions"
+												:disabled="saving"
+												value-field="id"
+												text-field="contract_status"
+											></b-form-select>
+											<b-form-invalid-feedback
+												v-for="error in validationContext.errors"
+												:key="error"
+												v-text="error"
+											/>
 									</b-form-group>
 								</validation-provider>
 
@@ -817,6 +821,7 @@
 											name="contract_end_date"
 											:disabled="saving"
 											:state="getValidationState(validationContext)"
+											:style="{ color: contractDetails.contract_status === 2 ? 'red' : contractDetails.contract_status === 3 ? '#FFD700' : 'inherit' }"
 										/>
 										<b-form-invalid-feedback
 											v-for="error in validationContext.errors"
@@ -1056,7 +1061,7 @@
 						<!-- Contract Section End-->
 
 						<!--Service section start-->
-						<b-card-header header-tag="header" role="tab" class="p-0">
+						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
 								block
 								v-b-toggle.collapseServices
@@ -1109,7 +1114,7 @@
 									</div>
 								</b-form-group>
 							</b-card-body>
-						</b-collapse>
+						</b-collapse> -->
 						<!--Service section End-->
 
 						<!--Receiving Methods section start-->
@@ -1448,6 +1453,7 @@ export default {
 			facilityTypes:[],
 			rates:{},
 			rates2:{},
+			contractStatusOptions:[],
    
 	 };
 	},
@@ -1482,6 +1488,7 @@ export default {
 		// this.fetchReceivingEmails();
 		// this.fetchReceivingFaxes();
 		this.fetchFacilityType();
+		this.listDefaultContractPricingSchedules();
 
 
 		if (this.id) {
@@ -1672,26 +1679,44 @@ export default {
 		},
 		async fetchContractBillTypes(){
 			try
+				{
+					const url = "/client/contractbilltypelist";
+						
+						const response = await axios.get(url, {
+						headers: {
+							"Accept": "application/json",
+							// You can add other headers here if needed
+						},
+						});
+						
+					console.log("contract bill type listed :", response);
+					response.data.forEach((item)=>{
+						this.contractBillTypes.push(item.bill_type);
+					});
+					console.log('contract bill type options =' , this.contractBillTypes);
+				}
+			catch (error) 
+				{
+					console.error("Error fetching data:", error.message);
+				}
+				
+			try{
+				const url = "/client/api/fetchContractStatus";
+								
+				const response = await axios.get(url, {
+				headers: {
+					"Accept": "application/json",
+					// You can add other headers here if needed
+				},
+				});
+				this.contractStatusOptions = response.data;
+
+				console.log('COntract Status options =' , this.contractStatusOptions);
+				}
+			catch (error) 
 						{
-							const url = "/client/contractbilltypelist";
-								
-								const response = await axios.get(url, {
-								headers: {
-									"Accept": "application/json",
-									// You can add other headers here if needed
-								},
-								});
-								
-							console.log("contract bill type listed :", response);
-							response.data.forEach((item)=>{
-								this.contractBillTypes.push(item.bill_type);
-							});
-							console.log('contract bill type options =' , this.contractBillTypes);
+							console.error("Error COntract Status options data:", error.message);
 						}
-					catch (error) 
-					{
-						console.error("Error fetching data:", error.message);
-					}
 		},
 	async updateReceivingMethods(receivingEmailId, receivingFaxId) {
 			const facilityId = this.entity.id;
@@ -2563,6 +2588,33 @@ export default {
 						console.error("Error fetching data:", error.message);
 					}
 		},
+		async listDefaultContractPricingSchedules(){
+			try{
+				const url = "/client/api/fetchContractPricingDefaultValues";
+				const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+				console.log("default contract pricing schedule data =", response);
+				if (response.data && Array.isArray(response.data)) {
+					response.data.forEach((item) => {
+						if (item.id < 7) {
+							this.$set(this.rates, item.id-1, item.default_value); // Trigger reactivity
+						} else {
+							this.$set(this.rates2, item.id - 7, item.default_value); // Trigger reactivity
+						}
+					});
+
+					console.log("Default Contract Rates1 =", this.rates);
+					console.log("Default Contract Rates2 =", this.rates2);
+				}
+			}
+			catch(e){
+				console.log("error in fetching default contract pricing schedule data =", response);
+			}
+		}
 },
 };
 </script>

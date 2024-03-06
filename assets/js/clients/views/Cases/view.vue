@@ -1171,16 +1171,19 @@ export default {
 			console.log("case testing = ",caseEntity);
 			console.log("appeal testing = ",appeal);
 			let name ="";
-			caseEntity.insurance_provider.appeal_levels.map((item , index)=>{
-				console.log("inside loop")
-				if(appeal.insurance_appeal_id == item._joinData.id){
-					console.log("match found =", item._joinData.label)
-					name = item._joinData.label;
-					
-				}
-			});
-			
-
+			if(caseEntity.insurance_provider !== null){
+				console.log('caseEntity.insurance_provider not null')
+				caseEntity.insurance_provider.appeal_levels.map((item , index)=>{
+					console.log("inside loop")
+					if(appeal.insurance_appeal_id == item._joinData.id){
+						console.log("match found =", item._joinData.label)
+						name = item._joinData.label;
+						
+					}
+				});
+			}else{
+				name = 'Unknown Level'
+			}
 			// return this.name;
 			return name;
 			

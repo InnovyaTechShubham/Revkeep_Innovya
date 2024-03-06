@@ -802,7 +802,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 				'all' => [
 					'action' => 'all',
 					'method' => 'GET',
-					'path' => 'all'
+					'path' => 'all/:search'
 				]
 			]
 		]);
@@ -1273,6 +1273,17 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'index',
 		
 	]);
-	// find facilityContract on ID basis
+	// search facility route [can be used where ever we do facility search]
+	//   searchFacility
+	$builder->connect('/searchFacility', [
+        'controller' => 'FacilityList',
+		'action' => 'searchFacility',
+		'?' => ['search' => true], // Add the new parameter here
+    ]);
+	$builder->connect('/GetInsuranceProviderTypes', [
+        'controller' => 'InsuranceProviderTypes',
+		'action' => 'getAll', // Add the new parameter here
+		'_method' => 'GET'
+    ]);
 
 });

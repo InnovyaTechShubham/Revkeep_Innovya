@@ -107,7 +107,12 @@
 						<b-col col="12" md="6">
 							<validation-provider vid="facility_id" name="Facility" :rules="{ required: false }"
 								v-slot="validationContext">
-								<b-form-group label="Facility Name" label-for="facility" label-cols-lg="4">
+								<b-form-group 
+									label="Facility Name" 
+									label-for="facility" 
+									label-cols-lg="4" 
+									:description="!entity.showNoContract ? 'This facility has no contract.' : ''" 
+								>
 									<!-- Use a div to create a pseudo input group -->
 									<div style="display: flex; position: relative;">
 										<!-- Custom input box for search -->
@@ -155,6 +160,36 @@
 
 								<facility-form @saved="addedFacility" @cancel="addingFacility = false" />
 							</div>
+
+							<!-- Facility Contract -->
+							<validation-provider
+									vid="has_contract"
+									name="Contract"
+									:rules="{ required: false }"
+									v-slot="validationContext"
+									v-if="entity.has_contract"
+							>
+								<b-form-group
+									label="Contract"
+									label-for="has_contract"
+									label-cols-lg="4"
+									description="This facility is contracted."
+								>
+									<b-form-checkbox
+										name="has_contract"
+										:checked="entity.has_contract"
+										:disabled="true"
+										:state="getValidationState(validationContext)"
+									>
+										Has Contract
+									</b-form-checkbox>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
 						</b-col>
 						<b-col col="12" md="6">
 							<!-- <validation-provider
@@ -180,7 +215,7 @@
 										/>
 									</b-form-group>
 								</validation-provider> -->
-								<b-form-group label="Facility Status" label-for="facility_status" label-cols-lg="4">
+								<b-form-group label="Facility Status" v-if="entity.facility_name !== null" label-for="facility_status" label-cols-lg="4">
 									<b-form-input
 										name="facility_status"
 										v-model="entity.facility_name"
@@ -191,7 +226,7 @@
 									/>
 								</b-form-group>
 								<!-- Term Date -->
-								<b-form-group label="Term Date" label-for="term_date" label-cols-lg="4">
+								<b-form-group label="FacilityTerm Date" v-if="term_date !== null && entity.facility_name !== 'Active'" label-for="term_date" label-cols-lg="4">
 									<b-form-input
 										name="term_date"
 										v-model="term_date"
@@ -287,7 +322,49 @@
 								</insurance-provider-form>
 							</div>
 						</b-col>
+						<b-col cols="12" md="6">
+							<validation-provider v-if="isManagedByRequired" vid="managed_by" name="Managed By"
+								:rules="{ required: false }" v-slot="validationContext">
+								<b-form-group label="Managed By" label-for="managed_by" label-cols-lg="4">
+									<b-input-group>
+										<b-select name="managed_by" v-model="entity.managed_by"
+											:options="filteredInsuranceProviders" :disabled="saving || loadingInsuranceProviders"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="name">
+											<template #first>
+												<b-select-option :value="null"> (None) </b-select-option>
+											</template>
+										</b-select>
+									</b-input-group>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+
 						<!-- adding new column Insurance Type -->
+						<b-col cols="12" md="6">
+							<!-- add insurance provider type -->
+							<validation-provider v-if="entity.insurance_provider_id !== null" vid="insurance_provider_type" name="Insurance Provider Types"
+								:rules="{ required: false }" v-slot="validationContext">
+								<b-form-group label="Insurance Provider Types" label-for="insurance_provider_type" label-cols-lg="4">
+									<b-input-group>
+										<b-select name="insurance_provider_type" v-model="entity.insurance_provider_type"
+											:options="insuranceProviderTypes[0]" :disabled="saving || loadingInsuranceProviders"
+											:state="getValidationState(validationContext)" value-field="id"
+											text-field="insurance_provider_type">
+											<template #first>
+												<b-select-option :value="null"> (None) </b-select-option>
+											</template>
+										</b-select>
+									</b-input-group>
+									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+										v-text="error" />
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+					</b-row>
+					<b-row>
 						<b-col cols="12" md="6">
 							<validation-provider
 								v-if="iscontract"
@@ -315,10 +392,6 @@
 								</b-form-group>
 							</validation-provider>
 
-						</b-col>
-					</b-row>
-					<b-row>
-						<b-col cols="12" md="6">
 							<validation-provider vid="case_type_id" name="Audit Type" :rules="{ required: false }"
 								v-slot="validationContext">
 								<b-form-group label="Audit Type" label-for="case_type_id" label-cols-lg="4">
@@ -450,61 +523,48 @@
 						<b-collapse id="collapseDenial" role="tabpanel">
 							<b-card-body>
 								<div class="row">
-									<!-- Powerback Denial Reason -->
-									<div class="col-lg-12">
-										<validation-provider
-										vid="pwrbck_deny_res"
-										name="Powerback Denial Reason"
-										:rules="{ required: false }"
-										v-slot="validationContext"
-									>
-										<b-form-group
-											label="Powerback Denial Reason"
-											label-for="pwrbck_deny_res"
-											label-cols-lg="2"
-										>
-											<b-select
-											v-model="selectedDenialReason"
-											name="pwrbck_denial_reason"
-											:state="getValidationState(validationContext)"
-											>
-											<template #first>
-												<option :value="null">(None)</option>
-											</template>
-											<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
-												{{ reason.reason }}
-											</option>
-											</b-select>
-											<b-form-invalid-feedback
-											v-for="error in validationContext.errors"
-											:key="error"
-											v-text="error"
-											/>
-										</b-form-group>
-									</validation-provider>
-									</div>
-									
+
 									<!-- First Column for Denial Type -->
-									<div class="col-lg-6">
-										<validation-provider vid="denial_type_id" name="Denial Type"
-											:rules="{ required: false }" v-slot="validationContext">
+									<div class="col-lg-4 col-md-3">
+										<validation-provider vid="denial_type_id" name="Denial Type" :rules="{ required: false }"
+											v-slot="validationContext">
 											<b-form-group label="Denial Type" label-for="denial_type_id" label-cols-lg="4">
-												<b-select name="denial_type_id" v-model="entity.denial_type_id"
-													:options="denialTypes" :disabled="saving || loadingDenialTypes"
-													:state="getValidationState(validationContext)" value-field="id"
-													text-field="name">
+												<b-select name="denial_type_id" v-model="entity.denial_type_id" :options="denialTypes"
+													:disabled="saving || loadingDenialTypes" :state="getValidationState(validationContext)"
+													value-field="id" text-field="name">
 													<template #first>
 														<option :value="null">(None)</option>
 													</template>
 												</b-select>
-												<b-form-invalid-feedback v-for="error in validationContext.errors"
-													:key="error" v-text="error" />
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+													v-text="error" />
 											</b-form-group>
 										</validation-provider>
 									</div>
 
+									<!-- Powerback Denial Reason -->
+									<div class="col-lg-8 col-md-9">
+										<validation-provider vid="pwrbck_deny_res" name="Powerback Denial Reason" :rules="{ required: false }"
+											v-slot="validationContext">
+											<b-form-group label="Powerback Denial Reason" label-for="pwrbck_deny_res" label-cols-lg="2">
+												<b-select v-model="selectedDenialReason" name="pwrbck_denial_reason"
+													:state="getValidationState(validationContext)">
+													<template #first>
+														<option :value="null">(None)</option>
+													</template>
+													<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
+														{{ reason.reason }}
+													</option>
+												</b-select>
+												<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+													v-text="error" />
+											</b-form-group>
+										</validation-provider>
+									</div>
+								</div>
+								<div class="row">
 									<!-- Second Column for Denial Reason -->
-									<div class="col-lg-6">
+									<div class="col-lg-12 col-md-12 col-sm-12">
 										<div v-if="addingDenialReason">
 											<denial-reason-form autofocus @cancel="addingDenialReason = false"
 												@saved="addedNewDenialReason">
@@ -512,36 +572,16 @@
 											</denial-reason-form>
 										</div>
 										<div v-else>
-											<b-form-group label="Denial Reasons" label-for="denial_reasons"
-												label-cols-lg="4" v-if="!addingDenialReason">
-												<denial-reason-search-multi name="denial_reasons"
-													v-model="currentDenialReasons" @add="addingDenialReason = true"
-													:disabled="saving" />
+											<b-form-group label="Denial Reasons" label-for="denial_reasons" label-cols-lg="4"
+												v-if="!addingDenialReason">
+												<denial-reason-search-multi name="denial_reasons" v-model="currentDenialReasons"
+													@add="addingDenialReason = true" :disabled="saving" />
 											</b-form-group>
 										</div>
 									</div>
 								</div>
-
-								<!-- Powerback Denial Reason -->
-								<validation-provider vid="pwrbck_deny_res" name="Powerback Denial Reason"
-									:rules="{ required: false }" v-slot="validationContext">
-									<b-form-group label="Powerback Denial Reason" label-for="pwrbck_deny_res"
-										label-cols-lg="2">
-										<b-select v-model="selectedDenialReason" name="pwrbck_denial_reason"
-											:state="getValidationState(validationContext)">
-											<template #first>
-												<option :value="null">(None)</option>
-											</template>
-											<option v-for="reason in denialReasons[0]" :key="reason.id" :value="reason.id">
-												{{ reason.reason }}
-											</option>
-										</b-select>
-										<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
-											v-text="error" />
-									</b-form-group>
-								</validation-provider>
-								
 							</b-card-body>
+
 						</b-collapse>
 						<!-- <b-card-header header-tag="header" role="tab" class="p-0">
 							<b-button
@@ -1113,6 +1153,7 @@ import ClientEmployeeForm from "@/clients/components/ClientEmployees/Form.vue";
 import FacilityForm from "@/clients/components/Facilities/AddForm.vue";
 // import AddNPI from "@/clients/views/ClientEmployees/add_npi.vue";
 import axios from "axios";
+import { debounce } from 'lodash';
 
 export default {
 	name: "CaseForm",
@@ -1211,7 +1252,9 @@ export default {
 				rarcs: null,
 				planID: null,
 				icdCodes10: null,
-
+				has_contract: false,
+				showNoContract: true,
+				managed_by: null,
 
 			},
 			currentDenialReasons: [],
@@ -1234,6 +1277,9 @@ export default {
 			selectedResult: null, // Selected result from the dropdown
 			insuranceOptions: [],
             // Add more options as needed
+
+			insuranceProviderTypes: [],
+			insurance_provider_type: '',
 		};
 	},
 	computed: {
@@ -1288,11 +1334,23 @@ export default {
 			facilities: "facilities/active",
 			loadingFacilities: "facilities/loadingActive",
 		}),
+		filteredInsuranceProviders() {
+			// Filter out options with text-field values 'Managed A' and 'Managed B'
+			return this.insuranceProviders.filter(provider => provider.name !== 'Managed A' && provider.name !== 'Managed B');
+		},
+		isManagedByRequired() {
+			// Get the selected insurance provider
+			const selectedProvider = this.insuranceProviders.find(provider => provider.id === this.entity.insurance_provider_id);
+
+			// Check if the selected provider is 'Managed A' or 'Managed B'
+			return selectedProvider && (selectedProvider.name === 'Managed A' || selectedProvider.name === 'Managed B');
+		},
 	},
 	mounted() {
 		this.additionalDataFetch();
 		this.facilityDetails();
 		this.fetchDenialReasons();
+		this.fetchInsuranceProviderTypes();
 		this.fetchContractInsuranceTypes();
 
 		if (this.id) {
@@ -1351,9 +1409,9 @@ export default {
 				if (this.entity.disciplines) {
 					this.disciplineIds = this.entity.disciplines.map((item) => item.id);
 				}
-				if(response.term_date){
-					this.term_date = response.term_date;
-				}
+				// if(response.term_date){
+				// 	this.term_date = response.term_date;
+				// }
 				if(response.insuranceRateType){
 					this.entity.insurance_type = response.insuranceRateType;
 				}
@@ -1361,20 +1419,12 @@ export default {
 					this.selectedDenialReason = response.pwrbackDenialReason;
 				}
 				if(response.facility_id){
-					console.log('facility id found on edit data.')
-					this.selectedFacilityId = response.facility_id;
-					// Search for the corresponding displayName
-					const foundFacility = this.displayNames.find(item => item.id === response.facility_id);
-					console.log('foundFacility:-')
-					console.log(JSON.stringify(foundFacility));
-					// Check if foundFacility is not null or undefined
-					if (foundFacility) {
-						console.log('if condition true')
-						// Store the displayName in this.facilitySearch
-						// this.facilitySearch = foundFacility.displayName;
-						this.selectFacility(foundFacility);
 
-					}
+					this.facilitySearch = response.facility.display_name;
+					this.term_date = response.term_date;
+					this.entity.facility_name = response.facility.facility_status;
+					this.entity.has_contract = response.facility.has_contract;
+
 				}
 				this.$emit("loaded", this.entity);
 			} catch (e) {
@@ -1432,6 +1482,8 @@ export default {
 					term_date : this.term_date,
 					insuranceRateType: this.entity.insurance_type,
 					pwrbackDenialReason: this.selectedDenialReason,
+					managed_by: this.entity.managed_by,
+					insurance_provider_type: this.entity.insurance_provider_type,
 				};
 
 				if (this.currentDocument && this.currentDocument.id) {
@@ -1559,6 +1611,17 @@ export default {
 				console.error('Error fetching denial reasons:', error);
 			}
 		} ,     
+		async fetchInsuranceProviderTypes(){
+			try{
+				console.log('inside fetchInsuranceProviderTypes method')
+				const response = await axios.get('/client/GetInsuranceProviderTypes');
+				console.log('fetchInsuranceProviderstypes response data:-')
+				console.log(JSON.stringify(response.data));
+				this.insuranceProviderTypes.push(response.data);
+			} catch (error){
+				console.error('Error fetching denial reasons:', error);
+			}
+		} ,
 		async fetchContractInsuranceTypes(){
 			try {
 				console.log('inside fetchContractInsuranceTypes:-')
@@ -1573,50 +1636,42 @@ export default {
 			}
 		},
 		async facilityDetails(){
-			console.log('inside facilityDetails');
-            const url = "/client/facilityList";
-			
-			const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
+			if(this.facilitySearch.length >=2){
+				console.log('inside facilityDetails');
+				const response = await axios.get('/client/searchFacility',{
+				params: {
+					search: this.facilitySearch,
 				},
-			});
-			this.facilities = response.data; // save all facilities for later use
-			let temp_facilities = response.data;
-			console.log('facilities:-')
-			console.log(JSON.stringify(response.data));
+				});
+				console.log('inside facilityDetails ******:-')
+				console.log(JSON.stringify(response.data));
+				this.facilities = response.data; // save all facilities for later use
+				let temp_facilities = response.data;
+				console.log('facilities:-')
+				console.log(JSON.stringify(this.facilities));
 
-			// Check if this.facilities is defined and is an array
-			// Use the map method to directly extract display_name values
-			// this.displayNames = this.facilities
-			// 	.map((facility) => facility.display_name)
-			// 	.filter((displayName) => displayName !== null && displayName !== undefined);
+				// Check if this.facilities is defined and is an array
+				// Use the map method to directly extract display_name values
+				// this.displayNames = this.facilities
+				// 	.map((facility) => facility.display_name)
+				// 	.filter((displayName) => displayName !== null && displayName !== undefined);
 
 
-			this.displayNames = this.facilities
-				.map((facility) => ({ id: facility.id, displayName: facility.display_name }))
-				.filter(({ displayName }) => displayName !== null && displayName !== undefined);
-				
+				this.displayNames = this.facilities
+					.map((facility) => ({ id: facility.id, displayName: facility.display_name, facilityStatus: facility.facility_status, hasContract: facility.has_contract }))
+					.filter(({ displayName }) => displayName !== null && displayName !== undefined);
 
-			// // Check if this.facilities is an array, if not, convert it
-			// if (!Array.isArray(this.facilities)) {
-			// // Assuming you want to convert it to an array, you can use Array.from or spread syntax
-			// this.facilities = Array.from(this.facilities);
-			// // Alternatively: this.facilities = [...this.facilities];
-			// }
-			// console.log('temp_facilities:')
-			// console.log(temp_facilities);
-			// console.log(temp_facilities.length);
-			// for (let i = 0; i < temp_facilities.length; i++) {
-			// 	console.log(temp_facilities[i]['display_name']);
-			// 	this.facility
-			// }
 
-			// this.temp_displayName.push(this.facilities.map((facility) => facility.display_name));
-			console.log("display name:");
-			console.log(JSON.stringify(this.displayNames));
-			// console.log('temp_displayNames', JSON.stringify(this.temp_displayName));
+				this.searchResults = this.displayNames.filter(item => {
+					const name = (item && item.displayName) || ''; // Ensure a valid string
+					return name.toLowerCase().includes(this.facilitySearch.toLowerCase());
+				});
+
+				// this.temp_displayName.push(this.facilities.map((facility) => facility.display_name));
+				console.log("display name:");
+				console.log(JSON.stringify(this.displayNames));
+				// console.log('temp_displayNames', JSON.stringify(this.temp_displayName));
+			}
 		},
 
 		logSelectedFacilityDetails(item) {
@@ -1628,11 +1683,6 @@ export default {
 
 			if (selectedFacility) {
 				console.log('inside *****selectedFacility')
-				// this.iscontract = selectedFacility.has_contract;
-				// this.entity.facility_name = selectedFacility.facility_status;
-				// this.entity.facility_name = 'Active';
-				// fetch assosiated facility contract on ID basis and populate term_date read onluy field
-				// const url = "/client/findFacilityContract/";
 				// Wrap the code in an async function
 				console.log('selectedFacility.id:-');
 				console.log(selectedFacility.id);
@@ -1648,27 +1698,19 @@ export default {
 						},
 					});
 					// TODO: CHECK IF THERE IS ANY FACILITY CONTRACT FOUND
-					// if there is any, set term date value
-					this.term_date = response1.data.term_date; // save all facilities for later use
-					// if facility has contract, set visiblity of insurance type 
-					this.iscontract = true;
-					// if facility has contract, set facility status value
-					let temp_val = "2";
-					switch (temp_val) {
-						case "1":
-							// code to be executed if expression matches value1
-							this.entity.facility_name = 'Active'
-							break;
-
-						case "2":
-							// code to be executed if expression matches value2
-							this.entity.facility_name = 'Inactive'
-							break;
-						case "3":
-							// code to be executed if expression matches value2
-							this.entity.facility_name = 'Pending'
-							break;
+					console.log('facility contract response:-');
+					console.log(JSON.stringify(response1.data));
+					if(response1.data !== null){
+						// if there is any, set term date value
+						if(response1.data.term_date && response1.data.term_date !== undefined && response1.data.term_date != null){
+							this.term_date = response1.data.term_date; 
+						}else{
+							this.term_date = 'Term Date not available.'
+						}
+					}else{
+						this.term_date = 'Term Date not available.'
 					}
+					
 				} catch (error) {
 					console.error("Error fetching data:", error);
 				}
@@ -1678,40 +1720,54 @@ export default {
 			fetchFacilityContractData();
 			}
 		},
+		async searchFacilities() {
 
-		searchFacilities() {
-			// Filter the displayNames array based on the search input
-			console.log('inside searchFacilities');
-			console.log(JSON.stringify(this.displayNames));
-			console.log('this.facilitySearch');
-			console.log(this.facilitySearch);
-
-			// this.searchResults = this.displayNames.filter(name =>
-			// 	name && name.toLowerCase().includes(this.facilitySearch.toLowerCase())
-			// );
-
-			this.searchResults = this.displayNames.filter(item => {
-				const name = (item && item.displayName) || ''; // Ensure a valid string
-				return name.toLowerCase().includes(this.facilitySearch.toLowerCase());
-			});
-
-			console.log('searchResults:', this.searchResults);
+			
+			if(this.facilitySearch.length < 2){
+				this.term_date = null;
+				this.entity.facility_name = null;
+				this.entity.has_contract = false;
+			}
+			if(this.facilitySearch.length >=2){
+				await this.facilityDetails();
+				// Filter the displayNames array based on the search input
+				this.searchResults = this.displayNames.filter(item => {
+					const name = (item && item.displayName) || ''; // Ensure a valid string
+					return name.toLowerCase().includes(this.facilitySearch.toLowerCase());
+				});
+			}
+			
 		},
 		selectFacility(item) {
 			// Handle the selected facility, if needed
 			console.log('inside selectFacility(item) method:-');
-		console.log(JSON.stringify(item));
-		console.log(item.displayName);
-		console.log(item.id);
-		this.facilitySearch = item.displayName;
-		this.selectedFacilityId = item.id;
+			console.log(JSON.stringify(item));
+			console.log(item.displayName);
+
+			console.log(item.id);
+			console.log(item.facility_status);
+			this.facilitySearch = item.displayName;
+			this.selectedFacilityId = item.id;
+			this.entity.facility_name  = item.facilityStatus;
+			this.entity.has_contract = item.hasContract;
+			this.entity.showNoContract = item.hasContract;
+			this.iscontract = item.hasContract;
 			console.log('item inside selectFacility:', item);
 			this.logSelectedFacilityDetails(item);
 			this.searchResults = [];
-
-
 		},
 
+	},
+	created() {
+		// Create a debounced version of the facilityDetails method
+		this.debouncedSearch = debounce(async () => {
+		this.loading = true;
+		await this.facilityDetails();
+		this.loading = false;
+		}, 300);
+
+		// Attach the debouncedSearch to an instance property
+		// this.debouncedSearch = debouncedSearch;
 	},
 	watch: {
 		patientId: {
