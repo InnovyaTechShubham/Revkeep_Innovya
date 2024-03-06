@@ -1,91 +1,123 @@
 <template>
-	<b-card  no-body v-bind="$attrs">
-		<b-card-header>
-			<b-row class="d-flex align-items-center">
-				<b-col cols="9" sm="8" lg="9" class="mb-0">
-					<font-awesome-icon icon="user" fixed-width class="text-muted mr-2" />
-					<h2 class="h6 mb-0 font-weight-bold d-inline">
-						{{ patientName }}
-					</h2>
-				</b-col>
-				<b-col cols="3" sm="4" lg="3">
-					<b-progress max="100" class="mb-0" :title="value.status_label">
-						<b-progress-bar
-							:animated="value.progress_indeterminate"
-							:value="value.progress_percent"
-							:variant="value.progress_variant"
-						>
-							<span>{{ value.status_label }}</span>
-						</b-progress-bar>
-					</b-progress>
-				</b-col>
-			</b-row>
-		</b-card-header>
-		<b-card-body>
-			<b-row class="d-flex align-items-top">
-				<b-col cols="12" sm="6" lg="8" class="mb-4 mb-sm-0 text-left">
-					<b-row>
-						<b-col cols="12" lg="6" class="mb-2 mb-lg-0">
-							<div class="d-flex justify-content-start align-items-top">
-								<div class="mr-3">
-									<b-button @click="download" title="Download Packet">
-										<font-awesome-icon icon="file-download" fixed-width />
-									</b-button>
-								</div>
-								<div>
-									<h3 class="h6 mb-0">
-										{{ appealLevel }}
-									</h3>
-									<p class="small text-muted mb-0">
-										Updated {{ $filters.fromNow(value.modified) }}
-										<span v-if="value.modified_by_user"
-											>by {{ value.modified_by_user.full_name }}</span
-										>
-									</p>
-								</div>
-							</div>
-						</b-col>
-						<b-col cols="12" lg="6">
-							<p v-if="value.delivery_method" class="text-muted mb-0" title="Delivery Method">
+<div>
+	<table class="table table-bordered table-hover mb-0">
+ 
+  <tbody>
+    <tr>
+		<td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+			<span v-if="value.request_id"> {{ value.request_id }}</span>
+			<span v-else>{{ value.appeal_id }}</span>
+		</td>
+		<td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+        <b-badge 
+		:title="value.status_label"
+		pill
+		:variant="value.progress_variant"
+		>
+		<span>{{ value.status_label }}</span>
+        </b-badge>
+      </td>
+  
+  <td class="col-md-1 center-both font-weight-bold align-middle">
+	<span >{{ value.facility_name }}</span>
+  </td>
+
+   <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName }}</td>
+
+    <td class="col-md-2 center-both align-middle "   @click="navigateToAppeal">
+		<div v-if="!hideAgency">
+    <p v-if="value.agency" class="text-muted " title="Agency">
+        
+        <span v-if="value.agency && value.agency.name" class="mb-0">
+            {{ value.agency.name }}
+        </span>
+    </p>
+    <p v-else  title="No Agency Provided">
+        
+        <span class="font-weight-bold  center-both align-middle">{{ agencyName }}</span>
+    </p>
+</div>
+<div v-else class="text-muted">&mdash;</div>
+
+	  </td> 
+
+	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
+		               
+			        <span>{{ value.name_of_submit_to }}</span>
+
+	  </td>
+	  <td class="col-md-1 center-both align-middle "   >
+		<h2 v-if="entity.name"
+             tag="h3"
+             class="h6 mb-0 font-weight-bold"
+			 @click="navigateToAppeal"
+        >
+		<font-awesome-icon icon="envelope" />
+		{{ entity.name }} 
+	  </h2>
+			           <div v-else-if="appealLevel" class="font-weight-bold align-middle"  @click="navigateToAppeal">
+						<font-awesome-icon icon="envelope-open" />	 {{ appealLevel }}
+					   </div>
+			
+					   <div v-else>
+						&mdash;
+					   </div>
+
+	  </td>
+	  <td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+		               
+			     {{ $filters.formatDate(value.created) }}
+
+	  </td>
+	  <td class="col-md-1 center-both align-middle"   @click="handleDeliveryMethodClick">
+		                    <p v-if="value.delivery_method" class="text-muted mb-0" title="Delivery Method">
 								<font-awesome-icon
 									v-if="value.delivery_method_icon"
 									:icon="value.delivery_method_icon"
 									fixed-width
 								/>
-								<span v-if="value.delivery_method && value.delivery_method_label" class="mb-0">
+								<span v-if="value.delivery_method && value.delivery_method_label" :style="{ color: value.delivery_method === 'Manual' ? 'blue' : 'inherit' }" class="mb-0">
 									{{ value.delivery_method }}
 								</span>
-							</p>
-							<div v-if="!hideAgency">
-								<p v-if="value.agency" class="text-muted mb-0" title="Agency">
-									<font-awesome-icon icon="building" fixed-width />
-									<span v-if="value.agency && value.agency.name" class="mb-0">
-										{{ value.agency.name }}
-									</span>
-								</p>
-								<p
-									v-else
-									class="text-warning font-weight-bold font-italic mb-0"
-									title="No Agency Provided"
-								>
-									<font-awesome-icon icon="building" fixed-width />
-									<span class="mb-0">{{ agencyName }}</span>
-								</p>
-							</div>
-						</b-col>
-					</b-row>
-				</b-col>
-				<b-col cols="12" sm="6" lg="4" class="text-left text-sm-right">
-					<b-button
+							</p>			
+	  </td>
+	  <td class="col-md-1 center-both align-middle">
+		<b-dropdown right class="mb-0">
+						<template #button-content>
+							<font-awesome-icon icon="file-download" fixed-width />
+						</template>
+						<b-dropdown-item
+						@click="download" title="Download Packet"
+						>
+							Download
+						</b-dropdown-item>
+						<b-dropdown-item
+							@click="preview"
+						>
+						    Preview
+					</b-dropdown-item>
+					</b-dropdown>
+	  </td>
+		
+	  <!--<td class="col-md-1">
+        <b-button @click="download" title="Download Packet" class="ml-2">
+          <font-awesome-icon icon="file-download" fixed-width />
+        </b-button>
+      
+      </td>  -->
+	  
+	  <!-- 
+	  <td class="col-md-1">
+		<b-button
 						variant="primary"
 						@click="markDelivered"
 						:disabled="isDelivered || isCancelled"
-						class="mb-0"
+						class="mb-0 ml-1"
 					>
 						<span v-if="isDelivered">Delivered</span>
 						<span v-else>Mark Delivered</span>
 					</b-button>
-					<b-dropdown right class="mb-0">
+		                <b-dropdown right class="mb-0">
 						<template #button-content>
 							<font-awesome-icon icon="cog" />
 						</template>
@@ -113,10 +145,36 @@
 						<b-dropdown-item @click="retry" :disabled="!value.can_retry"> Retry </b-dropdown-item>
 						<b-dropdown-item @click="cancel" :disabled="!value.can_cancel"> Cancel </b-dropdown-item>
 					</b-dropdown>
-				</b-col>
-			</b-row>
-		</b-card-body>
-	</b-card>
+	  </td> -->
+    </tr>
+   </tbody>
+  
+</table>
+<b-modal id="manualDeliveryModal"  v-if="modalcount" hide-footer hide-header>
+	<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h5 style="margin: 0;">Mail Delivery Information</h5>
+  <div>
+    <!-- Your custom cross icon button -->
+	<span aria-hidden="true" @click="cancelModal" style="cursor: pointer; font-size: 24px;">&times;</span>
+
+    
+  </div>
+</div>
+<hr>
+
+	 
+      <div>
+        <p><strong>Mail Notes:</strong> {{ this.storedData.mailNotes }}</p>
+        <p><strong>Carrier:</strong> {{ this.storedData.carrier }}</p>
+        <p><strong>Tracking:</strong> {{ this.storedData.tracking }}</p>
+      </div>
+	 <hr>
+	  <div class="text-center">
+    <button @click="cancelModal" class="btn btn-secondary">Cancel</button>
+  </div>
+    
+    </b-modal>
+</div>
 </template>
 
 <script>
@@ -141,6 +199,12 @@ export default {
 					progress_indeterminate: false,
 					progress_percent: 0,
 					progress_variant: "",
+					request_id: null,
+					facility_name: null,
+					name_of_submit_to: null,
+					mailNotes: null,
+					carrier: null,
+					tracking:null,
 					agency: {
 						id: null,
 						name: null,
@@ -151,10 +215,17 @@ export default {
 						patient: {
 							id: null,
 							full_name: null,
+							
+						},
+						facility_id: null,
+						facility:{
+                             id: null,
+							 name: null,
 						},
 					},
 					appeal: {
 						id: null,
+						pdf_url:null,
 						appeal_level_id: null,
 						appeal_level: {
 							id: null,
@@ -186,15 +257,26 @@ export default {
 		appealList:[],
 		agencyList:[],
 		agencyName:null,
-
+		entity: this.value,
+		loading: true,
+		error: false,
+		storedData: {
+      carrier: '',
+      tracking: '',
+      mailNotes: '',
+    },
+	 modalcount:false,
 		};
 	},
 	computed: {
 		patientName() {
 			console.log("value =", this.value);
-			
 			return this.value.case?.patient?.full_name ?? "(Missing Name)";
 		},
+		facilityName() {
+			return this.value.case?.facility?.name ?? "(Missing Name)";
+		},
+
 		appealLevel() {
 			this.outgoingList.forEach((item, index)=>{
 				try{
@@ -214,7 +296,7 @@ export default {
 					this.agencyList.forEach((agency , indexAgency ) => {
 						if(item.agency_id == agency.id){
 							this.agencyName = agency.name;
-							console.log("Agency found =", agency.name);
+							console.log("Agency found =", this.agencyName);
 						}
 					});
 				}
@@ -230,6 +312,33 @@ export default {
 		},
 	},
 	methods: {
+		async refresh() {
+    try {
+        this.loading = true;
+        this.error = false;
+
+        // Check if request_id is not null before making the request
+        if (this.value.request_id !== null) {
+            const response = await this.$store.dispatch("caseRequests/get", {
+                case_id: this.value.case_id,
+                id: this.value.request_id,
+            });
+            this.entity = response;
+            console.log("my request :", this.entity);
+        }
+
+    } catch (e) {
+        this.error = true;
+        this.$store.dispatch("apiError", {
+            error: e,
+            message: "Failed to find request",
+        });
+    } finally {
+        this.loading = false;
+    }
+},
+
+
 		async markDelivered() {
 			const response = await this.$store.dispatch("outgoingDocuments/delivered", {
 				id: this.value.id,
@@ -295,7 +404,6 @@ export default {
 				});
 				console.log("Appeal Response =", appealListResponse);
 				this.appealList = appealListResponse.data;
-
 				const agencyListUrl = '/client/agencyList';
 			const agencyListResponse = await axios.get(agencyListUrl, {
 				headers: {
@@ -306,10 +414,67 @@ export default {
 				console.log("Agency Response =", agencyListResponse);
 				this.agencyList = agencyListResponse.data;
 				
-		}
+		},
+		navigateToAppeal() {
+			if (this.value.request_id !== null) {
+       
+		  this.$router.push({
+    name: 'caseRequests.view',
+    params: { id: this.value.case_id, case_request_id: this.value.request_id },
+        });
+      } else {
+		this.$router.push({
+          name: 'appeals.view',
+          params: { id: this.value.case_id, appeal_id: this.value.appeal_id },
+  });
+}
+},
+preview() {
+      
+      const pdfUrl = this.value.appeal.pdf_url;
+      if (pdfUrl) {
+        window.open(pdfUrl, "_blank");
+      } else {
+        console.error("PDF URL is not available");
+      }
+    },
+	
+	handleDeliveryMethodClick() {
+      if (this.value.delivery_method === "Manual") {
+        
+		this.storedData.carrier = this.value.carrier;
+      this.storedData.tracking = this.value.tracking;
+      this.storedData.mailNotes = this.value.mailNotes;
+	  
+      this.modalcount = true;
+	  this.$nextTick(() => {
+      this.$bvModal.show('manualDeliveryModal');
+    });
+      } else {
+        // If not "Manual," navigate to appeal
+        this.navigateToAppeal();
+      }
+    },
+	cancelModal() {
+      // Close the modal by toggling the modalcount property
+      this.modalcount = false;
+    },
+
 	},
 	mounted() {
 		this.test();
+		this.refresh();
 	}
 };
 </script>
+
+<style>
+
+.center-both {
+    align-items: center;
+    justify-content: center;
+  }
+.table{
+	cursor: pointer;
+}
+</style>

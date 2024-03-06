@@ -917,7 +917,7 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'_method' => 'POST'
 	]);
 
-	$builder->connect('/outgoing', [
+	$builder->connect('/outgoingList', [
 		'controller' => 'Outgoing',
 		'action' => 'index',
 		
