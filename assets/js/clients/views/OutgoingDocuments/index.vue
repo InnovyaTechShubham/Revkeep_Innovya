@@ -6,7 +6,14 @@
 
 		<b-card-header header-tag="nav">
 			<b-nav card-header tabs>
-				<b-nav-item :to="{ name: 'outgoingDocuments' }" exact exact-active-class="active font-weight-bold">
+				<b-nav-item :to="{ name: 'outgoingDocuments' }"
+				    exact 
+					exact-active-class="active font-weight-bold">
+					<span>All</span>
+				</b-nav-item>
+				<b-nav-item :to="{ name: 'outgoingDocuments.pending' }"
+				    exact 
+					exact-active-class="active font-weight-bold">
 					<span>Pending</span>
 				</b-nav-item>
 				<b-nav-item

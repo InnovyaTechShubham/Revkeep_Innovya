@@ -4,7 +4,7 @@
 		v-bind="{
 			action,
 			filters: {
-				status: 'NEW',
+				status:[ 'NEW','DELIVERED','FAILED','CANCELLED'],
 			},
 			search: newSearch,
 			perPage,
@@ -26,7 +26,7 @@
 				<div v-else-if="!empty">
 					<div class="table-container">
 					<table class="table table-bordered mb-0 scrollable-row ">
-						<thead>
+            <thead>
                 <tr>
 					<th class="col-md-1">Id</th>
 				   <th class="col-md-1">Status </th>
@@ -44,7 +44,7 @@
         </table>
 		</div>
 					<outgoing-document-list-item
-					v-for="(result, index) in results"
+					    v-for="(result, index) in results"
 						:key="result.id"
 						:value="result"
 						@updated="
@@ -53,11 +53,11 @@
 						"
 						:style="{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#e7eaea' }"
 						class="list-item"
-						/>
+					/>
 				</div>
-				<empty-result v-else icon="envelope">
-					No delivered documents
-					<template #content> Audits marked as delivered will appear here. </template>
+				<empty-result v-else icon="envelope-open">
+					No new documents
+					<template #content> Completed packets from appeals will appear here. </template>
 				</empty-result>
 			</b-col>
 		</b-row>
@@ -80,9 +80,9 @@ const recount = () => {
 	store.dispatch("updateState");
 };
 </script>
-
 <style scoped>
   .list-item:hover {
     background-color: #e7eaea !important;
   }
+
 </style>
