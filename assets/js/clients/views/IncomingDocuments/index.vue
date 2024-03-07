@@ -105,7 +105,7 @@
 				</b-card>
 			</b-container>
 			<div v-if="!isEmpty">
-				<button class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'HideList' : 'ShowList' }}</strong></button>
+				<button class="btn btn-primary" @click="toggleCollapse"><strong> {{showList ? 'Hide List' : 'Show List' }}</strong></button>
 			</div>
 			  
 			<b-container fluid  class="h-100 px-0 overflow-hidden">

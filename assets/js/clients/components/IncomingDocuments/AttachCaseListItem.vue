@@ -1,7 +1,7 @@
 <template>
-	<b-list-group-item >
-		
-		<b-row>
+	<b-list-group-item>
+
+		<b-row @click="toggleCollapse" style="cursor: pointer;">
 			<b-col cols="5" md="12" lg="6" class="mb-4 mb-md-0 text-left">
 				<b-row>
 					<b-col cols="12">
@@ -40,28 +40,23 @@
 						<span>New</span>
 					</template>
 
-					<b-dropdown-item
-						@click="
-							addingAppeal = true;
-							addingRequest = false;
-						"
-						:active="addingAppeal"
-					>
+					<b-dropdown-item @click="
+			addingAppeal = true;
+		addingRequest = false;
+		" :active="addingAppeal">
 						<span>Appeal</span>
 					</b-dropdown-item>
 
-					<b-dropdown-item
-						@click="
-							addingRequest = true;
-							addingAppeal = false;
-						"
-						:active="addingRequest"
-					>
+					<b-dropdown-item @click="
+			addingRequest = true;
+		addingAppeal = false;
+		" :active="addingRequest">
 						<span>Request</span>
 					</b-dropdown-item>
 				</b-dropdown>
 
 				<b-dropdown right menu-class="shadow" variant="secondary">
+
 					<template #button-content>
 						<font-awesome-icon icon="cog" fixed-width />
 					</template>
@@ -78,47 +73,33 @@
 					</b-dropdown-item>
 				</b-dropdown>
 
-				<b-dropdown
-										split
-										right
-										@click="attachToCase(caseEntity, { redirect: false })"
-										:disabled="attaching"
-										variant="primary"
-									>
-										<template #button-content>
-											<font-awesome-icon icon="paperclip" fixed-width />
-											<!-- <span>Attach</span> -->
-										</template>
-										<b-dropdown-item-button
-											@click="attachToCase(caseEntity, { redirect: true })"
-											:disabled="attaching"
-											title="Attach and view appeal"
-										>
-											<div>Attach &amp; View</div>
-											<small class="text-muted"> Attach document and view appeal after. </small>
-										</b-dropdown-item-button>
-									</b-dropdown>
+				<b-dropdown split right @click="attachToCase(caseEntity, { redirect: false })" :disabled="attaching"
+					variant="primary">
+
+					<template #button-content>
+						<font-awesome-icon icon="paperclip" fixed-width />
+						<!-- <span>Attach</span> -->
+					</template>
+					<b-dropdown-item-button @click="attachToCase(caseEntity, { redirect: true })" :disabled="attaching"
+						title="Attach and view appeal">
+						<div>Attach &amp; View</div>
+						<small class="text-muted"> Attach document and view appeal after. </small>
+					</b-dropdown-item-button>
+				</b-dropdown>
 			</b-col>
 		</b-row>
+
 		<b-row v-if="addingAppeal" class="my-2">
 			<b-col cols="12">
-				<appeal-form
-					:case-entity="caseEntity"
-					@saved="addedAppeal"
-					@cancel="addingAppeal = false"
-					class="shadow"
-				>
+				<appeal-form :case-entity="caseEntity" @saved="addedAppeal" @cancel="addingAppeal = false"
+					class="shadow">
+
 					<template #header>
 						<b-card-header>
 							<div class="d-flex justify-content-between align-items-center">
 								<span class="font-weight-bold">Add New Appeal</span>
-								<b-button
-									variant="secondary"
-									size="sm"
-									@click="addingAppeal = false"
-									title="Cancel"
-									class="mb-0"
-								>
+								<b-button variant="secondary" size="sm" @click="addingAppeal = false" title="Cancel"
+									class="mb-0">
 									<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
 								</b-button>
 							</div>
@@ -130,17 +111,13 @@
 		<b-row v-else-if="addingRequest" class="my-2">
 			<b-col cols="12">
 				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
+
 					<template #header>
 						<b-card-header>
 							<div class="d-flex justify-content-between align-items-center">
 								<span class="font-weight-bold">Add New Request</span>
-								<b-button
-									variant="secondary"
-									size="sm"
-									@click="addingRequest = false"
-									title="Cancel"
-									class="mb-0"
-								>
+								<b-button variant="secondary" size="sm" @click="addingRequest = false" title="Cancel"
+									class="mb-0">
 									<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
 								</b-button>
 							</div>
@@ -149,6 +126,8 @@
 				</case-request-form>
 			</b-col>
 		</b-row>
+
+
 		<div v-else-if="hasAppeals || hasRequests" class="my-2">
 			<!-- <div v-if="hasRequests">
 				<b-card no-body>
@@ -176,130 +155,121 @@
 					</b-list-group>
 				</b-card>
 			</div> -->
-			<div v-if="hasAppeals">
-				<b-card no-body>
-					<b-card-header>Appeals</b-card-header>
-					<b-list-group flush>
-						<b-list-group-item v-for="appeal , i in appeals" :key="appeal.id" class="shadow-sm">
-							<b-row>
-								<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
-									<p class="mb-0">
-										<!-- <span v-if="appeal.appeal_level && appeal.appeal_level.name">
+			<b-collapse v-model="isCollapsed">
+				<div v-if="hasAppeals">
+
+					<b-card no-body>
+
+						<!-- <b-card-header>Appeals</b-card-header> -->
+						<b-list-group flush>
+							<b-list-group-item v-for="appeal, i in appeals" :key="appeal.id" class="shadow-sm">
+								<b-row>
+									<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
+										<p class="mb-0">
+											<!-- <span v-if="appeal.appeal_level && appeal.appeal_level.name">
 											{{ appealLevelNames[i] }}
 										</span> -->
-										<span v-if="true">
-											{{ appealLevelNames[i] }}
-										</span>
-										<span v-else class="text-danger"> Missing Level </span>
-										<span v-if="appeal.appeal_level && appeal.appeal_type" class="text-muted">
-											&mdash;
-										</span>
-										<span v-if="appeal.appeal_type && appeal.appeal_type.name" class="text-muted">
-											{{ appeal.appeal_type.name }} 
-										</span>
-										<span v-else class="text-muted"> Post-Payment </span>
-										<appeal-status-label :value="appeal" />
-									</p>
-									<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
-										<span
-											v-if="appeal.due_date"
-											class="small"
-											:class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'"
-										>
-											Due on {{ $filters.formatDate(appeal.due_date) }}
-										</span>
-									</p>
-									<!-- <p v-if="appeal.modified" class="small text-muted mb-0">
+										
+											<span v-if="true" class="font-weight-bold">
+												{{ appealLevelNames[i] }}
+											</span>
+											<span v-else class="text-danger"> Missing Level </span>
+											<span v-if="appeal.appeal_level && appeal.appeal_type" class="text-muted">
+												&mdash;
+											</span>
+											<span v-if="appeal.appeal_type && appeal.appeal_type.name"
+												class="text-muted">
+												{{ appeal.appeal_type.name }}
+											</span>
+											<span v-else class="text-muted"> Post-Payment </span>
+											<appeal-status-label :value="appeal" />
+										</p>
+										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
+											<span v-if="appeal.due_date" class="small"
+												:class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'">
+												Due on {{ $filters.formatDate(appeal.due_date) }}
+											</span>
+										</p>
+										<!-- <p v-if="appeal.modified" class="small text-muted mb-0">
 										Last updated {{ $filters.formatTimestamp(appeal.modified) }}
 									</p> -->
-								</b-col>
-								
-								<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
-									<b-dropdown
-										split
-										right
-										@click="attachToAppeal(appeal, { redirect: false })"
-										:disabled="attaching"
-										variant="primary"
-									>
-										<template #button-content>
-											<font-awesome-icon icon="paperclip" fixed-width />
-											<!-- <span>Attach</span> -->
-										</template>
-										<b-dropdown-item-button
-											@click="attachToAppeal(appeal, { redirect: true })"
-											:disabled="attaching"
-											title="Attach and view appeal"
-										>
-											<div>Attach &amp; View</div>
-											<small class="text-muted"> Attach document and view appeal after. </small>
-										</b-dropdown-item-button>
-									</b-dropdown>
-								</b-col>
-							</b-row>
-							<!-- For rendering requests for every appeal -->
-							<!-- use appeal_level_id for rendering -->
-							
-							<b-card no-body>
-								<b-card-header v-for="r,ji in request_list" :key="r.id" v-if="r.case_id===appeal.case_id && r.appeal_level == i">Requests{{ checkRequest() }} </b-card-header>
-							 <div v-for="request,j in request_list" :key="request.id" v-if="showRequest" class="shadow-sm upper-space">
-								
-								<!-- <b-row v-if="request.case_id===appeal.case_id && request.appeal_level == appeal.appeal_level_id " > -->
-									<b-row v-if="request.case_id===appeal.case_id && request.appeal_level == i">
-									<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
-										<p  class="font-weight-bold mb-0 custom-padding" >
-											<span>
-												{{ request.request_type }} 
-											</span>
-										</p>
-										<p class="mb-0 text-muted custom-padding">
-											<span > {{ request.type_label }} Request</span>
-										</p>
-										<p v-if="request.status_label !== 'Closed'" class="custom-padding">
-											<span
-												v-if="request.due_date"
-												class="small"
-												:class="request.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'"
-											>
-												Due on {{ $filters.formatDate(request.due_date) }} 
-											</span>
-										</p>
-										<div class="custom-padding">
-											
-											<label class="checkbox-container">
-												Response Received
-												<input type="checkbox" v-model="responseReceived[j]" class="response-checkbox">
-												<span class="checkmark"></span>
-											</label>
-										</div>
 									</b-col>
+
 									<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
-									<b-dropdown
-										split
-										right
-										@click="attachToAppeal(appeal, { redirect: false })"
-										:disabled="attaching"
-										variant="primary"
-									>
-										<template #button-content>
-											<font-awesome-icon icon="paperclip" fixed-width />
-											<!-- <span>Attach</span> -->
-										</template>
-										<b-dropdown-item-button
-											@click="attachToAppeal(appeal, { redirect: true })"
-											:disabled="attaching"
-											title="Attach and view appeal"
-										>
-											<div>Attach &amp; View</div>
-											<small class="text-muted"> Attach document and view appeal after. </small>
-										</b-dropdown-item-button>
-									</b-dropdown>
-								</b-col>
+										<b-dropdown split right @click="attachToAppeal(appeal, { redirect: false })"
+											:disabled="attaching" variant="primary">
+
+											<template #button-content>
+												<font-awesome-icon icon="paperclip" fixed-width />
+												<!-- <span>Attach</span> -->
+											</template>
+											<b-dropdown-item-button @click="attachToAppeal(appeal, { redirect: true })"
+												:disabled="attaching" title="Attach and view appeal">
+												<div>Attach &amp; View</div>
+												<small class="text-muted"> Attach document and view appeal after.
+												</small>
+											</b-dropdown-item-button>
+										</b-dropdown>
+									</b-col>
 								</b-row>
-							 </div>
-							</b-card>
-							
-							<!-- <b-row>
+								<!-- For rendering requests for every appeal -->
+								<!-- use appeal_level_id for rendering -->
+
+								<b-card no-body>
+									<b-card-header @click="toggleCollapseRequests" 
+										style="cursor: pointer; background-color: lightgreen; font-weight: bold; padding: 0.5rem 1rem;"
+										class="text-black">
+										Requests <span style="float: right; font-size: smaller;">{{ collapseRequests ?
+			'▲' : '▼'
+											}}</span>
+									</b-card-header>
+									<b-collapse v-model="collapseRequests">
+										<div v-for="(request, j) in request_list" :key="request.id"
+											v-if="request.case_id === appeal.case_id && request.appeal_level == i">
+											<b-row class="py-2">
+												<b-col cols="8" md="6" lg="12" xl="6" class="text-left mb-0 mb-md-0">
+													<p class="mb-0 custom-padding"><span class="font-weight-bold">{{
+			request.name }}</span> <span class="text-muted">{{
+			request.type_label }} Request</span></p>
+													<p v-if="request.status_label !== 'Closed'"
+														class="mb-0 custom-padding">
+														<span v-if="request.due_date" class="small"
+															:class="request.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'">
+															Due on {{ $filters.formatDate(request.due_date) }}
+														</span>
+													</p>
+													<label class="ml-4">
+														Response Received
+														<input type="checkbox" v-model="responseReceived[j]"
+															class="response-checkbox">
+														<span class="checkmark"></span>
+													</label>
+												</b-col>
+												<b-col cols="8" md="6" lg="12" xl="6" class="text-right">
+													<b-dropdown split right
+														@click="attachToAppeal(appeal, { redirect: false })"
+														:disabled="attaching" variant="primary">
+
+														<template #button-content>
+															<font-awesome-icon icon="paperclip" fixed-width />
+														</template>
+														<b-dropdown-item-button
+															@click="attachToAppeal(appeal, { redirect: true })"
+															:disabled="attaching" title="Attach and view appeal">
+															Attach &amp; View
+															<small class="text-muted">Attach document and view
+																appeal
+																after.</small>
+														</b-dropdown-item-button>
+													</b-dropdown>
+												</b-col>
+											</b-row>
+										</div>
+									</b-collapse>
+								</b-card>
+
+
+								<!-- <b-row>
 								<b-col cols="12">
 									<b-dropdown :id="'dropdown-' + appeal.id" variant="btn btn-secondary"  class="dropdown-container">
 										<template #button-content>
@@ -320,33 +290,44 @@
 									</b-dropdown>
 								</b-col>
 							</b-row> -->
-							
-							<b-row>
-								<!-- <b-col cols="12" md="6" lg="12" xl="6" class="text-left mb-2 mb-md-0">
-									<b-form-group label="Decision Options" >
-										<b-form-select v-model="decisionOptionsList[i]" :options="decisionOptionsListMethod(appeal)" ></b-form-select>
-									</b-form-group>
-									<b-form-group label="Amount" v-if="decisionOptionsList[i]=='Partially Favorable'" >
-										<b-form-input ></b-form-input> 
-									</b-form-group>
-								</b-col> -->
-    <b-col cols="12" md="6" lg="12" xl="12" class="text-left mb-8 relative">
-        <b-form-group label="Decision Options" label-cols-lg="5" class="mb-4 flex items-center">
-            <b-form-select v-model="decisionOptionsList[i]" :options="decisionOptionsListMethod(appeal)" class="mt-2"></b-form-select>
-        </b-form-group>
-        <b-form-group v-if="decisionOptionsList[i]=='Partially Favorable'" label="Amount" label-cols-lg="5" class="mb-4">
-            <b-form-input></b-form-input> 
-        </b-form-group>
-    </b-col>
-</b-row>
+
+								<!-- <b-row>
+									<b-col cols="12" md="6" lg="12" xl="12" class="text-left mb-8 relative">
+										<b-form-group label="Decision Options" label-cols-lg="5"
+											class="mb-4 flex items-center">
+											<b-form-select v-model="decisionOptionsList[i]"
+												:options="decisionOptionsListMethod(appeal)"
+												class="mt-2"></b-form-select>
+										</b-form-group>
+									 Removed condition to show Amount v-if="decisionOptionsList[i] == 'Partially Favorable'" 
+										<b-form-group 
+											label="Amount" label-cols-lg="5" class="mb-4">
+											<b-form-input></b-form-input>
+										</b-form-group>
+									</b-col>
+								</b-row> -->
+
+								<b-row class="mb-8">
+									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative mb-4">
+										<b-form-group label="Decision Options" label-cols-lg="5" class="mb-0">
+											<b-form-select v-model="decisionOptionsList[i]"
+												:options="decisionOptionsListMethod(appeal) "
+												class="mt-2"></b-form-select>
+										</b-form-group>
+									</b-col>
+									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
+										<b-form-group label="Amount" label-cols-lg="5" class="mb-0">
+											<b-form-input class="mt-2"></b-form-input>
+										</b-form-group>
+									</b-col>
+								</b-row>
 
 
-
-
-						</b-list-group-item>
-					</b-list-group>
-				</b-card>
-			</div>
+							</b-list-group-item>
+						</b-list-group>
+					</b-card>
+				</div>
+			</b-collapse>
 		</div>
 		<div v-else-if="false">
 			<b-alert show variant="info" class="my-2">
@@ -359,14 +340,17 @@
 
 <style>
 .dropdown-container {
-  margin-top: 20px;
-  
+	margin-top: 20px;
+
 }
+
 .custom-padding {
-	
-    padding-left: 20px; /* Adjust the value as needed */
+
+	padding-left: 20px;
+	/* Adjust the value as needed */
 }
-.upper-space{
+
+.upper-space {
 	margin-top: 5px;
 }
 </style>
@@ -398,6 +382,7 @@ export default {
 					last_name: null,
 					full_name: null,
 					list_name: null,
+
 				};
 			},
 		},
@@ -432,7 +417,7 @@ export default {
 			},
 		},
 	},
-	
+
 	data() {
 		return {
 			document: this.document,
@@ -444,8 +429,8 @@ export default {
 
 			loading: false,
 			attaching: false,
-			request_list:null,
-			request_list_length:false,
+			request_list: null,
+			request_list_length: false,
 			selectedOptionL1: null,
 			selectedOptionL2: null,
 			selectedOptionL3: null,
@@ -453,14 +438,16 @@ export default {
 			selectedOptionL5: null,
 			selectedOptionL6: null,
 			selectedOptionL7: null,
-			responseReceived:[],
-			responseReceivedList:[], //for tracking partially favourable responses
-			appealLevelNames:[],
-			appealLevelNamesObj:[],
-			showRequest:false,
-			decisionOptions:null,
-			decisionOptionsList:[],
-			insuranceResponse:[],
+			responseReceived: [],
+			responseReceivedList: [], //for tracking partially favourable responses
+			appealLevelNames: [],
+			appealLevelNamesObj: [],
+			showRequest: false,
+			decisionOptions: null,
+			decisionOptionsList: [],
+			insuranceResponse: [],
+			isCollapsed: false,
+			collapseRequests: false,
 		};
 	},
 	computed: {
@@ -481,6 +468,12 @@ export default {
 		},
 	},
 	methods: {
+		toggleCollapseRequests() {
+			this.collapseRequests = !this.collapseRequests;
+		},
+		toggleCollapse() {
+			this.isCollapsed = !this.isCollapsed;
+		},
 		addedAppeal(appeal) {
 			this.addingAppeal = false;
 			this.appeals.push(appeal);
@@ -555,7 +548,7 @@ export default {
 				});
 
 				this.$emit("attached-case", response);
-                console.log("options=", options);
+				console.log("options=", options);
 				if (options.redirect && options.redirect === true) {
 					console.log("inside case redirect");
 					this.$router.push({
@@ -572,132 +565,130 @@ export default {
 					message: "An error occurred when attempting to attach to case.",
 				});
 			} finally {
-			const dateCreated = this.$filters.formatTimestamp(document.created);
-			var message = `Document from ${dateCreated} was attached to case #${caseEntity.id}.`;
-			this.$store.dispatch("notify", {
-				variant: "primary",
-				title: "Document Attached To Case",
-				message: message,
-			});
-			if (options.redirect === false) {
-				console.log("inside test env");
-			this.$emit("attached", document);
-			this.$store.dispatch("updateState");
-			// this.refresh();
+				const dateCreated = this.$filters.formatTimestamp(document.created);
+				var message = `Document from ${dateCreated} was attached to case #${caseEntity.id}.`;
+				this.$store.dispatch("notify", {
+					variant: "primary",
+					title: "Document Attached To Case",
+					message: message,
+				});
+				if (options.redirect === false) {
+					console.log("inside test env");
+					this.$emit("attached", document);
+					this.$store.dispatch("updateState");
+					// this.refresh();
+				}
+				this.$emit("refresh");
 			}
-			this.$emit("refresh");
-		}
 		},
 
-		async test(){
+		async test() {
 			try {
 				const url = "/client/request";
-				
+
 				const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
-				},
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
 				});
 				const urlInsurance = "/client/insuranceappeal";
-				
+
 				const responseInsurance = await axios.get(urlInsurance, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
-				},
+					headers: {
+						"Accept": "application/json",
+						// You can add other headers here if needed
+					},
 				});
 				// Handle the response data here
 				this.request_list = []
 				// this.request_list = response.data;
-				this.request_list = [...this.request_list , ...response.data];
-				console.log('request list updated  = ',this.request_list);
-				console.log("appeals =" , this.appeals);
-				console.log("case entity = ",this.caseEntity);
+				this.request_list = [...this.request_list, ...response.data];
+				console.log('request list updated  = ', this.request_list);
+				console.log("appeals =", this.appeals);
+				console.log("case entity = ", this.caseEntity);
 				this.insuranceResponse = responseInsurance.data;
 				console.log("insurance response = ", responseInsurance.data);
 				this.appealLevelNames = [];
 				this.appealLevelNamesObj = [];
 				this.appeals.forEach((item, index) => {
-				console.log(`Element at index ${index}:`, item);
-				console.log("appeal level id = ",item.appeal_level_id);
-				responseInsurance.data.forEach((value, i)=>{
-					if(this.caseEntity.insurance_provider_id==value.insurance_provider_id){
-					console.log('insurance =',value);
-						if(index==0){
-							// this.appealLevelNames.push(value.label);
-							console.log('value of index = ',index);
-							this.appealLevelNamesObj.push({label:value.label , id:value.id});
+					console.log(`Element at index ${index}:`, item);
+					console.log("appeal level id = ", item.appeal_level_id);
+					responseInsurance.data.forEach((value, i) => {
+						if (this.caseEntity.insurance_provider_id == value.insurance_provider_id) {
+							console.log('insurance =', value);
+							if (index == 0) {
+								// this.appealLevelNames.push(value.label);
+								console.log('value of index = ', index);
+								this.appealLevelNamesObj.push({ label: value.label, id: value.id });
+							}
 						}
-					}
-				})
-				return;
+					})
+					return;
 				});
-				this.appealLevelNamesObj.sort((a,b)=> a.id - b.id);
-				this.appealLevelNamesObj.forEach((item,index)=>{
+				this.appealLevelNamesObj.sort((a, b) => a.id - b.id);
+				this.appealLevelNamesObj.forEach((item, index) => {
 					this.appealLevelNames.push(item.label);
 				});
 				console.log('details  = ', this.appealLevelNames);
 				console.log('details obj updated = ', this.appealLevelNamesObj);
 
-				} 
+			}
 			catch (error) {
 				console.error(error);
 			}
 
 		},
-		updateStatus(selectedStatus, appealOrder) 
-		{
-        // Call your function with the selected status and appealId
-        // For example, you can make an API request here or update the local data
-        console.log(`Selected status: ${selectedStatus}, Appeal ID: ${appealOrder}`);
-		if(appealOrder==1)
-		{
-			this.selectedOptionL1=selectedStatus;
-		}
-		else if(appealOrder==2){
-			this.selectedOptionL2=selectedStatus;
-		}
-		else if(appealOrder==3){
-			this.selectedOptionL3=selectedStatus;
-		}
-		else if(appealOrder==4){
-			this.selectedOptionL4=selectedStatus;
-		}
-		else if(appealOrder==5){
-			this.selectedOptionL5=selectedStatus;
-		}
-		else if(appealOrder==6){
-			this.selectedOptionL6=selectedStatus;
-		}
-		else if(appealOrder==7){
-			this.selectedOptionL7=selectedStatus;
-		}
-		
-        // Call your function with the selectedStatus and appealId as arguments
-        // e.g., this.yourFunction(selectedStatus, appealId);
-        },
-		checkRequest(){
-			this.showRequest=true;
+		updateStatus(selectedStatus, appealOrder) {
+			// Call your function with the selected status and appealId
+			// For example, you can make an API request here or update the local data
+			console.log(`Selected status: ${selectedStatus}, Appeal ID: ${appealOrder}`);
+			if (appealOrder == 1) {
+				this.selectedOptionL1 = selectedStatus;
+			}
+			else if (appealOrder == 2) {
+				this.selectedOptionL2 = selectedStatus;
+			}
+			else if (appealOrder == 3) {
+				this.selectedOptionL3 = selectedStatus;
+			}
+			else if (appealOrder == 4) {
+				this.selectedOptionL4 = selectedStatus;
+			}
+			else if (appealOrder == 5) {
+				this.selectedOptionL5 = selectedStatus;
+			}
+			else if (appealOrder == 6) {
+				this.selectedOptionL6 = selectedStatus;
+			}
+			else if (appealOrder == 7) {
+				this.selectedOptionL7 = selectedStatus;
+			}
+
+			// Call your function with the selectedStatus and appealId as arguments
+			// e.g., this.yourFunction(selectedStatus, appealId);
+		},
+		checkRequest() {
+			this.showRequest = true;
 		},
 
-		decisionOptionsListMethod(appeal){
-			console.log("output =", appeal );
-			console.log("DECISON LIST=",this.decisionOptionsList);
-			
-			let outputArr=[];
-			this.insuranceResponse.forEach((item,index)=>{
-				if(appeal.insurance_appeal_id==item.id){
+		decisionOptionsListMethod(appeal) {
+			console.log("output =", appeal);
+			console.log("DECISON LIST=", this.decisionOptionsList);
+
+			let outputArr = [];
+			this.insuranceResponse.forEach((item, index) => {
+				if (appeal.insurance_appeal_id == item.id) {
 					console.log("DEcision opt =", item.decision_options);
-					if(item.decision_options==1){
+					if (item.decision_options == 1) {
 						outputArr.push('No Findings');
 						outputArr.push('Issues');
 					}
-					else if(item.decision_options==2){
+					else if (item.decision_options == 2) {
 						outputArr.push('Reversed');
 						outputArr.push('Held');
 					}
-					else if(item.decision_options==3){
+					else if (item.decision_options == 3) {
 						outputArr.push('Not Favorable');
 						outputArr.push('Partially Favorable');
 						outputArr.push('Favorable');
@@ -707,7 +698,7 @@ export default {
 			return outputArr
 		}
 	},
-	mounted(){
+	mounted() {
 		this.test();
 	},
 };
