@@ -24,6 +24,7 @@
 			@search-change="search"
 			@close="close"
 		>
+		<template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length" v-show="!isOpen">{{ values.length }} Denial selected</span></template>
 			<!--
 			<template #tag="{ option, remove }">
 				<div class="d-flex justify-content-between align-items-center">
@@ -54,6 +55,16 @@
 		</b-button>
 	</div>
 </template>
+
+<style scoped>
+/* Custom CSS to hide selected options from the input box */
+.multiselect__tags-wrap {
+    display: none !important;
+}
+.multiselect__tags-wrap .multiselect__tag {
+  display: none !important;
+}
+</style>
 
 <script type="text/javascript">
 import { mapGetters } from "vuex";
