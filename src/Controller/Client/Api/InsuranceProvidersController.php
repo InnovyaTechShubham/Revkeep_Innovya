@@ -155,6 +155,7 @@ class InsuranceProvidersController extends ApiController
 		} catch (PersistenceFailedException $e) {
 			$this->Log->saveFailed($e, $entity);
 			$this->setResponse($this->ApiError->entity($e, $entity));
+			
 		}
 	}
 
