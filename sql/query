@@ -260,3 +260,34 @@ WHERE id = 5;
   UPDATE contract_insurance_types
 SET default_value = 0.75
 WHERE default_value is NULL; 
+
+
+
+-- Denial_resons
+INSERT INTO denial_reasons
+           (created, created_by, modified, modified_by, deleted, deleted_by, name, client_id)
+VALUES     (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Authorization', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Benefits exhausted', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Bundled Charges', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Cert missing or incomplete', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'HCPC Coding (technical)', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Documentation does not support level of services', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Documentation does not support services', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'No/Incomplete ADR', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'E-Stim', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Insufficient progress', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'LCD ICD-10 coding (technical)', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, '180 day Eval', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'LTG not measurable', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Medical Necessity', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Modifier/NCCI Issue (technical)', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'No daily skilled care', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'No PLOF documented', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Other technical denial', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Patient no longer required the services of skilled staff', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Section GG Issues', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Therapy did not meet ordered frequency', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Therapy minutes do not support the billed RUG', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'Treatment not related to diagnosis', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'RTM Billing/Documentation', 1),
+           (GETDATE(), '50', GETDATE(), '50', NULL, NULL, 'No Treatment Encounter Notes', 1);
