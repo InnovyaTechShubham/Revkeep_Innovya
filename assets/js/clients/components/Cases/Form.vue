@@ -445,7 +445,7 @@
 										</b-form-select>
 										<template #append>
 											<!-- <b-button variant="primary" :to="{ name: 'clientEmployees.add.npi.cases', params: { id: entity.id } }" -->
-											<b-button variant="primary" :to="{
+											<b-button variant="primary" style="width:44px;" :to="{
 												name: entity.id ? 'clientEmployees.add.npi.cases' : 'clientEmployees.add.npi.newcase',
 												params: { id: entity.id }
 											}" title="Add from NPI Registry">
@@ -542,8 +542,64 @@
 										</validation-provider>
 									</div>
 
-									<!-- Powerback Denial Reason -->
+									<!-- Second Column for Denial Reason -->
 									<div class="col-lg-8 col-md-9">
+										<div v-if="addingDenialReason">
+											<denial-reason-form autofocus @cancel="addingDenialReason = false"
+												@saved="addedNewDenialReason">
+												<!-- Your Denial Reason Form Content -->
+											</denial-reason-form>
+										</div>
+										<div v-else>
+											<b-form-group label="Denial Reasons" tabindex="1" label-for="denial_reasons" label-cols-lg="4"
+												v-if="!addingDenialReason">
+												<denial-reason-search-multi name="denial_reasons" v-model="currentDenialReasons"
+													@add="addingDenialReason = true" :disabled="saving" />
+
+													<b-row class="mt-5" v-if="currentDenialReasons.length">
+														<!-- Facilities -->
+														<b-col sm="12" lg="12">
+															<div class="selected-item">
+															<div v-if="!currentDenialReasons.length">
+																<empty-result>
+																No reasons added.
+																</empty-result>
+															</div>
+															<div v-else>
+																<h6 class="border_bottom" style="padding-bottom: 16px;">
+																	Selected reason-
+																	<span style="float: right;">
+																		<font-awesome-icon icon="trash" @click.stop="toggleDeleteMode" style="cursor: pointer;" />
+																	</span>
+																</h6>
+																<div v-for="(selectedItem, index) in currentDenialReasons" :key="index" class="border_bottom">
+																	<p>
+																	<input type="checkbox" v-if="deleteFacilityMode" v-model="selectedItem.checked" />
+																	<span>
+																		<font-awesome-icon icon="bars" style="padding-right: 8px;" />{{ selectedItem.name }}
+																	</span>
+																	<!-- <span v-if="selectedItem.facility_type || selectedItem.facility_type_id" title="Facility">
+																		<font-awesome-icon icon="house" /> {{ selectedItem.name }}
+																	</span>
+																	<span v-else title="Service">
+																		<font-awesome-icon icon="gear" /> {{ selectedItem.name }}
+																	</span> -->
+																	</p>
+																</div>
+																<div v-if="deleteFacilityMode" style="display: flex; justify-content: space-between; margin-top: 5px;">
+																	<button @click="cancelFacilityDeleteMode" class="btn btn-secondary btn-sm">Cancel</button>
+																	<button @click="removeSelectedItems" class="btn btn-danger btn-sm">Remove</button>
+																</div>
+															</div>
+															</div>
+														</b-col>
+													</b-row>
+											</b-form-group>
+										</div>
+									</div>
+
+									<!-- Powerback Denial Reason -->
+									<!-- <div class="col-lg-8 col-md-9">
 										<validation-provider vid="pwrbck_deny_res" name="Powerback Denial Reason" :rules="{ required: false }"
 											v-slot="validationContext">
 											<b-form-group label="Powerback Denial Reason" label-for="pwrbck_deny_res" label-cols-lg="2">
@@ -560,25 +616,7 @@
 													v-text="error" />
 											</b-form-group>
 										</validation-provider>
-									</div>
-								</div>
-								<div class="row">
-									<!-- Second Column for Denial Reason -->
-									<div class="col-lg-12 col-md-12 col-sm-12">
-										<div v-if="addingDenialReason">
-											<denial-reason-form autofocus @cancel="addingDenialReason = false"
-												@saved="addedNewDenialReason">
-												<!-- Your Denial Reason Form Content -->
-											</denial-reason-form>
-										</div>
-										<div v-else>
-											<b-form-group label="Denial Reasons" label-for="denial_reasons" label-cols-lg="4"
-												v-if="!addingDenialReason">
-												<denial-reason-search-multi name="denial_reasons" v-model="currentDenialReasons"
-													@add="addingDenialReason = true" :disabled="saving" />
-											</b-form-group>
-										</div>
-									</div>
+									</div> -->
 								</div>
 							</b-card-body>
 
@@ -1258,6 +1296,7 @@ export default {
 
 			},
 			currentDenialReasons: [],
+			currentDenialReasons1: [],
 			addingDenialReason: false,
 			minDate: getAbsoluteMinimumDate(),
 			maxDate: getTodaysDate(),
@@ -1280,6 +1319,7 @@ export default {
 
 			insuranceProviderTypes: [],
 			insurance_provider_type: '',
+			deleteFacilityMode: false,
 		};
 	},
 	computed: {
@@ -1336,14 +1376,14 @@ export default {
 		}),
 		filteredInsuranceProviders() {
 			// Filter out options with text-field values 'Managed A' and 'Managed B'
-			return this.insuranceProviders.filter(provider => provider.name !== 'Managed A' && provider.name !== 'Managed B');
+			return this.insuranceProviders.filter(provider => provider.name !== 'Managed A' && provider.name !== 'Managed B' && provider.name !== 'Managed Medicaid');
 		},
 		isManagedByRequired() {
 			// Get the selected insurance provider
 			const selectedProvider = this.insuranceProviders.find(provider => provider.id === this.entity.insurance_provider_id);
 
 			// Check if the selected provider is 'Managed A' or 'Managed B'
-			return selectedProvider && (selectedProvider.name === 'Managed A' || selectedProvider.name === 'Managed B');
+			return selectedProvider && (selectedProvider.name === 'Managed A' || selectedProvider.name === 'Managed B' ||  selectedProvider.name === 'Managed Medicaid');
 		},
 	},
 	mounted() {
@@ -1399,6 +1439,8 @@ export default {
 				this.currentInsuranceProvider = response.insurance_provider || {};
 
 				if (this.entity.denial_reasons) {
+					console.log('denial_reasons are:-')
+					console.log(JSON.stringify(this.entity.denial_reasons));
 					this.currentDenialReasons = this.entity.denial_reasons;
 				}
 
@@ -1576,7 +1618,10 @@ export default {
 		},
 		addedNewDenialReason(denialReason) {
 			this.addingDenialReason = false;
+			console.log('denialReason is :-')
+			console.log(JSON.stringify(denialReason));
 			this.currentDenialReasons.push(denialReason);
+			this.currentDenialReasons1 = [];
 		},
 		addedClientEmployee(employee) {
 			this.addingClientEmployee = false;
@@ -1757,6 +1802,18 @@ export default {
 			this.searchResults = [];
 		},
 
+		toggleDeleteMode() {
+			this.deleteFacilityMode = !this.deleteFacilityMode;
+		},
+		cancelFacilityDeleteMode(){
+			this.currentDenialReasons.forEach((item) => (item.checked = false));
+			this.deleteFacilityMode = false;
+		},
+		removeSelectedItems() {
+			this.currentDenialReasons = this.currentDenialReasons.filter((item) => !item.checked);
+			this.deleteFacilityMode = false; // Turn off delete mode after removing items
+		},
+
 	},
 	created() {
 		// Create a debounced version of the facilityDetails method
@@ -1846,5 +1903,24 @@ export default {
 .option-content {
 	margin-top: 2px;
 	margin-bottom: 2px;
+}
+
+.selected-item {
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin: 8px 0;
+  width:100%;
+}
+.border_bottom {
+  /* padding: 10px; */
+  border-bottom: 1px solid #ddd;
+  transition: border-color 0.3s;
+  margin-top:5px;
+}
+.multiselect__tags-wrap {
+    display: none !important;
+}
+.multiselect__tags-wrap .multiselect__tag {
+  display: none !important;
 }
 </style>
