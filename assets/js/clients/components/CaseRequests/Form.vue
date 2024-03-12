@@ -159,7 +159,7 @@
 							<b-input-group>
 								<b-select
 									name="agency_id"
-									v-model="agency_autofill"
+									v-model="entity.agency_id"
 									:options="agencies"
 									:disabled="saving || loadingAgencies"
 									:state="getValidationState(validationContext)"
@@ -219,7 +219,7 @@
 							<b-input-group>
 								<b-select
 									name="insurance_provider_id"
-									v-model="insurance"
+									v-model="entity.insurance_provider_id"
 									:options="insuranceProviders"
 									:disabled="saving || loadingInsuranceProviders"
 									:state="getValidationState(validationContext)"
@@ -351,6 +351,8 @@ export default {
 				due_date: getDateOffsetDaysString(2),
 				status: "Level 0",
 				appeal_level:null,
+				agency_id:null,
+				insurance_provider_id:null,
 			},
 			loadingRequestTypes: false,
 			addingAgency: false,
@@ -396,9 +398,9 @@ export default {
 		}
 		
 		// for calling autofillform function during mounting phase for autofilling the form
-		if(true){
-			this.autoFillForm();
-		}
+	//	if(true){
+		//	this.autoFillForm();
+	//	}
 
 	},
 	methods: {
@@ -551,7 +553,7 @@ export default {
 				});
 				console.log("response = " , this.insuranceData);
 				console.log("case entity =", this.caseEntity);
-				
+				console.log("agency =", this.agencies);
 				} 
 			catch (error) {
 				console.error(error);
