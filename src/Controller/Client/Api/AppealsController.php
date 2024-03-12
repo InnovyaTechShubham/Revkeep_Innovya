@@ -516,6 +516,9 @@ class AppealsController extends ApiController
 
 		$entity = $this->Appeals->get($id);
 
+		// Set the 'appeal_status' to 'utc'
+		$entity->appeal_status = 'UTC';
+
 		$entity = $this->Appeals->patchEntity($entity, $this->getRequest()->getData(), [
 			'associated' => [
 				'UtcReasons'
