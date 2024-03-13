@@ -3,6 +3,10 @@
 		<div v-if="loading">Loading..</div>
 	<div v-else>
 	<DataTable v-bind="$attrs" v-on="$listeners" :fields="fields" :sort-aliases="sortAliases" @sorted.once="sorted">
+		<template v-slot:[`cell(id)`]="{ value }">
+			<div v-if="value" class="text-truncate" :title="value">{{ value }}</div>
+			<div v-else class="text-uppercase font-weight-bold text-danger">Missing</div>
+		</template>
 		<template v-slot:[`cell(appeal_status)`]="{ item, value }">
 			<span v-if="value">
 				<appeal-status-label :value="item" />
@@ -237,6 +241,11 @@ export default {
 	computed: {
 		fields() {
 			return [
+			    {
+					key: "id",
+					label: "ID",
+					sortable: false,
+				},
 				{
 					key: "appeal_status",
 					label: "Status",

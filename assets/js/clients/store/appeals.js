@@ -5,6 +5,7 @@ export default {
 	namespaced: true,
 	state: {
 		defaultFilters: {
+			id:null,
 			status: null,
 			denial_type_id: null,
 			facility_id: null,

@@ -1,5 +1,9 @@
 <template>
 	<DataTable v-bind="$attrs" v-on="$listeners" :fields="fields" :sort-aliases="sortAliases" @sorted.once="sorted">
+		<template v-slot:[`cell(id)`]="{ value }">
+			<div v-if="value" class="text-truncate" :title="value">{{ value }}</div>
+			<div v-else class="text-uppercase font-weight-bold text-danger">Missing</div>
+		</template>
 		<template v-slot:[`cell(status_label)`]="{ value, item }">
 			<span v-if="value && item">
 				<case-request-status-label :value="item" />
@@ -95,6 +99,11 @@ export default {
 	computed: {
 		fields() {
 			return [
+		     	{
+					key: "id",
+					label: "ID",
+					sortable: false,
+				},
 				{
 					key: "status_label",
 					label: "Status",

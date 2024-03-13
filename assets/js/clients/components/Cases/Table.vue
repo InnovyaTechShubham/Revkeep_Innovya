@@ -3,6 +3,10 @@
 	<div  v-if="loading">Loading</div>
 	<div v-else>
 	<DataTable v-bind="{ fields, sortAliases, ...$attrs }" v-on="$listeners" @sorted.once="sorted">
+		<template v-slot:[`cell(id)`]="{ value }">
+			<div v-if="value" class="text-truncate" :title="value">{{ value }}</div>
+			<div v-else class="text-uppercase font-weight-bold text-danger">Missing</div>
+		</template>
 		<template v-slot:[`cell(status)`]="{ value, item }">
 			<div v-if="value && item">
 				<case-status-label :value="item" />
@@ -208,6 +212,11 @@ export default {
 	computed: {
 		fields() {
 			return [
+			    {
+					key: "id",
+					label: "ID",
+					sortable: false,
+				},
 				{
 					key: "status",
 					label: "Status",

@@ -4,6 +4,7 @@ export default {
 	namespaced: true,
 	state: {
 		defaultFilters: {
+			id: null,
 			status: null,
 			case_type_id: null,
 			client_employee_id: null,
