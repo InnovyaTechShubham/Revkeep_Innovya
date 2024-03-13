@@ -4,7 +4,7 @@
 	<div v-else>
 	<DataTable v-bind="$attrs" v-on="$listeners" :fields="fields" :sort-aliases="sortAliases" @sorted.once="sorted">
 		<template v-slot:[`cell(id)`]="{ value }">
-			<div v-if="value" class="text-truncate" :title="value">{{ value }}</div>
+			<div v-if="value" class="text-muted" :title="value">{{ value }}</div>
 			<div v-else class="text-uppercase font-weight-bold text-danger">Missing</div>
 		</template>
 		<template v-slot:[`cell(appeal_status)`]="{ item, value }">
