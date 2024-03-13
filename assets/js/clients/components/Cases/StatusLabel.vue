@@ -31,6 +31,10 @@ export default {
 	},
 	computed: {
 		label() {
+			console.log('casestatuses is:-')
+			console.log(JSON.stringify(this.caseStatuses));
+			console.log('status value is:-');
+			console.log(JSON.stringify(this.value.status));
 			const value = this.value.status;
 			return this.caseStatuses.find((status) => status.value == value)?.name || "Unknown";
 		},

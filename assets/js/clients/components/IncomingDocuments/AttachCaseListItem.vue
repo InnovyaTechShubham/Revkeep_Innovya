@@ -5,8 +5,9 @@
 			<b-col cols="5" md="12" lg="6" class="mb-4 mb-md-0 text-left">
 				<b-row>
 					<b-col cols="12">
+						<!-- <p>{{  appeals }}</p> -->
 						<case-status-label :value="caseEntity" />
-
+						<b-badge :variant="primary">{{ lastAppealStatus() }}</b-badge>
 						<span class="font-weight-bold">
 							<span v-if="caseEntity.admit_date">
 								{{ $filters.formatDate(caseEntity.admit_date) }}
@@ -490,6 +491,7 @@ export default {
 		},
 		async attachToAppeal(appeal, options = {}) {
 			try {
+				console.log('inside attachToAppeal method..')
 				this.attaching = true;
 
 				const response = await this.$store.dispatch("incomingDocuments/attachAppeal", {
@@ -696,7 +698,17 @@ export default {
 				}
 			});
 			return outputArr
-		}
+		},
+		lastAppealStatus() {
+			console.log('this.appealLevelNames:-')
+			console.log(JSON.stringify(this.appealLevelNames));
+			// Get the last appeal
+			const lastAppeal = this.appeals[this.appeals.length - 1];
+
+			// Return the appeal_status if lastAppeal exists, otherwise return an empty string or some default value
+			// return lastAppeal ? lastAppeal.appeal_type.name : '';
+			return lastAppeal ? this.appealLevelNames[this.appeals.length -1] : '';
+		},
 	},
 	mounted() {
 		this.test();

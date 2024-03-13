@@ -10,6 +10,7 @@ use App\Service\StorageServiceInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Response;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\TableRegistry;
 
 /**
  * Incoming Documents Controller
@@ -331,15 +332,67 @@ class IncomingDocumentsController extends ApiController
 		$entity->set('appeal_id', $this->getRequest()->getData('appeal_id'));
 		$entity->set('case_id', $appeal->case_id);
 
-		// Copy to appeal files
-		$newFileName = $entity->original_name ?: $entity->file_name;
-		$newPath = $appealId . '/' . $newFileName;
-		$originalContents = $storage->incomingDocuments()->readStream($entity->file_name);
-		$storage->appeals()->writeStream($newPath, $originalContents);
+		// update appeal_status when a particular document is attached to it
+		// update appeal_status when a particular document is attached to it
+		try{
 
-		$this->IncomingDocuments->saveOrFail($entity);
-		$entity = $this->IncomingDocuments->getFull($id);
-		$this->set('data', $entity);
+			$appeals = TableRegistry::getTableLocator()->get('Appeals');
+			// Load the entity to be updated
+			$appeal = $appeals->get($appealId);
+			
+			// Patch the entity with the new data
+			$appeals->patchEntity($appeal, [
+				'appeal_status' => 'Submitted',
+			]);
+		
+			// Save the changes
+			if ($appeals->save($appeal)) {
+				
+				$filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+				$jsonContent = json_encode("status successfully updated", JSON_PRETTY_PRINT);
+				$file = fopen($filePath, 'w');
+				fwrite($file, $jsonContent);
+				fclose($file);
+				// Copy to appeal files
+				$newFileName = $entity->original_name ?: $entity->file_name;
+				$newPath = $appealId . '/' . $newFileName;
+				$originalContents = $storage->incomingDocuments()->readStream($entity->file_name);
+				$storage->appeals()->writeStream($newPath, $originalContents);
+
+				$this->IncomingDocuments->saveOrFail($entity);
+				$entity = $this->IncomingDocuments->getFull($id);
+				$this->set('data', $entity);
+			} else {
+				$filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+				$jsonContent = json_encode("Failed to update appeal status.", JSON_PRETTY_PRINT);
+				$file = fopen($filePath, 'w');
+				fwrite($file, $jsonContent);
+				fclose($file);
+				throw new InternalErrorException(__('Failed to update appeal status.'));
+			}
+
+		}catch (\Exception $e) {
+
+            $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+            $jsonContent = json_encode($e->getMessage(), JSON_PRETTY_PRINT);
+            $file = fopen($filePath, 'w');
+            fwrite($file, $jsonContent);
+            fclose($file);
+
+            $this->log($e->getMessage(), 'error');
+            $this->response = $this->response->withStatus(500);
+        }	 
+	
+
+		// // Copy to appeal files
+		// $newFileName = $entity->original_name ?: $entity->file_name;
+		// $newPath = $appealId . '/' . $newFileName;
+		// $originalContents = $storage->incomingDocuments()->readStream($entity->file_name);
+		// $storage->appeals()->writeStream($newPath, $originalContents);
+
+		// $this->IncomingDocuments->saveOrFail($entity);
+		// $entity = $this->IncomingDocuments->getFull($id);
+		// $this->set('data', $entity);
 	}
 
 	/**
