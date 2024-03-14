@@ -1285,5 +1285,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'action' => 'getAll', // Add the new parameter here
 		'_method' => 'GET'
     ]);
+	$builder->connect('/userslist', [
+        'controller' => 'UsersList',
+        'action' => 'index',
+    ]);
+
 
 });
