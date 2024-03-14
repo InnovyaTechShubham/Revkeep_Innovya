@@ -4,19 +4,25 @@
 			<b-col cols="5" md="12" lg="6" class="mb-4 mb-md-0 text-left">
 				<b-row>
 					<b-col cols="12">
-						<case-status-label :value="caseEntity" />
-						<b-badge :variant="primary">{{ lastAppealStatus() }}</b-badge>
 						<span class="font-weight-bold">
 							<span v-if="caseEntity.admit_date">
-								{{ $filters.formatDate(caseEntity.admit_date) }}
+								<!-- {{ $filters.formatDate(caseEntity.admit_date) }} -->
+								{{ formattedDate(caseEntity.admit_date) }}
 							</span>
 							<span v-if="caseEntity.admit_date && caseEntity.discharge_date" class="text-muted">
 								&mdash;
 							</span>
 							<span v-if="caseEntity.discharge_date">
-								{{ $filters.formatDate(caseEntity.discharge_date) }}
+								<!-- {{ $filters.formatDate(caseEntity.discharge_date) }} -->
+								{{  formattedDate(caseEntity.discharge_date) }}
 							</span>
 						</span>
+					</b-col>
+				</b-row>
+				<b-row>
+					<b-col cols="12">
+						<case-status-label :value="caseEntity" />
+						<b-badge :variant="primary">{{ lastAppealStatus() }}</b-badge>
 					</b-col>
 				</b-row>
 
@@ -165,7 +171,7 @@
 											<span v-if="true" class="font-weight-bold">
 												{{ appealLevelNames[i] }}
 											</span>
-											<span v-else class="text-danger"> Missing Level </span>
+											<span v-else class="text-danger"> Missing Level </span><br>
 											<span v-if="appeal.appeal_level && appeal.appeal_type" class="text-muted">
 												&mdash;
 											</span>
@@ -173,7 +179,7 @@
 												class="text-muted">
 												{{ appeal.appeal_type.name }}
 											</span>
-											<span v-else class="text-muted"> Post-Payment </span>
+											<span v-else class="text-muted"> Post-Payment </span><br>
 											<appeal-status-label :value="appeal" /> - <b-badge :variant="primary">{{ appeal.appeal_decision }}</b-badge>
 										</p>
 										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
@@ -389,7 +395,11 @@
 											label-cols-lg="5" class="mb-0">
 											<b-form-select v-model="dynamicDecisionOptions[i]"
 												:options="decisionOptionsListMethod(appeal)"
-												class="mt-2"></b-form-select>
+												class="mt-2"
+												@shown="dropdownOpened = true"
+												@hidden="dropdownOpened = false"
+												@change="handleSelection">
+												></b-form-select>
 										</b-form-group>
 									</b-col>
 									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
@@ -538,6 +548,7 @@ export default {
 			collapseRequests: false,
 			riskAmount: [], // Stores the value of the At Risk Amount input
 			showButtons: false,
+			dropdownOpened: false,
 		};
 	},
 	computed: {
@@ -568,6 +579,22 @@ export default {
 		},
 	},
 	methods: {
+		formattedDate(value) {
+			console.log('inside formattedDate:-')
+			const date = new Date(value);
+			const year = String(date.getFullYear()).slice(-2);
+			const month = String(date.getMonth() + 1).padStart(2, '0');
+			const day = String(date.getDate()).padStart(2, '0');
+			console.log('year is :-');
+			console.log(`${year}`);
+			return `${day}/${month}/${year}`;
+		},
+		handleSelection() {
+			// Set showButtons to true when an option is selected and the dropdown has been manually opened
+			if (this.dropdownOpened && this.dynamicDecisionOptions.length > 0) {
+				this.showButtons = true;
+			}
+		},
 		sendCrossRequest() {
 			this.showButtons = false;
 		},
@@ -879,6 +906,10 @@ export default {
 				// Check if the new value is different from the old value
 				// Update the showButtons flag only if the dynamicDecisionOptions has changed
 				this.showButtons = true;
+				// Reset showButtons if there are no selected options
+				if (newVal.length === 0) {
+					this.showButtons = false;
+				}
 				console.log("showbutton value changed firi dec");
 
 			},
@@ -889,7 +920,7 @@ export default {
 				console.log("inside risk watcher");
 				// Check if the new value is different from the old value
 				// Update the showButtons flag only if the dynamicDecisionOptions has changed
-				this.showButtons = true;
+				// this.showButtons = true;
 				console.log("showbutton value changed for risk");
 
 			},
