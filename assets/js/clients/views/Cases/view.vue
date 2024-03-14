@@ -202,13 +202,13 @@
 					<span v-else>Case Details</span>
 				</b-button>
 				 <!-- Old Notes Button -->
-				 <b-button @click="toggleOldNotes" class="btn-orange-gradient">
+				 <b-button v-if="caseEntity.old_notes !== null" @click="toggleOldNotes" class="btn-orange-gradient">
 					<span v-if="showOldNotes">Hide Old Notes</span>
 					<span v-else>Old Notes</span>
 				</b-button>
 
 				<!-- Read-only input box for Old Notes -->
-				<b-form-input v-if="showOldNotes" readonly value="No comments available"></b-form-input>
+				<b-form-input v-if="showOldNotes" readonly :value="caseEntity.old_notes">{{ caseEntity.old_notes }}</b-form-input>
 				<!-- Show data and Show formatted data hidden for now -->
 				<!-- <b-button @click="showData" variant="secondary">
 					<span v-if="showLoveMessage">Hide Data</span>
