@@ -1286,4 +1286,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
 		'_method' => 'GET'
     ]);
 
+	$builder->connect('/savedecisionoption', [
+        'controller' => 'Savedecisionoption',
+        'action' => 'index',
+        '_method' => 'POST'
+    ]);
+
 });

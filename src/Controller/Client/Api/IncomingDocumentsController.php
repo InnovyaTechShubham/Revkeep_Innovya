@@ -342,7 +342,7 @@ class IncomingDocumentsController extends ApiController
 			
 			// Patch the entity with the new data
 			$appeals->patchEntity($appeal, [
-				'appeal_status' => 'Submitted',
+				'appeal_status' => 'In Process',
 			]);
 		
 			// Save the changes

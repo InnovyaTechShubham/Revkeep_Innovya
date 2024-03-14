@@ -15,6 +15,8 @@ use App\Service\StorageServiceInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Http\Response;
 use Exception;
+use Cake\ORM\TableRegistry;
+
 
 /**
  * Appeal Packets Controller
@@ -295,12 +297,44 @@ class AppealPacketsController extends ApiController
 		// Close appeal when submitting
 		$this->appeal->setCompletedBy($this->currentUser);
 		$this->appeal->setClosedBy($this->currentUser);
-		$this->Appeals->save($this->appeal);
+		// $this->Appeals->save($this->appeal);
 
-		$this->set([
-			'success' => true,
-			'data' => $outgoing,
-			'appeal' => $this->appeal
-		]);
+		// $this->set([
+		// 	'success' => true,
+		// 	'data' => $outgoing,
+		// 	'appeal' => $this->appeal
+		// ]);
+
+		// Update appeal status to 'In Process'
+		try {
+			$appeals = TableRegistry::getTableLocator()->get('Appeals');
+			// Load the entity to be updated
+			$appeal = $appeals->get($this->appeal->id);
+			
+			// Patch the entity with the new data
+			$appeal->appeal_status = 'Submitted';
+			
+			// Save the changes
+			if ($appeals->save($appeal)) {
+				$this->set([
+					'success' => true,
+					'data' => $outgoing,
+					'appeal' => $this->appeal
+				]);
+			} else {
+				throw new InternalErrorException(__('Failed to update appeal status.'));
+			}
+		} catch (\Exception $e) {
+			// Handle exception
+			// Log the error
+			$this->log($e->getMessage(), 'error');
+			// Set response status
+			$this->response = $this->response->withStatus(500);
+			// Set error response
+			$this->set([
+				'success' => false,
+				'error' => $e->getMessage()
+			]);
+		}
 	}
 }
