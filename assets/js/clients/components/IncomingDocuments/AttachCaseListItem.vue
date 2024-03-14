@@ -394,7 +394,7 @@
 									</b-col>
 									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
 										<b-form-group label="New At Risk Amount" label-cols-lg="5" class="mb-0"
-											v-if="dynamicDecisionOptions[i] !== 'Favorable'">
+										v-if="dynamicDecisionOptions[i] !== 'Favorable' && dynamicDecisionOptions[i] !== 'Not Favorable'">
 											<b-form-input class="mt-2" v-model="riskAmount[i]"></b-form-input>
 										</b-form-group>
 									</b-col>

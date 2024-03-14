@@ -25,30 +25,33 @@ class SavedecisionoptionController extends AppController
                 $appeal = $appealsTable->get($appealId);
 
                 // Ensure disputed_amount, reimbursed_amount, and outstanding_amount are not null
-                if ($appeal->disputed_amount === null) {
+                if ($appeal->disputed_amount === "NULL") {
                     $appeal->disputed_amount = 0;
                 }
-                if ($appeal->reimbursed_amount === null) {
+                if ($appeal->reimbursed_amount === "NULL") {
                     $appeal->reimbursed_amount = 0;
                 }
-                if ($appeal->outstanding_amount === null) {
+                if ($appeal->outstanding_amount === "NULL") {
                     $appeal->outstanding_amount = 0;
                 }
 
                 // Update the appeal_decision column
                 $appeal->appeal_decision = $decisionOption;
 
-                // on updation of appeal decision, set appeal_status to 'Closed'
+                // update appeal_status as 'closed'
                 $appeal->appeal_status = 'Closed';
 
-                // Update the disputed_amount, reimbursed_amount, and outstanding_amount based on the decision option
-                if ($decisionOption !== 'Favorable') {
-                    $previousDisputedAmount = $appeal->disputed_amount;
-                    $appeal->disputed_amount = $riskAmount;
-                    $appeal->reimbursed_amount = $previousDisputedAmount - $appeal->disputed_amount;
-                    $appeal->outstanding_amount = $appeal->disputed_amount;
+                if ($decisionOption !== 'Favorable' && $decisionOption !== 'Not Favorable') {
+                    // Check if none of the columns is null
+                    if ($appeal->disputed_amount !== null && $appeal->reimbursed_amount !== null && $appeal->outstanding_amount !== null
+                        && $appeal->disputed_amount !== "NULL" && $appeal->reimbursed_amount !== "NULL" && $appeal->outstanding_amount !== "NULL") {
+                        // Update the columns
+                        $previousDisputedAmount = $appeal->disputed_amount;
+                        $appeal->disputed_amount = $riskAmount;
+                        $appeal->reimbursed_amount = $previousDisputedAmount - $appeal->disputed_amount;
+                        $appeal->outstanding_amount = $appeal->disputed_amount;
+                    }
                 }
-
                 // Save the updated appeal
                 if ($appealsTable->save($appeal)) {
                     $response = [
