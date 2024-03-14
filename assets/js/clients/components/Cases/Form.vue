@@ -436,7 +436,7 @@
 										<b-form-select name="client_employee_id" v-model="entity.client_employee_id"
 											:options="clientEmployees" :disabled="saving || loadingClientEmployees"
 											:state="getValidationState(validationContext)" value-field="id"
-											text-field="full_name" required>
+											text-field="full_name" >
 											<template #first>
 												<option disabled v-if="!hasClientEmployees" :value="null">
 													No physicians added.
