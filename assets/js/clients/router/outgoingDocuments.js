@@ -3,7 +3,7 @@ import IndexPending from "@/clients/views/OutgoingDocuments/index_pending.vue";
 import IndexDelivered from "@/clients/views/OutgoingDocuments/index_delivered.vue";
 import IndexFailed from "@/clients/views/OutgoingDocuments/index_failed.vue";
 import IndexCancelled from "@/clients/views/OutgoingDocuments/index_cancelled.vue";
-import IndexHome  from "@/clients/views/outgoingDocuments/index_home.vue";
+import IndexHome  from "@/clients/views/OutgoingDocuments/index_home.vue";
 const baseUrl = "/outgoing";
 
 export default [
