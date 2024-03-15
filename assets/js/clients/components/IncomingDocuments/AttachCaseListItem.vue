@@ -390,7 +390,7 @@
 										</b-form-group>
 									</b-col>
 								</b-row> -->
-								<b-row class="mb-8">
+								<b-row class="mb-8" v-if="appeal.appeal_status=='Submitted'">
 									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative mb-4">
 										<b-form-group :label="`${appealLevelNames[i]} Decision Options`"
 											label-cols-lg="5" class="mb-0">
@@ -411,7 +411,7 @@
 									</b-col>
 								</b-row>
 
-								<b-row v-if="showButtons">
+								<b-row v-if="showButtons && appeal.appeal_status=='Submitted'">
 									<b-col cols="12" class="text-center">
 										<b-button variant="success"
 											@click="updateDecisionOption(appeal.id, dynamicDecisionOptions[i], riskAmount[i])"
