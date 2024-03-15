@@ -21,8 +21,8 @@
 				</b-row>
 				<b-row>
 					<b-col cols="12">
-						<case-status-label :value="caseEntity" />
-						<b-badge :variant="primary">{{ lastAppealStatus() }}</b-badge>
+						<case-status-label style="background-color: #8EA7DE; color:white;" :value="caseEntity" />
+						<b-badge style="background-color: #69B0FF;color:white;">{{ lastAppealStatus() }}</b-badge>
 					</b-col>
 				</b-row>
 
@@ -180,8 +180,8 @@
 												{{ appeal.appeal_type.name }}
 											</span>
 											<span v-else class="text-muted"> Post-Payment </span><br>
-											<b-badge :variant="appeal.appeal_status === 'Closed' ? 'dark' : 'primary'">{{ appeal.appeal_status }}</b-badge>
-											 -  <b-badge :variant="badgeVariant(appeal.appeal_decision)">{{ appeal.appeal_decision }}</b-badge>
+											<b-badge style="background-color: #8EA7DE; color:white;">{{ appeal.appeal_status }}</b-badge>
+											 -  <b-badge :style="{ backgroundColor: badgeVariant(appeal.appeal_decision) }">{{ appeal.appeal_decision }}</b-badge>
 										</p>
 										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
 											<span v-if="appeal.due_date" class="small" :class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'
@@ -585,13 +585,13 @@ export default {
 			console.log(decision);
 			switch (decision) {
 				case 'Favorable':
-				return 'success'; // Green color
+				return '#9BC29B'; // Green color
 				case 'Not Favorable':
-				return 'danger'; // Red color
+				return '#F7454A'; // Red color
 				case 'Partially Favorable':
-				return 'warning'; // Orange color
+				return '#F2B172'; // Orange color
 				default:
-				return 'secondary';
+				return '#F2B172';
 			}
 		},
 		formattedDate(value) {
