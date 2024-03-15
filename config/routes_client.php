@@ -1295,5 +1295,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'index',
         '_method' => 'POST'
     ]);
+	$builder->connect('/facilityreceivinglist', [
+        'controller' => 'FacilityReceivingList',
+        'action' => 'index',
+       
+    ]);
 
 });

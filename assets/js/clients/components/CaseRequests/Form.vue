@@ -149,7 +149,7 @@
 						<b-form-checkbox name="priority" v-model="entity.priority">Priority</b-form-checkbox>
 					</b-form-group>
 
-					<validation-provider
+					<!-- <validation-provider
 						vid="agency_id"
 						name="Agency"
 						:rules="{ required: false }"
@@ -159,7 +159,7 @@
 							<b-input-group>
 								<b-select
 									name="agency_id"
-									v-model="entity.agency_id"
+									v-model="agency_autofill"
 									:options="agencies"
 									:disabled="saving || loadingAgencies"
 									:state="getValidationState(validationContext)"
@@ -186,9 +186,9 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 
-					<div v-if="addingAgency" class="mb-4">
+					<!-- <div v-if="addingAgency" class="mb-4">
 						<agency-form @cancel="addingAgency = false" @saved="addedNewAgency">
 							<template #header>
 								<b-card-header>
@@ -207,9 +207,9 @@
 								</b-card-header>
 							</template>
 						</agency-form>
-					</div>
+					</div> -->
 
-					<validation-provider
+					<!-- <validation-provider
 						vid="insurance_provider_id"
 						name="Insurance Provider"
 						:rules="{ required: false }"
@@ -219,7 +219,7 @@
 							<b-input-group>
 								<b-select
 									name="insurance_provider_id"
-									v-model="entity.insurance_provider_id"
+									v-model="insurance"
 									:options="insuranceProviders"
 									:disabled="saving || loadingInsuranceProviders"
 									:state="getValidationState(validationContext)"
@@ -246,9 +246,9 @@
 								v-text="error"
 							/>
 						</b-form-group>
-					</validation-provider>
+					</validation-provider> -->
 
-					<div v-if="addingInsuranceProvider" class="mb-4">
+					<!-- <div v-if="addingInsuranceProvider" class="mb-4">
 						<insurance-provider-form
 							@cancel="addingInsuranceProvider = false"
 							@saved="addedNewInsuranceProvider"
@@ -269,8 +269,8 @@
 									</div>
 								</b-card-header>
 							</template>
-						</insurance-provider-form>
-					</div>
+						</insurance-provider-form> 
+					</div>-->
 				</b-card-body>
 
 				<b-card-footer>
@@ -351,8 +351,6 @@ export default {
 				due_date: getDateOffsetDaysString(2),
 				status: "Level 0",
 				appeal_level:null,
-				agency_id:null,
-				insurance_provider_id:null,
 			},
 			loadingRequestTypes: false,
 			addingAgency: false,
@@ -398,9 +396,9 @@ export default {
 		}
 		
 		// for calling autofillform function during mounting phase for autofilling the form
-	//	if(true){
-		//	this.autoFillForm();
-	//	}
+		if(true){
+			this.autoFillForm();
+		}
 
 	},
 	methods: {
@@ -553,7 +551,7 @@ export default {
 				});
 				console.log("response = " , this.insuranceData);
 				console.log("case entity =", this.caseEntity);
-				console.log("agency =", this.agencies);
+				
 				} 
 			catch (error) {
 				console.error(error);
