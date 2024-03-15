@@ -36,6 +36,13 @@ class Appeal extends Entity
 	public const STATUS_SUBMITTED = 'Submitted';
 
 	/**
+	 * Submitted for Vendor assignment
+	 *
+	 * @var string
+	 */
+	public const STATUS_INPROCESS = 'In Process';
+
+	/**
 	 * Assigned to a Vendor for completion
 	 *
 	 * @var string
@@ -110,6 +117,7 @@ class Appeal extends Entity
 			self::STATUS_OPEN,
 			self::STATUS_UTC,
 			self::STATUS_SUBMITTED,
+			self::STATUS_INPROCESS,
 			self::STATUS_ASSIGNED,
 			self::STATUS_COMPLETED,
 			self::STATUS_RETURNED,
@@ -147,6 +155,7 @@ class Appeal extends Entity
 			case self::STATUS_OPEN:
 			case self::STATUS_UTC:
 			case self::STATUS_SUBMITTED:
+			case self::STATUS_INPROCESS:
 			case self::STATUS_ASSIGNED:
 			case self::STATUS_COMPLETED:
 			case self::STATUS_RETURNED:
@@ -176,6 +185,9 @@ class Appeal extends Entity
 				break;
 			case self::STATUS_SUBMITTED:
 				return 'users';
+				break;
+			case self::STATUS_INPROCESS:
+				return 'check-circle';
 				break;
 			case self::STATUS_ASSIGNED:
 				return 'user';
@@ -212,6 +224,9 @@ class Appeal extends Entity
 			case self::STATUS_SUBMITTED:
 				return "info";
 				break;
+			case self::STATUS_INPROCESS:
+				return "info";
+				break;
 			case self::STATUS_ASSIGNED:
 				return "primary";
 				break;
@@ -245,6 +260,7 @@ class Appeal extends Entity
 			case self::STATUS_OPEN:
 			case self::STATUS_UTC;
 			case self::STATUS_SUBMITTED:
+			case self::STATUS_INPROCESS:
 			case self::STATUS_ASSIGNED:
 			case self::STATUS_COMPLETED:
 			case self::STATUS_RETURNED:
@@ -267,6 +283,7 @@ class Appeal extends Entity
 	{
 		switch ($this->get('appeal_status')) {
 			case self::STATUS_COMPLETED:
+			case self::STATUS_INPROCESS:
 			case self::STATUS_RETURNED:
 				return true;
 			default:
@@ -302,6 +319,7 @@ class Appeal extends Entity
 	{
 		switch ($this->get('appeal_status')) {
 			case self::STATUS_SUBMITTED:
+			case self::STATUS_INPROCESS:
 			case self::STATUS_ASSIGNED:
 			case self::STATUS_CLOSED:
 			case self::STATUS_CANCELLED:

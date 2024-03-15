@@ -1290,5 +1290,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
         'action' => 'index',
     ]);
 
+	$builder->connect('/savedecisionoption', [
+        'controller' => 'Savedecisionoption',
+        'action' => 'index',
+        '_method' => 'POST'
+    ]);
 
 });

@@ -9,6 +9,7 @@ export default {
 		'Open': 'Open',
 		'Submitted': 'Submitted',
 		'Assigned': 'Assigned',
+		'In Process': 'In Process',
 		'Completed': 'Completed',
 		'Returned': 'Returned',
 		'Cancelled': 'Cancelled',
