@@ -139,7 +139,6 @@
 								type="date"
 								v-model="entity.received_date"
 								name="received_date"
-								required="required"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								:min="minDate"
@@ -202,7 +201,6 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
-								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -230,8 +228,7 @@
 								v-model="selectedDaysToRespond"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
-								required="required"
-								readonly
+								
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -262,7 +259,7 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
-								readonly
+	
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -314,7 +311,6 @@
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								:min="entity.letter_date"
-								readonly
 							/>
 							<b-form-invalid-feedback
 								v-for="error in validationContext.errors"
@@ -634,7 +630,7 @@
 						v-slot="validationContext"
 					>
 						<b-form-group
-							label="Audit ID"
+							label="Encore Audit ID"
 							label-for="audit_identifier"
 							description="A vendor provided reference ID to this appeal"
 							label-cols-lg="4"

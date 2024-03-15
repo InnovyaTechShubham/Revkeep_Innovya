@@ -883,7 +883,7 @@
 								<validation-provider vid="total_claim_amount" name="Total Claim Amount"
 									:rules="{ required: false, min: 0, max_value: currencyMax, double: true }"
 									v-slot="validationContext">
-									<b-form-group label="Paid Claim Amount" label-for="total_claim_amount"
+									<b-form-group label="Total Claim Amount" label-for="total_claim_amount"
 										label-cols-lg="4">
 										<b-input-group>
 											<b-input-group-prepend is-text>
