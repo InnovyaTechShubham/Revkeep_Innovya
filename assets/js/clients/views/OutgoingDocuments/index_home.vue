@@ -28,7 +28,7 @@
 					<table class="table table-bordered mb-0 scrollable-row ">
             <thead>
                 <tr>
-					<th class="col-md-1">Id</th>
+				   <th class="col-md-1">Appeal Id</th>
 				   <th class="col-md-1">Status </th>
 				   <th class="col-md-1">Facility </th>
                    <th class="col-md-1">Patient Name</th>
