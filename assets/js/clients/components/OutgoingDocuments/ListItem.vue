@@ -19,12 +19,13 @@
       </td>
   
   <td class="col-md-1 center-both font-weight-bold align-middle">
-	<span >{{ value.facility_name }}</span>
+	<span v-if="value.facility_name ">{{ value.facility_name }}</span>
+	<div v-else class="text-muted">&mdash;</div>
   </td>
 
    <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName }}</td>
 
-    <td class="col-md-2 center-both align-middle "   @click="navigateToAppeal">
+   <!-- <td class="col-md-2 center-both align-middle "   @click="navigateToAppeal">
 		<div v-if="!hideAgency">
     <p v-if="value.agency" class="text-muted " title="Agency">
         
@@ -39,7 +40,12 @@
 </div>
 <div v-else class="text-muted">&mdash;</div>
 
-	  </td> 
+	  </td> -->
+	  
+	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
+		<span v-if="agencyName">{{ agencyName}}</span>
+		<div v-else class="text-muted">&mdash;</div>
+	  </td>
 
 	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
 		               

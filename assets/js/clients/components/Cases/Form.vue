@@ -892,7 +892,7 @@
 											<b-form-input name="Paid Claim Amount" type="number"
 												v-model="entity.total_claim_amount" :disabled="saving"
 												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
-												step="0.00" maxlength="10" autocomplete="off" />
+												step="0.01" maxlength="10" autocomplete="off" />
 											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
 												v-text="error" />
 										</b-input-group>
@@ -909,9 +909,9 @@
 												<font-awesome-icon icon="dollar-sign" fixed-width />
 											</b-input-group-prepend>
 											<b-form-input name="disputed_amount" type="number"
-												v-model="entity.disputed_amount" :disabled="saving"
-												:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
-												step="0.00" maxlength="10" autocomplete="off" />
+											v-model="entity.disputed_amount" :disabled="saving"
+											:state="getValidationState(validationContext)" :min="0" :max="currencyMax"
+											step="0.01" maxlength="13" autocomplete="off" />
 											<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
 												v-text="error" />
 										</b-input-group>
