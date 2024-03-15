@@ -180,7 +180,8 @@
 												{{ appeal.appeal_type.name }}
 											</span>
 											<span v-else class="text-muted"> Post-Payment </span><br>
-											<appeal-status-label :value="appeal" /> - <b-badge :variant="primary">{{ appeal.appeal_decision }}</b-badge>
+											<b-badge :variant="appeal.appeal_status === 'Closed' ? 'dark' : 'primary'">{{ appeal.appeal_status }}</b-badge>
+											 -  <b-badge :variant="badgeVariant(appeal.appeal_decision)">{{ appeal.appeal_decision }}</b-badge>
 										</p>
 										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
 											<span v-if="appeal.due_date" class="small" :class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'
@@ -579,6 +580,20 @@ export default {
 		},
 	},
 	methods: {
+		badgeVariant(decision) {
+			console.log('color is:-');
+			console.log(decision);
+			switch (decision) {
+				case 'Favorable':
+				return 'success'; // Green color
+				case 'Not Favorable':
+				return 'danger'; // Red color
+				case 'Partially Favorable':
+				return 'warning'; // Orange color
+				default:
+				return 'secondary';
+			}
+		},
 		formattedDate(value) {
 			console.log('inside formattedDate:-')
 			const date = new Date(value);
