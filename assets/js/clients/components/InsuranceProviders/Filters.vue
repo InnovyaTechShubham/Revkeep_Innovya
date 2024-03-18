@@ -5,7 +5,7 @@
 				<b-form-select name="active" v-model="filters.active" v-bind="{ disabled }" :options="activeOptions" />
 			</b-form-group>
 		</b-col>
-		<b-col cols="12" sm="6" lg="6" xl="4">
+	<!--	<b-col cols="12" sm="6" lg="6" xl="4">
 			<b-form-group label="Default Type" label-for="default_insurance_type_id" label-cols-lg="4">
 				<b-form-select
 					name="default_insurance_type_id"
@@ -20,7 +20,7 @@
 					</template>
 				</b-form-select>
 			</b-form-group>
-		</b-col>
+		</b-col>-->
 		<b-col cols="12" sm="6" lg="6" xl="4">
 			<b-form-group label="Has Appeal Level" label-for="appeal_level_id" label-cols-lg="4">
 				<b-form-select
