@@ -3,7 +3,7 @@
 	<validation-observer v-else v-bind="$attrs" ref="observer" v-slot="{ invalid }">
 		<b-form @submit.prevent="save">
 			<b-card no-body :class="flush ? 'border-0' : ''">
-				<b-card-body class="mb-0">
+				<b-card-body v-if="showContent" class="mb-0">
 					<b-row>
 						<b-col col="12" md="6">
 							<validation-provider vid="patient_id" name="Patient" :rules="{ required: true }"
@@ -509,7 +509,11 @@
 						</b-col>
 					</b-row>
 				</b-card-body>
-
+				<div @click="toggleContent" class="half-arrow mt-2 cursor-pointer d-flex justify-content-center align-items-center">
+      				<font-awesome-icon :icon="showContent ? 'chevron-up' : 'chevron-down'" />
+					
+					  <p class="mt-3 ml-2">{{ showContent ? 'Hide' : 'Show' }}</p>
+    			</div>
 				<b-card-body>
 					<h6 class="text-muted">Additional</h6>
 
@@ -1252,6 +1256,7 @@ export default {
 		return {
 			loading: true,
 			saving: false,
+			showContent: true,
 			currentPatient: {},
 			currentInsuranceProvider: {},
 			addingPatient: false,
@@ -1813,6 +1818,9 @@ export default {
 			this.currentDenialReasons = this.currentDenialReasons.filter((item) => !item.checked);
 			this.deleteFacilityMode = false; // Turn off delete mode after removing items
 		},
+		toggleContent() {
+     		 this.showContent = !this.showContent;
+      	 },
 
 	},
 	created() {

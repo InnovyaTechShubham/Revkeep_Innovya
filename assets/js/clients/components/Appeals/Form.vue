@@ -226,6 +226,7 @@
 								max="365"
 								default="daysToRespond"
 								v-model="selectedDaysToRespond"
+								@input="updateDaysToRespond"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								
@@ -256,6 +257,7 @@
 								max="365"
 								default="Grace Days"
 								v-model="GraceDays"
+								@input="updateGraceDays"
 								:disabled="saving"
 								:state="getValidationState(validationContext)"
 								required="required"
@@ -1064,7 +1066,7 @@ export default {
 					id: null,
 					assigned_to: null,
 					facility:null,
-					facility_id: 1107,
+					facility_id: null,
 				};
 			},
 		},
@@ -1099,7 +1101,7 @@ export default {
 			due_date:null,
 			insurance:null,
 			agency_autofill:null,
-			daysToRespond:[],
+			daysToRespond:null,
 			daysToDecision:[],
 			insuranceData:[],
 			// daysToRespond: null,
@@ -1113,16 +1115,29 @@ export default {
       // Calculate the difference and return it
       return this.entity.disputed_amount - this.entity.outstanding_amount;
     },
-		dueDate() {
-			if (this.entity.days_to_respond_from_id == 1) {
-			// received date
-			return moment(this.entity.received_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
+	dueDate() {
+    let daysToRespond = this.daysToRespond !== null ? this.daysToRespond : this.selectedDaysToRespond;
+    let graceDays = this.gracedays !== null ? this.gracedays : this.GraceDays;
 
-			} else if (this.entity.days_to_respond_from_id == 2) {
-			// letter date
-			return moment(this.entity.letter_date).add(this.daysToRespond, 'days').add(this.gracedays, 'days').format('YYYY-MM-DD')
-			}
-		},
+    let startDate;
+    if (this.entity.days_to_respond_from_id === 1) {
+        // received date
+        startDate = moment(this.entity.received_date);
+    } else if (this.entity.days_to_respond_from_id === 2) {
+        // letter date
+        startDate = moment(this.entity.letter_date);
+    }
+
+    if (startDate) {
+        return startDate
+            .add(daysToRespond, 'days')
+            .add(graceDays, 'days')
+            .format('YYYY-MM-DD');
+    } else {
+        return null; // or any default value if needed
+    }
+},
+
 		selectedDaysToDecision() {
 			if (!this.entity.appeal_level_id) return null;
 			
@@ -1137,21 +1152,13 @@ export default {
 			return(this.daysToDecision);
 		},
 
-		selectedDaysToRespond() {
-			if (!this.entity.appeal_level_id) return null;
-			
-			const selectedLevel = this.insuranceData.find(level => {
-			return level.id === this.entity.appeal_level_id;
-			});
-			console.log("radio", this.daysToRespondFroms);
-			console.log('days to respond:', selectedLevel.days_to_respond);
-			console.log('Selected level:', selectedLevel);
-			this.daysToRespond = selectedLevel.days_to_respond;
-			console.log("final",this.daysToRespond);
-			return(this.daysToRespond);
-			// return selectedLevel ? selectedLevel.daysToRespond : null;
-			
-		},
+		selectedLevel() {
+      if (!this.entity.appeal_level_id) return null;
+      return this.insuranceData.find(level => level.id === this.entity.appeal_level_id);
+    },
+    selectedDaysToRespond() {
+      return this.selectedLevel ? this.selectedLevel.days_to_respond : null;
+    },
  	 	GraceDays() {
 			if (!this.entity.appeal_level_id) return null;
 			
@@ -1160,9 +1167,9 @@ export default {
 			});
 			console.log('days to respond:', selectedLevel.Grace_days);
 			console.log('Selected level:', selectedLevel);
-			this.gracedays = selectedLevel.Grace_days;
+			
 			console.log("final",this.gracedays);
-			return(this.gracedays);
+			return this.selectedLevel ? this.selectedLevel.Grace_days : null;
   		},
 
 		filteredAuditReviewers() {
@@ -1512,7 +1519,7 @@ export default {
 			this.facilities = response.data; // save all facilities for later use
      
       console.log("Facility Details:", this.facilities);
-	  const filteredFacilities = this.facilities.filter(facility => facility.id === 1107);
+	  const filteredFacilities = this.facilities.filter(facility => facility.id === this.caseEntity.facility_id);
 
         console.log("Filtered Facilities:", filteredFacilities);
 		if (filteredFacilities) {
@@ -1532,9 +1539,17 @@ export default {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-}
-
-
+},
+    updateDaysToRespond(newValue) {
+      // Do something with newValue if needed
+      console.log(newValue);
+      // Update your data property accordingly
+      this.daysToRespond = newValue;
+    },
+	updateGraceDays(newValue) {
+      console.log(newValue);
+      this.gracedays = newValue;
+    },
 	},
 	watch: {
 		'entity.appeal_level_id': function(newValue, oldValue) {
