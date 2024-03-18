@@ -14,7 +14,7 @@
 							</span>
 							<span v-if="caseEntity.discharge_date">
 								<!-- {{ $filters.formatDate(caseEntity.discharge_date) }} -->
-								{{  formattedDate(caseEntity.discharge_date) }}
+								{{ formattedDate(caseEntity.discharge_date) }}
 							</span>
 						</span>
 					</b-col>
@@ -180,8 +180,12 @@
 												{{ appeal.appeal_type.name }}
 											</span>
 											<span v-else class="text-muted"> Post-Payment </span><br>
-											<b-badge style="background-color: #8EA7DE; color:white;">{{ appeal.appeal_status }}</b-badge>
-											 -  <b-badge :style="{ backgroundColor: badgeVariant(appeal.appeal_decision) }">{{ appeal.appeal_decision }}</b-badge>
+											<b-badge style="background-color: #8EA7DE; color:white;">{{
+			appeal.appeal_status
+		}}</b-badge>
+											- <b-badge
+												:style="{ backgroundColor: badgeVariant(appeal.appeal_decision) }">{{
+			appeal.appeal_decision }}</b-badge>
 										</p>
 										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
 											<span v-if="appeal.due_date" class="small" :class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'
@@ -390,38 +394,37 @@
 										</b-form-group>
 									</b-col>
 								</b-row> -->
-								<b-row class="mb-8" v-if="appeal.appeal_status=='Submitted'">
+								<b-row class="mb-8" v-if="appeal.appeal_status == 'Submitted'">
 									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative mb-4">
 										<b-form-group :label="`${appealLevelNames[i]} Decision Options`"
 											label-cols-lg="5" class="mb-0">
 											<b-form-select v-model="dynamicDecisionOptions[i]"
-												:options="decisionOptionsListMethod(appeal)"
-												class="mt-2"
-												@shown="dropdownOpened = true"
-												@hidden="dropdownOpened = false"
+												:options="decisionOptionsListMethod(appeal)" class="mt-2"
+												@shown="dropdownOpened = true" @hidden="dropdownOpened = false"
 												@change="handleSelection">
 												></b-form-select>
 										</b-form-group>
 									</b-col>
-									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
+									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative"
+										v-if="this.levelType !== 'Pre-Appeal'">
 										<b-form-group label="New At Risk Amount" label-cols-lg="5" class="mb-0"
-										v-if="dynamicDecisionOptions[i] !== 'Favorable' && dynamicDecisionOptions[i] !== 'Not Favorable'">
+											v-if="dynamicDecisionOptions[i] !== 'Favorable' && dynamicDecisionOptions[i] !== 'Not Favorable'">
 											<b-form-input class="mt-2" v-model="riskAmount[i]"></b-form-input>
 										</b-form-group>
 									</b-col>
 								</b-row>
 
-								<b-row v-if="showButtons && appeal.appeal_status=='Submitted'">
+								<b-row v-if="showButtons && appeal.appeal_status == 'Submitted'">
 									<b-col cols="12" class="text-center">
+										<b-button variant="danger" @click="sendCrossRequest">
+											<i class="fas fa-times"></i> <!-- Bootstrap icon for cross -->
+											Cancel
+										</b-button>
 										<b-button variant="success"
 											@click="updateDecisionOption(appeal.id, dynamicDecisionOptions[i], riskAmount[i])"
 											class="mr-2">
 											<i class="fas fa-check"></i> <!-- Bootstrap icon for check -->
 											Save
-										</b-button>
-										<b-button variant="danger" @click="sendCrossRequest">
-											<i class="fas fa-times"></i> <!-- Bootstrap icon for cross -->
-											Cancel
 										</b-button>
 									</b-col>
 								</b-row>
@@ -550,6 +553,7 @@ export default {
 			riskAmount: [], // Stores the value of the At Risk Amount input
 			showButtons: false,
 			dropdownOpened: false,
+			levelType: null,
 		};
 	},
 	computed: {
@@ -585,13 +589,13 @@ export default {
 			console.log(decision);
 			switch (decision) {
 				case 'Favorable':
-				return '#9BC29B'; // Green color
+					return '#9BC29B'; // Green color
 				case 'Not Favorable':
-				return '#F7454A'; // Red color
+					return '#F7454A'; // Red color
 				case 'Partially Favorable':
-				return '#F2B172'; // Orange color
+					return '#F2B172'; // Orange color
 				default:
-				return '#F2B172';
+					return '#F2B172';
 			}
 		},
 		formattedDate(value) {
@@ -835,6 +839,8 @@ export default {
 								// this.appealLevelNames.push(value.label);
 								console.log("value of index = ", index);
 								this.appealLevelNamesObj.push({ label: value.label, id: value.id });
+								this.levelType = value.level_type;
+								console.log("Level tyep check", this.levelType);
 							}
 						}
 					});
@@ -931,7 +937,7 @@ export default {
 			deep: true // Enable deep watching to detect changes in nested properties of dynamicDecisionOptions
 		},
 		riskAmount: {
-			handler: function(newVal, oldVal) {
+			handler: function (newVal, oldVal) {
 				console.log("inside risk watcher");
 				// Check if the new value is different from the old value
 				// Update the showButtons flag only if the dynamicDecisionOptions has changed
