@@ -1002,7 +1002,6 @@ export default {
 			portalUrlEsmd: null,
 			usernameEsmd: null,
 			passwordEsmd: null,
-			agencyList: [],
 			selectedAgency: null,
 			matchingContacts: null,
 			emailData: null,
@@ -1268,8 +1267,7 @@ export default {
 				// Extract case_id from your component
 				const case_id = this.value.case_id;
 				console.log("Case ID from your component:", case_id);
-				console.log("Case details = ", this.value);
-				this.selectedAgencyId = this.value.agency_id;
+
 				// Find the matching case in the response data
 				const matchingCase = response.data.find((caseData) => caseData.id === case_id);
 
@@ -1528,22 +1526,43 @@ export default {
 			}
 		},
 
-		async AgencyList() {
-			try {
-				const url = "/client/agencyList";
+		// async AgencyList() {
+		// 	try {
+		// 		const url = "/client/agencyList";
 
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				this.agencyList = response.data;
-				console.log("RESPONSE agencies = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
+		// 		// Fetch data from the server
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+		// 		this.agencyList = response.data;
+		// 		console.log("RESPONSE agencies = ", response.data);
+		// 	} catch (error) {
+		// 		console.error("Error fetching client facilities:", error);
+		// 	}
+		// },
+		async AgencyList() {
+    try {
+        const url = "/client/agencyList";
+
+        // Fetch data from the server
+        const response = await axios.get(url, {
+            headers: {
+                "Accept": "application/json",
+            },
+        });
+
+        // Remove reactivity by deep cloning each object
+        this.agencyList = response.data.map(agency => JSON.parse(JSON.stringify(agency)));
+
+        console.log("RESPONSE agencies = ", this.agencyList);
+    } catch (error) {
+        console.error("Error fetching client facilities:", error);
+    }
+},
+
+
 		async AppealList() {
 			try {
 				const url = "/client/appealList";
@@ -1891,27 +1910,27 @@ export default {
 				console.log("RESPONSE = ", response);
 
 				// for fetching agency details from agency table
-				url = "/client/agencyList";
-				const responseAgency = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				//for storing agency list for rendering
-				responseAgency.data.forEach((item, index) => {
-					this.agencyList.push({ id: item.id, name: item.name })
-				});
-				console.log("RESPONSE Agency = ", this.agencyList);
-				try {
-					response.data.forEach((item, index) => {
-						if (item.email != null) {
-							this.email.push(item.email);
-						}
-					})
-				}
-				catch (error) {
+				// url = "/client/agencyList";
+				// const responseAgency = await axios.get(url, {
+				// 	headers: {
+				// 		"Accept": "application/json",
+				// 	},
+				// });
+				// //for storing agency list for rendering
+				// responseAgency.data.forEach((item, index) => {
+				// 	this.agencyList.push({ id: item.id, name: item.name })
+				// });
+				// console.log("RESPONSE Agency = ", this.agencyList);
+				// try {
+				// 	response.data.forEach((item, index) => {
+				// 		if (item.email != null) {
+				// 			this.email.push(item.email);
+				// 		}
+				// 	})
+				// }
+				// catch (error) {
 
-				}
+				// }
 			}
 			catch (error) {
 				console.log(error);
