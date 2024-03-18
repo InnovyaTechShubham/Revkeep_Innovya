@@ -405,8 +405,7 @@
 												></b-form-select>
 										</b-form-group>
 									</b-col>
-									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative"
-										v-if="this.levelType !== 'Pre-Appeal'">
+									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
 										<b-form-group label="New At Risk Amount" label-cols-lg="5" class="mb-0"
 											v-if="dynamicDecisionOptions[i] !== 'Favorable' && dynamicDecisionOptions[i] !== 'Not Favorable'">
 											<b-form-input class="mt-2" v-model="riskAmount[i]"></b-form-input>
@@ -840,7 +839,7 @@ export default {
 								console.log("value of index = ", index);
 								this.appealLevelNamesObj.push({ label: value.label, id: value.id });
 								this.levelType = value.level_type;
-								console.log("Level tyep check", this.levelType);
+								console.log("Level tyep check for", this.levelType);
 							}
 						}
 					});
