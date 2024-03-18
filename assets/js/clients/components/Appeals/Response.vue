@@ -41,7 +41,8 @@
 												</p>
 											</div>
 											<div>
-												<b-button variant="danger" @click="removeFile(file)" title="Remove File">
+												<b-button variant="danger" @click="removeFile(file)"
+													title="Remove File">
 													<font-awesome-icon icon="remove" fixed-width />
 												</b-button>
 											</div>
@@ -271,16 +272,16 @@
 							</p>
 						</template>
 					</empty-result> -->
-								<!-- Add Search Bar -->
-								<!-- <b-form-input v-model="searchText" placeholder="Search agency" class="mt-2"></b-form-input> -->
+					<!-- Add Search Bar -->
+					<!-- <b-form-input v-model="searchText" placeholder="Search agency" class="mt-2"></b-form-input> -->
 
-								<!-- Add Search Button -->
-								<!-- <b-col cols="12" class="text-right">
+					<!-- Add Search Button -->
+					<!-- <b-col cols="12" class="text-right">
 						<b-button variant="primary">
 							Search
 						</b-button>
 					</b-col> -->
-								<!-- <b-button @click="delivery" variant="primary" class="text-right">Search</b-button> 
+					<!-- <b-button @click="delivery" variant="primary" class="text-right">Search</b-button> 
 					<b-form-group label="Delivery Method"  label-cols-lg="4">
 						<b-form-select label=" Delivery Method " v-model="selectedOptionMethod" class="mt-2" @change="handleDeliveryMethodChange">
 							<option value="Email">Email</option>
@@ -293,197 +294,246 @@
 						</b-form-select>
 					</b-form-group> -->
 
-								<b-form-group label="Submit To" label-cols-lg="4">
-									<b-form-select label=" Submit To " v-model="selectedSubmitTo" class="mt-2"
-										@change="handleSubmitToChange">
-										<option value="facility">Facility</option>
-										<option value="agency">Agency</option>
-										<option value="user">User</option>
-									</b-form-select>
-								</b-form-group>
+					<b-form-group label="Submit To" label-cols-lg="4">
+						<b-form-select label=" Submit To " v-model="selectedSubmitTo" class="mt-2"
+							@change="handleSubmitToChange">
+							<option value="facility">Facility</option>
+							<option value="agency">Agency</option>
+							<option value="user">User</option>
+						</b-form-select>
+					</b-form-group>
 
 
-								<div v-if="selectedSubmitTo === 'user'">
-									<b-form-group label="Search User" label-cols-lg="4">
-										<div class="position-relative">
-											<b-form-input v-model="searchUser" @input="handleUserSearch"
-												placeholder="Search user..."></b-form-input>
-										</div>
+					<div v-if="selectedSubmitTo === 'user'">
+						<b-form-group label="Search User" label-cols-lg="4">
+							<div class="position-relative">
+								<b-form-input v-model="searchUser" @input="handleUserSearch"
+									placeholder="Search user..."></b-form-input>
+							</div>
 
-										<b-list-group v-if="searchResults.length > 0" class="search-results">
-											<b-list-group-item v-for="(user, index) in searchResults" :key="index"
-												@click="selectUser(user)">
-												{{ user.text }}
-											</b-list-group-item>
-										</b-list-group>
-									</b-form-group>
-								</div>
+							<b-list-group v-if="searchResults.length > 0" class="search-results">
+								<b-list-group-item v-for="(user, index) in searchResults" :key="index"
+									@click="selectUser(user)">
+									{{ user.text }}
+								</b-list-group-item>
+							</b-list-group>
+						</b-form-group>
+					</div>
 
-								<div v-if="selectedSubmitTo === 'facility'">
-									<b-form-group label="Facility Selected">
+					<div v-if="selectedSubmitTo === 'facility'">
+						<!-- <b-form-group label="Facility Selected">
 										<b-form-input type="text" v-model="facilityName" disabled></b-form-input>
-									</b-form-group>
-									<b-form-group label="Delivery Method" label-cols-lg="4">
-										<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-											:disabled="isFacilitySelected" @change="handleSubmitToChange">
-											<option value="Fax">Fax</option>
-											<option value="Email">Email</option>
-											<option value="Manual">Mail</option>
-										</b-form-select>
-									</b-form-group>
+									</b-form-group> -->
+						<!-- <b-form-group label="Facility Selected" label-for="facilitySearch" label-cols-lg="4">
+							<b-input-group>
+								<b-form-input type="text" v-model="facilitySearchText"
+									placeholder="Type and click 'Search' to begin..." />
+								<b-input-group-append>
+									<b-button @click="searchFacilities" variant="primary">
+										<font-awesome-icon icon="search" class="mr-1" />
+									</b-button>
+								</b-input-group-append>
+							</b-input-group>
+							<div v-if="searchResults.length > 0">
+								<b-list-group>
+									<b-list-group-item v-for="facility in searchResults" :key="facility.id"
+										@click="selectFacility(facility)">
+										{{ facility.name }}
+									</b-list-group-item>
+								</b-list-group>
+							</div>
+						</b-form-group> -->
+						<b-form-group label="Facility Selected" label-for="facilitySearch" label-cols-lg="4">
+							<b-input-group>
+								<b-form-input type="text" v-model="facilitySearchText"
+									placeholder="Type and click 'Search' to begin..." />
+								<b-input-group-append>
+									<b-button @click="searchFacilities" variant="primary">
+										<font-awesome-icon icon="search" class="mr-1" />
+										Search
+									</b-button>
+								</b-input-group-append>
+							</b-input-group>
+							<div v-if="!facilitySelected && searchResults.length > 0">
+								<b-list-group>
+									<b-list-group-item v-for="facility in searchResults" :key="facility.id"
+										@click="selectFacilityAndFetchDetails(facility)">
+										{{ facility.name }}
+									</b-list-group-item>
+								</b-list-group>
+							</div>
+						</b-form-group>
 
-									<b-form-group v-if="isFacilitySelected">
-										<b-alert show variant="warning">
-											No facility is selected. Please choose a facility.
-										</b-alert>
-									</b-form-group>
+						<b-form-group label="Delivery Method" label-cols-lg="4">
+							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
+								@change="handleSubmitToChange">
+								<option value="Fax">Fax</option>
+								<option value="Email">Email</option>
+								<option value="Manual">Mail</option>
+							</b-form-select>
+						</b-form-group>
 
-									<!-- Dropdown for Fax -->
-									<b-form-group v-if="selectedDeliveryMethod === 'Fax' && receivingFaxDetails.length > 0"
-										label="Select Fax" label-cols-lg="4">
-										<b-form-select v-model="selectedFax" :options="receivingFaxDetails"
-											value-field="fax" text-field="displayText"></b-form-select>
-									</b-form-group>
+						<!-- Dropdown for Fax
+						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && receivingFaxDetails.length > 0"
+							label="Select Fax" label-cols-lg="4">
+							<b-form-select v-model="selectedFax" :options="receivingFaxDetails" value-field="fax"
+								text-field="displayText"></b-form-select>
+						</b-form-group>
 
-									<!-- Dropdown for Email -->
-									<b-form-group
-										v-if="selectedDeliveryMethod === 'Email' && receivingEmailDetails.length > 0"
-										label="Select Email" label-cols-lg="4">
-										<b-form-select v-model="selectedEmail" :options="receivingEmailDetails"
-											value-field="email" text-field="displayText"></b-form-select>
-									</b-form-group>
+						 Dropdown for Email 
+						<b-form-group v-if="selectedDeliveryMethod === 'Email' && receivingEmailDetails.length > 0"
+							label="Select Email" label-cols-lg="4">
+							<b-form-select v-model="selectedEmail" :options="receivingEmailDetails" value-field="email"
+								text-field="displayText"></b-form-select>
+						</b-form-group> -->
+						<!-- Dropdown for Fax -->
+						<b-form-group v-if="selectedDeliveryMethod === 'Fax' && faxDetails.length > 0"
+							label="Select Fax" label-cols-lg="4">
+							<b-form-select v-model="selectedFax" :options="faxDetails" value-field="fax"
+								text-field="displayText"></b-form-select>
+						</b-form-group>
+
+						<!-- Dropdown for Email -->
+						<b-form-group v-if="selectedDeliveryMethod === 'Email' && emailDetails.length > 0"
+							label="Select Email" label-cols-lg="4">
+							<b-form-select v-model="selectedEmail" :options="emailDetails" value-field="email"
+								text-field="displayText"></b-form-select>
+						</b-form-group>
+
+						<!-- Description -->
+						<b-form-group
+							v-if="(selectedDeliveryMethod === 'Email' || selectedDeliveryMethod === 'Fax') && selectedContactDescription !== ''"
+							label="Description" label-cols-lg="4">
+							<b-form-input :value="selectedContactDescription" disabled></b-form-input>
+						</b-form-group>
+					</div>
+
+					<!-- <b-form-group
+						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Email' && isEmailIdsEmpty">
+						<b-alert show variant="warning">
+							No email IDs are available for the facility. Please provide valid email IDs.
+						</b-alert>
+					</b-form-group>
+
+					<b-form-group
+						v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Fax' && isFaxIdsEmpty">
+						<b-alert show variant="warning">
+							No fax IDs are available for the facility. Please provide valid fax IDs.
+						</b-alert>
+					</b-form-group> -->
+
+					<!-- Selected Submit To is Agency -->
+					<div v-if="selectedSubmitTo === 'agency'">
+						<b-form-group label="Select Agency">
+							<b-form-select v-model="selectedAgencyId" :options="getFilteredAgencyOptions"
+								value-field="id" text-field="name" @change="handleAgencySelection" filter>
+							</b-form-select>
+						</b-form-group>
+
+						<b-form-group label="Delivery Method" label-cols-lg="4">
+							<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
+								:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
+								<option value="Fax">Fax</option>
+								<option value="Email">Email</option>
+								<option value="Manual">Mail</option>
+							</b-form-select>
+						</b-form-group>
+
+
+						<b-form-group v-if="selectedDeliveryMethod === 'Email'" label="Select Email" label-cols-lg="4">
+							<div style="display: flex; align-items: center;">
+								<b-form-select v-model="selectedEmail" :options="getEmailOptions()" value-field="email"
+									text-field="displayText" @change="updateSelectedContactDescription"></b-form-select>
+								<b-button variant="primary" @click="openEmailModal"
+									style="margin-left: 10px;">+</b-button>
+							</div>
+						</b-form-group>
+
+						<b-form-group v-if="selectedDeliveryMethod === 'Fax'" label="Select Fax" label-cols-lg="4">
+							<div style="display: flex; align-items: center;">
+								<div class="flex-grow-1 mr-2">
+									<b-form-select v-model="selectedFax" :options="getFaxOptions()" value-field="fax"
+										text-field="displayText"
+										@change="updateSelectedContactDescription"></b-form-select>
 								</div>
+								<b-button variant="primary" @click="openFaxModal">+</b-button>
+							</div>
+						</b-form-group>
 
-								<b-form-group
-									v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Email' && isEmailIdsEmpty">
-									<b-alert show variant="warning">
-										No email IDs are available for the facility. Please provide valid email IDs.
-									</b-alert>
-								</b-form-group>
+						<!-- Seperate Description -->
+						<b-form-group
+							v-if="(selectedDeliveryMethod === 'Email' || selectedDeliveryMethod === 'Fax') && selectedContactDescription !== ''"
+							label="Description" label-cols-lg="4">
+							<b-form-input :value="selectedContactDescription" disabled></b-form-input>
+						</b-form-group>
 
-								<b-form-group
-									v-if="selectedSubmitTo === 'facility' && selectedDeliveryMethod === 'Fax' && isFaxIdsEmpty">
-									<b-alert show variant="warning">
-										No fax IDs are available for the facility. Please provide valid fax IDs.
-									</b-alert>
-								</b-form-group>
+					</div>
+					<!-- Email Modal for saving Agency email -->
+					<b-modal v-model="isEmailModalOpen" title="Add Email" @ok="addNewEmail">
+						<b-form-group label="Email">
+							<b-form-input v-model="newEmail" type="email" required></b-form-input>
+						</b-form-group>
+						<b-form-group label="Description">
+							<b-form-input v-model="newEmailDescription"></b-form-input>
+						</b-form-group>
+					</b-modal>
 
-								<!-- Selected Submit To is Agency -->
-								<div v-if="selectedSubmitTo === 'agency'">
-									<b-form-group label="Select Agency">
-										<b-form-select v-model="selectedAgencyId" :options="getFilteredAgencyOptions"
-											value-field="id" text-field="name" @change="handleAgencySelection" filter>
-										</b-form-select>
-									</b-form-group>
+					<!-- Fax Modal for saving Agency Fax -->
+					<b-modal v-model="isFaxModalOpen" title="Add Fax" @ok="addNewFax">
+						<b-form-group label="Fax">
+							<b-form-input v-model="newFax" type="tel" v-mask="'(###) ###-####'" required></b-form-input>
+						</b-form-group>
+						<b-form-group label="Description">
+							<b-form-input v-model="newFaxDescription"></b-form-input>
+						</b-form-group>
+					</b-modal>
 
-									<b-form-group label="Delivery Method" label-cols-lg="4">
-										<b-form-select label="deliveryMethod" v-model="selectedDeliveryMethod" class="mt-2"
-											:disabled="isAgencyNotSelected" @change="handleDeliveryMethodChange">
-											<option value="Fax">Fax</option>
-											<option value="Email">Email</option>
-											<option value="Manual">Mail</option>
-										</b-form-select>
-									</b-form-group>
+					<!-- Selected Delivery Method as Manual -->
 
-
-									<b-form-group v-if="selectedDeliveryMethod === 'Email'" label="Select Email"
-										label-cols-lg="4">
-										<div style="display: flex; align-items: center;">
-											<b-form-select v-model="selectedEmail" :options="getEmailOptions()"
-												value-field="email" text-field="displayText"
-												@change="updateSelectedContactDescription"></b-form-select>
-											<b-button variant="primary" @click="openEmailModal"
-												style="margin-left: 10px;">+</b-button>
-										</div>
-									</b-form-group>
-
-									<b-form-group v-if="selectedDeliveryMethod === 'Fax'" label="Select Fax"
-										label-cols-lg="4">
-										<div style="display: flex; align-items: center;">
-											<div class="flex-grow-1 mr-2">
-												<b-form-select v-model="selectedFax" :options="getFaxOptions()"
-													value-field="fax" text-field="displayText"
-													@change="updateSelectedContactDescription"></b-form-select>
-											</div>
-											<b-button variant="primary" @click="openFaxModal">+</b-button>
-										</div>
-									</b-form-group>
-
-									<!-- Seperate Description -->
-									<b-form-group
-										v-if="(selectedDeliveryMethod === 'Email' || selectedDeliveryMethod === 'Fax') && selectedContactDescription !== ''"
-										label="Description" label-cols-lg="4">
-										<b-form-input :value="selectedContactDescription" disabled></b-form-input>
-									</b-form-group>
-
+					<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
+						<!-- Render fields for User -->
+						<div class="row">
+							<!-- Carrier dropdown -->
+							<div class="col-md-6 form-group">
+								<label for="carrier">Carrier:</label>
+								<div class="input-group">
+									<select class="form-control" v-model="carrier">
+										<option value="FedEx">FedEx</option>
+										<option value="UPS">UPS</option>
+										<option value="USPS">USPS</option>
+									</select>
 								</div>
-								<!-- Email Modal for saving Agency email -->
-								<b-modal v-model="isEmailModalOpen" title="Add Email" @ok="addNewEmail">
-									<b-form-group label="Email">
-										<b-form-input v-model="newEmail" type="email" required></b-form-input>
-									</b-form-group>
-									<b-form-group label="Description">
-										<b-form-input v-model="newEmailDescription"></b-form-input>
-									</b-form-group>
-								</b-modal>
+							</div>
 
-								<!-- Fax Modal for saving Agency Fax -->
-								<b-modal v-model="isFaxModalOpen" title="Add Fax" @ok="addNewFax">
-									<b-form-group label="Fax">
-										<b-form-input v-model="newFax" type="tel" v-mask="'(###) ###-####'"
-											required></b-form-input>
-									</b-form-group>
-									<b-form-group label="Description">
-										<b-form-input v-model="newFaxDescription"></b-form-input>
-									</b-form-group>
-								</b-modal>
+							<!-- Tracking# input -->
+							<div class="col-md-6 form-group">
+								<label for="trackingNumber">Tracking#:</label>
+								<input type="text" class="form-control" v-model="trackingNumber" />
+							</div>
+						</div>
 
-								<!-- Selected Delivery Method as Manual -->
+						<!-- Add more fields as needed -->
 
-								<div v-if="selectedDeliveryMethod === 'Manual'" class="manual-delivery-fields">
-									<!-- Render fields for User -->
-									<div class="row">
-										<!-- Carrier dropdown -->
-										<div class="col-md-6 form-group">
-											<label for="carrier">Carrier:</label>
-											<div class="input-group">
-												<select class="form-control" v-model="carrier">
-													<option value="FedEx">FedEx</option>
-													<option value="UPS">UPS</option>
-													<option value="USPS">USPS</option>
-												</select>
-											</div>
-										</div>
-
-										<!-- Tracking# input -->
-										<div class="col-md-6 form-group">
-											<label for="trackingNumber">Tracking#:</label>
-											<input type="text" class="form-control" v-model="trackingNumber" />
-										</div>
-									</div>
-
-									<!-- Add more fields as needed -->
-
-									<div class="form-group">
-										<label for="notes">Notes:</label>
-										<textarea class="form-control" v-model="notes"></textarea>
-									</div>
-								</div>
+						<div class="form-group">
+							<label for="notes">Notes:</label>
+							<textarea class="form-control" v-model="notes"></textarea>
+						</div>
+					</div>
 
 
-								<b-row>
-									<b-col cols="12">
+					<b-row>
+						<b-col cols="12">
 
-										<b-form-input
-											v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd"
-											v-model="searchText" :placeholder="selectedOptionText" class="mt-2"
-											@input="handleInputChange"></b-form-input>
-										<p v-for="(result, index) in matchFound" :key="index" @click="selectResult(result)">
-											<span class="result-span">{{ result }}</span>
-										</p>
+							<b-form-input
+								v-if="selectedOptionMethod && !selectedOptionMethodMail && !selectedOptionMethodFtp && !selectedOptionMethodEsmd"
+								v-model="searchText" :placeholder="selectedOptionText" class="mt-2"
+								@input="handleInputChange"></b-form-input>
+							<p v-for="(result, index) in matchFound" :key="index" @click="selectResult(result)">
+								<span class="result-span">{{ result }}</span>
+							</p>
 
-										<!-- for displaying the mail opetions when mail is selected as delivery method -->
-										<!-- <b-form-group label="Services" v-if="selectedOptionMethodMail">
+							<!-- for displaying the mail opetions when mail is selected as delivery method -->
+							<!-- <b-form-group label="Services" v-if="selectedOptionMethodMail">
 								<b-form-radio-group v-model="mailServices">
 									<b-form-radio value="UPS">UPS</b-form-radio>
 									<b-form-radio value="FedEX">FedEX</b-form-radio>
@@ -498,7 +548,7 @@
 								<b-form-input type="date" v-model="mailExpectedDeliveryDate" class="mt-2"></b-form-input>
 							</b-form-group> -->
 
-										<!-- <b-form-group v-if="selectedOptionMethodMail">
+							<!-- <b-form-group v-if="selectedOptionMethodMail">
 								<b-form-checkbox v-model="packageSentViaSnailMail">Package Sent via Snail
 									Mail</b-form-checkbox>
 							</b-form-group>
@@ -507,9 +557,9 @@
 								<b-form-input type="text" v-model="mailNotes" class="mt-2"></b-form-input>
 							</b-form-group> -->
 
-										<!-- For rendering FTP Input -->
+							<!-- For rendering FTP Input -->
 
-										<!-- <b-form-group label="FTP Portal URL" v-if="selectedOptionMethodFtp">
+							<!-- <b-form-group label="FTP Portal URL" v-if="selectedOptionMethodFtp">
 								<b-form-input type="text" v-model="config.portalUrlFtp" class="mt-2"></b-form-input>
 							</b-form-group>
 							<b-form-group label="Username" v-if="selectedOptionMethodFtp">
@@ -520,8 +570,8 @@
 							</b-form-group> -->
 
 
-										<!-- For rendering ESMD Input -->
-										<!-- <b-form-group label="Select Agency" v-if="selectedOptionMethodEsmd">
+							<!-- For rendering ESMD Input -->
+							<!-- <b-form-group label="Select Agency" v-if="selectedOptionMethodEsmd">
 								<b-form-select v-model="selectedAgency" :options="agencyList" value-field="id"
 									text-field="name"></b-form-select>
 							</b-form-group>
@@ -535,7 +585,7 @@
 								<b-form-input type="text" v-model="passwordEsmd" class="mt-2"></b-form-input>
 							</b-form-group> -->
 
-										<!-- <b-dropdown v-if="matchFound.length > 0" no-caret>
+							<!-- <b-dropdown v-if="matchFound.length > 0" no-caret>
 								
 								<b-dropdown-item
 									v-for="(result, index) in matchFound"
@@ -546,7 +596,7 @@
 								</b-dropdown-item>
 							</b-dropdown> -->
 
-										<!-- <b-dropdown v-b-toggle.myDropdown no-caret>
+							<!-- <b-dropdown v-b-toggle.myDropdown no-caret>
 								<b-dropdown-item
 									v-for="(result, index) in matchFound"
 									:key="index"
@@ -555,19 +605,19 @@
 									{{ result }}
 								</b-dropdown-item>
 							</b-dropdown> -->
-									</b-col>
-									<!-- Add Search Button -->
-									<!-- <b-col cols="2" class="text-right mt-2">
+						</b-col>
+						<!-- Add Search Button -->
+						<!-- <b-col cols="2" class="text-right mt-2">
 							<b-button variant="primary">
 								Search
 							</b-button>
 						</b-col> -->
-									<!-- <b-col cols="10">
+						<!-- <b-col cols="10">
 							<ul>
 								<li v-for="option,i in matchFound" :key="i">{{ option }}</li>
 							</ul>
 						</b-col> -->
-									<!-- <div class="d-flex justify-content-between align-items-center">
+						<!-- <div class="d-flex justify-content-between align-items-center">
 							<div>
 								<span v-for="option,i in matchFound" :key="i" class="mb-0">
 									
@@ -578,14 +628,14 @@
 								
 							</div> -->
 
-									<!-- <div v-if="data.age != null && data.age != undefined">
+						<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-									<!-- </div> -->
-								</b-row>
-								<b-row>
-									<!-- <div class="d-flex justify-content-between align-items-center">
+						<!-- </div> -->
+					</b-row>
+					<b-row>
+						<!-- <div class="d-flex justify-content-between align-items-center">
 							<div>
 								<span v-for="option,i in matchFound" :key="i" class="mb-0">
 									
@@ -596,12 +646,12 @@
 								
 							</div> -->
 
-									<!-- <div v-if="data.age != null && data.age != undefined">
+						<!-- <div v-if="data.age != null && data.age != undefined">
 								<font-awesome-icon icon="birthday-cake" fixed-width class="text-muted" />
 								<span class="font-weight-bold">{{ data.age }}</span>
 							</div> -->
-									<!-- </div> -->
-									<!-- <b-col cols="12" >
+						<!-- </div> -->
+						<!-- <b-col cols="12" >
 							<div  class="suggestions">
 								
 									<div v-for="option,i in matchFound" :key="i" class="d-flex justify-content-between align-items-center suggestion-item">
@@ -614,22 +664,22 @@
 								
 							</div>
 						</b-col> -->
-								</b-row>
-								<!-- <b-row>
+					</b-row>
+					<!-- <b-row>
 								<b-col cols="6">
 									<b-dropdown  variant="btn btn-secondary"  class="dropdown-container">
 										<template #button-content>
 											<span>Delivery Method</span> -->
-								<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
+					<!-- <span v-if="selectedOptionL1 && appeal.appeal_level.order_number==1">: {{ selectedOptionL1 }}</span>
 											<span v-if="selectedOptionL2 && appeal.appeal_level.order_number==2">: {{ selectedOptionL2 }}</span>
 											<span v-if="selectedOptionL3 && appeal.appeal_level.order_number==3">: {{ selectedOptionL3 }}</span>
 											<span v-if="selectedOptionL4 && appeal.appeal_level.order_number==4">: {{ selectedOptionL4 }}</span>
 											<span v-if="selectedOptionL5 && appeal.appeal_level.order_number==5">: {{ selectedOptionL5 }}</span>
 											<span v-if="selectedOptionL6 && appeal.appeal_level.order_number==6">: {{ selectedOptionL6 }}</span>-->
-								<!-- <span >: {{ selectedOption}}</span> 
+					<!-- <span >: {{ selectedOption}}</span> 
 										</template> -->
-								<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
-								<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
+					<!-- <b-dropdown-item @click="updateStatus('Issues')" >Issues</b-dropdown-item> -->
+					<!-- <b-dropdown-item @click="updateStatus('Email')">Email</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Fax')">Fax</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Website')">Website</b-dropdown-item>
 										<b-dropdown-item @click="updateStatus('Contact Number')">Contact Number</b-dropdown-item>
@@ -645,8 +695,8 @@
 									/>
 								</b-col> -->
 
-								<!-- Display filtered results based on the search query -->
-								<!-- <b-col cols="12">
+					<!-- Display filtered results based on the search query -->
+					<!-- <b-col cols="12">
 									<ul>
 										<li v-for="option in filteredOptions" :key="option">{{ option }}</li>
 									</ul>
@@ -826,13 +876,13 @@ export default {
 			if (!this.agencyList || this.agencyList.length === 0) {
 				return [];
 			}
-			
+
 			const regex = new RegExp(this.searchQuery.trim(), 'i');
 			return this.agencyList.filter(agency => regex.test(agency.name));
 		},
-		isFacilitySelected() {
-			return this.selectedSubmitTo === 'facility' && this.facility_id === null;
-		},
+		// isFacilitySelected() {
+		// 	return this.selectedSubmitTo === 'facility' && this.facility_id === null;
+		// },
 		isEmailIdsEmpty() {
 			return this.emailIds.length === 0;
 		},
@@ -952,7 +1002,6 @@ export default {
 			portalUrlEsmd: null,
 			usernameEsmd: null,
 			passwordEsmd: null,
-			agencyList: [],
 			selectedAgency: null,
 			matchingContacts: null,
 			emailData: null,
@@ -1002,7 +1051,10 @@ export default {
 			selectedContactDescription: '',
 			selectedEmail: null,
 			selectedFax: null,
-
+			facilitySearchText: '',
+			searchResults: [],
+			selectedFacility: null,
+			facilitySelected: false,
 		};
 
 	},
@@ -1022,6 +1074,44 @@ export default {
 
 	},
 	methods: {
+		async searchFacilities() {
+			try {
+				const response = await axios.get('/client/searchfacility', {
+					params: {
+						search: this.facilitySearchText
+					}
+				});
+				this.searchResults = response.data;
+			} catch (error) {
+				console.error('Error searching facilities:', error);
+			}
+		},
+		// selectFacility(facility) {
+		// 	this.facilitySearchText = facility.name;
+		// 	this.facilitySelected = true;
+		// 	console.log("latest implementation", facility.id);
+		// },
+
+		async selectFacilityAndFetchDetails(facility) {
+			try {
+				this.facilitySearchText = '';
+				this.searchResults = [];
+				this.facilitySearchText = facility.name;
+				console.log("Selected Facility ID:", facility.id);
+				this.facilityName = facility.name;
+
+				// Call FacilityReceivingList method with the selected facility's ID
+				const { emailDetails, faxDetails } = await this.FacilityReceivingList(facility.id);
+
+				// Update component data with received email and fax details
+				this.emailDetails = emailDetails;
+				this.faxDetails = faxDetails;
+			} catch (error) {
+				console.error('Error retrieving facility receiving details:', error);
+				// Handle error appropriately
+			}
+		},
+
 		updateSelectedContactDescription() {
 			console.log("inside");
 			if (this.selectedDeliveryMethod === 'Email') {
@@ -1260,7 +1350,132 @@ export default {
 				console.error("Error fetching client facilities:", error);
 			}
 		},
-		async FacilityReceivingList() {
+		// async FacilityReceivingList() {
+		// 	try {
+		// 		const url = "/client/facilityreceivinglist";
+
+		// 		// Fetch data from the server
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+
+		// 		console.log("RESPONSE facility receiving = ", response.data);
+
+		// 		// Check if this.facility_id is present in the response data
+		// 		const facilityReceivingData = response.data.find(item => item.facility_id === this.facility_id);
+
+		// 		if (facilityReceivingData) {
+		// 			// Extract email and fax IDs associated with the facility_id
+		// 			this.emailIds = response.data
+		// 				.filter(item => item.facility_id === this.facility_id)
+		// 				.map(item => item.receiving_email_id);
+
+		// 			this.faxIds = response.data
+		// 				.filter(item => item.facility_id === this.facility_id)
+		// 				.map(item => item.receiving_fax_id);
+
+		// 			// Now emailIds and faxIds contain the IDs associated with the facility_id
+		// 			console.log("Email IDs:", this.emailIds);
+		// 			console.log("Fax IDs:", this.faxIds);
+
+		// 			// Get fax numbers for the IDs inside faxIds array
+		// 			this.receivingFaxDetails = this.faxList
+		// 				.filter(item => this.faxIds.includes(item.id))
+		// 				.map(item => ({ fax: item.fax, description: item.description }));
+
+		// 			// Get email addresses for the IDs inside emailIds array
+		// 			this.receivingEmailDetails = this.emailList
+		// 				.filter(item => this.emailIds.includes(item.id))
+		// 				.map(item => ({ email: item.email, description: item.description }));
+
+		// 			// Extract facility name based on facility_id
+		// 			let facility = this.facilityList.find(item => item.id === this.facility_id);
+
+		// 			// Store facility name in this.facilityName
+		// 			this.facilityName = facility ? facility.name : 'Unknown Facility';
+
+		// 			this.receivingFaxDetails = this.faxList
+		// 				.filter(item => this.faxIds.includes(item.id))
+		// 				.map(item => ({
+		// 					fax: item.fax,
+		// 					description: item.description,
+		// 					displayText: `${item.fax} (${item.description})` // Format for display in dropdown
+		// 				}));
+
+		// 			this.receivingEmailDetails = this.emailList
+		// 				.filter(item => this.emailIds.includes(item.id))
+		// 				.map(item => ({
+		// 					email: item.email,
+		// 					description: item.description,
+		// 					displayText: `${item.email} (${item.description})` // Format for display in dropdown
+		// 				}));
+
+		// 			// Log the details for verification
+		// 			console.log("Receiving Email Details:", this.receivingEmailDetails);
+		// 			console.log("Receiving Fax Details:", this.receivingFaxDetails);
+		// 			console.log("Facility Selected:", this.facilityName);
+		// 		} else {
+		// 			console.log("No data found for the provided facility_id");
+		// 		}
+		// 	} catch (error) {
+		// 		console.error("Error fetching facility receiving data:", error);
+		// 	}
+		// },
+
+
+		// 		async FacilityReceivingList() {
+		//     try {
+		//         const url = "/client/facilityreceivinglist";
+
+		//         // Fetch data from the server
+		//         const response = await axios.get(url, {
+		//             headers: {
+		//                 "Accept": "application/json",
+		//             },
+		//         });
+
+		//         console.log("RESPONSE facility receiving = ", response.data);
+
+		//         // Filter out objects with matching facility_id
+		//         const facilityReceivingData = response.data.filter(item => item.facility_id === selectedFacilityId);
+
+		//         if (facilityReceivingData.length > 0) {
+		//             // Extract email and fax details
+		//             const emailDetails = facilityReceivingData
+		//                 .filter(item => item.receiving_email_id)
+		//                 .map(item => ({
+		//                     email: item.receiving_email_id,
+		//                     description: item.email_desc,
+		//                     displayText: `${item.receiving_email_id} (${item.email_desc})`
+		//                 }));
+
+		//             const faxDetails = facilityReceivingData
+		//                 .filter(item => item.receiving_fax_id)
+		//                 .map(item => ({
+		//                     fax: item.receiving_fax_id,
+		//                     description: item.fax_desc,
+		//                     displayText: `${item.receiving_fax_id} (${item.fax_desc})`
+		//                 }));
+
+		//             // Log the details for verification
+		//             console.log("Email Details:", emailDetails);
+		//             console.log("Fax Details:", faxDetails);
+
+		//             // Return email and fax details
+		//             return { emailDetails, faxDetails };
+		//         } else {
+		//             console.log("No data found for the provided facility_id");
+		//             return { emailDetails: [], faxDetails: [] }; // Return empty arrays if no data found
+		//         }
+		//     } catch (error) {
+		//         console.error("Error fetching facility receiving data:", error);
+		//         // Handle error appropriately
+		//         throw error;
+		//     }
+		// },
+		async FacilityReceivingList(selectedFacilityId) {
 			try {
 				const url = "/client/facilityreceivinglist";
 
@@ -1273,83 +1488,81 @@ export default {
 
 				console.log("RESPONSE facility receiving = ", response.data);
 
-				// Check if this.facility_id is present in the response data
-				const facilityReceivingData = response.data.find(item => item.facility_id === this.facility_id);
+				// Filter out objects with matching facility_id
+				const facilityReceivingData = response.data.filter(item => item.facility_id === selectedFacilityId);
 
-				if (facilityReceivingData) {
-					// Extract email and fax IDs associated with the facility_id
-					this.emailIds = response.data
-						.filter(item => item.facility_id === this.facility_id)
-						.map(item => item.receiving_email_id);
-
-					this.faxIds = response.data
-						.filter(item => item.facility_id === this.facility_id)
-						.map(item => item.receiving_fax_id);
-
-					// Now emailIds and faxIds contain the IDs associated with the facility_id
-					console.log("Email IDs:", this.emailIds);
-					console.log("Fax IDs:", this.faxIds);
-
-					// Get fax numbers for the IDs inside faxIds array
-					this.receivingFaxDetails = this.faxList
-						.filter(item => this.faxIds.includes(item.id))
-						.map(item => ({ fax: item.fax, description: item.description }));
-
-					// Get email addresses for the IDs inside emailIds array
-					this.receivingEmailDetails = this.emailList
-						.filter(item => this.emailIds.includes(item.id))
-						.map(item => ({ email: item.email, description: item.description }));
-
-					// Extract facility name based on facility_id
-					let facility = this.facilityList.find(item => item.id === this.facility_id);
-
-					// Store facility name in this.facilityName
-					this.facilityName = facility ? facility.name : 'Unknown Facility';
-
-					this.receivingFaxDetails = this.faxList
-						.filter(item => this.faxIds.includes(item.id))
+				if (facilityReceivingData.length > 0) {
+					// Extract email and fax details
+					const emailDetails = facilityReceivingData
+						.filter(item => item.receiving_email_id)
 						.map(item => ({
-							fax: item.fax,
-							description: item.description,
-							displayText: `${item.fax} (${item.description})` // Format for display in dropdown
+							email: item.receiving_email_id,
+							description: item.email_desc,
+							displayText: `${item.receiving_email_id} (${item.email_desc})`
 						}));
 
-					this.receivingEmailDetails = this.emailList
-						.filter(item => this.emailIds.includes(item.id))
+					const faxDetails = facilityReceivingData
+						.filter(item => item.receiving_fax_id)
 						.map(item => ({
-							email: item.email,
-							description: item.description,
-							displayText: `${item.email} (${item.description})` // Format for display in dropdown
+							fax: item.receiving_fax_id,
+							description: item.fax_desc,
+							displayText: `${item.receiving_fax_id} (${item.fax_desc})`
 						}));
 
 					// Log the details for verification
-					console.log("Receiving Email Details:", this.receivingEmailDetails);
-					console.log("Receiving Fax Details:", this.receivingFaxDetails);
-					console.log("Facility Selected:", this.facilityName);
+					console.log("Email Details:", emailDetails);
+					console.log("Fax Details:", faxDetails);
+
+					// Return email and fax details
+					return { emailDetails, faxDetails };
 				} else {
 					console.log("No data found for the provided facility_id");
+					return { emailDetails: [], faxDetails: [] }; // Return empty arrays if no data found
 				}
 			} catch (error) {
 				console.error("Error fetching facility receiving data:", error);
+				// Handle error appropriately
+				throw error;
 			}
 		},
 
+		// async AgencyList() {
+		// 	try {
+		// 		const url = "/client/agencyList";
+
+		// 		// Fetch data from the server
+		// 		const response = await axios.get(url, {
+		// 			headers: {
+		// 				"Accept": "application/json",
+		// 			},
+		// 		});
+		// 		this.agencyList = response.data;
+		// 		console.log("RESPONSE agencies = ", response.data);
+		// 	} catch (error) {
+		// 		console.error("Error fetching client facilities:", error);
+		// 	}
+		// },
 		async AgencyList() {
-			try {
-				const url = "/client/agencyList";
+    try {
+        const url = "/client/agencyList";
 
-				// Fetch data from the server
-				const response = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				this.agencyList = response.data;
-				console.log("RESPONSE agencies = ", response.data);
-			} catch (error) {
-				console.error("Error fetching client facilities:", error);
-			}
-		},
+        // Fetch data from the server
+        const response = await axios.get(url, {
+            headers: {
+                "Accept": "application/json",
+            },
+        });
+
+        // Remove reactivity by deep cloning each object
+        this.agencyList = response.data.map(agency => JSON.parse(JSON.stringify(agency)));
+
+        console.log("RESPONSE agencies = ", this.agencyList);
+    } catch (error) {
+        console.error("Error fetching client facilities:", error);
+    }
+},
+
+
 		async AppealList() {
 			try {
 				const url = "/client/appealList";
@@ -1366,13 +1579,13 @@ export default {
 				console.log("selected agency id", this.selectedAgencyId);
 
 				// const selectedAgencyId = this.selectedAgencyId || this.agencyList[0].id; // Use the selected agency or the first agency as default
-				
+
 				// Find the appeal with matching id
 				let selectedAppeal = response.data.find(appeal => appeal.id === insid);
 				console.log("checking selected Appeal", selectedAppeal);
 
 				const selectedAgencyId = selectedAppeal.agency_id;
-       			 console.log("in appeal agency selected", selectedAgencyId);
+				console.log("in appeal agency selected", selectedAgencyId);
 
 				if (selectedAppeal) {
 					// Convert reactive data to plain JavaScript object
@@ -1452,7 +1665,7 @@ export default {
 			// Handle any logic when the "Submit To" dropdown changes
 			// For example, you might want to reset some fields based on the selected option
 			if (this.selectedSubmitTo === 'user') {
-				this.selectedDeliveryMethod = ''; // Reset the selected delivery method
+				this.selectedDeliveryMethod = 'Email'; // Reset the selected delivery method
 				// Reset other fields as needed
 			} else {
 				// Handle other cases if needed
@@ -1697,27 +1910,27 @@ export default {
 				console.log("RESPONSE = ", response);
 
 				// for fetching agency details from agency table
-				url = "/client/agencyList";
-				const responseAgency = await axios.get(url, {
-					headers: {
-						"Accept": "application/json",
-					},
-				});
-				//for storing agency list for rendering
-				responseAgency.data.forEach((item, index) => {
-					this.agencyList.push({ id: item.id, name: item.name })
-				});
-				console.log("RESPONSE Agency = ", this.agencyList);
-				try {
-					response.data.forEach((item, index) => {
-						if (item.email != null) {
-							this.email.push(item.email);
-						}
-					})
-				}
-				catch (error) {
+				// url = "/client/agencyList";
+				// const responseAgency = await axios.get(url, {
+				// 	headers: {
+				// 		"Accept": "application/json",
+				// 	},
+				// });
+				// //for storing agency list for rendering
+				// responseAgency.data.forEach((item, index) => {
+				// 	this.agencyList.push({ id: item.id, name: item.name })
+				// });
+				// console.log("RESPONSE Agency = ", this.agencyList);
+				// try {
+				// 	response.data.forEach((item, index) => {
+				// 		if (item.email != null) {
+				// 			this.email.push(item.email);
+				// 		}
+				// 	})
+				// }
+				// catch (error) {
 
-				}
+				// }
 			}
 			catch (error) {
 				console.log(error);
@@ -1763,6 +1976,23 @@ export default {
 				if (this.selectedSubmitTo === 'agency' && this.selectedAgencyFax) {
 					// Assuming you have a field to store the fax value, update accordingly
 					this.faxData = this.selectedAgencyFax;
+				}
+			}
+			// Check if the selected delivery method is Email
+			if (this.selectedDeliveryMethod === 'Email') {
+				// Update the form fields with the facility's email
+				if (this.selectedSubmitTo === 'facility' && this.selectedEmail) {
+					// Assuming you have a field to store the email value, update accordingly
+					this.emailData = this.selectedEmail;
+				}
+			}
+
+			// Check if the selected delivery method is Fax
+			if (this.selectedDeliveryMethod === 'Fax') {
+				// Update the form fields with the facility's fax
+				if (this.selectedSubmitTo === 'facility' && this.selectedFax) {
+					// Assuming you have a field to store the fax value, update accordingly
+					this.faxData = this.selectedFax;
 				}
 			}
 
