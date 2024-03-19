@@ -2,6 +2,9 @@ import api from "@/api";
 const url = "/agencies";
 
 export async function getIndex(params) {
+	console.log('on sevices/agency.js , inside getIndex method:-');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.get(url, { params });
 	return response.data; // { data: [], pagination: [] }
 }
