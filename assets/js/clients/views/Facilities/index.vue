@@ -65,6 +65,7 @@
 				<simple-pagination v-bind="{ loading, nextPage, prevPage, hasPrevPage, hasNextPage }" />
 			</b-col>
 		</b-row>
+		<!-- facility filters -->
 		<b-row>
 			<b-col cols="12">
 				<b-collapse v-model="filtering" class="py-2">
@@ -76,7 +77,6 @@
 				</b-collapse>
 			</b-col>
 		</b-row>
-
 		<b-row class="my-4">
 			<b-col cols="12" class="mb-4">
 				<loading-indicator v-if="loading && empty" size="4x" class="my-5" />
@@ -194,6 +194,7 @@ const defaultFilters = {
 	state: null,
 	client_owned: null,
 	has_contract: null,
+	is_encore: null,
 };
 
 const filters = reactive({ ...defaultFilters });
@@ -203,4 +204,40 @@ const filtering = ref(false);
 const search = ref("");
 const perPage = ref(15);
 const action = getIndex;
+
+console.log('actions*****:-', JSON.stringify(action));
+
+
+
+// // new code for get filtered results
+// // Function to handle filter change
+// const handleFilterChange = async () => {
+//   // Call getIndex function to fetch data
+//   fetchData();
+// };
+
+// // Function to fetch data
+// const fetchData = async () => {
+//   try {
+//     // Call getIndex function with current filter options
+//     const data = await getIndex({
+//       filters: filters.value,
+//       search: search.value,
+//       perPage: perPage.value,
+//     });
+//     // Update results with the fetched data
+//     results.value = data;
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//   }
+// };
+
+// // Reactive variable to hold data
+// const results = ref([]);
+
+// // Watch for changes in filters and call fetchData accordingly
+// watch(filters, fetchData, { deep: true });
+
+// // Call fetchData function when component is mounted
+// fetchData();
 </script>

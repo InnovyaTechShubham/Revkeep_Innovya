@@ -5,10 +5,12 @@
 				<b-form-select
 					name="active"
 					v-model="filters.facility_status"
+					@change="handleFilterChange"
 					:disabled="disabled"
 					:options="activeOptions"
 					value-field="value"
 					text-field="name"
+					:class="{ 'selection_background': filters.facility_status !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -25,6 +27,7 @@
 					:options="facilityTypes"
 					value-field="id"
 					text-field="name"
+					:class="{ 'selection_background': filters.facility_type_id !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -41,6 +44,7 @@
 					:options="states"
 					value-field="abbreviation"
 					text-field="name"
+					:class="{ 'selection_background': filters.state !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -57,6 +61,7 @@
 					:options="ownedOptions"
 					value-field="value"
 					text-field="name"
+					:class="{ 'selection_background': filters.client_owned !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -73,6 +78,26 @@
 					:options="hasContractOptions"
 					value-field="value"
 					text-field="name"
+					:class="{ 'selection_background': filters.has_contract !== null }"
+				>
+					<template #first>
+						<option :value="null">(All)</option>
+					</template>
+				</b-form-select>
+				<!-- Show tick mark if selected value is not null -->
+				<!-- <span v-if="filters.has_contract !== null">✔️</span> -->
+			</b-form-group>
+		</b-col>
+		<b-col cols="12" sm="6" lg="6" xl="4">
+			<b-form-group label="Is Encore" label-for="is_encore" label-cols-lg="4">
+				<b-form-select
+					name="Is Encore"
+					v-model="filters.is_encore"
+					:disabled="disabled"
+					:options="isEncoreOptions"
+					value-field="value"
+					text-field="name"
+					:class="{ 'selection_background': filters.is_encore !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -133,9 +158,10 @@ export default {
 								},
 								});
 								
-							console.log("facility type listed :", response);
+							console.log("on facility Filters/vue page, facility type listed :-");
+							console.log(JSON.stringify(response));
 							response.data.forEach((item)=>{
-								this.facilityTypes.push(item.name);
+								this.facilityTypes.push({'id':item.id, 'name':item.name});
 							});
 							console.log('facility type options =' , this.facilityTypes);
 						}
@@ -149,15 +175,15 @@ export default {
 		return {
 			activeOptions: [
 				{
-					value: 1,
+					value: 'Active',
 					name: "Active",
 				},
 				{
-					value: 0,
+					value: 'Inactive',
 					name: "Inactive",
 				},
 				{
-					value: 0,
+					value: 'Pending Term',
 					name: "Pending Term",
 				},
 			],
@@ -181,6 +207,16 @@ export default {
 					name: "No",
 				},
 			],
+			isEncoreOptions: [
+				{
+					value: 1,
+					name: "Yes",
+				},
+				{
+					value: 0,
+					name: "No",
+				},
+			],
 			facilityTypes:[],
 		};
 	},
@@ -191,3 +227,8 @@ export default {
   },
 };
 </script>
+<style>
+.selection_background {
+    background-color: #d7e1f7; /* Change the color as needed */
+}
+</style>

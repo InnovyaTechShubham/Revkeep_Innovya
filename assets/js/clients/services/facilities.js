@@ -2,21 +2,35 @@ import api from "@/api";
 const url = "/facilities";
 
 export async function getIndex(params) {
+	console.log('on sevices/facility.js , inside getIndex method:-');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.get(url, { params });
+	console.log('response is:-');
+	console.log(JSON.stringify(response.data));
 	return response.data; // { data: [], pagination: [] }
 }
 
 export async function getAll(params) {
+	console.log('on sevices/facility.js , inside getAll method:-');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.get(`${url}/all`, { params });
 	return response.data.data;
 }
 
 export async function getActive(params) {
+	console.log('on sevices/facility.js , inside getActive method:-');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.get(`${url}/active`, { params });
 	return response.data.data;
 }
 
 export async function get(id, params) {
+	console.log('on sevices/facility.js , inside get method:-');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.get(`${url}/${id}`, { params });
 	return response.data.data;
 }
