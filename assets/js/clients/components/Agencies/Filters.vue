@@ -65,13 +65,13 @@ export default {
 		return {
 			activeOptions: [
 				{ text: "(All)", value: null },
-				{ text: "Yes", value: true },
-				{ text: "No", value: false },
+				{ text: "Yes", value: 1 },
+				{ text: "No", value: 0 },
 			],
 			contractorOptions: [
 				{ text: "(All)", value: null },
-				{ text: "Yes", value: true },
-				{ text: "No", value: false },
+				{ text: "Yes", value: 1 },
+				{ text: "No", value: 0 },
 			],
 		};
 	},

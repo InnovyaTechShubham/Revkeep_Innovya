@@ -6,6 +6,8 @@ export async function getIndex(params) {
 	console.log('params are:-');
 	console.log(JSON.stringify(params));
 	const response = await api.get(url, { params });
+	console.log('getIndex response is :-');
+	console.log(JSON.stringify(response.data));
 	return response.data; // { data: [], pagination: [] }
 }
 
