@@ -21,7 +21,7 @@
 				</b-row>
 				<b-row>
 					<b-col cols="12">
-						<case-status-label style="background-color: #8EA7DE; color:white;" :value="caseEntity" />
+						<case-status-label style="background-color: #008FFF; color:white;" :value="caseEntity" />
 						<b-badge style="background-color: #69B0FF;color:white;">{{ lastAppealStatus() }}</b-badge>
 					</b-col>
 				</b-row>
