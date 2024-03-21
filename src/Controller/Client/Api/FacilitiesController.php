@@ -210,105 +210,115 @@ class FacilitiesController extends ApiController
 	 */
 	public function index(): void
 	{
-		// $this->crudIndex();
-
 		// Get query parameters from the request
 		$params = $this->getRequest()->getQueryParams();
 
-		// Check if $params has the key 'facility_status'
-		$query = $this->Facilities
-		->find()
-		->contain([
-			'FacilityTypes', // Include associated FacilityTypes
-			// Add more associations as needed
-		]);
-		// Apply filtering conditions based on query parameters
-		// Check if facility_status parameter is set
-		if (isset($params['facility_status']) && $params['facility_status'] !== null) {
-			// // Execute the query and fetch results
-			// $result1 = $query->where(['Facilities.facility_status' => $params['facility_status']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result1);
-			// Add facility_status condition
-			$query->andWhere(['Facilities.facility_status' => $params['facility_status']]);
-		}
-		if (isset($params['facility_type_id']) && $params['facility_type_id'] !== null) {
-			// // Execute the query and fetch results
-			// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result2);
-			// Add facility_type_id condition
-			$query->andWhere(['Facilities.facility_type_id' => $params['facility_type_id']]);
-		}
-		if (isset($params['state']) && $params['state'] !== null) {
-			// // Execute the query and fetch results
-			// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result2);
-			// Add facility_type_id condition
-			$query->andWhere(['Facilities.state' => $params['state']]);
-		}
-		if (isset($params['client_owned']) && $params['client_owned'] !== null) {
-			// // Execute the query and fetch results
-			// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result2);
-			// Add facility_type_id condition
-			$query->andWhere(['Facilities.client_owned' => $params['client_owned']]);
-		}
-		if (isset($params['has_contract']) && $params['has_contract'] !== null) {
-			// // Execute the query and fetch results
-			// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result2);
-			// Add facility_type_id condition
-			$query->andWhere(['Facilities.has_contract' => $params['has_contract']]);
-		}
-		if (isset($params['is_encore']) && $params['is_encore'] !== null) {
-			// // Execute the query and fetch results
-			// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
-			
-			// // Append results to $data
-			// $data = array_merge($data, $result2);
-			// Add facility_type_id condition
-			$query->andWhere(['Facilities.is_encore' => $params['is_encore']]);
-		}
+		if(count($params) == 2){
+			$this->crudIndex();
+		}else if(count($params) > 2){
+			// Check if $params has the key 'facility_status'
+			$query = $this->Facilities
+			->find()
+			->contain([
+				'FacilityTypes', // Include associated FacilityTypes
+				// Add more associations as needed
+			]);
+			// Apply filtering conditions based on query parameters
+			// Check if facility_status parameter is set
+			if (isset($params['facility_status']) && $params['facility_status'] !== null) {
+				// // Execute the query and fetch results
+				// $result1 = $query->where(['Facilities.facility_status' => $params['facility_status']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result1);
+				// Add facility_status condition
+				$query->andWhere(['Facilities.facility_status' => $params['facility_status']]);
+			}
+			if (isset($params['facility_type_id']) && $params['facility_type_id'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Facilities.facility_type_id' => $params['facility_type_id']]);
+			}
+			if (isset($params['state']) && $params['state'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Facilities.state' => $params['state']]);
+			}
+			if (isset($params['client_owned']) && $params['client_owned'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Facilities.client_owned' => $params['client_owned']]);
+			}
+			if (isset($params['has_contract']) && $params['has_contract'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Facilities.has_contract' => $params['has_contract']]);
+			}
+			if (isset($params['is_encore']) && $params['is_encore'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Facilities.is_encore' => $params['is_encore']]);
+			}
 
-		
-		$data = $query->all();
+			$this->crudIndexFilter($query);
 
-		$this->set([
-			// Results
-			'data' => $data,
-			// Pagination Metadata
-			'pagination' => [
-				"count" => 11,
-				"current" => 11,
-				"perPage" => 15,
-				"page" => 1,
-				"requestedPage" => 1,
-				"pageCount" => 1,
-				"start" => 1,
-				"end" => 11,
-				"prevPage" => false,
-				"nextPage" => false,
-				"sort" => "name",
-				"direction" => "asc",
-				"sortDefault" => "name",
-				"directionDefault" => "asc",
-				"completeSort" => [
-					"Facilities.name" => "asc"
-				],
-				"limit" => null,
-				"scope" => null,
-				"finder" => "search"
-			],
-		]);
+			// $this->set([
+			// 	// Results
+			// 	'data' => $this->paginate($query),
+			// 	// Pagination Metadata
+			// 	'pagination' => $this->getDefaultTablePagination(),
+			// ]);
+			
+			// $data = $query->all();
+
+			// $this->set([
+			// 	// Results
+			// 	'data' => $data,
+			// 	// Pagination Metadata
+			// 	'pagination' => [
+			// 		"count" => 11,
+			// 		"current" => 11,
+			// 		"perPage" => 15,
+			// 		"page" => 1,
+			// 		"requestedPage" => 1,
+			// 		"pageCount" => 1,
+			// 		"start" => 1,
+			// 		"end" => 11,
+			// 		"prevPage" => false,
+			// 		"nextPage" => false,
+			// 		"sort" => "name",
+			// 		"direction" => "asc",
+			// 		"sortDefault" => "name",
+			// 		"directionDefault" => "asc",
+			// 		"completeSort" => [
+			// 			"Facilities.name" => "asc"
+			// 		],
+			// 		"limit" => null,
+			// 		"scope" => null,
+			// 		"finder" => "search"
+			// 	],
+			// ]);
+		}
 	}
 
 	/**

@@ -82,7 +82,83 @@ class AgenciesController extends ApiController
 	 */
 	public function index(): void
 	{
-		$this->crudIndex();
+		// $this->crudIndex();
+		// new test code block starts here
+		// Get query parameters from the request
+		$params = $this->getRequest()->getQueryParams();
+
+		if(count($params) == 2){
+			$this->crudIndex();
+		}else if(count($params) > 2){
+			$query = $this->Agencies
+			->find()
+			->contain([
+				'OutgoingProfile', // Include associated FacilityTypes
+				// Add more associations as needed
+			]);
+			// Apply filtering conditions based on query parameters
+			// Check if facility_status parameter is set
+			if (isset($params['active']) && $params['active'] !== null) {
+				// // Execute the query and fetch results
+				// $result1 = $query->where(['Facilities.facility_status' => $params['facility_status']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result1);
+				// Add facility_status condition
+				$query->andWhere(['Agencies.active' => $params['active']]);
+			}
+			if (isset($params['third_party_contractor']) && $params['third_party_contractor'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Agencies.third_party_contractor' => $params['third_party_contractor']]);
+			}
+			if (isset($params['outgoing_primary_method']) && $params['outgoing_primary_method'] !== null) {
+				// // Execute the query and fetch results
+				// $result2 = $query->where(['Facilities.facility_type_id' => $params['facility_type_id']])->toArray();
+				
+				// // Append results to $data
+				// $data = array_merge($data, $result2);
+				// Add facility_type_id condition
+				$query->andWhere(['Agencies.outgoing_primary_method' => $params['outgoing_primary_method']]);
+			}
+			$this->crudIndexFilter($query);
+		}
+		
+		
+		// $data = $query->all();
+
+		// $this->set([
+		// 	// Results
+		// 	'data' => $data,
+		// 	// Pagination Metadata
+		// 	'pagination' => [
+		// 		"count" => 11,
+		// 		"current" => 11,
+		// 		"perPage" => 15,
+		// 		"page" => 1,
+		// 		"requestedPage" => 1,
+		// 		"pageCount" => 1,
+		// 		"start" => 1,
+		// 		"end" => 11,
+		// 		"prevPage" => false,
+		// 		"nextPage" => false,
+		// 		"sort" => "name",
+		// 		"direction" => "asc",
+		// 		"sortDefault" => "name",
+		// 		"directionDefault" => "asc",
+		// 		"completeSort" => [
+		// 			"Agencies.name" => "asc"
+		// 		],
+		// 		"limit" => null,
+		// 		"scope" => null,
+		// 		"finder" => "search"
+		// 	],
+		// ]);
+		// new test code block ends here
 	}
 
 	/**

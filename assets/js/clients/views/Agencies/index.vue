@@ -143,15 +143,4 @@ const filtering = ref(false);
 const search = ref("");
 const perPage = ref(15);
 const action = getIndex;
-
-
-  
-   
-  
-   
-  
- 
-    
-  
-
 </script>

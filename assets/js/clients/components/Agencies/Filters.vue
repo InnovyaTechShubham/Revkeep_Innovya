@@ -8,6 +8,7 @@
 					:options="activeOptions"
 					value-field="value"
 					text-field="text"
+					:class="{ 'selection_background': filters.active !== null }"
 				/>
 			</b-form-group>
 		</b-col>
@@ -19,6 +20,7 @@
 					:options="contractorOptions"
 					value-field="value"
 					text-field="text"
+					:class="{ 'selection_background': filters.third_party_contractor !== null }"
 				/>
 			</b-form-group>
 		</b-col>
@@ -30,6 +32,7 @@
 					:options="outgoingMethods"
 					value-field="value"
 					text-field="name"
+					:class="{ 'selection_background': filters.outgoing_primary_method !== null }"
 				>
 					<template #first>
 						<option :value="null">(All)</option>
@@ -65,13 +68,13 @@ export default {
 		return {
 			activeOptions: [
 				{ text: "(All)", value: null },
-				{ text: "Yes", value: true },
-				{ text: "No", value: false },
+				{ text: "Yes", value: 1 },
+				{ text: "No", value: 0 },
 			],
 			contractorOptions: [
 				{ text: "(All)", value: null },
-				{ text: "Yes", value: true },
-				{ text: "No", value: false },
+				{ text: "Yes", value: 1 },
+				{ text: "No", value: 0 },
 			],
 		};
 	},
@@ -90,3 +93,8 @@ export default {
 	},
 };
 </script>
+<style>
+.selection_background {
+    background-color: #d7e1f7; /* Change the color as needed */
+}
+</style>
