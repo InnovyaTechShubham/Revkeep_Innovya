@@ -4,7 +4,7 @@
  
   <tbody>
     <tr>
-		<td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+		<td class="col-md-1 center-both align-middle text-muted"   @click="navigateToAppeal">
 			<span v-if="value.request_id"> {{ value.request_id }}</span>
 			<span v-else>{{ value.appeal_id }}</span>
 		</td>
@@ -18,12 +18,13 @@
         </b-badge>
       </td>
   
-  <td class="col-md-1 center-both font-weight-bold align-middle">
-	<span v-if="value.facility_name ">{{ value.facility_name }}</span>
-	<div v-else class="text-muted">&mdash;</div>
-  </td>
+	  <td class="col-md-1 center-both font-weight-bold align-middle">
+    <span v-if="value.facility_name">{{ value.facility_name.substring(0, 12) }}</span>
+    <div v-else class="text-muted">&mdash;</div>
+</td>
 
-   <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName }}</td>
+
+   <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName.substring(0, 12) }}</td>
 
    <!-- <td class="col-md-2 center-both align-middle "   @click="navigateToAppeal">
 		<div v-if="!hideAgency">
@@ -43,7 +44,7 @@
 	  </td> -->
 	  
 	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
-		<span v-if="agencyName">{{ agencyName}}</span>
+		<span v-if="agencyName">{{ agencyName.substring(0, 32)}}</span>
 		<div v-else class="text-muted">&mdash;</div>
 	  </td>
 
@@ -59,10 +60,10 @@
 			 @click="navigateToAppeal"
         >
 		<font-awesome-icon icon="envelope" />
-		{{ entity.name }} 
+		{{ entity.name.substring(0, 9) }} 
 	  </h2>
 			           <div v-else-if="appealLevel" class="font-weight-bold align-middle"  @click="navigateToAppeal">
-						<font-awesome-icon icon="envelope-open" />	 {{ appealLevel }}
+						<font-awesome-icon icon="envelope-open" />	 {{ appealLevel.substring(0, 9) }}
 					   </div>
 			
 					   <div v-else>
