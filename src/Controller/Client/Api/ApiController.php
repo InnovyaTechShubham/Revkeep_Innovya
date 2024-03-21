@@ -207,6 +207,25 @@ abstract class ApiController extends Controller
 			'pagination' => $this->getDefaultTablePagination(),
 		]);
 	}
+	/**
+	 * Paginate with the search filter, which is used all over the place
+	 * and return a common set of variables in the response (results & pagination metadata)
+	 *
+	 * @param \Cake\ORM\Table|\Cake\ORM\Query|string|null $object Table to paginate
+	 * (e.g: Table instance, 'TableName' or a Query object)
+	 * @return void
+	 * @throws \InvalidArgumentException
+	 * @throws \RuntimeException
+	 */
+	protected function crudIndexFilter($query): void
+	{
+		$this->set([
+			// Results
+			'data' => $this->paginate($query),
+			// Pagination Metadata
+			'pagination' => $this->getDefaultTablePagination(),
+		]);
+	}
 
 	/**
 	 * Get the extraction rules for CSV formatting.
