@@ -70,7 +70,7 @@
 
 					<b-dropdown-item :to="{ name: 'cases.edit', params: { id: caseEntity.id } }">
 						<font-awesome-icon icon="edit" fixed-width />
-						<span>Edit Case1</span>
+						<span>Edit Case</span>
 					</b-dropdown-item>
 				</b-dropdown>
 

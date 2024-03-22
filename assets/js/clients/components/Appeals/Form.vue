@@ -1059,6 +1059,7 @@ export default {
 				};
 			},
 		},
+		
 		insuranceAppealIdsObject: {
             type: Object,
             required: true,
