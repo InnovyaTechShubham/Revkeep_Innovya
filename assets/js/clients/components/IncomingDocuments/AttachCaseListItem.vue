@@ -70,7 +70,7 @@
 
 					<b-dropdown-item :to="{ name: 'cases.edit', params: { id: caseEntity.id } }">
 						<font-awesome-icon icon="edit" fixed-width />
-						<span>Edit Case1</span>
+						<span>Edit Case</span>
 					</b-dropdown-item>
 				</b-dropdown>
 
@@ -91,7 +91,7 @@
 
 		<b-row v-if="addingAppeal" class="my-2">
 			<b-col cols="12">
-				<appeal-form :case-entity="caseEntity" @saved="addedAppeal" @cancel="addingAppeal = false"
+				<appeal-form :case-entity="caseEntity" :insurance-appeal-ids-object="insuranceAppealIdsObject" @saved="addedAppeal" @cancel="addingAppeal = false"
 					class="shadow">
 					<template #header>
 						<b-card-header>
@@ -548,6 +548,15 @@ export default {
 				};
 			},
 		},
+		insuranceAppealIdsObject: {
+            type: Object,
+            required: true,
+			default: () => {
+				return {
+					insuranceAppealIdsObject: {},
+				};
+			},
+        },
 		document: {
 			required: true,
 			type: Object,
@@ -597,6 +606,7 @@ export default {
 			showButtons: false,
 			dropdownOpened: false,
 			levelType: null,
+			insuranceAppealIdsObject: {},
 		};
 	},
 	computed: {
@@ -974,6 +984,23 @@ export default {
 	},
 	mounted() {
 		this.test();
+		this.insuranceAppealIdsObject = {};
+		// Iterate over the this.caseEntity.appeals array
+		this.caseEntity.appeals.forEach(item => {
+			// Get the insurance_appeal_id for the current item
+			const insuranceAppealId = item.insurance_appeal_id;
+
+			// Check if the insurance_appeal_id exists in the object, if not, create an empty array
+			if (!this.insuranceAppealIdsObject[item.id]) {
+				this.$set(this.insuranceAppealIdsObject, item.id, []); // Use $set to ensure reactivity
+			}
+
+			// Push the insurance_appeal_id into the array corresponding to the current caseEntity
+			this.insuranceAppealIdsObject[item.id].push(insuranceAppealId);
+		});
+
+		console.log("VSCODE", this.insuranceAppealIdsObject);
+
 		this.dynamicDecisionOptions = this.appeals.map(appeal => {
 			return appeal.appeal_decision ? appeal.appeal_decision : this.decisionOptionsList[appeal.id];
 		});
