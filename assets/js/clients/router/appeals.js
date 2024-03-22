@@ -5,6 +5,7 @@ import IndexClosed from "@/clients/views/Appeals/index_closed.vue";
 import IndexOpen from "@/clients/views/Appeals/index_open.vue";
 import IndexUTC from "@/clients/views/Appeals/index_utc.vue";
 import IndexUnassigned from "@/clients/views/Appeals/index_unassigned.vue";
+import Edit from "@/clients/views/Appeals/edit.vue";
 
 const baseUrl = "/appeals";
 
@@ -47,5 +48,13 @@ export default [
 				component: IndexUnassigned,
 			},
 		],
+	},
+	{
+		path: `${baseUrl}/:id/edit`,
+		name: "appeals.edit",
+		component: Edit,
+		meta: {
+			title: "Edit Appeal",
+		},
 	},
 ];
