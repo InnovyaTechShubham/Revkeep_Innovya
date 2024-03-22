@@ -195,12 +195,21 @@
 	  
 		
 		<p><font-awesome-icon icon="user" />
-			<strong>Patient Name:</strong> 
+			<strong>Patient :</strong> 
 				{{ patientName }}</p>
 	  
-      <p><strong>Facility Name:</strong> {{ value.facility_name }}</p>
-      <p><strong>Recipient Name:</strong> {{ agencyName }}</p>
-	  <p><strong>Recipient Type:</strong> {{ value.name_of_submit_to }}</p>
+      <p>	
+								<font-awesome-icon icon="building" class="px-0 mx-0" />
+								
+	  <strong>Facility :</strong> {{ value.facility_name }}</p>
+      <p>
+									<font-awesome-icon icon="user-md" class="px-0 mx-0" />
+								
+		<strong>Recipient :</strong> {{ agencyName }}</p>
+	  <p>
+									<font-awesome-icon icon="building" class="px-0 mx-0" />
+								
+		<strong>Recipient Type:</strong> {{ value.name_of_submit_to }}</p>
 	  <div>
 		<p v-if=" entity.name"> <font-awesome-icon icon="envelope" /><strong> Level:</strong> {{  entity.name }}</p>
 	    <p v-else><font-awesome-icon icon="envelope-open" /><strong> Level:</strong> 
