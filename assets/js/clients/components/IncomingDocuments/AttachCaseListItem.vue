@@ -70,7 +70,7 @@
 
 					<b-dropdown-item :to="{ name: 'cases.edit', params: { id: caseEntity.id } }">
 						<font-awesome-icon icon="edit" fixed-width />
-						<span>Edit Case</span>
+						<span>Edit Case1</span>
 					</b-dropdown-item>
 				</b-dropdown>
 
@@ -174,7 +174,7 @@
 									</b-card-header>
 								<!-- </template> -->
 							<!-- </insurance-provider-form>  -->
-							<AppealForm :id="appeal.id"  />
+							
 						</div>
 					
 						
@@ -238,10 +238,9 @@
 						<span>View Appeal</span>
 					</b-dropdown-item>
 
-					<b-dropdown-item   @click="editing = true"
-                     :active="editing">
+					<b-dropdown-item :to="{ name: 'appeals.edit', params: { id: appeal.id , appeal:appeal} }">
 						<font-awesome-icon icon="edit" fixed-width />
-						<span>Edit Appeal</span>
+						<span>Edit Appeal1</span>
 					</b-dropdown-item>
 					<b-dropdown-item  @click="addingRequest = true">
 						<font-awesome-icon icon="plus" fixed-width />
@@ -358,13 +357,17 @@
 									</b-col>
 								</b-row> -->
 
+								
+								<!-- <AppealForm :id="appeal.id" /> -->
+								<!-- <EditForm :id="$route.params.id" @loaded="loaded" @cancel="toView" @saved="toView" /> -->
 								<div v-if="hasRequestForAppeal(appeal, i)" class="mt-2"
 									style="background-color: #f2f2f2; padding: 10px; border-radius: 5px">
 									<div @click="toggleCollapseRequests" style="cursor: pointer" class="text-black">
 										Requests
 										<span style="float: right; font-size: smaller">{{
-			collapseRequests ? "▲" : "▼"
-		}}</span>
+											collapseRequests ? "▼" : "▲"
+											}}
+										</span>
 									</div>
 									<div v-show="!collapseRequests">
 										<div v-for="(request, j) in request_list" :key="request.id"
