@@ -133,19 +133,19 @@
 									<div>
 										<div class="custom-dropdown-option"
 											v-if="searchResults.length > 0 && facilitySearch !== ''">
-											<b-row v-for="(item, index) in searchResults" :key="index"
-												@click="() => selectFacility(item)">
-												<b-col class="custom-option-col">
-													<div class="option-content">
-														<!-- Content for the option -->
-														<p>
-															<span title="Facility">
-																{{ item.displayName }}
-															</span>
-														</p>
-													</div>
-												</b-col>
-											</b-row>
+											<b-row v-for="(item, index) in searchResults.slice(0, 20)" :key="index"
+                     						   @click="() => selectFacility(item)">
+                      							  <b-col class="custom-option-col">
+                        						    <div class="option-content">
+                          						      <!-- Content for the option -->
+                           							     <p>
+                               					     <span title="Facility">
+                                   				     {{ item.displayName }}
+                                  							  </span>
+                               							 </p>
+                          							  </div>
+                    							    </b-col>
+                   							 </b-row>
 										</div>
 									</div>
 
@@ -244,27 +244,36 @@
 					<b-row>
 
 						<b-col cols="12" md="6">
-							<validation-provider vid="admit_date" name="Admit Date" :rules="{ required: true }"
-								v-slot="validationContext">
-								<b-form-group label="Begin DOS" label-for="admit_date" label-cols-lg="4">
-									<b-form-input name="admit_date" type="date" v-model="entity.admit_date"
-										:disabled="saving" :state="getValidationState(validationContext)" required />
-									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
-										v-text="error" />
-								</b-form-group>
-							</validation-provider>
-						</b-col>
-						<b-col cols="12" md="6">
-							<validation-provider vid="discharge_date" name="Discharge Date" :rules="{ required: false }"
-								v-slot="validationContext">
-								<b-form-group label="End DOS" label-for="discharge_date" label-cols-lg="4">
-									<b-form-input name="discharge_date" type="date" v-model="entity.discharge_date"
-										:disabled="saving" :state="getValidationState(validationContext)" />
-									<b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
-										v-text="error" />
-								</b-form-group>
-							</validation-provider>
-						</b-col>
+    <validation-provider vid="admit_date" name="Admit Date" :rules="{ required: true }"
+        v-slot="validationContext">
+        <b-form-group label="Begin DOS" label-for="admit_date" label-cols-lg="4">
+            <b-form-input name="admit_date" :min="minDate" :max="today" type="date" v-model="entity.admit_date"
+                :disabled="saving" :state="getValidationState(validationContext)" required />
+            <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+                v-text="error" />
+        </b-form-group>
+    </validation-provider>
+</b-col>
+<b-col cols="12" md="6">
+    <validation-provider vid="discharge_date" name="Discharge Date" :rules="{ required: false }"
+        v-slot="validationContext">
+        <b-form-group label="End DOS" label-for="discharge_date" label-cols-lg="4">
+            <b-form-input 
+                name="discharge_date" 
+                type="date" 
+                :min="minDate"
+                :max="today" 
+                v-model="entity.discharge_date"
+                :disabled="saving" 
+                :state="getValidationState(validationContext)"
+                @change="validateDates"
+            />
+            <b-form-invalid-feedback v-for="error in validationContext.errors" :key="error"
+                v-text="error" />
+        </b-form-group>
+    </validation-provider>
+</b-col>
+
 					</b-row>
 					<b-row>
 						<b-col cols="12" md="6">
@@ -1325,6 +1334,7 @@ export default {
 			insuranceProviderTypes: [],
 			insurance_provider_type: '',
 			deleteFacilityMode: false,
+			today: getTodaysDate(),
 		};
 	},
 	computed: {
@@ -1821,6 +1831,7 @@ export default {
 		toggleContent() {
      		 this.showContent = !this.showContent;
       	 },
+		 
 
 	},
 	created() {

@@ -186,7 +186,7 @@
 					<validation-provider
 						vid="days_to_decision"
 						name="Days to Decision"
-						:rules="{ required: true, min: 0, max: 365 }"
+						:rules="{ required: true, min: 0, max: 999999999 }"
 						v-slot="validationContext"
 					>
 						<b-form-group label="Days To Decision " label-for="days_to_respond" label-cols-lg="4">
@@ -195,7 +195,7 @@
 								type="number"
 								step="1"
 								min="0"
-								max="365"
+								max="999999999"
 								default="daysToDecision"
 								v-model="selectedDaysToDecision"
 								:disabled="saving"
