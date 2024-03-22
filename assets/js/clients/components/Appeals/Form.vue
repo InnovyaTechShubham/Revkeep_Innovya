@@ -1059,6 +1059,15 @@ export default {
 				};
 			},
 		},
+		insuranceAppealIdsObject: {
+            type: Object,
+            required: true,
+			default: () => {
+				return {
+					insuranceAppealIdsObject: {},
+				};
+			},
+        },
 		caseEntity: {
 			type: Object,
 			default: () => {
@@ -1251,7 +1260,9 @@ export default {
 		this.test();
 		this.fetchData();
 		console.log('Days to respond input value on mount:', this.selectedDaysToRespond);
-		
+		console.log("response updated = " , this.insuranceData);
+		// let idsToRemove = Object.values(this.insuranceAppealIdsObject).flat();
+        // console.log("Extracted IDs from insuranceAppealIdsObject:", idsToRemove);
 		// Default appeal type
 		if (this.entity.appeal_type_id === null && this.appealTypes.length) {
 			this.entity.appeal_type_id = this.appealTypes[0].id;
@@ -1280,7 +1291,7 @@ export default {
 			this.$store.dispatch("users/getActive");
 			
 		}
-
+		console.log("TEST",this.insuranceAppealIdsObject);
 		// for calling autofillform function during mounting phase for autofilling the form
 		//if(true){
 		//	this.autoFillForm();
@@ -1457,47 +1468,101 @@ export default {
 				const resp = await axios.post('/client/sendemail', data);
 				console.log(resp);
 		},
-		async test(){
-			try {
-				const url = "/client/insuranceappeal";
+		// async test(){
+		// 	try {
+		// 		const url = "/client/insuranceappeal";
 				
-				const response = await axios.get(url, {
-				headers: {
-					"Accept": "application/json",
-					// You can add other headers here if needed
-				},
-				});
-				// Handle the response data here
-				// this.insuranceData = response.data;
-				let count =1 ;
-				response.data.forEach((item, index) => {
-				console.log(`Element at index ${index}:`, item);
-				if(item.insurance_provider_id==this.caseEntity.insurance_provider_id){
-					console.log("match found = ", item);
-					let ids = parseInt(item.id, 10);
-					this.insuranceData.push({label:item.label, id:ids , count:count , days_to_respond: item.days_to_respond, Grace_days: item.Grace_days, days_to_decision: item.max_days});
-					count ++;
-				}
-				});
-				this.insuranceData.sort((a,b)=> a.id - b.id);
-                response.data.forEach((item, index) => {
-				console.log(`Element at index ${index}:`, item);
-				if(item.insurance_provider_id==this.caseEntity.insurance_provider_id){
-					console.log("match found");
-					this.daysToRespond.push({daysToRespond:item.days_to_respond, id:item.id});
-					count ++;
-				}
-				});
-                console.log("daysTorespond = " , this.daysToRespond);
-				console.log("response updated = " , this.insuranceData);
-				console.log("case entity =", this.caseEntity);
-				console.log("appeal =", this.entity.appeal_level_id);
-				} 
-			catch (error) {
-				console.error(error);
-			}
+		// 		const response = await axios.get(url, {
+		// 		headers: {
+		// 			"Accept": "application/json",
+		// 			// You can add other headers here if needed
+		// 		},
+		// 		});
+		// 		// Handle the response data here
+		// 		// this.insuranceData = response.data;
+		// 		let count =1 ;
+		// 		response.data.forEach((item, index) => {
+		// 		console.log(`Element at index ${index}:`, item);
+		// 		if(item.insurance_provider_id==this.caseEntity.insurance_provider_id){
+		// 			console.log("match found = ", item);
+		// 			let ids = parseInt(item.id, 10);
+		// 			this.insuranceData.push({label:item.label, id:ids , count:count , days_to_respond: item.days_to_respond, Grace_days: item.Grace_days, days_to_decision: item.max_days});
+		// 			count ++;
+		// 		}
+		// 		});
+		// 		this.insuranceData.sort((a,b)=> a.id - b.id);
+        //         response.data.forEach((item, index) => {
+		// 		console.log(`Element at index ${index}:`, item);
+		// 		if(item.insurance_provider_id==this.caseEntity.insurance_provider_id){
+		// 			console.log("match found");
+		// 			this.daysToRespond.push({daysToRespond:item.days_to_respond, id:item.id});
+		// 			count ++;
+		// 		}
+		// 		});
+        //         console.log("daysTorespond = " , this.daysToRespond);
+		// 		console.log("response updated = " , this.insuranceData);
+		// 		console.log("case entity =", this.caseEntity);
+		// 		console.log("appeal =", this.entity.appeal_level_id);
+		// 		} 
+		// 	catch (error) {
+		// 		console.error(error);
+		// 	}
 
-		},
+		// },
+		async test() {
+    try {
+        const url = "/client/insuranceappeal";
+
+        const response = await axios.get(url, {
+            headers: {
+                "Accept": "application/json",
+                // You can add other headers here if needed
+            },
+        });
+
+        let count = 1;
+
+        response.data.forEach((item, index) => {
+            console.log(`Element at index ${index}:`, item);
+
+            if (item.insurance_provider_id == this.caseEntity.insurance_provider_id) {
+                console.log("match found = ", item);
+                let ids = parseInt(item.id, 10);
+
+                // Check if the id is not in insuranceAppealIdsObject before pushing
+                if (!Object.values(this.insuranceAppealIdsObject).flat().includes(ids)) {
+                    this.insuranceData.push({
+                        label: item.label,
+                        id: ids,
+                        count: count,
+                        days_to_respond: item.days_to_respond,
+                        Grace_days: item.Grace_days,
+                        days_to_decision: item.max_days
+                    });
+                    count++;
+                }
+            }
+        });
+
+        this.insuranceData.sort((a, b) => a.id - b.id);
+
+        response.data.forEach((item, index) => {
+            console.log(`Element at index ${index}:`, item);
+            if (item.insurance_provider_id == this.caseEntity.insurance_provider_id) {
+                console.log("match found");
+                this.daysToRespond.push({ daysToRespond: item.days_to_respond, id: item.id });
+                count++;
+            }
+        });
+
+        console.log("daysTorespond = ", this.daysToRespond);
+        console.log("response updated = ", this.insuranceData);
+        console.log("case entity =", this.caseEntity);
+        console.log("appeal =", this.entity.appeal_level_id);
+    } catch (error) {
+        console.error(error);
+    }
+},
 		updateAppealLevelCount(){
 			const selectedOption = this.insuranceData.find(option => option.id === this.entity.appeal_level_id);
 			if (selectedOption) {
