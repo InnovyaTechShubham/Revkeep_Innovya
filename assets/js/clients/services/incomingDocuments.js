@@ -80,9 +80,11 @@ export async function detachCase(id, params) {
 	return response.data.data;
 }
 
-export async function attachAppeal(id, appealId) {
+export async function attachAppeal(id, appealId, requestId) {
+	console.log('inside attachAppeal on js page****');
 	const response = await api.post(`${url}/${id}/attach_appeal`, {
 		appeal_id: appealId,
+		request_id: requestId,
 	});
 	return response.data.data;
 }

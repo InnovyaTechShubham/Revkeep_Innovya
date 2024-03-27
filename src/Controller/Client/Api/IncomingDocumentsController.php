@@ -321,6 +321,13 @@ class IncomingDocumentsController extends ApiController
 	public function attachAppeal($id, StorageServiceInterface $storage): void
 	{
 		$appealId = $this->getRequest()->getData('appeal_id');
+		$requestId = $this->getRequest()->getData('request_id');
+
+		$filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+		$jsonContent = json_encode($requestId , JSON_PRETTY_PRINT);
+		$file = fopen($filePath, 'w');
+		fwrite($file, $jsonContent);
+		fclose($file);
 
 		if (empty($appealId)) {
 			throw new BadRequestException(__('An appeal ID must be provided'));
@@ -330,12 +337,28 @@ class IncomingDocumentsController extends ApiController
 
 		$entity = $this->IncomingDocuments->get($id);
 		$entity->set('appeal_id', $this->getRequest()->getData('appeal_id'));
+		if (!empty($requestId)) {
+			$entity->set('request_id', $this->getRequest()->getData('request_id'));
+		}
 		$entity->set('case_id', $appeal->case_id);
 
 		// update appeal_status when a particular document is attached to it
 		// update appeal_status when a particular document is attached to it
 		try{
-
+			if ($requestId !== null) {
+				$filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+				$jsonContent = json_encode($requestId , JSON_PRETTY_PRINT);
+				$file = fopen($filePath, 'w');
+				fwrite($file, $jsonContent);
+				fclose($file);
+				// update request status of caseRequest table
+				$caseRequests = TableRegistry::getTableLocator()->get('CaseRequests');
+				// Load the corresponding CaseRequest entity
+				$caseRequest = $caseRequests->get($requestId);
+				// Update the request_status column to "Submitted"
+				$caseRequest->request_status = 'In Progress';
+				$caseRequests->save($caseRequest);
+			}
 			$appeals = TableRegistry::getTableLocator()->get('Appeals');
 			// Load the entity to be updated
 			$appeal = $appeals->get($appealId);
@@ -348,11 +371,11 @@ class IncomingDocumentsController extends ApiController
 			// Save the changes
 			if ($appeals->save($appeal)) {
 				
-				$filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
-				$jsonContent = json_encode("status successfully updated", JSON_PRETTY_PRINT);
-				$file = fopen($filePath, 'w');
-				fwrite($file, $jsonContent);
-				fclose($file);
+				// $filePath = WWW_ROOT . 'json/powerback_denial_reasons.json';
+				// $jsonContent = json_encode("status successfully updated", JSON_PRETTY_PRINT);
+				// $file = fopen($filePath, 'w');
+				// fwrite($file, $jsonContent);
+				// fclose($file);
 				// Copy to appeal files
 				$newFileName = $entity->original_name ?: $entity->file_name;
 				$newPath = $appealId . '/' . $newFileName;

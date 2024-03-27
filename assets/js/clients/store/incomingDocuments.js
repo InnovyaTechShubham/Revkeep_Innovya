@@ -93,7 +93,7 @@ export default {
 			return await Service.attachCase(params.id);
 		},
 		async attachAppeal({ commit, dispatch }, params) {
-			return await Service.attachAppeal(params.id, params.appeal_id);
+			return await Service.attachAppeal(params.id, params.appeal_id, params.request_id);
 		},
 		async detachAppeal({ commit, dispatch }, params) {
 			return await Service.detachAppeal(params.id);

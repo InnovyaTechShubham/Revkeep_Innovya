@@ -17,8 +17,17 @@ export default {
 				name: "Completed",
 				value: "Completed",
 			},
+			{
+				name: "Active",
+				value: "Active",
+			},
+			{
+				name: "Submitted",
+				value: "Submitted",
+			},
+			
 		],
-		defaultType: "DOCUMENTATION",
+		defaultType: "HEARING",
 		types: [
 			{
 				name: "Documentation",

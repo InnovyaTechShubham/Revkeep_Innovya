@@ -1301,4 +1301,10 @@ $routes->prefix('client', function (RouteBuilder $builder) {
        
     ]);
 
+	// updateResponseRecieved
+	$builder->connect('/updateResponseRecieved', [
+        'controller' => 'Request',
+        'action' => 'updateResponseReceived',
+        '_method' => 'POST'
+    ]);
 });

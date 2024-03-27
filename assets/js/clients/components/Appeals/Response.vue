@@ -866,6 +866,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		request_id: {
+			type: Array, // adjust the type based on your needs
+			default: () => [],
+		},
 	},
 	computed: {
 		filteredAgencyOptions() {
@@ -1786,6 +1790,7 @@ export default {
 
 				const response = await this.$store.dispatch("appealPackets/submit", {
 					id: this.value.id,
+					request_id: this.request_id,
 				});
 
 				this.$emit("submitted", response);

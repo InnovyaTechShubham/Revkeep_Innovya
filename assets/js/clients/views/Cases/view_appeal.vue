@@ -1124,6 +1124,7 @@ export default {
 			this.$emit("cancel");
 		},
 		 async refresh() {
+			console.log('refresh method get called on view_appeal.vue page:caseRequest/get');
 			try {
 				this.loading = true;
 				this.error = false;
@@ -1145,6 +1146,7 @@ export default {
 			}
 		},
 		async refresh() {
+			console.log('refresh method get called on view_appeal.vue page:appeals/get');
 			try {
 				this.loading = true;
 				this.error = false;

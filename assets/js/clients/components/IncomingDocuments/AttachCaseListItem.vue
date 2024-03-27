@@ -110,9 +110,15 @@
 				</appeal-form>
 			</b-col>
 		</b-row>
+		<!-- below request form opens up when user tries to creat request -->
 		<b-row v-else-if="addingRequest" class="my-2">
 			<b-col cols="12">
-				<case-request-form :case-entity="caseEntity" @saved="addedRequest" @cancel="addingRequest = false">
+				<case-request-form 
+					:case-entity="caseEntity" 
+					:appealLevel="appealLevel"
+					@saved="addedRequest" 
+					@cancel="addingRequest = false"
+				>
 					<template #header>
 						<b-card-header>
 							<div class="d-flex justify-content-between align-items-center">
@@ -181,15 +187,15 @@
 											</span>
 											<span v-else class="text-muted"> Post-Payment </span><br>
 											<b-badge style="background-color: #8EA7DE; color:white;">{{
-			appeal.appeal_status
-		}}</b-badge>
+												appeal.appeal_status
+											}}</b-badge>
 											- <b-badge
 												:style="{ backgroundColor: badgeVariant(appeal.appeal_decision) }">{{
-			appeal.appeal_decision }}</b-badge>
+											appeal.appeal_decision }}</b-badge>
 										</p>
 										<p v-if="appeal.appeal_status !== 'Closed'" class="mb-0">
 											<span v-if="appeal.due_date" class="small" :class="appeal.is_overdue ? 'text-danger font-weight-bold' : 'text-muted'
-			">
+										">
 												Due on {{ $filters.formatDate(appeal.due_date) }}
 											</span>
 										</p>
@@ -199,13 +205,17 @@
 									</b-col>
 
 									<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
-										<b-button @click="
-			addingRequest = true;
-		addingAppeal = false;
-		" variant="primary" class="shadow">
+										<!-- <b-button @click="
+										addingRequest = true;
+										addingAppeal = false;
+										" variant="primary" class="shadow">
 											<font-awesome-icon icon="plus" fixed-width />
 											<span>Requests</span>
-										</b-button>
+										</b-button> -->
+									<b-button @click="addRequestWithAppealLevel(appealLevelNames[i])" variant="primary" class="shadow">
+    									<font-awesome-icon icon="plus" fixed-width />
+										<span>Requests</span>
+									</b-button>
 
 										<b-dropdown split right @click="attachToAppeal(appeal, { redirect: false })"
 											:disabled="attaching" variant="primary">
@@ -328,45 +338,46 @@
 									<div v-show="!collapseRequests">
 										<div v-for="(request, j) in request_list" :key="request.id"
 											v-if="request.case_id === appeal.case_id && request.appeal_level == i"
-											style="
-												background-color: #f9f9f9;
-												border-radius: 5px;
-												padding: 10px;
-												margin-bottom: 10px;
-											">
+											:style="{
+												'background-color': request.request_status === 'Completed' ? '#d9d9d9' : '#f9f9f9',
+												'border-radius': '5px',
+												'padding': '10px',
+												'margin-bottom': '10px'
+											}">
 											<div class="row align-items-center">
 												<div class="col-md-8">
 													<div class="text-left mb-0 mb-md-0">
 														<p class="mb-0 custom-padding">
-															<span class="font-weight-bold">{{ request.name
-																}}</span><span v-if="request.due_date" class="small"
-																:class="request.is_overdue
-			? 'text-danger font-weight-bold'
-			: 'text-muted'
-			">
-																Due on {{ $filters.formatDate(request.due_date) }}
+															<span class="font-weight-bold">{{ request.name }}</span>
+															<!-- Displaying the status label using CaseRequestStatusLabel component -->
+															<CaseRequestStatusLabel :value="{ status_label: request.request_status }" :style="{ backgroundColor: reqStatusvariant(request.request_status), color: '#FFFFFF'}" />
+															<b-badge v-if="request.request_status === 'Completed'" style="background-color: #9BC29B;color:white;">Response Recieved</b-badge>
+															<!-- End of CaseRequestStatusLabel -->
+															<span v-if="request.due_date && request.request_status !== 'Completed'" class="small"
+																:class="request.is_overdue? 'text-danger font-weight-bold': 'text-muted'">
+
+																<br>Due on {{ $filters.formatDate(request.due_date) }}
 															</span>
 														</p>
-														<p v-if="request.status_label !== 'Closed'"
+														<p v-if="request.request_status !== 'Completed'"
 															class="mb-0 custom-padding">
 															<span class="text-muted">{{ request.type_label }}
 																Request</span>
 														</p>
-														<label class="mb-0 custom-padding">
+														<label v-if="request.request_status !== 'Completed'" class="mb-0 custom-padding">
 															Response Received
-															<input type="checkbox" v-model="responseReceived[j]"
-																class="response-checkbox" />
+															<input type="checkbox" v-model="responseReceived" class="response-checkbox" @change="sendAxiosRequest(request.id)" />
 															<span class="checkmark"></span>
 														</label>
 													</div>
 												</div>
-												<div class="col-md-4 text-right">
+												<div class="col-md-4 text-right" :class="{ 'disabled-overlay': request.request_status === 'Completed' }">
 													<b-dropdown split right :disabled="attaching" variant="primary">
 														<template #button-content>
 															<font-awesome-icon icon="paperclip" fixed-width />
 														</template>
 														<b-dropdown-item-button
-															@click="attachToAppeal(appeal, { redirect: true })"
+															@click="attachToAppeal(appeal, { redirect: true , requestData: request.id })"
 															:disabled="attaching" title="Attach and view appeal">
 															Attach &amp; View
 															<small class="text-muted">Attach document and view appeal
@@ -448,12 +459,16 @@
 }
 
 .custom-padding {
-	padding-left: 20px;
+	padding-left: 8px;
 	/* Adjust the value as needed */
 }
 
 .upper-space {
 	margin-top: 5px;
+}
+
+.disabled-overlay {
+  pointer-events: none;
 }
 </style>
 
@@ -461,6 +476,7 @@
 import AppealForm from "@/clients/components/Appeals/Form.vue";
 import AppealStatusLabel from "@/clients/components/Appeals/StatusLabel.vue";
 import CaseStatusLabel from "@/clients/components/Cases/StatusLabel.vue";
+import CaseRequestStatusLabel from "@/clients/components/CaseRequests/StatusLabel.vue";
 import CaseRequestForm from "@/clients/components/CaseRequests/Form.vue";
 import axios from "axios";
 
@@ -471,6 +487,7 @@ export default {
 		AppealStatusLabel,
 		CaseStatusLabel,
 		CaseRequestForm,
+		CaseRequestStatusLabel
 	},
 	props: {
 		patient: {
@@ -538,7 +555,7 @@ export default {
 			selectedOptionL5: null,
 			selectedOptionL6: null,
 			selectedOptionL7: null,
-			responseReceived: [],
+			responseReceived: null,
 			responseReceivedList: [], //for tracking partially favourable responses
 			appealLevelNames: [],
 			appealLevelNamesObj: [],
@@ -553,9 +570,13 @@ export default {
 			showButtons: false,
 			dropdownOpened: false,
 			levelType: null,
+			appealLevel: '',
 		};
 	},
 	computed: {
+		dropdownVariant() {
+			return this.request.request_status === 'Completed' ? '#8EA7DE' : '#007BFF';
+		},
 		hasOpenAppeal() {
 			let hasOpen = false;
 			for (let i = 0; i < this.appeals.length; i++) {
@@ -583,6 +604,69 @@ export default {
 		},
 	},
 	methods: {
+		reqStatusvariant(statusLabel) {
+			switch (statusLabel) {
+				case "Open":
+					return "primary";
+					break;
+				case "Active":
+					return "#008FFF";
+					break;
+				case "Submitted":
+					return "#8EA7DE";
+					break;
+				case "In Progress":
+					return "#698F69";
+					break;
+				case "Completed":
+					return "#8EA7DE";
+					break;
+				
+				case "Unable To Complete":
+					return "warning";
+					break;
+				case "Completed":
+					return "success";
+					break;
+				default:
+					return "dark";
+					break;
+			}
+		},
+		sendAxiosRequest(requestId) {
+			if (this.responseReceived) {
+				// const apiUrl = '/client/api/updateResponseRecieved/${requestId}';
+				// const apiUrl = `/client/updateResponseRecieved/${requestId}`;
+				// Send Axios POST request with requestId as a parameter
+				axios.post('/client/updateResponseRecieved', {'id': requestId})
+					.then(response => {
+						// Handle success response
+						console.log('inside response success block');
+						this.saving = false;
+						// this.$router.push({
+						// 	name: "chains"
+						// });
+						this.$nextTick(function () {
+							this.$store.dispatch("notify", {
+								variant: "primary",
+								title: "Response Recieved for Request ID !",
+								message: `Response updated!.`,
+							});
+						});
+					})
+					.catch(error => {
+						// Handle error
+						console.error(error);
+					});
+			}
+		},
+		addRequestWithAppealLevel(appealLevel) {
+			console.log('inside addReqeustWithAppealLevel:-');
+			console.log(appealLevel);
+			this.appealLevel = appealLevel; // Set the appealLevel data property
+			this.addingRequest = true;
+			this.addingAppeal = false;
+		},
 		badgeVariant(decision) {
 			console.log('color is:-');
 			console.log(decision);
@@ -706,13 +790,27 @@ export default {
 			this.test();
 		},
 		async attachToAppeal(appeal, options = {}) {
+			console.log('inside attachToAppeal')
+			console.log('options.requestData:-');
+			console.log(options.requestData);
 			try {
 				this.attaching = true;
+
+				let request_id; // Declare appealAttachRes variable here
+
+				if (options.requestData !== undefined) {
+					console.log('setting appealAttachRes : false');
+					request_id = options.requestData;
+				}else{
+					console.log('setting appealAttachRes : true');
+					request_id = null;
+				}
 
 				const response = await this.$store.dispatch("incomingDocuments/attachAppeal", {
 					id: this.document.id,
 					case_id: appeal.case_id,
 					appeal_id: appeal.id,
+					request_id: request_id
 				});
 
 				this.$emit("attached", response);

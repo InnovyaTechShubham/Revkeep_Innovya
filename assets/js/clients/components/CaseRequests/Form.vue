@@ -116,6 +116,86 @@
 						</b-form-group>
 					</validation-provider>
 
+					<!-- day to respond field -->
+					<validation-provider
+						vid="day_to_respond"
+						name="Day To Respond"
+						:rules="{ required: true, numeric: true }"
+						v-slot="validationContext"
+					>
+						<b-form-group label="Day To Respond" label-for="day_to_respond" label-cols-lg="4">
+							<b-form-input
+								type="number"
+								v-model="entity.day_to_respond"
+								name="day_to_respond"
+								required="required"
+								:readonly="false"
+								:disabled="saving"
+								:state="getValidationState(validationContext)"
+							/>
+							<b-form-invalid-feedback
+								v-for="error in validationContext.errors"
+								:key="error"
+								v-text="error"
+							/>
+						</b-form-group>
+					</validation-provider>
+
+					<!-- day_to_decision field -->
+					<b-row>
+						<b-col cols="9"> <!-- Adjust the number of columns as needed -->
+							<validation-provider
+								vid="day_to_decision"
+								name="Day To Decision"
+								:rules="{ required: true, numeric: true }"
+								v-slot="validationContext"
+							>
+								<b-form-group label="Day To Decision" label-for="day_to_decision" label-cols-lg="5">
+									<b-form-input
+										type="number"
+										v-model="entity.day_to_decision"
+										name="day_to_decision"
+										required="required"
+										:readonly="false"
+										:disabled="saving"
+										:state="getValidationState(validationContext)"
+										style="margin-left:15px;"
+									/>
+									<b-form-invalid-feedback
+										v-for="error in validationContext.errors"
+										:key="error"
+										v-text="error"
+									/>
+								</b-form-group>
+							</validation-provider>
+						</b-col>
+
+						<b-col cols="2"> <!-- Adjust the number of columns as needed -->
+							<validation-provider
+								vid="estimated"
+								name="Estimated"
+								:rules="{ required: true }"
+								v-slot="validationContext"
+							>
+								<b-form-checkbox
+									v-model="entity.estimated"
+									name="estimated"
+									:readonly="false"
+									:disabled="saving"
+									:state="getValidationState(validationContext)"
+								>
+									Estimated
+								</b-form-checkbox>
+								<b-form-invalid-feedback
+									v-for="error in validationContext.errors"
+									:key="error"
+									v-text="error"
+								/>
+							</validation-provider>
+						</b-col>
+					</b-row>
+
+
 					<validation-provider
 						vid="due_date"
 						name="Due Date"
@@ -336,6 +416,20 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		appealLevel: {
+            type: String, // Assuming appeal level is of type string
+            default: ''
+        }
+	},
+	watch: {
+        // appealLevel(newVal) {
+        //     // Find the option that matches the appealLevel value
+           
+        // }
+    },
+	created(){
+		console.log('Current appeal level in case request form:', this.appealLevel);
+		// this.status = this.appealLevel;
 	},
 	data() {
 		return {
@@ -349,8 +443,12 @@ export default {
 				assigned_to: this.currentUserId,
 				priority: false,
 				due_date: getDateOffsetDaysString(2),
-				status: "Level 0",
+				day_to_respond: null,
+				day_to_decision: null,
+				estimated: false,
+				status: '',
 				appeal_level:null,
+				request_status: 'Active'
 			},
 			loadingRequestTypes: false,
 			addingAgency: false,
@@ -384,6 +482,8 @@ export default {
 		loadingInsuranceProviders: "insuranceProviders/loadingActive",
 	}),
 	mounted() {
+		console.log('current appeal level for this requset is :-');
+		console.log(this.status);
 		
 		this.test();
 
@@ -551,7 +651,26 @@ export default {
 				});
 				console.log("response = " , this.insuranceData);
 				console.log("case entity =", this.caseEntity);
-				
+
+				console.log('setting status value:-');
+				const matchedAppealLevel = response.data.find(item => item.label === this.appealLevel);
+				if (matchedAppealLevel) {
+					this.entity.status = matchedAppealLevel.id;
+					// update appeal level count below
+					const selectedOption = this.insuranceData.find(option => option.id === this.entity.status);
+					if (selectedOption) {
+						this.entity.appeal_level = selectedOption.count;
+					} else {
+						this.entity.appeal_level = null; // Handle the case where no option is selected
+					}
+				}
+				// auto populate request type [default: Hearing]
+				this.entity.request_type = this.defaultRequestType;
+
+				console.log(JSON.stringify(this.entity.status));
+				console.log('default requestType is :-');
+				console.log(JSON.stringify(this.entity.request_type));
+				// [{"name":"Documentation","value":"DOCUMENTATION"},{"name":"Hearing","value":"HEARING"}]
 				} 
 			catch (error) {
 				console.error(error);
@@ -560,6 +679,8 @@ export default {
 		},
 
 		updateAppealLevelCount(){
+			console.log('selected status is:-');
+			console.log(this.entity.status);
 			const selectedOption = this.insuranceData.find(option => option.id === this.entity.status);
 			if (selectedOption) {
 				this.entity.appeal_level = selectedOption.count;

@@ -128,6 +128,7 @@ class AppealPacketsController extends ApiController
 		$selectedCaseFiles = $this->request->getData('case_files', []);
 		$selectedAppealFiles = $this->request->getData('appeal_files', []);
 		$orderedList = $this->request->getData('ordered_list', []);
+		$requestId = $this->request->getData('request_id', []);
 
 		if (!empty($orderedList)) {
 			$this->generatePacketOrdered(
@@ -149,6 +150,7 @@ class AppealPacketsController extends ApiController
 			'case_files' => $selectedCaseFiles,
 			'appeal_files' => $selectedAppealFiles,
 			'ordered_list' => $orderedList,
+			'request_id' => $requestId,
 			'success' => true
 		]);
 	}
@@ -283,13 +285,25 @@ class AppealPacketsController extends ApiController
 
 		$outgoingDocuments = $this->fetchTable('OutgoingDocuments');
 
+		$requestId = $this->request->getData('request_id', []);
+
+		// Combine all request_id values into a string
+		$combinedRequestId = implode('_', $requestId);
+
+		// Determine the prefix based on the availability of the combined requestId
+		$prefix = empty($combinedRequestId) ? '01_' : '00_';
+
+		// Apply the prefix to the combined requestId
+		$prefixedCombinedRequestId = $prefix . ($combinedRequestId ?: $this->appeal->id);
+
 		$outgoing = $outgoingDocuments->newEntity([
 			'case_id' => $this->appeal->case_id,
 			'appeal_id' => $this->appeal->id,
 			'agency_id' => $this->appeal->agency_id ?? null,
 			'filename' => $this->appeal->id . '.pdf',
 			'delivery_method' => OutgoingDocument::DELIVERY_METHOD_MANUAL,
-			'status_message' => OutgoingDocument::STATUS_NEW
+			'status_message' => OutgoingDocument::STATUS_NEW,
+			'request_id' => $requestId[0] ?? null
 		]);
 
 		$outgoingDocuments->saveOrFail($outgoing);
@@ -307,23 +321,34 @@ class AppealPacketsController extends ApiController
 
 		// Update appeal status to 'In Process'
 		try {
-			$appeals = TableRegistry::getTableLocator()->get('Appeals');
-			// Load the entity to be updated
-			$appeal = $appeals->get($this->appeal->id);
-			
-			// Patch the entity with the new data
-			$appeal->appeal_status = 'Submitted';
-			
-			// Save the changes
-			if ($appeals->save($appeal)) {
-				$this->set([
-					'success' => true,
-					'data' => $outgoing,
-					'appeal' => $this->appeal
-				]);
-			} else {
-				throw new InternalErrorException(__('Failed to update appeal status.'));
+			// update request status of caseRequest table
+			$caseRequests = TableRegistry::getTableLocator()->get('CaseRequests');
+			// Load the corresponding CaseRequest entity
+			$caseRequest = $caseRequests->get($requestId[0]);
+			// Update the request_status column to "Submitted"
+			$caseRequest->request_status = 'Submitted';
+		
+			if ($caseRequests->save($caseRequest)) {
+
+				$appeals = TableRegistry::getTableLocator()->get('Appeals');
+				// Load the entity to be updated
+				$appeal = $appeals->get($this->appeal->id);
+				
+				// Patch the entity with the new data
+				$appeal->appeal_status = 'Submitted';
+				
+				// Save the changes
+				if ($appeals->save($appeal)) {
+					$this->set([
+						'success' => true,
+						'data' => $outgoing,
+						'appeal' => $this->appeal
+					]);
+				} else {
+					throw new InternalErrorException(__('Failed to update appeal status.'));
+				}
 			}
+			
 		} catch (\Exception $e) {
 			// Handle exception
 			// Log the error

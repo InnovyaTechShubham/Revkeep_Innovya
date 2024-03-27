@@ -1,5 +1,5 @@
 <template>
-	<b-badge :pill="pill" :variant="variant" v-bind="$attrs" :class="icon ? 'text-center' : ''">
+	<b-badge :pill="pill" :variant="variant" :style="{ backgroundColor: bgColor }" v-bind="$attrs" :class="icon ? 'text-center' : ''">
 		<span v-if="!icon" v-text="label" />
 		<font-awesome-icon v-else :icon="statusIcon" class="mx-0 px-0" />
 	</b-badge>
@@ -48,6 +48,19 @@ export default {
 				case "Open":
 					return "primary";
 					break;
+				case "Active":
+					return "#008FFF";
+					break;
+				case "Submitted":
+					return "#8EA7DE";
+					break;
+				case "In Progress":
+					return "#8EA7DE";
+					break;
+				case "Completed":
+					return "#008FFF";
+					break;
+				
 				case "Unable To Complete":
 					return "warning";
 					break;

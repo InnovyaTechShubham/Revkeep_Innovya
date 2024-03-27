@@ -20,12 +20,19 @@ export async function save(params) {
 		const response = await api.patch(`${url}/${params.case_id}/${subpart}/${params.id}`, params);
 		return response.data.data;
 	} else {
+		// api/cases/1182/requests
+		console.log('inside save method of caseReqeust services file.js');
+		console.log('params are:-');
+		console.log(JSON.stringify(params));
 		const response = await api.post(`${url}/${params.case_id}/${subpart}`, params);
 		return response.data.data;
 	}
 }
 
 export async function create(params) {
+	console.log('inside create method of caseReqeust services file.js');
+	console.log('params are:-');
+	console.log(JSON.stringify(params));
 	const response = await api.post(`${url}/${params.case_id}/${subpart}`, params);
 	return response.data.data;
 }
@@ -65,4 +72,13 @@ export async function assign(params) {
 	});
 
 	return response.data.data;
+}
+
+export async function updateResponseReceived(requestId) {
+    try {
+        const response = await api.post(`/client/api/case-requests/update-response-received/${requestId}`, { id: requestId });
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response.data.message || error.message);
+    }
 }
