@@ -4,11 +4,12 @@
 			<b-tab title="New Case" no-body>
 				<case-form
 					flush
-					hide-cancel
+					@cancel="cancel"
 					hide-patient
 					:patient-id="patient.id"
 					:current-document="document"
 					@saved="addedCase"
+					@clear-fields="clearFields"
 				/>
 			</b-tab>
 			<b-tab title="Open Cases" no-body lazy>
@@ -279,6 +280,13 @@ export default {
 					break;
 			}
 		},
+		clearFields() {
+            this.$refs.caseForm.clearFields();
+        },
+		cancel() {
+       		 this.tabIndex = 1; 
+      	 	 this.$emit('clear-fields');
+       },
 	},
 };
 </script>

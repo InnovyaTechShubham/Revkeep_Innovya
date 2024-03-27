@@ -3,12 +3,12 @@
 	<table class="table table-bordered table-hover mb-0">
  
   <tbody>
-    <tr>
-		<td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+    <tr @click="showModal(value)">
+		<td class="col-md-1 center-both align-middle text-muted"  >
 			<span v-if="value.request_id"> {{ value.request_id }}</span>
 			<span v-else>{{ value.appeal_id }}</span>
 		</td>
-		<td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+		<td class="col-md-1 center-both align-middle"   >
         <b-badge 
 		:title="value.status_label"
 		pill
@@ -18,12 +18,13 @@
         </b-badge>
       </td>
   
-  <td class="col-md-1 center-both font-weight-bold align-middle">
-	<span v-if="value.facility_name ">{{ value.facility_name }}</span>
-	<div v-else class="text-muted">&mdash;</div>
-  </td>
+	  <td class="col-md-1 center-both font-weight-bold align-middle">
+    <span v-if="value.facility_name">{{ value.facility_name.substring(0, 12) }}</span>
+    <div v-else class="text-muted">&mdash;</div>
+</td>
 
-   <td class="col-md-1 center-both align-middle font-weight-bold"   @click="navigateToAppeal">{{ patientName }}</td>
+
+   <td class="col-md-1 center-both align-middle font-weight-bold"   >{{ patientName.substring(0, 12) }}</td>
 
    <!-- <td class="col-md-2 center-both align-middle "   @click="navigateToAppeal">
 		<div v-if="!hideAgency">
@@ -42,12 +43,12 @@
 
 	  </td> -->
 	  
-	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
-		<span v-if="agencyName">{{ agencyName}}</span>
+	  <td class="col-md-2 center-both align-middle font-weight-bold"    >
+		<span v-if="agencyName">{{ agencyName.substring(0, 32)}}</span>
 		<div v-else class="text-muted">&mdash;</div>
 	  </td>
 
-	  <td class="col-md-2 center-both align-middle font-weight-bold"   @click="navigateToAppeal" >
+	  <td class="col-md-2 center-both align-middle font-weight-bold"   >
 		               
 			        <span>{{ value.name_of_submit_to }}</span>
 
@@ -56,13 +57,13 @@
 		<h2 v-if="entity.name"
              tag="h3"
              class="h6 mb-0 font-weight-bold"
-			 @click="navigateToAppeal"
+			
         >
 		<font-awesome-icon icon="envelope" />
-		{{ entity.name }} 
+		{{ entity.name.substring(0, 9) }} 
 	  </h2>
-			           <div v-else-if="appealLevel" class="font-weight-bold align-middle"  @click="navigateToAppeal">
-						<font-awesome-icon icon="envelope-open" />	 {{ appealLevel }}
+			           <div v-else-if="appealLevel" class="font-weight-bold align-middle">
+						<font-awesome-icon icon="envelope-open" />	 {{ appealLevel.substring(0, 9) }}
 					   </div>
 			
 					   <div v-else>
@@ -70,12 +71,12 @@
 					   </div>
 
 	  </td>
-	  <td class="col-md-1 center-both align-middle"   @click="navigateToAppeal">
+	  <td class="col-md-1 center-both align-middle"   >
 		               
 			     {{ $filters.formatDate(value.created) }}
 
 	  </td>
-	  <td class="col-md-1 center-both align-middle"   @click="handleDeliveryMethodClick">
+	  <td class="col-md-1 center-both align-middle" >
 		                    <p v-if="value.delivery_method" class="text-muted mb-0" title="Delivery Method">
 								<font-awesome-icon
 									v-if="value.delivery_method_icon"
@@ -156,11 +157,12 @@
    </tbody>
   
 </table>
+<!--
 <b-modal id="manualDeliveryModal"  v-if="modalcount" hide-footer hide-header>
 	<div style="display: flex; justify-content: space-between; align-items: center;">
   <h5 style="margin: 0;">Mail Delivery Information</h5>
   <div>
-    <!-- Your custom cross icon button -->
+     Your custom cross icon button 
 	<span aria-hidden="true" @click="cancelModal" style="cursor: pointer; font-size: 24px;">&times;</span>
 
     
@@ -180,6 +182,88 @@
   </div>
     
     </b-modal>
+-->
+	<b-modal v-model="modalVisible" hide-footer>
+		<template #modal-header>
+			<h4>Outgoing {{ value.delivery_method }}</h4>
+			<b-badge :variant="value.progress_variant" pill class="b-badge-lg b-badge-lg-custom d-inline-block d-sm-inline-flex">
+  {{ value.status_label }}
+</b-badge>
+
+  </template>
+     
+	  
+		
+		<p><font-awesome-icon icon="user" />
+			<strong>Patient :</strong> 
+				{{ patientName }}</p>
+	  
+      <p>	
+								<font-awesome-icon icon="building" class="px-0 mx-0" />
+								
+	  <strong>Facility :</strong> {{ value.facility_name }}</p>
+      <p>
+									<font-awesome-icon icon="user-md" class="px-0 mx-0" />
+								
+		<strong>Recipient :</strong> {{ agencyName }}</p>
+	  <p>
+									<font-awesome-icon icon="building" class="px-0 mx-0" />
+								
+		<strong>Recipient Type:</strong> {{ value.name_of_submit_to }}</p>
+	  <div>
+		<p v-if=" entity.name"> <font-awesome-icon icon="envelope" /><strong> Level:</strong> {{  entity.name }}</p>
+	    <p v-else><font-awesome-icon icon="envelope-open" /><strong> Level:</strong> 
+			{{  appealLevel }}</p>
+	  </div>
+	 <div>
+		<p v-if=" value.email"> <font-awesome-icon
+									v-if="value.delivery_method_icon"
+									:icon="value.delivery_method_icon"
+									fixed-width
+								/><strong> Email:</strong> {{  value.email}}</p>
+	   <p v-if="value.fax">
+		<font-awesome-icon
+									v-if="value.delivery_method_icon"
+									:icon="value.delivery_method_icon"
+									fixed-width
+								/><strong> Fax:</strong> {{  value.fax }}</p>
+	 </div>
+	  <p>
+		<strong>Sent Date:</strong>
+		 {{ $filters.formatDate(value.created) }}</p>
+      
+	  <div v-if="value.delivery_method === 'Manual'">
+		<p><strong>Mail Notes:</strong> {{ value.mailNotes }}</p>
+        <p><strong>Carrier:</strong> {{ value.carrier }}</p>
+        <p><strong>Tracking:</strong> {{ value.tracking }}</p>
+	  </div>
+	   
+	    <div>
+	               <b-dropdown right class="mb-0">
+						<template #button-content>
+							<font-awesome-icon icon="file-download" fixed-width />
+						</template>
+						<b-dropdown-item
+						@click="download" title="Download Packet"
+						>
+							Download
+						</b-dropdown-item>
+						<b-dropdown-item
+							@click="preview"
+						>
+						    Preview
+					    </b-dropdown-item>
+					</b-dropdown>
+
+		</div>
+	
+	<hr>
+	<div class="d-flex justify-content-between">
+		<b-button @click="hidemodal">Close</b-button>
+		<b-button @click="navigateToAppeal" variant="primary" >View Case</b-button>
+	</div>
+    </b-modal>
+	
 </div>
 </template>
 
@@ -211,6 +295,8 @@ export default {
 					mailNotes: null,
 					carrier: null,
 					tracking:null,
+					email:null,
+					fax: null,
 					agency: {
 						id: null,
 						name: null,
@@ -272,6 +358,12 @@ export default {
       mailNotes: '',
     },
 	 modalcount:false,
+	 modalVisible: false,
+      modalData: {
+		patient : '',
+		facility_name : ' ',
+        agencyName: '',
+	  },
 		};
 	},
 	computed: {
@@ -318,6 +410,13 @@ export default {
 		},
 	},
 	methods: {
+		showModal(data) {
+      this.modalData = data;
+      this.modalVisible = true;
+    },
+	  hidemodal (){
+        this.modalVisible = false;
+	  },
 		async refresh() {
     try {
         this.loading = true;
@@ -482,5 +581,9 @@ preview() {
   }
 .table{
 	cursor: pointer;
+}
+.b-badge-lg-custom {
+  font-size: 12px; /* Adjust the font size as needed */
+  padding: 7px 7px; /* Adjust padding as needed */
 }
 </style>

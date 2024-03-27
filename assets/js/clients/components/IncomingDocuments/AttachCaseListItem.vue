@@ -53,10 +53,7 @@
 				</p>
 			</b-col>
 			<b-col cols="7" md="12" lg="6" class="mb-4 mb-md-0 text-right">
-				<b-button v-if="isCollapsed && !hasOpenAppeal" @click="
-			addingAppeal = true;
-		addingRequest = false;
-		" variant="primary" class="shadow">
+				<b-button  @click="addingAppeal = true; addingRequest = false;" variant="primary" class="shadow">
 					<font-awesome-icon icon="plus" fixed-width />
 					<span>Appeal</span>
 				</b-button>
@@ -94,7 +91,7 @@
 
 		<b-row v-if="addingAppeal" class="my-2">
 			<b-col cols="12">
-				<appeal-form :case-entity="caseEntity" @saved="addedAppeal" @cancel="addingAppeal = false"
+				<appeal-form :case-entity="caseEntity" :insurance-appeal-ids-object="insuranceAppealIdsObject" @saved="addedAppeal" @cancel="addingAppeal = false"
 					class="shadow">
 					<template #header>
 						<b-card-header>
@@ -161,6 +158,32 @@
 					</b-list-group>
 				</b-card>
 			</div> -->
+			<div v-if="editing" class="mb-4" v-for="(appeal, i) in appeals" :key="appeal.id">
+							<!-- <insurance-provider-form
+								@cancel="addingInsuranceProvider = false"
+								@saved="addedNewInsuranceProvider"
+							>-->
+								<!-- <template #header> -->
+									<b-card-header>
+										<div class="d-flex justify-content-between align-items-center">
+											<span class="font-weight-bold">Edit Appeal Form</span>
+											<b-button
+												variant="secondary"
+												size="sm"
+												@click="editing = false"
+												title="Cancel"
+												class="mb-0"
+											>
+												<font-awesome-icon icon="remove" fixed-width class="my-0 py-0" />
+											</b-button>
+										</div>
+									</b-card-header>
+								<!-- </template> -->
+							<!-- </insurance-provider-form>  -->
+							
+						</div>
+					
+						
 			<b-collapse v-model="isCollapsed">
 				<div v-if="hasAppeals">
 					<b-card no-body>
@@ -205,18 +228,31 @@
 									</b-col>
 
 									<b-col cols="4" md="6" lg="12" xl="6" class="text-right">
-										<!-- <b-button @click="
-										addingRequest = true;
-										addingAppeal = false;
-										" variant="primary" class="shadow">
+									<!--	<b-button @click="
+			addingRequest = true;
+		addingAppeal = false;
+		" variant="primary" class="shadow">
 											<font-awesome-icon icon="plus" fixed-width />
 											<span>Requests</span>
-										</b-button> -->
-									<b-button @click="addRequestWithAppealLevel(appealLevelNames[i])" variant="primary" class="shadow">
-    									<font-awesome-icon icon="plus" fixed-width />
-										<span>Requests</span>
-									</b-button>
+										</b-button>-->
+										<b-dropdown right menu-class="shadow" variant="secondary">
+					<template #button-content>
+						<font-awesome-icon icon="cog" fixed-width />
+					</template>
+					<b-dropdown-item :to="{ name: 'appeals.view', params: {id: caseEntity.id , appeal_id : appeal.id } }">
+						<font-awesome-icon icon="eye" fixed-width />
+						<span>View Appeal</span>
+					</b-dropdown-item>
 
+					<b-dropdown-item :to="{ name: 'appeals.edit', params: { id: appeal.id , appeal:appeal} }">
+						<font-awesome-icon icon="edit" fixed-width />
+						<span>Edit Appeal1</span>
+					</b-dropdown-item>
+					<b-dropdown-item  @click="addingRequest = true">
+						<font-awesome-icon icon="plus" fixed-width />
+						<span>Request</span>
+					</b-dropdown-item>
+				</b-dropdown>
 										<b-dropdown split right @click="attachToAppeal(appeal, { redirect: false })"
 											:disabled="attaching" variant="primary">
 											<template #button-content>
@@ -327,13 +363,17 @@
 									</b-col>
 								</b-row> -->
 
+								
+								<!-- <AppealForm :id="appeal.id" /> -->
+								<!-- <EditForm :id="$route.params.id" @loaded="loaded" @cancel="toView" @saved="toView" /> -->
 								<div v-if="hasRequestForAppeal(appeal, i)" class="mt-2"
 									style="background-color: #f2f2f2; padding: 10px; border-radius: 5px">
 									<div @click="toggleCollapseRequests" style="cursor: pointer" class="text-black">
 										Requests
 										<span style="float: right; font-size: smaller">{{
-			collapseRequests ? "▲" : "▼"
-		}}</span>
+											collapseRequests ? "▼" : "▲"
+											}}
+										</span>
 									</div>
 									<div v-show="!collapseRequests">
 										<div v-for="(request, j) in request_list" :key="request.id"
@@ -416,7 +456,7 @@
 												></b-form-select>
 										</b-form-group>
 									</b-col>
-									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative">
+									<b-col cols="12" md="6" lg="6" xl="6" class="text-left relative" v-if="!appeal.pre_appeal">
 										<b-form-group label="New At Risk Amount" label-cols-lg="5" class="mb-0"
 											v-if="dynamicDecisionOptions[i] !== 'Favorable' && dynamicDecisionOptions[i] !== 'Not Favorable'">
 											<b-form-input class="mt-2" v-model="riskAmount[i]"></b-form-input>
@@ -521,6 +561,15 @@ export default {
 				};
 			},
 		},
+		insuranceAppealIdsObject: {
+            type: Object,
+            required: true,
+			default: () => {
+				return {
+					insuranceAppealIdsObject: {},
+				};
+			},
+        },
 		document: {
 			required: true,
 			type: Object,
@@ -543,7 +592,7 @@ export default {
 
 			addingRequest: false,
 			requests: this.caseEntity.requests || [],
-
+			editing: false,
 			loading: false,
 			attaching: false,
 			request_list: null,
@@ -571,6 +620,7 @@ export default {
 			dropdownOpened: false,
 			levelType: null,
 			appealLevel: '',
+			insuranceAppealIdsObject: {},
 		};
 	},
 	computed: {
@@ -979,7 +1029,27 @@ export default {
 		checkRequest() {
 			this.showRequest = true;
 		},
+		async refresh() {
+			try {
+				this.loading = true;
+				this.error = false;
 
+				const response = await this.$store.dispatch("appeals/get", {
+					id: this.$route.params.appeal_id,
+				});
+
+				this.appeal = response;
+			} catch (e) {
+				this.$store.dispatch("apiError", {
+					error: e,
+					message: "Unable to load appeal details",
+				});
+
+				this.error = e.response.data.message || "Unable to load appeal details";
+			} finally {
+				this.loading = false;
+			}
+		},
 		decisionOptionsListMethod(appeal) {
 			console.log("output =", appeal);
 			console.log("DECISON LIST=", this.decisionOptionsList);
@@ -1008,6 +1078,23 @@ export default {
 	},
 	mounted() {
 		this.test();
+		this.insuranceAppealIdsObject = {};
+		// Iterate over the this.caseEntity.appeals array
+		this.caseEntity.appeals.forEach(item => {
+			// Get the insurance_appeal_id for the current item
+			const insuranceAppealId = item.insurance_appeal_id;
+
+			// Check if the insurance_appeal_id exists in the object, if not, create an empty array
+			if (!this.insuranceAppealIdsObject[item.id]) {
+				this.$set(this.insuranceAppealIdsObject, item.id, []); // Use $set to ensure reactivity
+			}
+
+			// Push the insurance_appeal_id into the array corresponding to the current caseEntity
+			this.insuranceAppealIdsObject[item.id].push(insuranceAppealId);
+		});
+
+		console.log("VSCODE", this.insuranceAppealIdsObject);
+
 		this.dynamicDecisionOptions = this.appeals.map(appeal => {
 			return appeal.appeal_decision ? appeal.appeal_decision : this.decisionOptionsList[appeal.id];
 		});

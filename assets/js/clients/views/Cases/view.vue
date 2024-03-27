@@ -848,26 +848,22 @@
 			<b-nav card-header tabs > 
                  
 				<b-nav-item
-						v-for="appeal in caseEntity.appeals"
-						:key="'appeal_' + appeal.id"
-						:to="{ name: 'appeals.view', params: { id: caseEntity.id, appeal_id: appeal.id } }"
-						:title="
-							appeal.appeal_level && appeal.appeal_level.short_name
-								? appeal.appeal_level.short_name
-								: '(Missing Level)'
-						"
-						active-class="active font-weight-bold"
-					>
-						<appeal-status-label icon :value="appeal" class="d-none d-lg-inline mr-2" />
-						<!-- <span
-							v-if="appeal.appeal_level && appeal.appeal_level.short_name"
-							v-text="checkAppealName(appeal)"
-						/>
-						<span v-else class="text-danger">(Missing Level)test1</span> -->
-						<span
-							v-text="checkAppealName(caseEntity , appeal)"
-						/>
-					</b-nav-item>
+    v-for="appeal in caseEntity.appeals.slice().sort((a, b) => a.id - b.id)" 
+    :key="'appeal_' + appeal.id"
+    :to="{ name: 'appeals.view', params: { id: caseEntity.id, appeal_id: appeal.id } }"
+    :title="
+        appeal.appeal_level && appeal.appeal_level.short_name
+            ? appeal.appeal_level.short_name
+            : '(Missing Level)'
+    "
+    active-class="active font-weight-bold"
+>
+    <appeal-status-label icon :value="appeal" class="d-none d-lg-inline mr-2" />
+    <span
+        v-text="checkAppealName(caseEntity, appeal)"
+    />
+</b-nav-item>
+
                 
 
 				</b-nav>

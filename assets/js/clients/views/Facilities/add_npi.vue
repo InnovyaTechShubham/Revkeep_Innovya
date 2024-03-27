@@ -256,6 +256,8 @@
 <script>
 import { mapGetters } from "vuex";
 import NPIOrganization from "@/clients/components/NPI/NPIOrganization.vue";
+import axios from "axios";
+
 
 export default {
 	name: "ViewAddFacilityNPI",
@@ -275,6 +277,7 @@ export default {
 			saving: false,
 			searching: false,
 			searched: false,
+			facilityTypes:[],
 			// entity: {},
 		};
 	},
@@ -299,10 +302,33 @@ export default {
 		},
 		...mapGetters({
 			states: "states/states",
-			facilityTypes: "facilityTypes/all",
+			// facilityTypes: "facilityTypes/all",
 		}),
 	},
 	methods: {
+		async fetchFacilityType(){
+			try
+						{
+							const url = "/client/facilitytypes";
+								
+								const response = await axios.get(url, {
+								headers: {
+									"Accept": "application/json",
+									// You can add other headers here if needed
+								},
+								});
+								
+							console.log("facility type listed :", response);
+							response.data.forEach((item)=>{
+								this.facilityTypes.push({name:item.name, id:item.id});
+							});
+							console.log('facility type options =' , this.facilityTypes);
+						}
+					catch (error) 
+					{
+						console.error("Error fetching data:", error.message);
+					}
+		},
 		async npiLookup() {
 			try {
 				this.error = "";
@@ -586,9 +612,11 @@ export default {
 		},
 	},
 
-// 	mounted() {
-//   	// Call selectedNpiResult when the component is mounted
-//   	this.selectedNpiResult(this.entity);
-// },
+	mounted() {
+  	// Call selectedNpiResult when the component is mounted
+  	// this.selectedNpiResult(this.entity);
+	  this.fetchFacilityType();
+
+},
 };
 </script>
